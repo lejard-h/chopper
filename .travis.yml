@@ -1,0 +1,15 @@
+# Created with https://github.com/dart-lang/mono_repo
+language: dart
+
+jobs:
+  include:
+
+stages:
+
+# Only building master means that we don't run two builds for each pull request.
+branches:
+  only: [master]
+
+cache:
+  directories:
+    - $HOME/.pub-cache

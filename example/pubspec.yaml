@@ -1,0 +1,22 @@
+name: chopper_example
+description: Example of Chopper
+version: 0.0.1
+#homepage: https://www.example.com
+author: Hadrien Lejard <hadrien.lejard@gmail.com>
+
+environment:
+  sdk: '>=2.0.0-dev <2.0.0'
+
+dependencies:
+  meta:
+  chopper: ^0.0.1
+
+dev_dependencies:
+  build_runner: ^0.8.0
+  chopper_generator: ^0.0.1
+
+dependency_overrides:
+  chopper:
+    path: ../chopper
+  chopper_generator:
+    path: ../chopper_generator
