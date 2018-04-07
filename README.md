@@ -1,5 +1,3 @@
-# chopper
-
 Chopper is an http client generator using source_gen and inspired from Retrofit.
 
 ## Usage
@@ -58,3 +56,6 @@ final myService = chopper.service(MyService) as MyService;
 
 final response = await myService.getMapResource("1");
 ```
+
+## [More example](https://github.com/lejard-h/chopper/tree/master/example)
+## [Issue Tracker](https://github.com/lejard-h/chopper/issues)
