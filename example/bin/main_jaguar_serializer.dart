@@ -1,21 +1,20 @@
-import "dart:async";
 import 'package:chopper/chopper.dart';
-import 'converter.dart';
-import 'definition.dart';
-import 'model.dart';
+import 'definition/definition.dart';
+import 'definition/model.dart';
+
+import 'definition/jaguar_serializer.dart';
 
 main() async {
   final chopper = new ChopperClient(
       baseUrl: "http://localhost:8000",
-      converter: const ModelConverter(),
-      services: [
+      converter: const JaguarConverter(),
+      apis: [
         // the generated service
         new MyService()
       ],
       /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
       interceptors: [
         new Headers(const {"Content-Type": "application/json"}),
-        authHeader
       ]);
 
   final myService = chopper.service(MyService) as MyService;
@@ -28,6 +27,3 @@ main() async {
 
   await myService.newResource(new Resource("3", "Super Name"));
 }
-
-Future<Request> authHeader(Request request) async =>
-    applyHeader(request, "Authorization", "42");

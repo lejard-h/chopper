@@ -18,7 +18,7 @@ const _headersVar = "headers";
 const _requestVar = "request";
 
 class ChopperGenerator
-    extends GeneratorForAnnotation<chopper.ServiceDefinition> {
+    extends GeneratorForAnnotation<chopper.ChopperApi> {
   @override
   FutureOr<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
@@ -259,4 +259,4 @@ class ChopperGenerator
 }
 
 Builder chopperGeneratorFactoryBuilder({String header}) =>
-    new PartBuilder([new ChopperGenerator()], header: header);
+    new PartBuilder([new ChopperGenerator()], header: header, generatedExtension: ".chopper.dart");

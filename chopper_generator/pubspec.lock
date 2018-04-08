@@ -77,7 +77,7 @@ packages:
       path: "../chopper"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   cli_util:
     dependency: transitive
     description:

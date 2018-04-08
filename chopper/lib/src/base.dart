@@ -11,7 +11,7 @@ class ChopperClient {
   final String baseUrl;
   final http.Client httpClient;
   final Converter _converter;
-  final Map<Type, ChopperService> _services = {};
+  final Map<Type, ChopperService> _apis = {};
   final _requestInterceptors = [];
   final _responseInterceptors = [];
 
@@ -20,7 +20,7 @@ class ChopperClient {
       http.Client client,
       Iterable interceptors: const [],
       Converter converter,
-      Iterable<ChopperService> services: const []})
+      Iterable<ChopperService> apis: const []})
       : httpClient = client ?? new http.Client(),
         _converter = converter {
     if (interceptors.every(_isAnInterceptor) == false) {
@@ -31,9 +31,9 @@ class ChopperClient {
     _requestInterceptors.addAll(interceptors.where(_isRequestInterceptor));
     _responseInterceptors.addAll(interceptors.where(_isResponseInterceptor));
 
-    services.toSet().forEach((s) {
+    apis.toSet().forEach((s) {
       s.client = this;
-      _services[s.runtimeType] = s;
+      _apis[s.runtimeType] = s;
     });
   }
 
@@ -47,7 +47,7 @@ class ChopperClient {
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
   ChopperService service(Type type) {
-    final s = _services[type];
+    final s = _apis[type];
     if (s == null) {
       throw new Exception("Service of type '$type' not found.");
     }

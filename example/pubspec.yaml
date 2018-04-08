@@ -10,10 +10,12 @@ environment:
 dependencies:
   meta:
   chopper: ^0.0.1
+  jaguar_serializer: ^1.0.0-dev5
 
 dev_dependencies:
   build_runner: ^0.8.0
   chopper_generator: ^0.0.1
+  jaguar_serializer_cli: ^1.0.0-dev6
 
 dependency_overrides:
   chopper:

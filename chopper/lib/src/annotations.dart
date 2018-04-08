@@ -2,10 +2,10 @@ import 'package:meta/meta.dart';
 import 'request.dart';
 
 @immutable
-class ServiceDefinition {
+class ChopperApi {
   final String baseUrl;
   final String name;
-  const ServiceDefinition(this.name, {this.baseUrl: "/"});
+  const ChopperApi(this.name, {this.baseUrl: "/"});
 }
 
 @immutable

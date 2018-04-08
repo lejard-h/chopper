@@ -77,7 +77,7 @@ packages:
       path: "../chopper"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   chopper_generator:
     dependency: "direct dev"
     description:
@@ -204,6 +204,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  jaguar_serializer:
+    dependency: "direct main"
+    description:
+      name: jaguar_serializer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-dev5"
+  jaguar_serializer_cli:
+    dependency: "direct dev"
+    description:
+      name: jaguar_serializer_cli
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-dev6"
   kernel:
     dependency: transitive
     description:

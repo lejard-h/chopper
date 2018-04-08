@@ -1,9 +1,9 @@
 import "dart:async";
 import 'package:chopper/chopper.dart';
 
-part "definition.g.dart";
+part "definition.chopper.dart";
 
-@ServiceDefinition("MyService", baseUrl: "/resources")
+@ChopperApi("MyService", baseUrl: "/resources")
 abstract class MyServiceDefinition {
   @Get(url: "/{id}")
   Future<Response> getResource(@Path() String id);
