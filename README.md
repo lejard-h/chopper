@@ -57,5 +57,9 @@ final myService = chopper.service(MyService) as MyService;
 final response = await myService.getMapResource("1");
 ```
 
-## [More example](https://github.com/lejard-h/chopper/tree/master/example)
+## More example
+
+  - [Custom Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_basic_converter.dart)
+  - [Jaguar Serializer](https://github.com/lejard-h/chopper/blob/master/example/bin/main_jaguar_serializer.dart)
+  
 ## [Issue Tracker](https://github.com/lejard-h/chopper/issues)
