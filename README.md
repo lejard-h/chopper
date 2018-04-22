@@ -20,7 +20,7 @@ dev_dependencies:
 import "dart:async";
 import 'package:chopper/chopper.dart';
 
-part "my_service.g.dart";
+part "my_service.chopper.dart";
 
 @ChopperApi("MyService", baseUrl: "/resources")
 abstract class MyServiceDefinition {
