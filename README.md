@@ -34,7 +34,12 @@ abstract class MyServiceDefinition {
 
 then run the generator
 
-`pub run build_runner build`
+```
+pub run build_runner build
+
+#flutter
+flutter packages pub run build_runner build
+```
 
 ### Use it
 
