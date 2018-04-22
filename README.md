@@ -22,7 +22,7 @@ import 'package:chopper/chopper.dart';
 
 part "my_service.g.dart";
 
-@ServiceDefinition("MyService", baseUrl: "/resources")
+@ChopperApi("MyService", baseUrl: "/resources")
 abstract class MyServiceDefinition {
   @Get(url: "/{id}")
   Future<Response> getResource(@Path() String id);
