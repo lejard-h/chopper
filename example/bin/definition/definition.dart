@@ -7,7 +7,7 @@ part "definition.chopper.dart";
 
 @ChopperApi("MyService", baseUrl: "/resources")
 abstract class MyServiceDefinition {
-  @Get(url: "/{id}")
+  @Get(url: "/{id}/")
   Future<Response> getResource(@Path() String id);
 
   @Get(url: "/")
@@ -17,6 +17,6 @@ abstract class MyServiceDefinition {
   Future<Response<Resource>> getTypedResource();
 
   @Post()
-  Future<Response<Resource>> newResource(
-      @Body() Resource resource, {@Header() String name});
+  Future<Response<Resource>> newResource(@Body() Resource resource,
+      {@Header() String name});
 }

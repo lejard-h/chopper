@@ -17,11 +17,13 @@ const _parametersVar = "params";
 const _headersVar = "headers";
 const _requestVar = "request";
 
-class ChopperGenerator
-    extends GeneratorForAnnotation<chopper.ChopperApi> {
+class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   @override
   FutureOr<String> generateForAnnotatedElement(
-      Element element, ConstantReader annotation, BuildStep buildStep) {
+    Element element,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  ) {
     if (element is! ClassElement) {
       final friendlyName = element.displayName;
       throw new InvalidGenerationSourceError(
@@ -34,7 +36,9 @@ class ChopperGenerator
   }
 
   String _buildImplementionClass(
-      ConstantReader annotation, ClassElement element) {
+    ConstantReader annotation,
+    ClassElement element,
+  ) {
     final friendlyName = element.name;
     final builderName =
         annotation?.peek("name")?.stringValue ?? "${friendlyName}Impl";
@@ -96,11 +100,11 @@ class ChopperGenerator
                 .assignFinal(_requestVar)
                 .statement);
 
-            final namedArguments = {};
-            final typeArguments = [];
+            final namedArguments = <String, Expression>{};
+            final typeArguments = <Reference>[];
             if (responseType != null) {
               namedArguments["responseType"] =
-                  refer(responseType.displayName).code;
+                  refer(responseType.displayName).expression;
               typeArguments.add(refer(responseType.displayName));
             }
 
@@ -138,7 +142,7 @@ class ChopperGenerator
   }
 
   Map<String, ConstantReader> _getAnnotations(MethodElement m, Type type) {
-    var annot = {};
+    var annot = <String, ConstantReader>{};
     for (final p in m.parameters) {
       final a = _typeChecker(type).firstAnnotationOf(p);
       if (a != null) {
@@ -189,9 +193,7 @@ class ChopperGenerator
 
   Expression _generateUrl(
       ConstantReader method, Map<String, ConstantReader> paths) {
-    String value = "${method
-                                .read("url")
-                                .stringValue}";
+    String value = "${method.read("url").stringValue}";
     paths.forEach((String key, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? key;
       value = value.replaceFirst("{$name}", "\$$key");
@@ -258,5 +260,8 @@ class ChopperGenerator
   }
 }
 
-Builder chopperGeneratorFactoryBuilder({String header}) =>
-    new PartBuilder([new ChopperGenerator()], header: header, generatedExtension: ".chopper.dart");
+Builder chopperGeneratorFactoryBuilder({String header}) => new PartBuilder(
+      [new ChopperGenerator()],
+      header: header,
+      generatedExtension: ".chopper.dart",
+    );

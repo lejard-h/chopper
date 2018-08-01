@@ -3,12 +3,12 @@
 part of 'definition.dart';
 
 // **************************************************************************
-// Generator: ChopperGenerator
+// ChopperGenerator
 // **************************************************************************
 
 class MyService extends ChopperService implements MyServiceDefinition {
   Future<Response> getResource(String id) {
-    final url = '/$id';
+    final url = '/$id/';
     final request = new Request('GET', url);
     return client.send(request);
   }

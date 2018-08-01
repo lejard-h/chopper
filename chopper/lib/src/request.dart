@@ -11,8 +11,13 @@ class Request {
   final Map<String, dynamic> parameters;
   final Map<String, String> headers;
 
-  const Request(this.method, this.url,
-      {this.body, this.parameters: const {}, this.headers: const {}});
+  const Request(
+    this.method,
+    this.url, {
+    this.body,
+    this.parameters: const {},
+    this.headers: const {},
+  });
 
   String _getMethod(String method) {
     switch (method) {
@@ -29,21 +34,26 @@ class Request {
     }
   }
 
-  Request replace(
-          {HttpMethod method,
-          String url,
-          dynamic body,
-          Map<String, dynamic> parameters,
-          Map<String, String> headers,
-          Encoding encoding}) =>
-      new Request(method ?? this.method, url ?? this.url,
-          body: body ?? this.body,
-          parameters: parameters ?? this.parameters,
-          headers: headers ?? this.headers);
+  Request replace({
+    HttpMethod method,
+    String url,
+    dynamic body,
+    Map<String, dynamic> parameters,
+    Map<String, String> headers,
+    Encoding encoding,
+  }) =>
+      new Request(
+        method ?? this.method,
+        url ?? this.url,
+        body: body ?? this.body,
+        parameters: parameters ?? this.parameters,
+        headers: headers ?? this.headers,
+      );
 
   http.BaseRequest toHttpRequest(String baseUrl) {
     final uri = Uri.parse("$baseUrl/${url}").replace(
-        queryParameters: parameters.map((k, v) => new MapEntry(k, "$v")));
+      queryParameters: parameters.map((k, v) => new MapEntry(k, "$v")),
+    );
     final baseRequest = new http.Request(_getMethod(method), uri);
     baseRequest.headers.addAll(headers);
     if (body != null) {
