@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+- Remove trimSlashes
+
 ## 0.1.0
 
 - update dart sdk

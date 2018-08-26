@@ -50,8 +50,15 @@ class Request {
         headers: headers ?? this.headers,
       );
 
+  Uri _buildUri(String baseUrl) {
+    if (!baseUrl.endsWith('/') && !url.startsWith('/')) {
+      return Uri.parse("$baseUrl/$url");
+    }
+    return Uri.parse("$baseUrl$url");
+  }
+
   http.BaseRequest toHttpRequest(String baseUrl) {
-    final uri = Uri.parse("$baseUrl/${url}").replace(
+    final uri = _buildUri(baseUrl).replace(
       queryParameters: parameters.map((k, v) => new MapEntry(k, "$v")),
     );
     final baseRequest = new http.Request(_getMethod(method), uri);
