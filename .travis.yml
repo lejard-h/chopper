@@ -35,17 +35,17 @@ jobs:
       env: PKG="chopper_generator"
       dart: stable
     - stage: analyzer_and_format
-      name: "SDK: stable - DIR: chopchopper - TASKS: dartfmt -n --set-exit-if-changed ."
+      name: "SDK: stable - DIR: chopper - TASKS: dartfmt -n --set-exit-if-changed ."
       script: ./tool/travis.sh dartfmt
       env: PKG="chopper"
       dart: stable
     - stage: analyzer_and_format
-      name: "SDK: stable - DIR: chopchopper - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
+      name: "SDK: stable - DIR: chopper - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
       script: ./tool/travis.sh dartanalyzer
       env: PKG="chopper"
       dart: stable
     - stage: unit_test
-      name: "SDK: stable - DIR: chopchopper - TASKS: pub run build_runner test -- -p chrome"
+      name: "SDK: stable - DIR: chopper - TASKS: pub run build_runner test -- -p chrome"
       script: ./tool/travis.sh command
       env: PKG="chopper"
       dart: stable

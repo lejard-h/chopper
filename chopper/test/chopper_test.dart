@@ -6,15 +6,14 @@ import 'test_service.dart';
 
 void main() {
   group('Generated Service', () {
-
     final buildClient = (http.Client httpClient) => ChopperClient(
-        baseUrl: "http://localhost:8000",
-        apis: [
-          // the generated service
-          HttpTestService(),
-        ],
-        client: httpClient,
-      );
+          baseUrl: "http://localhost:8000",
+          apis: [
+            // the generated service
+            HttpTestService(),
+          ],
+          client: httpClient,
+        );
     test('GET', () async {
       final httpClient = MockClient((request) async {
         expect(
