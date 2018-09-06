@@ -1,4 +1,5 @@
 import "dart:async";
+import 'dart:convert' hide Converter;
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
 
@@ -15,16 +16,21 @@ class ChopperClient {
   final _requestInterceptors = [];
   final _responseInterceptors = [];
 
-  ChopperClient(
-      {this.baseUrl: "",
-      http.Client client,
-      Iterable interceptors: const [],
-      Converter converter,
-      Iterable<ChopperService> apis: const []})
-      : httpClient = client ?? new http.Client(),
+  final bool jsonApi;
+  final bool formUrlEncodedApi;
+
+  ChopperClient({
+    this.baseUrl: "",
+    http.Client client,
+    Iterable interceptors: const [],
+    Converter converter,
+    Iterable<ChopperService> apis: const [],
+    this.jsonApi: false,
+    this.formUrlEncodedApi: false,
+  })  : httpClient = client ?? http.Client(),
         _converter = converter {
     if (interceptors.every(_isAnInterceptor) == false) {
-      throw new Exception(
+      throw Exception(
           "Unsupported type for interceptors, it only support the following types: RequestInterceptor, RequestInterceptorFunc, ResponseInterceptor, ResponseInterceptorFunc");
     }
 
@@ -46,10 +52,10 @@ class ChopperClient {
   bool _isAnInterceptor(value) =>
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
-  ChopperService service(Type type) {
-    final s = _apis[type];
+  T service<T extends ChopperService>() {
+    final s = _apis[T];
     if (s == null) {
-      throw new Exception("Service of type '$type' not found.");
+      throw Exception("Service of type '$T' not found.");
     }
     return s;
   }
@@ -58,19 +64,23 @@ class ChopperClient {
     final converted = await _converter?.encode(request) ?? request;
 
     if (converted == null) {
-      throw new Exception(
+      throw Exception(
           "No converter found for type ${request.body?.runtimeType}");
     }
 
+    if (jsonApi || converted.json == true) {
+      return converted.replace(body: json.encode(converted.body));
+    }
     return converted;
   }
 
   Future<Response<Value>> decodeResponse<Value>(
-      Response<String> response, Type responseType) async {
-    final converted = await _converter?.decode(response, responseType);
+    Response<String> response,
+  ) async {
+    final converted = await _converter?.decode<Value>(response) ?? response;
 
     if (converted == null) {
-      throw new Exception("No converter found for type $Value");
+      throw Exception("No converter found for type $Value");
     }
 
     return converted as Response<Value>;
@@ -101,11 +111,10 @@ class ChopperClient {
   }
 
   /* note(lejard_h) responseType have to be equal to Value generic type, dart does not support testing on generics yet */
-  Future<Response<Value>> send<Value>(Request request,
-      {Type responseType}) async {
+  Future<Response<Value>> send<Value>(Request request) async {
     Request req = request;
 
-    if (req.body != null) {
+    if (req.body != null || req.parts.isNotEmpty) {
       req = await encodeRequest(request);
     }
 
@@ -115,10 +124,14 @@ class ChopperClient {
 
     final response = await http.Response.fromStream(stream);
 
-    Response res = new Response<String>(response, response.body);
+    Response res = Response<String>(response, response.body);
 
-    if (res.isSuccessful && responseType != null) {
-      res = await decodeResponse<Value>(res, responseType);
+    if (jsonApi || req.json == true) {
+      res = _tryDecodeJson(res);
+    }
+
+    if (res.isSuccessful) {
+      res = await decodeResponse<Value>(res);
     }
 
     res = await interceptResponse(res);
@@ -128,6 +141,14 @@ class ChopperClient {
     }
 
     return res;
+  }
+
+  Response _tryDecodeJson(Response res) {
+    try {
+      return res.replace(body: json.decode(res.body));
+    } catch (_) {
+      return res;
+    }
   }
 }
 

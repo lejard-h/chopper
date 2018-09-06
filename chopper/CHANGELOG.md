@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+- Multipart request
+- form url encoded
+- add jsonAPI and formUrlEncodedApi boolean to ChopperClient
+- json and formUrlEncoding is now builtin
+
 ## 0.1.1
 
 - Remove trimSlashes

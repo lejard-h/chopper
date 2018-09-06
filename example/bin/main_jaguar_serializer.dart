@@ -6,18 +6,16 @@ import 'definition/jaguar_serializer.dart';
 
 main() async {
   final chopper = new ChopperClient(
-      baseUrl: "http://localhost:8000",
-      converter: const JaguarConverter(),
-      apis: [
-        // the generated service
-        new MyService()
-      ],
-      /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
-      interceptors: [
-        new Headers(const {"Content-Type": "application/json"}),
-      ]);
+    baseUrl: "http://localhost:8000",
+    converter: const JaguarConverter(),
+    apis: [
+      // the generated service
+      new MyService()
+    ],
+    jsonApi: true,
+  );
 
-  final myService = chopper.service(MyService) as MyService;
+  final myService = chopper.service<MyService>();
 
   final response1 = await myService.getResource("1");
   print(response1.body); // undecoded String

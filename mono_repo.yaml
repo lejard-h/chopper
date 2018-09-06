@@ -1,7 +1,4 @@
-# Created by mono_repo
-example:
-  published: false
-chopper:
-  published: true
-chopper_generator:
-  published: true
+travis:
+  sudo: required
+  addons:
+    chrome: stable

@@ -24,35 +24,36 @@ abstract class RequestInterceptor {
 abstract class Converter {
   const Converter();
 
-  Future<Request> encode(Request request);
-
-  Future<Response> decode(Response response, Type responseType);
-}
-
-@immutable
-class BodyConverterCodec extends Converter {
-  final Codec codec;
-
-  const BodyConverterCodec(this.codec) : super();
-
   Future<Request> encode(Request request) async {
-    if (request.body == null) {
-      return request;
+    if (request.body != null) {
+      return request.replace(body: await encodeEntity(request.body));
+    } else if (request.parts.isNotEmpty) {
+      final parts = new List(request.parts.length);
+      final futures = <Future>[];
+
+      for (int i = 0; i < parts.length; i++) {
+        final p = request.parts[i];
+        futures.add(encodeEntity(p.value).then((e) {
+          parts[i] = PartValue(p.name, e);
+        }));
+      }
+
+      await Future.wait(futures);
+      return request.replace(parts: parts);
     }
-    return request.replace(body: codec.encode(request.body));
+    return request;
   }
 
-  Future<Response> decode(Response response, Type responseType) async {
-    if (response.base.body == null) {
-      return response;
+  Future<Response> decode<T>(Response response) async {
+    if (response.body != null) {
+      return response.replace(body: await decodeEntity<T>(response.body));
     }
-    return response.replace(body: codec.decode(response.base.body));
+    return response;
   }
-}
 
-@immutable
-class JsonConverter extends BodyConverterCodec {
-  const JsonConverter() : super(json);
+  Future encodeEntity(entity);
+
+  Future decodeEntity<T>(entity);
 }
 
 @immutable

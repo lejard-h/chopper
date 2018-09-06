@@ -70,13 +70,45 @@ class Patch extends Method {
       : super(HttpMethod.Patch, url: url, headers: headers);
 }
 
-/* @immutable
+@immutable
 class FormUrlEncoded {
   const FormUrlEncoded();
+}
+
+@immutable
+class JsonEncoded {
+  const JsonEncoded();
 }
 
 @immutable
 class Field {
   final String name;
   const Field({this.name});
+}
+
+@immutable
+class Multipart {
+  const Multipart();
+}
+
+@immutable
+class Part {
+  final String name;
+  const Part(this.name);
+}
+
+/* class Parts {
+  const Parts();
 } */
+
+@immutable
+class FileField {
+  final String name;
+
+  const FileField({this.name});
+}
+
+const multipart = Multipart();
+const formUrlEncoded = FormUrlEncoded();
+const jsonEncoded = JsonEncoded();
+//const parts = Parts();

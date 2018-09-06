@@ -9,7 +9,7 @@ class Response<Body> {
   const Response(this.base, this.body);
 
   Response replace({http.Response base, Body body}) =>
-      new Response(base ?? this.base, body ?? this.body);
+      Response(base ?? this.base, body ?? this.body);
 
   int get statusCode => base.statusCode;
 
