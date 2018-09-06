@@ -29,19 +29,21 @@ if [ "$COVERALLS_TOKEN" ] ; then
     test/*_test.dart &
 
   # Run the coverage collector to generate the JSON coverage report.
-  pub global run coverage:collect_coverage \
+  pub run coverage:collect_coverage \
     --port=$OBS_PORT \
     --out=var/coverage.json \
     --wait-paused \
     --resume-isolates
 
   echo "Generating LCOV report..."
-  pub global run coverage:format_coverage \
+  pub run coverage:format_coverage \
     --lcov \
     --in=var/coverage.json \
     --out=var/lcov.info \
     --packages=.packages \
     --report-on=lib
+
+  coveralls-lcov var/lcov.info
 fi
 }
 
@@ -50,7 +52,7 @@ while (( "$#" )); do
   case $TASK in
   command) echo
     echo -e '\033[1mTASK: command\033[22m'
-    echo -e 'pub run build_runner test -- -p chrome --reporter expanded'
+    echo -e 'pub run build_runner test -- -p chrome'
     pub run build_runner test -- -p chrome || EXIT_CODE=$?
     pkg_coverage
     ;;
