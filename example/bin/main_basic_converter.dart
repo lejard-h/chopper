@@ -7,7 +7,7 @@ main() async {
   final chopper = new ChopperClient(
     baseUrl: "http://localhost:8000",
     converter: const ModelConverter(),
-    apis: [
+    services: [
       // the generated service
       new MyService()
     ],

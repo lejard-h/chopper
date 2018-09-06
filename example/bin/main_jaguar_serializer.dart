@@ -8,7 +8,7 @@ main() async {
   final chopper = new ChopperClient(
     baseUrl: "http://localhost:8000",
     converter: const JaguarConverter(),
-    apis: [
+    services: [
       // the generated service
       new MyService()
     ],

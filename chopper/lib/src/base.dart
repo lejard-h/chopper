@@ -24,7 +24,7 @@ class ChopperClient {
     http.Client client,
     Iterable interceptors: const [],
     Converter converter,
-    Iterable<ChopperService> apis: const [],
+    Iterable<ChopperService> services: const [],
     this.jsonApi: false,
     this.formUrlEncodedApi: false,
   })  : httpClient = client ?? http.Client(),
@@ -37,7 +37,7 @@ class ChopperClient {
     _requestInterceptors.addAll(interceptors.where(_isRequestInterceptor));
     _responseInterceptors.addAll(interceptors.where(_isResponseInterceptor));
 
-    apis.toSet().forEach((s) {
+    services.toSet().forEach((s) {
       s.client = this;
       _apis[s.runtimeType] = s;
     });

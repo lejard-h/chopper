@@ -5,15 +5,38 @@ import 'package:http/http.dart' as http;
 import 'test_service.dart';
 
 void main() {
-  group('Generated Service', () {
-    final buildClient = (http.Client httpClient) => ChopperClient(
+  group('Base', () {
+    final buildClient = ([http.Client httpClient]) => ChopperClient(
           baseUrl: "http://localhost:8000",
-          apis: [
+          services: [
             // the generated service
             HttpTestService(),
           ],
           client: httpClient,
         );
+
+    test('get service', () async {
+      final chopper = buildClient();
+      final service = chopper.service<HttpTestService>();
+
+      expect(service is HttpTestService, isTrue);
+    });
+
+    test('get service not found', () async {
+      final chopper = ChopperClient(
+        baseUrl: "http://localhost:8000",
+      );
+
+      try {
+        chopper.service<HttpTestService>();
+      } catch (e) {
+        expect(e is Exception, isTrue);
+        expect(
+          e.message,
+          equals("Service of type 'HttpTestService' not found."),
+        );
+      }
+    });
     test('GET', () async {
       final httpClient = MockClient((request) async {
         expect(

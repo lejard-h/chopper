@@ -4,7 +4,7 @@ import 'definition.dart';
 main() async {
   final chopper = ChopperClient(
     baseUrl: "http://localhost:8000",
-    apis: [
+    services: [
       // the generated service
       MyService()
     ],
