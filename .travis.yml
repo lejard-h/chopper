@@ -58,6 +58,7 @@ stages:
 branches:
   only:
     - master
+    - v2
 
 cache:
   directories:
