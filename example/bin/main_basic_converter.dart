@@ -16,7 +16,7 @@ main() async {
     jsonApi: true,
   );
 
-  final myService = chopper.service<MyService>();
+  final myService = chopper.service<MyService>(MyService);
 
   final response1 = await myService.getResource("1");
   print(response1.body); // undecoded String

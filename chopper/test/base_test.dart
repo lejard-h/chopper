@@ -17,7 +17,7 @@ void main() {
 
     test('get service', () async {
       final chopper = buildClient();
-      final service = chopper.service<HttpTestService>();
+      final service = chopper.service<HttpTestService>(HttpTestService);
 
       expect(service is HttpTestService, isTrue);
     });
@@ -28,7 +28,7 @@ void main() {
       );
 
       try {
-        chopper.service<HttpTestService>();
+        chopper.service<HttpTestService>(HttpTestService);
       } catch (e) {
         expect(e is Exception, isTrue);
         expect(
@@ -49,7 +49,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>();
+      final service = chopper.service<HttpTestService>(HttpTestService);
 
       final response = await service.getTest('1234');
 
@@ -72,7 +72,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>();
+      final service = chopper.service<HttpTestService>(HttpTestService);
 
       final response = await service.postTest('post body');
 
@@ -95,7 +95,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>();
+      final service = chopper.service<HttpTestService>(HttpTestService);
 
       final response = await service.putTest('1234', 'put body');
 
@@ -118,7 +118,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>();
+      final service = chopper.service<HttpTestService>(HttpTestService);
 
       final response = await service.patchTest('1234', 'patch body');
 
@@ -140,7 +140,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>();
+      final service = chopper.service<HttpTestService>(HttpTestService);
 
       final response = await service.deleteTest('1234');
 
@@ -148,6 +148,45 @@ void main() {
       expect(response.statusCode, equals(200));
 
       httpClient.close();
+    });
+
+    test('const headers', () async {
+      final client = MockClient((http.Request req) async {
+        expect(req.headers.containsKey('foo'), isTrue);
+        expect(req.headers['foo'], equals('bar'));
+        return http.Response('', 200);
+      });
+
+      final chopper = ChopperClient(
+        services: [HttpTestService()],
+        client: client,
+      );
+
+      await chopper
+          .service<HttpTestService>(HttpTestService)
+          .deleteTest('1234');
+
+      client.close();
+    });
+
+    test('runtime headers', () async {
+      final client = MockClient((http.Request req) async {
+        expect(req.headers.containsKey('test'), isTrue);
+        expect(req.headers['test'], equals('42'));
+        return http.Response('', 200);
+      });
+
+      final chopper = ChopperClient(
+        services: [HttpTestService()],
+        client: client,
+      );
+
+      await chopper.service<HttpTestService>(HttpTestService).getTest(
+            '1234',
+            dynamicHeader: '42',
+          );
+
+      client.close();
     });
   });
 }

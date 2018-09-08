@@ -11,7 +11,7 @@ main() async {
     jsonApi: true,
   );
 
-  final myService = chopper.service<MyService>();
+  final myService = chopper.service<MyService>(MyService);
 
   final response = await myService.getMapResource("1");
   print(response.body);

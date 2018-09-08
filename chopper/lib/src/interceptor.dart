@@ -1,5 +1,4 @@
 import 'dart:async';
-import "dart:convert";
 import "package:meta/meta.dart";
 
 import 'request.dart';
@@ -8,7 +7,7 @@ import 'utils.dart';
 
 @immutable
 abstract class ResponseInterceptor {
-  FutureOr<Response> onResponse(Response response);
+  FutureOr<Response> onResponse<Value>(Response<Value> response);
 
   const ResponseInterceptor();
 }
@@ -57,14 +56,15 @@ abstract class Converter {
 }
 
 @immutable
-class Headers implements RequestInterceptor {
+class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
-  const Headers(this.headers) : super();
+  const HeadersInterceptor(this.headers) : super();
 
   Future<Request> onRequest(Request request) async =>
       applyHeaders(request, headers);
 }
 
-typedef FutureOr<Response> ResponseInterceptorFunc(Response response);
+typedef FutureOr<Response> ResponseInterceptorFunc<Value>(
+    Response<Value> response);
 typedef FutureOr<Request> RequestInterceptorFunc(Request request);

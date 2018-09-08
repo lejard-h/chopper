@@ -34,7 +34,7 @@ void main() {
         client: requestClient,
       );
 
-      await chopper.service<HttpTestService>().getTest('1234');
+      await chopper.service<HttpTestService>(HttpTestService).getTest('1234');
     });
 
     test('RequestInterceptorFunc', () async {
@@ -46,7 +46,7 @@ void main() {
         client: requestClient,
       );
 
-      await chopper.service<HttpTestService>().getTest('1234');
+      await chopper.service<HttpTestService>(HttpTestService).getTest('1234');
     });
 
     test('ResponseInterceptor', () async {
@@ -56,7 +56,9 @@ void main() {
         client: responseClient,
       );
 
-      final res = await chopper.service<HttpTestService>().getTest('1234');
+      final res = await chopper
+          .service<HttpTestService>(HttpTestService)
+          .getTest('1234');
 
       expect(res.body is _Intercepted, isTrue);
     });
@@ -72,16 +74,37 @@ void main() {
         client: responseClient,
       );
 
-      final res = await chopper.service<HttpTestService>().getTest('1234');
+      final res = await chopper
+          .service<HttpTestService>(HttpTestService)
+          .getTest('1234');
 
       expect(res.body is _Intercepted, isTrue);
+    });
+
+    test('headers', () async {
+      final client = MockClient((http.Request req) async {
+        expect(req.headers.containsKey('foo'), isTrue);
+        expect(req.headers['foo'], equals('bar'));
+        return http.Response('', 200);
+      });
+
+      final chopper = ChopperClient(
+        interceptors: [
+          HeadersInterceptor({'foo': 'bar'})
+        ],
+        services: [HttpTestService()],
+        client: client,
+      );
+
+      await chopper.service<HttpTestService>(HttpTestService).getTest('1234');
     });
   });
 }
 
 class ResponseIntercept implements ResponseInterceptor {
   @override
-  FutureOr<Response> onResponse(Response response) => response.replace(
+  FutureOr<Response> onResponse<Value>(Response<Value> response) =>
+      response.replace<_Intercepted>(
         body: _Intercepted(response.body),
       );
 }

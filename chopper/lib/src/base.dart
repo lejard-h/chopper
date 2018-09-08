@@ -52,10 +52,10 @@ class ChopperClient {
   bool _isAnInterceptor(value) =>
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
-  T service<T extends ChopperService>() {
-    final s = _apis[T];
+  T service<T extends ChopperService>(Type type) {
+    final s = _apis[type];
     if (s == null) {
-      throw Exception("Service of type '$T' not found.");
+      throw Exception("Service of type '$type' not found.");
     }
     return s;
   }
@@ -75,15 +75,17 @@ class ChopperClient {
   }
 
   Future<Response<Value>> decodeResponse<Value>(
-    Response<String> response,
+    Response response,
   ) async {
-    final converted = await _converter?.decode<Value>(response) ?? response;
+    if (_converter == null) return response as Response<Value>;
+
+    final converted = await _converter.decode<Value>(response);
 
     if (converted == null) {
       throw Exception("No converter found for type $Value");
     }
 
-    return converted as Response<Value>;
+    return converted;
   }
 
   Future<Request> interceptRequest(Request request) async {
@@ -98,11 +100,11 @@ class ChopperClient {
     return req;
   }
 
-  Future<Response> interceptResponse(Response response) async {
-    Response res = response;
+  Future<Response> interceptResponse<Value>(Response<Value> response) async {
+    Response<Value> res = response;
     for (final i in _responseInterceptors) {
       if (i is ResponseInterceptor) {
-        res = await i.onResponse(res);
+        res = await i.onResponse<Value>(res);
       } else if (i is ResponseInterceptorFunc) {
         res = await i(res);
       }
@@ -110,7 +112,6 @@ class ChopperClient {
     return res;
   }
 
-  /* note(lejard_h) responseType have to be equal to Value generic type, dart does not support testing on generics yet */
   Future<Response<Value>> send<Value>(Request request) async {
     Request req = request;
 
@@ -120,13 +121,17 @@ class ChopperClient {
 
     req = await interceptRequest(req);
 
-    final stream = await httpClient.send(req.toHttpRequest(baseUrl));
+    final stream = await httpClient.send(await req.toHttpRequest(
+      baseUrl,
+      jsonApi: jsonApi,
+      formUrlEncodedApi: formUrlEncodedApi,
+    ));
 
     final response = await http.Response.fromStream(stream);
 
-    Response res = Response<String>(response, response.body);
+    Response res = Response(response, response.body);
 
-    if (jsonApi || req.json == true) {
+    if ((jsonApi == true && req.formUrlEncoded != true) || req.json == true) {
       res = _tryDecodeJson(res);
     }
 
@@ -134,7 +139,7 @@ class ChopperClient {
       res = await decodeResponse<Value>(res);
     }
 
-    res = await interceptResponse(res);
+    res = await interceptResponse<Value>(res);
 
     if (!res.isSuccessful) {
       throw res;

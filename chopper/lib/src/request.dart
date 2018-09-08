@@ -83,17 +83,28 @@ class Request {
     return uri;
   }
 
+  Map<String, String> _buildHeaders({
+    bool formUrlEncodedApi: false,
+    bool jsonApi: false,
+  }) {
+    final heads = Map<String, String>.from(headers);
+
+    if ((jsonApi == true && formUrlEncoded != true) || json == true) {
+      heads["Content-Type"] = 'application/json';
+    } else if (formUrlEncodedApi == true || formUrlEncoded == true) {
+      heads["Content-Type"] = 'application/x-www-form-urlencoded';
+    }
+
+    return heads;
+  }
+
   Future<http.BaseRequest> _toMultipartRequest(
     String method,
-    Uri uri, {
-    bool formUrlEncodedApi: false,
-  }) async {
+    Uri uri,
+    Map<String, String> headers,
+  ) async {
     final baseRequest = http.MultipartRequest(method, uri);
     baseRequest.headers.addAll(headers);
-
-    if (formUrlEncodedApi || formUrlEncoded == true) {
-      baseRequest.headers["Content-Type"] = 'application/x-www-form-urlencoded';
-    }
 
     for (final part in parts) {
       if (part is PartFile) {
@@ -113,42 +124,54 @@ class Request {
     return baseRequest;
   }
 
-  http.BaseRequest toHttpRequest(
-    String baseUrl, {
-    bool formUrlEncodedApi: false,
-  }) {
-    final uri = _buildUri(baseUrl);
+  Future<http.BaseRequest> _toBaseRequest(
+    String method,
+    Uri uri,
+    Map<String, String> headers,
+  ) async {
+    final baseRequest = http.Request(_getMethod(method), uri);
+    baseRequest.headers.addAll(headers);
 
-    var baseRequest;
-
-    if (multipart) {
-      baseRequest = _toMultipartRequest(
-        _getMethod(method),
-        uri,
-        formUrlEncodedApi: formUrlEncodedApi,
-      );
-    } else {
-      baseRequest = http.Request(_getMethod(method), uri);
-      baseRequest.headers.addAll(headers);
-
-      if (formUrlEncodedApi || formUrlEncoded == true) {
-        baseRequest.headers["Content-Type"] =
-            'application/x-www-form-urlencoded';
-      }
-      if (body != null) {
-        if (body is String) {
-          baseRequest.body = body as String;
-        } else if (body is List) {
-          baseRequest.bodyBytes = (body as List<int>).cast<int>();
-        } else if (body is Map) {
-          baseRequest.bodyFields = (body as Map).cast<String, String>();
-        } else {
-          throw ArgumentError('Invalid request body "${body}".');
-        }
+    if (body != null) {
+      if (body is String) {
+        baseRequest.body = body as String;
+      } else if (body is List) {
+        baseRequest.bodyBytes = (body as List<int>).cast<int>();
+      } else if (body is Map) {
+        baseRequest.bodyFields = (body as Map).cast<String, String>();
+      } else {
+        throw ArgumentError('Invalid request body "${body}".');
       }
     }
-
     return baseRequest;
+  }
+
+  /// [formUrlEncodedApi] override [this.formUrlEncoded]
+  /// [jsonApi] override [this.json]
+  Future<http.BaseRequest> toHttpRequest(
+    String baseUrl, {
+    bool formUrlEncodedApi: false,
+    bool jsonApi: false,
+  }) async {
+    final uri = _buildUri(baseUrl);
+    final met = _getMethod(method);
+    final heads = _buildHeaders(
+      jsonApi: jsonApi,
+      formUrlEncodedApi: formUrlEncodedApi,
+    );
+
+    if (multipart) {
+      return _toMultipartRequest(
+        met,
+        uri,
+        heads,
+      );
+    }
+    return _toBaseRequest(
+      met,
+      uri,
+      heads,
+    );
   }
 }
 
