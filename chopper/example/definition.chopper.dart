@@ -7,6 +7,10 @@ part of 'definition.dart';
 // **************************************************************************
 
 class MyService extends ChopperService implements MyServiceDefinition {
+  MyService();
+
+  MyService.withClient(ChopperClient client) : super.withClient(client);
+
   Future<Response> getResource(String id) {
     final url = '/resources/$id';
     final request = new Request('GET', url);

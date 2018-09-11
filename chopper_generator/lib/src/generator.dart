@@ -50,6 +50,18 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       c
         ..name = builderName
         ..extend = new Reference("${chopper.ChopperService}")
+        ..constructors.addAll([
+          Constructor(),
+          Constructor((builder) {
+            builder.name = 'withClient';
+            builder.requiredParameters.add(Parameter((pBuilder) {
+              pBuilder
+                ..name = 'client'
+                ..type = Reference('${chopper.ChopperClient}');
+            }));
+            builder.initializers.add(Code('super.withClient(client)'));
+          })
+        ])
         ..methods.addAll(element.methods.where((MethodElement m) {
           final methodAnnot = _getMethodAnnotation(m);
           return methodAnnot != null &&

@@ -84,14 +84,14 @@ packages:
       path: "../chopper"
       relative: true
     source: path
-    version: "0.1.1"
+    version: "1.0.0"
   chopper_generator:
     dependency: "direct dev"
     description:
       path: "../chopper_generator"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "1.0.0"
   cli_util:
     dependency: transitive
     description:

@@ -16,7 +16,7 @@ class JaguarConverter extends Converter {
   const JaguarConverter();
 
   @override
-  Future decodeEntity<T>(entity) async {
+  Future<T> decodeEntity<T>(entity) async {
     if (entity is Map) {
       return repository.getByType<T>(T).fromMap(entity);
     }
@@ -24,5 +24,5 @@ class JaguarConverter extends Converter {
   }
 
   @override
-  Future encodeEntity(entity) async => repository.to(entity);
+  Future encodeEntity<T>(entity) async => repository.to(entity);
 }

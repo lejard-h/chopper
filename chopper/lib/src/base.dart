@@ -159,4 +159,8 @@ class ChopperClient {
 
 abstract class ChopperService {
   ChopperClient client;
+
+  ChopperService();
+
+  ChopperService.withClient(this.client);
 }

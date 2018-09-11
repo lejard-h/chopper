@@ -50,7 +50,7 @@ abstract class Converter {
     return response;
   }
 
-  Future encodeEntity<T>( Tentity);
+  Future encodeEntity<T>(T entity);
 
   Future<T> decodeEntity<T>(entity);
 }

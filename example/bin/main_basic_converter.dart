@@ -34,15 +34,15 @@ class ModelConverter extends Converter {
   const ModelConverter();
 
   @override
-  decodeEntity<T>(val) async {
+  Future<T> decodeEntity<T>(val) async {
     if (T == Resource && val is Map) {
-      return new Resource.fromJson(val);
+      return new Resource.fromJson(val) as T;
     }
     return val;
   }
 
   @override
-  encodeEntity(val) async {
+  Future encodeEntity<T>(T val) async {
     if (val is Resource) {
       return val.toJson();
     }

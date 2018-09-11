@@ -8,6 +8,10 @@ part of 'test_service.dart';
 
 class HttpTestService extends ChopperService
     implements HttpTestServiceDefinition {
+  HttpTestService();
+
+  HttpTestService.withClient(ChopperClient client) : super.withClient(client);
+
   Future<Response> getTest(String id, {String dynamicHeader}) {
     final url = '/test/get/$id';
     final headers = {'test': dynamicHeader};

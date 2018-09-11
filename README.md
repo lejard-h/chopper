@@ -10,9 +10,12 @@ Chopper is an http client generator using source_gen and inspired from Retrofit.
 Add the generator to your dev dependencies
 
 ```yaml
+dependencies:
+  chopper: ^1.0.0
+
 dev_dependencies:
   build_runner: ^0.8.0
-  chopper_generator: ^0.0.1
+  chopper_generator: ^1.0.0
 ```
 
 ### Define and Generate your API
@@ -49,18 +52,20 @@ flutter packages pub run build_runner build
 Create a Chopper client and inject your generated api.
 
 ```dart
+import 'package:chopper/chopper.dart';
+
 final chopper = new ChopperClient(
     baseUrl: "http://localhost:8000",
     converter: const JsonConverter(),
     services: [
       // the generated service
-      new MyService()
+      MyService()
     ],
     interceptors: [
-      new Headers(const {"Content-Type": "application/json"}),
+      Headers(const {"Content-Type": "application/json"}),
     ]);
 
-final myService = chopper.service(MyService) as MyService;
+final myService = chopper.service<MyService>(MyService);
 
 final response = await myService.getMapResource("1");
 ```
