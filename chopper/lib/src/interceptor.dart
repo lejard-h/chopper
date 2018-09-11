@@ -23,9 +23,9 @@ abstract class RequestInterceptor {
 abstract class Converter {
   const Converter();
 
-  FutureOr<Request> encode(Request request) async {
+  FutureOr<Request> encode<T>(Request request) async {
     if (request.body != null) {
-      return request.replace(body: await encodeEntity(request.body));
+      return request.replace(body: await encodeEntity<T>(request.body));
     } else if (request.parts.isNotEmpty) {
       final parts = new List(request.parts.length);
       final futures = <Future>[];
@@ -45,14 +45,14 @@ abstract class Converter {
 
   FutureOr<Response> decode<T>(Response response) async {
     if (response.body != null) {
-      return response.replace(body: await decodeEntity<T>(response.body));
+      return response.replace<T>(body: await decodeEntity<T>(response.body));
     }
     return response;
   }
 
-  Future encodeEntity(entity);
+  Future encodeEntity<T>( Tentity);
 
-  Future decodeEntity<T>(entity);
+  Future<T> decodeEntity<T>(entity);
 }
 
 @immutable
