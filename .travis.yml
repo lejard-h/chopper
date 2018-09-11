@@ -1,15 +1,63 @@
 # Created with https://github.com/dart-lang/mono_repo
 language: dart
 
+# Custom configuration
+sudo: required
+addons:
+  chrome: stable
+
+install:
+  - gem install coveralls-lcov
+
 jobs:
   include:
+    - stage: analyzer_and_format
+      name: "SDK: stable - DIR: example - TASKS: dartfmt -n --set-exit-if-changed ."
+      script: ./tool/travis.sh dartfmt
+      env: PKG="example"
+      dart: stable
+    - stage: analyzer_and_format
+      name: "SDK: stable - DIR: example - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
+      script: ./tool/travis.sh dartanalyzer
+      env: PKG="example"
+      dart: stable
+    - stage: analyzer_and_format
+      name: "SDK: stable - DIR: chopper_generator - TASKS: dartfmt -n --set-exit-if-changed ."
+      script: ./tool/travis.sh dartfmt
+      env: PKG="chopper_generator"
+      dart: stable
+    - stage: analyzer_and_format
+      name: "SDK: stable - DIR: chopper_generator - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
+      script: ./tool/travis.sh dartanalyzer
+      env: PKG="chopper_generator"
+      dart: stable
+    - stage: analyzer_and_format
+      name: "SDK: stable - DIR: chopper - TASKS: dartfmt -n --set-exit-if-changed ."
+      script: ./tool/travis.sh dartfmt
+      env: PKG="chopper"
+      dart: stable
+    - stage: analyzer_and_format
+      name: "SDK: stable - DIR: chopper - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
+      script: ./tool/travis.sh dartanalyzer
+      env: PKG="chopper"
+      dart: stable
+    - stage: unit_test
+      name: "SDK: stable - DIR: chopper - TASKS: pub run build_runner test -- -p chrome"
+      script: ./tool/travis.sh command
+      env: PKG="chopper"
+      dart: stable
 
 stages:
+  - analyzer_and_format
+  - unit_test
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
-  only: [master]
+  only:
+    - master
+    - v2
 
 cache:
   directories:
-    - $HOME/.pub-cache
+    - "$HOME/.pub-cache"
+    - chopper/.dart_tool/build

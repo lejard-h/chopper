@@ -43,15 +43,15 @@ then run the generator
 Create a Chopper client and inject your generated api.
 
 ```dart
-final chopper = new ChopperClient(
+final chopper = ChopperClient(
     baseUrl: "http://localhost:8000",
     converter: const JsonConverter(),
     services: [
       // the generated service
-      new MyService()
+      MyService()
     ],
     interceptors: [
-      new Headers(const {"Content-Type": "application/json"}),
+      Headers(const {"Content-Type": "application/json"}),
     ]);
 
 final myService = chopper.service(MyService) as MyService;

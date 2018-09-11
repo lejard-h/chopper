@@ -84,7 +84,7 @@ packages:
       path: "../chopper"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.1.1"
   chopper_generator:
     dependency: "direct dev"
     description:
@@ -141,13 +141,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.3"
-  date_format:
-    dependency: transitive
-    description:
-      name: date_format
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
   fixnum:
     dependency: transitive
     description:
@@ -217,14 +210,14 @@ packages:
       name: jaguar_serializer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.14"
+    version: "2.2.0"
   jaguar_serializer_cli:
     dependency: "direct dev"
     description:
       name: jaguar_serializer_cli
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.24"
+    version: "2.2.1"
   json_annotation:
     dependency: transitive
     description:
@@ -329,7 +322,7 @@ packages:
       name: source_gen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.3+1"
+    version: "0.9.0+1"
   source_span:
     dependency: transitive
     description:
@@ -394,4 +387,4 @@ packages:
     source: hosted
     version: "2.1.15"
 sdks:
-  dart: ">=2.0.0-dev.65 <=2.0.0-dev.68.0"
+  dart: ">=2.0.0 <3.0.0"

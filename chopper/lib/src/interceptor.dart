@@ -1,5 +1,4 @@
 import 'dart:async';
-import "dart:convert";
 import "package:meta/meta.dart";
 
 import 'request.dart';
@@ -8,14 +7,14 @@ import 'utils.dart';
 
 @immutable
 abstract class ResponseInterceptor {
-  Future<Response> onResponse(Response reponse);
+  FutureOr<Response> onResponse<Value>(Response<Value> response);
 
   const ResponseInterceptor();
 }
 
 @immutable
 abstract class RequestInterceptor {
-  Future<Request> onRequest(Request request);
+  FutureOr<Request> onRequest(Request request);
 
   const RequestInterceptor();
 }
@@ -24,46 +23,48 @@ abstract class RequestInterceptor {
 abstract class Converter {
   const Converter();
 
-  Future<Request> encode(Request request);
+  FutureOr<Request> encode<T>(Request request) async {
+    if (request.body != null) {
+      return request.replace(body: await encodeEntity<T>(request.body));
+    } else if (request.parts.isNotEmpty) {
+      final parts = new List(request.parts.length);
+      final futures = <Future>[];
 
-  Future<Response> decode(Response response, Type responseType);
-}
+      for (int i = 0; i < parts.length; i++) {
+        final p = request.parts[i];
+        futures.add(encodeEntity(p.value).then((e) {
+          parts[i] = PartValue(p.name, e);
+        }));
+      }
 
-@immutable
-class BodyConverterCodec extends Converter {
-  final Codec codec;
-
-  const BodyConverterCodec(this.codec) : super();
-
-  Future<Request> encode(Request request) async {
-    if (request.body == null) {
-      return request;
+      await Future.wait(futures);
+      return request.replace(parts: parts);
     }
-    return request.replace(body: codec.encode(request.body));
+    return request;
   }
 
-  Future<Response> decode(Response response, Type responseType) async {
-    if (response.base.body == null) {
-      return response;
+  FutureOr<Response> decode<T>(Response response) async {
+    if (response.body != null) {
+      return response.replace<T>(body: await decodeEntity<T>(response.body));
     }
-    return response.replace(body: codec.decode(response.base.body));
+    return response;
   }
+
+  Future encodeEntity<T>( Tentity);
+
+  Future<T> decodeEntity<T>(entity);
 }
 
 @immutable
-class JsonConverter extends BodyConverterCodec {
-  const JsonConverter() : super(json);
-}
-
-@immutable
-class Headers implements RequestInterceptor {
+class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
-  const Headers(this.headers) : super();
+  const HeadersInterceptor(this.headers) : super();
 
   Future<Request> onRequest(Request request) async =>
       applyHeaders(request, headers);
 }
 
-typedef Future<Response> ResponseInterceptorFunc(Response response);
-typedef Future<Request> RequestInterceptorFunc(Request request);
+typedef FutureOr<Response> ResponseInterceptorFunc<Value>(
+    Response<Value> response);
+typedef FutureOr<Request> RequestInterceptorFunc(Request request);

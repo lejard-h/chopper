@@ -5,19 +5,18 @@ import 'definition/model.dart';
 
 main() async {
   final chopper = new ChopperClient(
-      baseUrl: "http://localhost:8000",
-      converter: const ModelConverter(),
-      apis: [
-        // the generated service
-        new MyService()
-      ],
-      /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
-      interceptors: [
-        new Headers(const {"Content-Type": "application/json"}),
-        authHeader
-      ]);
+    baseUrl: "http://localhost:8000",
+    converter: const ModelConverter(),
+    services: [
+      // the generated service
+      new MyService()
+    ],
+    /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
+    interceptors: [authHeader],
+    jsonApi: true,
+  );
 
-  final myService = chopper.service(MyService) as MyService;
+  final myService = chopper.service<MyService>(MyService);
 
   final response1 = await myService.getResource("1");
   print(response1.body); // undecoded String
@@ -31,26 +30,22 @@ main() async {
 Future<Request> authHeader(Request request) async =>
     applyHeader(request, "Authorization", "42");
 
-
-class ModelConverter extends JsonConverter {
+class ModelConverter extends Converter {
   const ModelConverter();
 
   @override
-  Future<Response> decode(Response response, Type responseType) async {
-    final d = await super.decode(response, responseType);
-    var body = d.body;
-    if (responseType == Resource) {
-      body = new Resource.fromJson(body as Map<String, dynamic>);
+  decodeEntity<T>(val) async {
+    if (T == Resource && val is Map) {
+      return new Resource.fromJson(val);
     }
-    return response.replace(body: body);
+    return val;
   }
 
   @override
-  Future<Request> encode(Request request) {
-    var body = request.body;
-    if (request.body is Resource) {
-      body = (request.body as Resource).toJson();
+  encodeEntity(val) async {
+    if (val is Resource) {
+      return val.toJson();
     }
-    return super.encode(request.replace(body: body));
+    return val;
   }
 }

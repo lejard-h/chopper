@@ -6,8 +6,33 @@ part "definition.chopper.dart";
 @ChopperApi("MyService", baseUrl: "/resources")
 abstract class MyServiceDefinition {
   @Get(url: "/{id}")
-  Future<Response> getResource(@Path() String id);
+  Future<Response> getResource(
+    @Path() String id,
+  );
 
   @Get(url: "/", headers: const {"foo": "bar"})
-  Future<Response<Map>> getMapResource(@Query() String id);
+  Future<Response<Map>> getMapResource(
+    @Query() String id,
+  );
+
+  @Post(url: '/')
+  @formUrlEncoded
+  Future<Response> postResourceUrlEncoded(
+    @Field(name: 'a') String toto,
+    @Field() String b,
+  );
+
+  @Post(url: '/multi')
+  @multipart
+  Future<Response> postResources(
+    @Part('1') Map a,
+    @Part('2') Map b,
+    @Part('3') String c,
+  );
+
+  @Post(url: '/file')
+  @multipart
+  Future<Response> postFile(
+    @FileField(name: 'file') List<int> bytes,
+  );
 }

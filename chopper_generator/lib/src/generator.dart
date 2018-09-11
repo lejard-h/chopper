@@ -16,6 +16,8 @@ const _urlVar = "url";
 const _parametersVar = "params";
 const _headersVar = "headers";
 const _requestVar = "request";
+const _bodyVar = 'body';
+const _partsVar = 'parts';
 
 class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   @override
@@ -42,9 +44,10 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final friendlyName = element.name;
     final builderName =
         annotation?.peek("name")?.stringValue ?? "${friendlyName}Impl";
+    final baseUrl = annotation?.peek('baseUrl')?.stringValue ?? '';
 
     final classBuilder = new Class((c) {
-      return c
+      c
         ..name = builderName
         ..extend = new Reference("${chopper.ChopperService}")
         ..methods.addAll(element.methods.where((MethodElement m) {
@@ -54,11 +57,19 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
               m.returnType.isDartAsyncFuture;
         }).map((MethodElement m) {
           final method = _getMethodAnnotation(m);
+          final multipart = _hasAnnotation(m, chopper.Multipart);
+          final formUrlEncoded = _hasAnnotation(m, chopper.FormUrlEncoded);
+          final hasJson = _hasAnnotation(m, chopper.JsonEncoded);
+
           final body = _getAnnotation(m, chopper.Body);
           final paths = _getAnnotations(m, chopper.Path);
           final queries = _getAnnotations(m, chopper.Query);
+          final fields = _getAnnotations(m, chopper.Field);
+          final parts = _getAnnotations(m, chopper.Part);
+          final fileFields = _getAnnotations(m, chopper.FileField);
+
           final headers = _generateHeaders(m, method);
-          final url = _generateUrl(method, paths);
+          final url = _generateUrl(method, paths, baseUrl);
           final responseType = _getResponseType(m.returnType);
 
           return new Method((b) {
@@ -88,23 +99,49 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
             ];
 
             if (queries.isNotEmpty) {
-              blocks.add(_genereteQueryParams(queries));
+              blocks.add(
+                  _genereteMap(queries).assignFinal(_parametersVar).statement);
             }
 
             if (headers != null) {
               blocks.add(headers);
             }
 
-            blocks.add(_generateRequest(method, body,
-                    useQueries: queries.isNotEmpty, useHeaders: headers != null)
-                .assignFinal(_requestVar)
-                .statement);
+            final hasBody = body.isNotEmpty ||
+                (formUrlEncoded == true && fields.isNotEmpty);
+            if (hasBody) {
+              if (body.isNotEmpty) {
+                blocks.add(
+                  refer(body.keys.first).assignFinal(_bodyVar).statement,
+                );
+              } else {
+                blocks.add(
+                  _genereteMap(fields).assignFinal(_bodyVar).statement,
+                );
+              }
+            }
+
+            final hasParts = multipart == true &&
+                (parts.isNotEmpty || fileFields.isNotEmpty);
+            if (hasParts) {
+              blocks.add(_genereteList(parts, fileFields)
+                  .assignFinal(_partsVar)
+                  .statement);
+            }
+
+            blocks.add(_generateRequest(
+              method,
+              hasBody: hasBody,
+              useQueries: queries.isNotEmpty,
+              useHeaders: headers != null,
+              hasParts: hasParts,
+              hasFormUrlEncoded: formUrlEncoded,
+              hasJson: hasJson,
+            ).assignFinal(_requestVar).statement);
 
             final namedArguments = <String, Expression>{};
             final typeArguments = <Reference>[];
             if (responseType != null) {
-              namedArguments["responseType"] =
-                  refer(responseType.displayName).expression;
               typeArguments.add(refer(responseType.displayName));
             }
 
@@ -114,8 +151,6 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 .statement);
 
             b.body = new Block.of(blocks);
-
-            return b;
           });
         }))
         ..implements.add(new Reference(friendlyName));
@@ -141,12 +176,13 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     return {name: new ConstantReader(annot)};
   }
 
-  Map<String, ConstantReader> _getAnnotations(MethodElement m, Type type) {
-    var annot = <String, ConstantReader>{};
+  Map<ParameterElement, ConstantReader> _getAnnotations(
+      MethodElement m, Type type) {
+    var annot = <ParameterElement, ConstantReader>{};
     for (final p in m.parameters) {
       final a = _typeChecker(type).firstAnnotationOf(p);
       if (a != null) {
-        annot[p.displayName] = new ConstantReader(a);
+        annot[p] = new ConstantReader(a);
       }
     }
     return annot;
@@ -161,6 +197,13 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       if (annot != null) return new ConstantReader(annot);
     }
     return null;
+  }
+
+  bool _hasAnnotation(MethodElement method, Type type) {
+    final annot =
+        _typeChecker(type).firstAnnotationOf(method, throwOnUnresolved: false);
+
+    return annot != null;
   }
 
   final _methodsAnnotations = const [
@@ -192,18 +235,27 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }
 
   Expression _generateUrl(
-      ConstantReader method, Map<String, ConstantReader> paths) {
+    ConstantReader method,
+    Map<ParameterElement, ConstantReader> paths,
+    String baseUrl,
+  ) {
     String value = "${method.read("url").stringValue}";
-    paths.forEach((String key, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? key;
-      value = value.replaceFirst("{$name}", "\$$key");
+    paths.forEach((p, ConstantReader r) {
+      final name = r.peek("name")?.stringValue ?? p.displayName;
+      value = value.replaceFirst("{$name}", "\$${p.displayName}");
     });
-    return literal('$value');
+    return literal('$baseUrl$value');
   }
 
   Expression _generateRequest(
-      ConstantReader method, Map<String, ConstantReader> body,
-      {bool useQueries: false, bool useHeaders: false}) {
+    ConstantReader method, {
+    bool hasBody: false,
+    bool hasParts: false,
+    bool useQueries: false,
+    bool useHeaders: false,
+    bool hasFormUrlEncoded: false,
+    bool hasJson: false,
+  }) {
     final params = <Expression>[
       literal(method.peek("method").stringValue),
       refer(_urlVar)
@@ -211,8 +263,19 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
     final namedParams = <String, Expression>{};
 
-    if (body.isNotEmpty) {
-      namedParams["body"] = refer(body.keys.first);
+    if (hasBody) {
+      namedParams[_bodyVar] = refer(_bodyVar);
+    }
+
+    if (hasParts) {
+      namedParams[_partsVar] = refer(_partsVar);
+      namedParams['multipart'] = literalBool(true);
+    }
+
+    if (hasJson) {
+      namedParams['json'] = literalBool(true);
+    } else if (hasFormUrlEncoded) {
+      namedParams['formUrlEncoded'] = literal(true);
     }
 
     if (useQueries) {
@@ -226,14 +289,40 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     return refer("Request").newInstance(params, namedParams);
   }
 
-  Code _genereteQueryParams(Map<String, ConstantReader> queries) {
+  Expression _genereteMap(Map<ParameterElement, ConstantReader> queries) {
     final map = {};
-    queries.forEach((String key, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? key;
-      map[literal(name)] = refer(key);
+    queries.forEach((p, ConstantReader r) {
+      final name = r.peek("name")?.stringValue ?? p.displayName;
+      map[literal(name)] = refer(p.displayName);
     });
 
-    return literalMap(map).assignFinal(_parametersVar).statement;
+    return literalMap(map);
+  }
+
+  Expression _genereteList(
+    Map<ParameterElement, ConstantReader> parts,
+    Map<ParameterElement, ConstantReader> fileFields,
+  ) {
+    final list = [];
+    parts.forEach((p, ConstantReader r) {
+      final name = r.peek("name")?.stringValue ?? p.displayName;
+      final params = <Expression>[
+        literal(name),
+        refer(p.displayName),
+      ];
+
+      list.add(refer('PartValue<${p.type.displayName}>').newInstance(params));
+    });
+    fileFields.forEach((p, ConstantReader r) {
+      final name = r.peek("name")?.stringValue ?? p.displayName;
+      final params = <Expression>[
+        literal(name),
+        refer(p.displayName),
+      ];
+
+      list.add(refer('PartFile<${p.type.displayName}>').newInstance(params));
+    });
+    return literalList(list);
   }
 
   Code _generateHeaders(MethodElement m, ConstantReader method) {
@@ -241,9 +330,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
     final annotations = _getAnnotations(m, chopper.Header);
 
-    annotations.forEach((String key, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? key;
-      map[literal(name)] = refer(key);
+    annotations.forEach((p, ConstantReader r) {
+      final name = r.peek("name")?.stringValue ?? p.displayName;
+      map[literal(name)] = refer(p.displayName);
     });
 
     final methodAnnotations = method.peek("headers").mapValue;
@@ -262,6 +351,6 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
 Builder chopperGeneratorFactoryBuilder({String header}) => new PartBuilder(
       [new ChopperGenerator()],
+      ".chopper.dart",
       header: header,
-      generatedExtension: ".chopper.dart",
     );

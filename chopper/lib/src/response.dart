@@ -8,8 +8,8 @@ class Response<Body> {
 
   const Response(this.base, this.body);
 
-  Response replace({http.Response base, Body body}) =>
-      new Response(base ?? this.base, body ?? this.body);
+  Response<T> replace<T>({http.Response base, T body}) =>
+      Response(base ?? this.base, body ?? this.body);
 
   int get statusCode => base.statusCode;
 

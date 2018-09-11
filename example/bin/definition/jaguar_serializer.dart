@@ -10,18 +10,19 @@ part "jaguar_serializer.jser.dart";
 class ResourceSerializer extends Serializer<Resource>
     with _$ResourceSerializer {}
 
-final repository = new JsonRepo(serializers: [new ResourceSerializer()]);
+final repository = new SerializerRepo(serializers: [new ResourceSerializer()]);
 
 class JaguarConverter extends Converter {
   const JaguarConverter();
 
   @override
-  Future<Response> decode(Response response, Type responseType) async =>
-      response.replace(
-        body: repository.getByType(responseType).fromMap(response.body),
-      );
+  Future decodeEntity<T>(entity) async {
+    if (entity is Map) {
+      return repository.getByType<T>(T).fromMap(entity);
+    }
+    return entity;
+  }
 
   @override
-  Future<Request> encode(Request request) async =>
-      request.replace(body: repository.to(request.body));
+  Future encodeEntity(entity) async => repository.to(entity);
 }
