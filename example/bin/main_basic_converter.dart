@@ -6,7 +6,7 @@ import 'definition/model.dart';
 main() async {
   final chopper = new ChopperClient(
     baseUrl: "http://localhost:8000",
-    converter: const ModelConverter(),
+    converter: ModelConverter(),
     services: [
       // the generated service
       new MyService()
@@ -31,8 +31,6 @@ Future<Request> authHeader(Request request) async =>
     applyHeader(request, "Authorization", "42");
 
 class ModelConverter extends Converter {
-  const ModelConverter();
-
   @override
   Future<T> decodeEntity<T>(val) async {
     if (T == Resource && val is Map) {

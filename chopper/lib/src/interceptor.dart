@@ -8,21 +8,15 @@ import 'utils.dart';
 @immutable
 abstract class ResponseInterceptor {
   FutureOr<Response> onResponse<Value>(Response<Value> response);
-
-  const ResponseInterceptor();
 }
 
 @immutable
 abstract class RequestInterceptor {
   FutureOr<Request> onRequest(Request request);
-
-  const RequestInterceptor();
 }
 
 @immutable
 abstract class Converter {
-  const Converter();
-
   FutureOr<Request> encode<T>(Request request) async {
     if (request.body != null) {
       return request.replace(body: await encodeEntity<T>(request.body));
@@ -50,16 +44,18 @@ abstract class Converter {
     return response;
   }
 
+  @protected
   Future encodeEntity<T>(T entity);
 
-  Future<T> decodeEntity<T>(entity);
+  @protected
+  Future decodeEntity<T>(entity);
 }
 
 @immutable
 class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
-  const HeadersInterceptor(this.headers) : super();
+  const HeadersInterceptor(this.headers);
 
   Future<Request> onRequest(Request request) async =>
       applyHeaders(request, headers);

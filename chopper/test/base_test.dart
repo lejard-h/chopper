@@ -188,5 +188,68 @@ void main() {
 
       client.close();
     });
+
+    test('withClient constructor', () async {
+      final client = MockClient((http.Request req) async {
+        expect(
+          req.url.toString(),
+          equals('http://localhost:8000/test/get/1234'),
+        );
+        return http.Response('', 200);
+      });
+
+      final chopper = ChopperClient(
+        baseUrl: 'http://localhost:8000',
+        client: client,
+      );
+
+      final service = HttpTestService.withClient(chopper);
+
+      await service.getTest('1234');
+
+      client.close();
+    });
+
+    test('applyHeader', () {
+      final req1 = applyHeader(Request('GET', '/'), 'foo', 'bar');
+
+      expect(req1.headers, equals({'foo': 'bar'}));
+
+      final req2 = applyHeader(
+        Request('GET', '/', headers: {'foo': 'bar'}),
+        'bar',
+        'foo',
+      );
+
+      expect(req2.headers, equals({'foo': 'bar', 'bar': 'foo'}));
+
+      final req3 = applyHeader(
+        Request('GET', '/', headers: {'foo': 'bar'}),
+        'foo',
+        'foo',
+      );
+
+      expect(req3.headers, equals({'foo': 'foo'}));
+    });
+
+    test('applyHeaders', () {
+      final req1 = applyHeaders(Request('GET', '/'), {'foo': 'bar'});
+
+      expect(req1.headers, equals({'foo': 'bar'}));
+
+      final req2 = applyHeaders(
+        Request('GET', '/', headers: {'foo': 'bar'}),
+        {'bar': 'foo'},
+      );
+
+      expect(req2.headers, equals({'foo': 'bar', 'bar': 'foo'}));
+
+      final req3 = applyHeaders(
+        Request('GET', '/', headers: {'foo': 'bar'}),
+        {'foo': 'foo'},
+      );
+
+      expect(req3.headers, equals({'foo': 'foo'}));
+    });
   });
 }
