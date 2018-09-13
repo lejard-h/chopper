@@ -26,12 +26,7 @@ if [ "$COVERALLS_TOKEN" ] ; then
   dart \
     --enable-vm-service=$OBS_PORT \
     --pause-isolates-on-exit \
-    test/base_test.dart \
-    test/converter_test.dart \
-    test/form_test.dart \
-    test/json_test.dart \
-    test/multipart_test.dart \
-    test/interceptors_test.dart &
+    test/all.dart &
 
   # Run the coverage collector to generate the JSON coverage report.
   pub run coverage:collect_coverage \
