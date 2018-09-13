@@ -1,5 +1,6 @@
 import "dart:async";
 import 'dart:convert' hide Converter;
+import 'package:chopper/src/interceptor.dart';
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
 
@@ -12,6 +13,7 @@ class ChopperClient {
   final String baseUrl;
   final http.Client httpClient;
   final Converter _converter;
+  final Converter _errorConverter;
   final Map<Type, ChopperService> _apis = {};
   final _requestInterceptors = [];
   final _responseInterceptors = [];
@@ -19,16 +21,22 @@ class ChopperClient {
   final bool jsonApi;
   final bool formUrlEncodedApi;
 
+  final _requestController = StreamController<Request>.broadcast();
+  final _responseController = StreamController<Response>.broadcast();
+  final _responseErrorController = StreamController<Response>.broadcast();
+
   ChopperClient({
     this.baseUrl: "",
     http.Client client,
     Iterable interceptors: const [],
     Converter converter,
+    Converter errorConverter,
     Iterable<ChopperService> services: const [],
     this.jsonApi: false,
     this.formUrlEncodedApi: false,
   })  : httpClient = client ?? http.Client(),
-        _converter = converter {
+        _converter = converter,
+        _errorConverter = errorConverter {
     if (interceptors.every(_isAnInterceptor) == false) {
       throw Exception(
           "Unsupported type for interceptors, it only support the following types: RequestInterceptor, RequestInterceptorFunc, ResponseInterceptor, ResponseInterceptorFunc");
@@ -76,10 +84,11 @@ class ChopperClient {
 
   Future<Response<Value>> decodeResponse<Value>(
     Response response,
+    Converter converter,
   ) async {
-    if (_converter == null) return response as Response<Value>;
+    if (converter == null) return response as Response<Value>;
 
-    final converted = await _converter.decode<Value>(response);
+    final converted = await converter.decode<Value>(response);
 
     if (converted == null) {
       throw Exception("No converter found for type $Value");
@@ -121,6 +130,7 @@ class ChopperClient {
 
     req = await interceptRequest(req);
 
+    _requestController.add(req);
     final stream = await httpClient.send(await req.toHttpRequest(
       baseUrl,
       jsonApi: jsonApi,
@@ -136,14 +146,18 @@ class ChopperClient {
     }
 
     if (res.isSuccessful) {
-      res = await decodeResponse<Value>(res);
+      res = await decodeResponse<Value>(res, _converter);
+    } else {
+      res = await decodeResponse(res, _errorConverter);
     }
 
     res = await interceptResponse<Value>(res);
 
     if (!res.isSuccessful) {
+      _responseErrorController.add(res);
       throw res;
     }
+    _responseController.add(res);
 
     return res;
   }
@@ -155,6 +169,18 @@ class ChopperClient {
       return res;
     }
   }
+
+  void close() {
+    _requestController.close();
+    _responseController.close();
+    _responseErrorController.close();
+  }
+
+  Stream<Request> get onRequest => _requestController.stream;
+
+  Stream<Response> get onResponse => _responseController.stream;
+
+  Stream<Response> get onError => _responseErrorController.stream;
 }
 
 abstract class ChopperService {

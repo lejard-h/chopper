@@ -15,4 +15,6 @@ main() async {
 
   final response = await myService.getMapResource("1");
   print(response.body);
+
+  chopper.close();
 }

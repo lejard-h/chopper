@@ -5,16 +5,15 @@ import 'package:http/http.dart' as http;
 import 'test_service.dart';
 
 void main() {
+  final buildClient = ([http.Client httpClient]) => ChopperClient(
+        baseUrl: "http://localhost:8000",
+        services: [
+          // the generated service
+          HttpTestService(),
+        ],
+        client: httpClient,
+      );
   group('Base', () {
-    final buildClient = ([http.Client httpClient]) => ChopperClient(
-          baseUrl: "http://localhost:8000",
-          services: [
-            // the generated service
-            HttpTestService(),
-          ],
-          client: httpClient,
-        );
-
     test('get service', () async {
       final chopper = buildClient();
       final service = chopper.service<HttpTestService>(HttpTestService);
@@ -250,6 +249,71 @@ void main() {
       );
 
       expect(req3.headers, equals({'foo': 'foo'}));
+    });
+  });
+
+  group('Streams', () {
+    test('request', () async {
+      final client = MockClient((http.Request req) async {
+        return http.Response('ok', 200);
+      });
+
+      final chopper = buildClient(client);
+
+      chopper.onRequest.listen((request) {
+        expect(
+          request.url.toString(),
+          equals('/test/get/1234'),
+        );
+      });
+
+      final service = HttpTestService.withClient(chopper);
+      await service.getTest('1234');
+
+      client.close();
+      chopper.close();
+    });
+
+    test('response', () async {
+      final client = MockClient((http.Request req) async {
+        return http.Response('ok', 200);
+      });
+
+      final chopper = buildClient(client);
+
+      chopper.onResponse.listen((response) {
+        expect(response.statusCode, equals(200));
+        expect(response.body, equals('ok'));
+      });
+
+      final service = HttpTestService.withClient(chopper);
+      await service.getTest('1234');
+
+      client.close();
+      chopper.close();
+    });
+
+    test('error', () async {
+      final client = MockClient((http.Request req) async {
+        return http.Response('error', 400);
+      });
+
+      final chopper = buildClient(client);
+
+      chopper.onError.listen((response) {
+        expect(response.statusCode, equals(400));
+        expect(response.body, equals('error'));
+      });
+
+      final service = HttpTestService.withClient(chopper);
+      try {
+        await service.getTest('1234');
+      } catch (e) {
+        expect(e is Response, isTrue);
+      }
+
+      client.close();
+      chopper.close();
     });
   });
 }

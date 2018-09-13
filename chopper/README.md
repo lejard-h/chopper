@@ -57,6 +57,8 @@ final chopper = ChopperClient(
 final myService = chopper.service(MyService) as MyService;
 
 final response = await myService.getMapResource("1");
+
+chopper.close();
 ```
 
 ## [More example](https://github.com/lejard-h/chopper/tree/master/example)

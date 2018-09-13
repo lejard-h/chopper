@@ -7,7 +7,7 @@ import 'definition/jaguar_serializer.dart';
 main() async {
   final chopper = new ChopperClient(
     baseUrl: "http://localhost:8000",
-    converter: const JaguarConverter(),
+    converter: JaguarConverter(),
     services: [
       // the generated service
       new MyService()

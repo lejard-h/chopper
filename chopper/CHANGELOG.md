@@ -1,11 +1,13 @@
 # Changelog
 
-## 0.2.0
+## 1.0.0
 
 - Multipart request
 - form url encoded
 - add jsonAPI and formUrlEncodedApi boolean to ChopperClient
-- json and formUrlEncoding is now builtin
+- json and formUrlEncoding are now builtin
+- `onError`, `onResponse`, `onRequest` stream
+- error converter
 
 ## 0.1.1
 

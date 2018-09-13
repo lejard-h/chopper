@@ -13,8 +13,6 @@ class ResourceSerializer extends Serializer<Resource>
 final repository = new SerializerRepo(serializers: [new ResourceSerializer()]);
 
 class JaguarConverter extends Converter {
-  const JaguarConverter();
-
   @override
   Future<T> decodeEntity<T>(entity) async {
     if (entity is Map) {
