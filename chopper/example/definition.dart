@@ -18,7 +18,7 @@ abstract class MyServiceDefinition {
   @Post(url: '/')
   @formUrlEncoded
   Future<Response> postResourceUrlEncoded(
-    @Field(name: 'a') String toto,
+    @Field('a') String toto,
     @Field() String b,
   );
 
@@ -33,6 +33,6 @@ abstract class MyServiceDefinition {
   @Post(url: '/file')
   @multipart
   Future<Response> postFile(
-    @FileField(name: 'file') List<int> bytes,
+    @FileField('file') List<int> bytes,
   );
 }

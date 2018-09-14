@@ -70,42 +70,64 @@ class Patch extends Method {
       : super(HttpMethod.Patch, url: url, headers: headers);
 }
 
-@immutable
-class FormUrlEncoded {
-  const FormUrlEncoded();
-}
-
+/// Use to encode a single methode
+/// with application/json
+///     @Get(url: '/')
+///     @JsonEncoded()
+///     Future<Response> fetch();
 @immutable
 class JsonEncoded {
   const JsonEncoded();
 }
 
+/// Use to encode a single methode
+/// with application/x-www-form-urlencoded
+///
+///     @Get(url: '/')
+///     @FormUrlEncoded()
+///     Future<Response> fetch();
+@immutable
+class FormUrlEncoded {
+  const FormUrlEncoded();
+}
+
+/// Define field for [FormUrlEncoded] method
+///
+///     @Post(url: '/')
+///     @FormUrlEncoded()
+///     Future<Response> create(@Field('id') String name);
 @immutable
 class Field {
   final String name;
-  const Field({this.name});
+  const Field([this.name]);
 }
 
+/// define a mutlipart request
+///
+///     @Post(url: '/')
+///     @Multipart()
+///     Future<Response> create(@Part('id') String name);
 @immutable
 class Multipart {
   const Multipart();
 }
 
+/// Use to define part of [Multipart] request
 @immutable
 class Part {
   final String name;
-  const Part(this.name);
+  const Part([this.name]);
 }
 
-/* class Parts {
-  const Parts();
-} */
-
+/// Use to define a file filed for [Multipart] request
+///     @Post(url: 'file')
+///     @multipart
+///     Future<Response> postFile(@FileField('file') List<int> bytes);
 @immutable
 class FileField {
   final String name;
 
-  const FileField({this.name});
+  const FileField([this.name]);
 }
 
 const multipart = Multipart();

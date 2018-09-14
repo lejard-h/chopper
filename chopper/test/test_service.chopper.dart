@@ -67,4 +67,18 @@ class HttpTestService extends ChopperService
     final request = new Request('POST', url, body: body, formUrlEncoded: true);
     return client.send(request);
   }
+
+  Future<Response> postResources(Map a, Map b) {
+    final url = '/test/multi';
+    final parts = [new PartValue<Map>('1', a), new PartValue<Map>('2', b)];
+    final request = new Request('POST', url, parts: parts, multipart: true);
+    return client.send(request);
+  }
+
+  Future<Response> postFile(List<int> bytes) {
+    final url = '/test/file';
+    final parts = [new PartFile<List<int>>('file', bytes)];
+    final request = new Request('POST', url, parts: parts, multipart: true);
+    return client.send(request);
+  }
 }

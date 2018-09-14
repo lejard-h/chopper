@@ -192,6 +192,11 @@ class PartValue<T> {
     this.name,
     this.value,
   );
+
+  PartValue<T> replace<T>({String name, T value}) => PartValue<T>(
+        name ?? this.name,
+        value ?? this.value,
+      );
 }
 
 @immutable

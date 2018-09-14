@@ -256,6 +256,10 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       final name = r.peek("name")?.stringValue ?? p.displayName;
       value = value.replaceFirst("{$name}", "\$${p.displayName}");
     });
+    if (!baseUrl.endsWith('/') && !value.startsWith('/')) {
+      return literal('$baseUrl/$value');
+    }
+
     return literal('$baseUrl$value');
   }
 

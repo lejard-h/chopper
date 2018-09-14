@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper)
 [![Coverage Status](https://coveralls.io/repos/github/lejard-h/chopper/badge.svg?branch=master)](https://coveralls.io/github/lejard-h/chopper?branch=master)
 
-Chopper is an http client generator using source_gen and inspired from Retrofit.
+Chopper is an http client generator using source_gen and inspired by Retrofit.
 
 ## Usage
 
@@ -30,11 +30,25 @@ part "my_service.chopper.dart";
 
 @ChopperApi("MyService", baseUrl: "/resources")
 abstract class MyServiceDefinition {
-  @Get(url: "/{id}")
+  @Get(url: "{id}")
   Future<Response> getResource(@Path() String id);
 
-  @Get(url: "/", headers: const {"foo": "bar"})
+  @Get(headers: const {"foo": "bar"})
   Future<Response<Map>> getMapResource(@Query() String id);
+
+  @Post(url: 'multi')
+  @multipart
+  Future<Response> postResources(
+    @Part('1') Map a,
+    @Part('2') Map b,
+    @Part('3') String c,
+  );
+
+  @Post(url: 'file')
+  @multipart
+  Future<Response> postFile(
+    @FileField('file') List<int> bytes,
+  );
 }
 ```
 
@@ -56,18 +70,30 @@ import 'package:chopper/chopper.dart';
 
 final chopper = new ChopperClient(
     baseUrl: "http://localhost:8000",
-    converter: const JsonConverter(),
     services: [
       // the generated service
       MyService()
     ],
-    interceptors: [
-      Headers(const {"Content-Type": "application/json"}),
-    ]);
+    jsonApi: true,
+);
 
 final myService = chopper.service<MyService>(MyService);
 
 final response = await myService.getMapResource("1");
+
+chopper.close();
+```
+
+Or instanciate your service with defined client
+
+```dart
+final chopper = new ChopperClient(
+    baseUrl: "http://localhost:8000",
+    jsonApi: true,
+);
+
+final service = MyService.withClient(chopper);
+
 ```
 
 ## More example
