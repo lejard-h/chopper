@@ -8,7 +8,7 @@ part of 'test_service.dart';
 
 class HttpTestService extends ChopperService
     implements HttpTestServiceDefinition {
-  HttpTestService();
+  HttpTestService() : super();
 
   HttpTestService.withClient(ChopperClient client) : super.withClient(client);
 
@@ -26,8 +26,8 @@ class HttpTestService extends ChopperService
     return client.send(request);
   }
 
-  Future<Response> putTest(String id, String data) {
-    final url = '/test/put/$id';
+  Future<Response> putTest(String test, String data) {
+    final url = '/test/put/$test';
     final body = data;
     final request = new Request('PUT', url, body: body);
     return client.send(request);

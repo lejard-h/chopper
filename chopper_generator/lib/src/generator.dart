@@ -18,6 +18,7 @@ const _headersVar = "headers";
 const _requestVar = "request";
 const _bodyVar = 'body';
 const _partsVar = 'parts';
+const _clientVar = 'client';
 
 class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   @override
@@ -42,134 +43,141 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     ClassElement element,
   ) {
     final friendlyName = element.name;
-    final builderName =
-        annotation?.peek("name")?.stringValue ?? "${friendlyName}Impl";
+    final name = annotation?.peek("name")?.stringValue ?? "${friendlyName}Impl";
     final baseUrl = annotation?.peek('baseUrl')?.stringValue ?? '';
 
     final classBuilder = new Class((c) {
       c
-        ..name = builderName
+        ..name = name
         ..extend = new Reference("${chopper.ChopperService}")
         ..constructors.addAll([
-          Constructor(),
-          Constructor((builder) {
-            builder.name = 'withClient';
-            builder.requiredParameters.add(Parameter((pBuilder) {
-              pBuilder
-                ..name = 'client'
-                ..type = Reference('${chopper.ChopperClient}');
-            }));
-            builder.initializers.add(Code('super.withClient(client)'));
-          })
+          _generateConstructor(),
+          _generateBinder(),
         ])
-        ..methods.addAll(element.methods.where((MethodElement m) {
-          final methodAnnot = _getMethodAnnotation(m);
-          return methodAnnot != null &&
-              m.isAbstract &&
-              m.returnType.isDartAsyncFuture;
-        }).map((MethodElement m) {
-          final method = _getMethodAnnotation(m);
-          final multipart = _hasAnnotation(m, chopper.Multipart);
-          final formUrlEncoded = _hasAnnotation(m, chopper.FormUrlEncoded);
-          final hasJson = _hasAnnotation(m, chopper.JsonEncoded);
-
-          final body = _getAnnotation(m, chopper.Body);
-          final paths = _getAnnotations(m, chopper.Path);
-          final queries = _getAnnotations(m, chopper.Query);
-          final fields = _getAnnotations(m, chopper.Field);
-          final parts = _getAnnotations(m, chopper.Part);
-          final fileFields = _getAnnotations(m, chopper.FileField);
-
-          final headers = _generateHeaders(m, method);
-          final url = _generateUrl(method, paths, baseUrl);
-          final responseType = _getResponseType(m.returnType);
-
-          return new Method((b) {
-            b.name = m.displayName;
-            b.returns = new Reference(m.returnType.displayName);
-            b.requiredParameters.addAll(m.parameters
-                .where((p) => p.isNotOptional)
-                .map((p) => new Parameter((pb) => pb
-                  ..name = p.name
-                  ..type = new Reference(p.type.displayName))));
-
-            b.optionalParameters.addAll(m.parameters
-                .where((p) => p.isOptionalPositional)
-                .map((p) => new Parameter((pb) => pb
-                  ..name = p.name
-                  ..type = new Reference(p.type.displayName))));
-
-            b.optionalParameters.addAll(m.parameters
-                .where((p) => p.isNamed)
-                .map((p) => new Parameter((pb) => pb
-                  ..named = true
-                  ..name = p.name
-                  ..type = new Reference(p.type.displayName))));
-
-            final blocks = [
-              url.assignFinal(_urlVar).statement,
-            ];
-
-            if (queries.isNotEmpty) {
-              blocks.add(
-                  _genereteMap(queries).assignFinal(_parametersVar).statement);
-            }
-
-            if (headers != null) {
-              blocks.add(headers);
-            }
-
-            final hasBody = body.isNotEmpty ||
-                (formUrlEncoded == true && fields.isNotEmpty);
-            if (hasBody) {
-              if (body.isNotEmpty) {
-                blocks.add(
-                  refer(body.keys.first).assignFinal(_bodyVar).statement,
-                );
-              } else {
-                blocks.add(
-                  _genereteMap(fields).assignFinal(_bodyVar).statement,
-                );
-              }
-            }
-
-            final hasParts = multipart == true &&
-                (parts.isNotEmpty || fileFields.isNotEmpty);
-            if (hasParts) {
-              blocks.add(_genereteList(parts, fileFields)
-                  .assignFinal(_partsVar)
-                  .statement);
-            }
-
-            blocks.add(_generateRequest(
-              method,
-              hasBody: hasBody,
-              useQueries: queries.isNotEmpty,
-              useHeaders: headers != null,
-              hasParts: hasParts,
-              hasFormUrlEncoded: formUrlEncoded,
-              hasJson: hasJson,
-            ).assignFinal(_requestVar).statement);
-
-            final namedArguments = <String, Expression>{};
-            final typeArguments = <Reference>[];
-            if (responseType != null) {
-              typeArguments.add(refer(responseType.displayName));
-            }
-
-            blocks.add(refer("client.send")
-                .call([refer(_requestVar)], namedArguments, typeArguments)
-                .returned
-                .statement);
-
-            b.body = new Block.of(blocks);
-          });
-        }))
+        ..methods.addAll(_parseMethods(element, baseUrl))
         ..implements.add(new Reference(friendlyName));
     });
 
     final emitter = new DartEmitter();
     return new DartFormatter().format('${classBuilder.accept(emitter)}');
+  }
+
+  Constructor _generateBinder() => Constructor((c) {
+        c.name = 'withClient';
+        c.requiredParameters.add(Parameter((p) {
+          p.type = refer('ChopperClient');
+          p.name = _clientVar;
+        }));
+        c.initializers.add(Code('super.withClient(client)'));
+      });
+
+  Constructor _generateConstructor() => Constructor((c) {
+        c.initializers.add(Code('super()'));
+      });
+
+  Iterable<Method> _parseMethods(ClassElement element, String baseUrl) =>
+      element.methods.where((MethodElement m) {
+        final methodAnnot = _getMethodAnnotation(m);
+        return methodAnnot != null &&
+            m.isAbstract &&
+            m.returnType.isDartAsyncFuture;
+      }).map((MethodElement m) => _generateMethod(m, baseUrl));
+
+  Method _generateMethod(MethodElement m, String baseUrl) {
+    final method = _getMethodAnnotation(m);
+    final multipart = _hasAnnotation(m, chopper.Multipart);
+    final formUrlEncoded = _hasAnnotation(m, chopper.FormUrlEncoded);
+    final hasJson = _hasAnnotation(m, chopper.JsonEncoded);
+
+    final body = _getAnnotation(m, chopper.Body);
+    final paths = _getAnnotations(m, chopper.Path);
+    final queries = _getAnnotations(m, chopper.Query);
+    final fields = _getAnnotations(m, chopper.Field);
+    final parts = _getAnnotations(m, chopper.Part);
+    final fileFields = _getAnnotations(m, chopper.FileField);
+
+    final headers = _generateHeaders(m, method);
+    final url = _generateUrl(method, paths, baseUrl);
+    final responseType = _getResponseType(m.returnType);
+
+    return new Method((b) {
+      b.name = m.displayName;
+      b.returns = new Reference(m.returnType.displayName);
+      b.requiredParameters.addAll(m.parameters
+          .where((p) => p.isNotOptional)
+          .map((p) => new Parameter((pb) => pb
+            ..name = p.name
+            ..type = new Reference(p.type.displayName))));
+
+      b.optionalParameters.addAll(m.parameters
+          .where((p) => p.isOptionalPositional)
+          .map((p) => new Parameter((pb) => pb
+            ..name = p.name
+            ..type = new Reference(p.type.displayName))));
+
+      b.optionalParameters.addAll(m.parameters
+          .where((p) => p.isNamed)
+          .map((p) => new Parameter((pb) => pb
+            ..named = true
+            ..name = p.name
+            ..type = new Reference(p.type.displayName))));
+
+      final blocks = [
+        url.assignFinal(_urlVar).statement,
+      ];
+
+      if (queries.isNotEmpty) {
+        blocks.add(_genereteMap(queries).assignFinal(_parametersVar).statement);
+      }
+
+      if (headers != null) {
+        blocks.add(headers);
+      }
+
+      final hasBody =
+          body.isNotEmpty || (formUrlEncoded == true && fields.isNotEmpty);
+      if (hasBody) {
+        if (body.isNotEmpty) {
+          blocks.add(
+            refer(body.keys.first).assignFinal(_bodyVar).statement,
+          );
+        } else {
+          blocks.add(
+            _genereteMap(fields).assignFinal(_bodyVar).statement,
+          );
+        }
+      }
+
+      final hasParts =
+          multipart == true && (parts.isNotEmpty || fileFields.isNotEmpty);
+      if (hasParts) {
+        blocks.add(
+            _genereteList(parts, fileFields).assignFinal(_partsVar).statement);
+      }
+
+      blocks.add(_generateRequest(
+        method,
+        hasBody: hasBody,
+        useQueries: queries.isNotEmpty,
+        useHeaders: headers != null,
+        hasParts: hasParts,
+        hasFormUrlEncoded: formUrlEncoded,
+        hasJson: hasJson,
+      ).assignFinal(_requestVar).statement);
+
+      final namedArguments = <String, Expression>{};
+      final typeArguments = <Reference>[];
+      if (responseType != null) {
+        typeArguments.add(refer(responseType.displayName));
+      }
+
+      blocks.add(refer("client.send")
+          .call([refer(_requestVar)], namedArguments, typeArguments)
+          .returned
+          .statement);
+
+      b.body = new Block.of(blocks);
+    });
   }
 
   Map<String, ConstantReader> _getAnnotation(MethodElement m, Type type) {

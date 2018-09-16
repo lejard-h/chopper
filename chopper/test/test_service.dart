@@ -6,14 +6,16 @@ part "test_service.chopper.dart";
 @ChopperApi("HttpTestService", baseUrl: "/test")
 abstract class HttpTestServiceDefinition {
   @Get(url: "get/{id}")
-  Future<Response> getTest(@Path() String id,
-      {@Header('test') String dynamicHeader});
+  Future<Response> getTest(
+    @Path() String id, {
+    @Header('test') String dynamicHeader,
+  });
 
   @Post(url: "post")
   Future<Response> postTest(@Body() String data);
 
   @Put(url: 'put/{id}')
-  Future<Response> putTest(@Path() String id, @Body() String data);
+  Future<Response> putTest(@Path('id') String test, @Body() String data);
 
   @Delete(url: 'delete/{id}', headers: {'foo': 'bar'})
   Future<Response> deleteTest(@Path() String id);

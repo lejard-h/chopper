@@ -1,7 +1,7 @@
 import "dart:async";
 import 'package:chopper/chopper.dart';
 
-import 'model.dart';
+import 'package:chopper_example/model.dart';
 
 part "definition.chopper.dart";
 

@@ -7,7 +7,7 @@ part of 'definition.dart';
 // **************************************************************************
 
 class MyService extends ChopperService implements MyServiceDefinition {
-  MyService();
+  MyService() : super();
 
   MyService.withClient(ChopperClient client) : super.withClient(client);
 

@@ -1,8 +1,7 @@
 import 'package:chopper/chopper.dart';
-import 'definition/definition.dart';
-import 'definition/model.dart';
-
-import 'definition/jaguar_serializer.dart';
+import 'package:chopper_example/definition.dart';
+import 'package:chopper_example/jaguar_serializer.dart';
+import 'package:chopper_example/model.dart';
 
 main() async {
   final chopper = new ChopperClient(
@@ -10,7 +9,7 @@ main() async {
     converter: JaguarConverter(),
     services: [
       // the generated service
-      new MyService()
+      MyService(),
     ],
     jsonApi: true,
   );
@@ -23,5 +22,5 @@ main() async {
   final response2 = await myService.getTypedResource();
   print(response2.body); // decoded Resource
 
-  await myService.newResource(new Resource("3", "Super Name"));
+  await myService.newResource(Resource("3", "Super Name"));
 }

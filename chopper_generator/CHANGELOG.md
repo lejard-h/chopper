@@ -8,6 +8,7 @@
 - json and formUrlEncoding are now builtin
 - `onError`, `onResponse`, `onRequest` stream
 - error converter
+- add withClient constructor
 
 ## 0.1.0
 

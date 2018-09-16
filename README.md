@@ -63,7 +63,21 @@ flutter packages pub run build_runner build
 
 ### Use it
 
-Create a Chopper client and inject your generated api.
+```dart
+final chopper = new ChopperClient(
+    baseUrl: "http://localhost:8000",
+    jsonApi: true,
+);
+
+final myService = MyService.withClient(chopper);
+
+final response = await myService.getMapResource("1");
+
+chopper.close();
+
+```
+
+Or create a Chopper client and inject your generated api.
 
 ```dart
 import 'package:chopper/chopper.dart';
@@ -78,27 +92,56 @@ final chopper = new ChopperClient(
 );
 
 final myService = chopper.service<MyService>(MyService);
-
-final response = await myService.getMapResource("1");
-
-chopper.close();
 ```
 
-Or instanciate your service with defined client
+### Interceptors
+
+#### Request
+implement `RequestInterceptor` class or define function with following signature `FutureOr<Request> RequestInterceptorFunc(Request request)`
+
+Request interceptor are called just before sending request
 
 ```dart
 final chopper = new ChopperClient(
-    baseUrl: "http://localhost:8000",
-    jsonApi: true,
+   interceptors: [
+     (request) async => request.replace(body: null),
+   ]
 );
-
-final service = MyService.withClient(chopper);
-
 ```
+
+#### Response
+implement `ResponseInterceptor` class or define function with following signature `FutureOr<Response> ResponseInterceptorFunc(Response response)`
+
+Called after successfull or failed request
+
+```dart
+final chopper = new ChopperClient(
+   interceptors: [
+     (response) async => response.replace(body: null),
+   ]
+);
+```
+
+#### Converter
+
+Converter is used to transform body, for example transforming a Dart object to a `Map<String, dynamic>`
+
+Both `converter` and `errorConverter` are called before request and response intercptors.
+
+`errorConverter` is called only on error response (statusCode < 200 || statusCode >= 300)
+
+```dart
+final chopper = new ChopperClient(
+   converter: MyConverter(),
+   errorConverter: MyErrorConverter
+);
+```
+
 
 ## More example
 
   - [Custom Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_basic_converter.dart)
   - [Jaguar Serializer](https://github.com/lejard-h/chopper/blob/master/example/bin/main_jaguar_serializer.dart)
+  - [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
   
 ## [Issue Tracker](https://github.com/lejard-h/chopper/issues)

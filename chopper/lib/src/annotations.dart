@@ -2,6 +2,10 @@ import 'package:meta/meta.dart';
 import 'request.dart';
 
 @immutable
+
+/// Define an APi
+/// [baseUrl] determine the prefix of every request in this api
+/// [name] generate class name
 class ChopperApi {
   final String baseUrl;
   final String name;
@@ -9,23 +13,46 @@ class ChopperApi {
 }
 
 @immutable
+
+/// Define path paremeter of an url
+///
+///     @Get(url: '/{id}')
+///     Future<Response> fetch(@Patch('id') String resourceId);
 class Path {
   final String name;
-  const Path({this.name});
+  const Path([this.name]);
 }
 
 @immutable
+
+/// Define query parameters of a request
+///
+///     @Get(url: '/something')
+///     Future<Response> fetch(@Query('id') String resourceId);
+///
+///     fetch('42');
+///     // will request following url: /something?id=42
 class Query {
   final String name;
-  const Query({this.name});
+  const Query([this.name]);
 }
 
 @immutable
+
+/// Declare Body of [POST], [PUT], [PATCH] request
+///
+///     @Post()
+///     Future<Response> post(@Body() Map<String, dynamic> body);
 class Body {
   const Body();
 }
 
 @immutable
+
+/// Override header using method parameter
+///
+///     @Get()
+///     Future<Response> fetch(@Header('foo') String headerFoo);
 class Header {
   final String name;
   const Header([this.name]);
@@ -41,30 +68,43 @@ class Method {
 }
 
 @immutable
+
+/// Define a method as an Http GET request
 class Get extends Method {
   const Get({String url: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Get, url: url, headers: headers);
 }
 
 @immutable
+
+/// Define a method as an Http POST request
+/// use [Body] annotation to determine data to send
 class Post extends Method {
   const Post({String url: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Post, url: url, headers: headers);
 }
 
 @immutable
+
+/// Define a method as an Http DELETE request
 class Delete extends Method {
   const Delete({String url: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Delete, url: url, headers: headers);
 }
 
 @immutable
+
+/// Define a method as an Http PUT request
+/// use [Body] annotation to determine data to send
 class Put extends Method {
   const Put({String url: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Put, url: url, headers: headers);
 }
 
 @immutable
+
+/// Define a method as an Http PATCH request
+/// use [Body] annotation to determine data to send
 class Patch extends Method {
   const Patch({String url: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Patch, url: url, headers: headers);
@@ -133,4 +173,5 @@ class FileField {
 const multipart = Multipart();
 const formUrlEncoded = FormUrlEncoded();
 const jsonEncoded = JsonEncoded();
+const body = Body();
 //const parts = Parts();

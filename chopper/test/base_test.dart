@@ -188,7 +188,7 @@ void main() {
       client.close();
     });
 
-    test('withClient constructor', () async {
+    test('factory', () async {
       final client = MockClient((http.Request req) async {
         expect(
           req.url.toString(),

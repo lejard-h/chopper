@@ -1,15 +1,15 @@
 import "dart:async";
 import 'package:chopper/chopper.dart';
-import 'definition/definition.dart';
-import 'definition/model.dart';
+import 'package:chopper_example/definition.dart';
+import 'package:chopper_example/model.dart';
 
 main() async {
-  final chopper = new ChopperClient(
+  final chopper = ChopperClient(
     baseUrl: "http://localhost:8000",
     converter: ModelConverter(),
     services: [
       // the generated service
-      new MyService()
+      MyService(),
     ],
     /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
     interceptors: [authHeader],
@@ -24,7 +24,7 @@ main() async {
   final response2 = await myService.getTypedResource();
   print(response2.body); // decoded Resource
 
-  await myService.newResource(new Resource("3", "Super Name"));
+  await myService.newResource(Resource("3", "Super Name"));
 }
 
 Future<Request> authHeader(Request request) async =>

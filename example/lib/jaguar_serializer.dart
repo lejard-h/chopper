@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
-import "model.dart";
+import 'package:chopper_example/model.dart';
 
 part "jaguar_serializer.jser.dart";
 

@@ -8,6 +8,7 @@ environment:
   sdk: '>=2.0.0-dev <3.0.0'
 
 dependencies:
+  angular: ^5.0.0
   meta:
   chopper: ^1.0.0
   jaguar_serializer: ^2.0.0
@@ -16,6 +17,7 @@ dev_dependencies:
   build_runner: ^0.9.0
   chopper_generator: ^1.0.0
   jaguar_serializer_cli: ^2.0.0
+  build_web_compilers: ^0.4.0+4
 
 dependency_overrides:
   chopper:
