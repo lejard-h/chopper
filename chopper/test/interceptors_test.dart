@@ -103,7 +103,7 @@ void main() {
 
 class ResponseIntercept implements ResponseInterceptor {
   @override
-  FutureOr<Response> onResponse<Value>(Response<Value> response) =>
+  FutureOr<Response> onResponse(Response response) =>
       response.replace<_Intercepted>(
         body: _Intercepted(response.body),
       );

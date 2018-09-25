@@ -7,7 +7,7 @@ import 'utils.dart';
 
 @immutable
 abstract class ResponseInterceptor {
-  FutureOr<Response> onResponse<Value>(Response<Value> response);
+  FutureOr<Response> onResponse(Response response);
 }
 
 @immutable
@@ -37,11 +37,12 @@ abstract class Converter {
     return request;
   }
 
-  FutureOr<Response> decode<T>(Response response) async {
+  Future<Response<T>> decode<T>(Response response) async {
     if (response.body != null) {
-      return response.replace<T>(body: await decodeEntity<T>(response.body));
+      final decoded = await decodeEntity<T>(response.body);
+      return response.replaceWithNull<T>(body: decoded);
     }
-    return response;
+    return response.replaceWithNull<T>();
   }
 
   @protected

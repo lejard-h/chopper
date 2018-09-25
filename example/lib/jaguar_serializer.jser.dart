@@ -24,3 +24,23 @@ abstract class _$ResourceSerializer implements Serializer<Resource> {
     return obj;
   }
 }
+
+abstract class _$ResourceErrorSerializer implements Serializer<ResourceError> {
+  @override
+  Map<String, dynamic> toMap(ResourceError model) {
+    if (model == null) return null;
+    Map<String, dynamic> ret = <String, dynamic>{};
+    setMapValue(ret, 'type', model.type);
+    setMapValue(ret, 'message', model.message);
+    return ret;
+  }
+
+  @override
+  ResourceError fromMap(Map map) {
+    if (map == null) return null;
+    final obj = new ResourceError(
+        map['type'] as String ?? getJserDefault('type'),
+        map['message'] as String ?? getJserDefault('message'));
+    return obj;
+  }
+}

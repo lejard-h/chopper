@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:chopper/chopper.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
 import 'package:chopper_example/model.dart';
 
@@ -10,17 +7,7 @@ part "jaguar_serializer.jser.dart";
 class ResourceSerializer extends Serializer<Resource>
     with _$ResourceSerializer {}
 
-final repository = new SerializerRepo(serializers: [new ResourceSerializer()]);
 
-class JaguarConverter extends Converter {
-  @override
-  Future<T> decodeEntity<T>(entity) async {
-    if (entity is Map) {
-      return repository.getByType<T>(T).fromMap(entity);
-    }
-    return entity;
-  }
-
-  @override
-  Future encodeEntity<T>(entity) async => repository.to(entity);
-}
+@GenSerializer()
+class ResourceErrorSerializer extends Serializer<ResourceError>
+    with _$ResourceErrorSerializer {}

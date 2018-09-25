@@ -106,11 +106,11 @@ class ChopperClient {
     return converted;
   }
 
-  Future<Response<Value>> _decodeResponse<Value>(
+  Future<Response> _decodeResponse<Value>(
     Response response,
     Converter withConverter,
   ) async {
-    if (withConverter == null) return response as Response<Value>;
+    if (withConverter == null) return response;
 
     final converted = await withConverter.decode<Value>(response);
 
@@ -133,11 +133,11 @@ class ChopperClient {
     return req;
   }
 
-  Future<Response> _interceptResponse<Value>(Response<Value> response) async {
-    Response<Value> res = response;
+  Future<Response> _interceptResponse(Response response) async {
+    var res = response;
     for (final i in _responseInterceptors) {
       if (i is ResponseInterceptor) {
-        res = await i.onResponse<Value>(res);
+        res = await i.onResponse(res);
       } else if (i is ResponseInterceptorFunc) {
         res = await i(res);
       }
@@ -175,7 +175,7 @@ class ChopperClient {
       res = await _decodeResponse(res, errorConverter);
     }
 
-    res = await _interceptResponse<Value>(res);
+    res = await _interceptResponse(res);
 
     if (!res.isSuccessful) {
       _responseErrorController.add(res);

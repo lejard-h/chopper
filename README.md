@@ -104,7 +104,7 @@ Request interceptor are called just before sending request
 ```dart
 final chopper = new ChopperClient(
    interceptors: [
-     (request) async => request.replace(body: null),
+     (request) async => request.replace(body: {}),
    ]
 );
 ```
@@ -117,7 +117,7 @@ Called after successfull or failed request
 ```dart
 final chopper = new ChopperClient(
    interceptors: [
-     (response) async => response.replace(body: null),
+     (response) async => response.replace(body: {}),
    ]
 );
 ```
@@ -140,7 +140,7 @@ final chopper = new ChopperClient(
 
 ## More example
 
-  - [Custom Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_basic_converter.dart)
+  - [Json serializable](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
   - [Jaguar Serializer](https://github.com/lejard-h/chopper/blob/master/example/bin/main_jaguar_serializer.dart)
   - [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
   
