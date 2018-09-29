@@ -63,7 +63,7 @@ packages:
       path: "../chopper"
       relative: true
     source: path
-    version: "1.0.0-dev1"
+    version: "1.0.0"
   code_builder:
     dependency: "direct main"
     description:
