@@ -7,7 +7,6 @@ part "jaguar_serializer.jser.dart";
 class ResourceSerializer extends Serializer<Resource>
     with _$ResourceSerializer {}
 
-
 @GenSerializer()
 class ResourceErrorSerializer extends Serializer<ResourceError>
     with _$ResourceErrorSerializer {}
