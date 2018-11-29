@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+- update build package
+
 ## 1.0.0
 
 - Multipart request
