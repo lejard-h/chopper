@@ -3,8 +3,11 @@ import 'package:chopper/chopper.dart';
 
 part "test_service.chopper.dart";
 
-@ChopperApi("HttpTestService", baseUrl: "/test")
-abstract class HttpTestServiceDefinition {
+@ChopperApi(baseUrl: "/test")
+abstract class HttpTestService extends ChopperService {
+
+  static HttpTestService create([ChopperClient client]) => _$HttpTestService(client);
+
   @Get(url: "get/{id}")
   Future<Response> getTest(
     @Path() String id, {

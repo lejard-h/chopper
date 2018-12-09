@@ -61,8 +61,9 @@ class ChopperClient {
     _responseInterceptors.addAll(interceptors.where(_isResponseInterceptor));
 
     services.toSet().forEach((s) {
-      s.client = this;
-      _services[s.runtimeType] = s;
+      final mix = (s as ChopperServiceMixin);
+      mix.client = this;
+      _services[mix.definitionType] = s;
     });
   }
 
@@ -209,10 +210,10 @@ class ChopperClient {
 }
 
 /// Used by generator to generate apis
-abstract class ChopperService {
+abstract class ChopperService {}
+
+abstract class ChopperServiceMixin {
   ChopperClient client;
 
-  ChopperService();
-
-  ChopperService.withClient(this.client);
+  Type get definitionType;
 }

@@ -27,7 +27,7 @@ main() async {
     errorConverter: ErrorConverter(),
     services: [
       // the generated service
-      MyService(),
+      MyService.create(),
     ],
     /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
     interceptors: [authHeader],

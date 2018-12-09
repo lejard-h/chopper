@@ -18,7 +18,7 @@ void main() {
     final buildClient = (bool json, http.Client httpClient) => ChopperClient(
           services: [
             // the generated service
-            HttpTestService(),
+            HttpTestService.create(),
           ],
           client: httpClient,
           jsonApi: json,

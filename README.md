@@ -28,8 +28,11 @@ import 'package:chopper/chopper.dart';
 
 part "my_service.chopper.dart";
 
-@ChopperApi("MyService", baseUrl: "/resources")
-abstract class MyServiceDefinition {
+@ChopperApi(baseUrl: "/resources")
+abstract class MyService extends ChopperService {
+
+  static MyService create([ChopperClient client]) => _$MyService(client);
+
   @Get(url: "{id}")
   Future<Response> getResource(@Path() String id);
 
@@ -69,7 +72,7 @@ final chopper = new ChopperClient(
     jsonApi: true,
 );
 
-final myService = MyService.withClient(chopper);
+final myService = MyService.create(chopper);
 
 final response = await myService.getMapResource("1");
 
@@ -86,7 +89,7 @@ final chopper = new ChopperClient(
     baseUrl: "http://localhost:8000",
     services: [
       // the generated service
-      MyService()
+      MyService.create()
     ],
     jsonApi: true,
 );

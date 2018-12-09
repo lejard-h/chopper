@@ -29,7 +29,7 @@ content-disposition: form-data; name="2"\r
       });
 
       final chopper = ChopperClient(client: httpClient, jsonApi: true);
-      final service = HttpTestService.withClient(chopper);
+      final service = HttpTestService.create(chopper);
 
       await service.postResources({'foo': 'bar'}, {'bar': 'foo'});
 
@@ -55,7 +55,7 @@ ${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}\r
       });
 
       final chopper = ChopperClient(client: httpClient);
-      final service = HttpTestService.withClient(chopper);
+      final service = HttpTestService.create(chopper);
 
       await service.postFile([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
 

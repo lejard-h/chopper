@@ -9,7 +9,7 @@ void main() {
         baseUrl: "http://localhost:8000",
         services: [
           // the generated service
-          HttpTestService(),
+          HttpTestService.create(),
         ],
         client: httpClient,
       );
@@ -157,7 +157,7 @@ void main() {
       });
 
       final chopper = ChopperClient(
-        services: [HttpTestService()],
+        services: [HttpTestService.create(),],
         client: client,
       );
 
@@ -176,7 +176,7 @@ void main() {
       });
 
       final chopper = ChopperClient(
-        services: [HttpTestService()],
+        services: [HttpTestService.create(),],
         client: client,
       );
 
@@ -202,7 +202,7 @@ void main() {
         client: client,
       );
 
-      final service = HttpTestService.withClient(chopper);
+      final service = HttpTestService.create(chopper);
 
       await service.getTest('1234');
 
@@ -267,7 +267,7 @@ void main() {
         );
       });
 
-      final service = HttpTestService.withClient(chopper);
+      final service = HttpTestService.create(chopper);
       await service.getTest('1234');
 
       client.close();
@@ -286,7 +286,7 @@ void main() {
         expect(response.body, equals('ok'));
       });
 
-      final service = HttpTestService.withClient(chopper);
+      final service = HttpTestService.create(chopper);
       await service.getTest('1234');
 
       client.close();
@@ -305,7 +305,7 @@ void main() {
         expect(response.body, equals('error'));
       });
 
-      final service = HttpTestService.withClient(chopper);
+      final service = HttpTestService.create(chopper);
       try {
         await service.getTest('1234');
       } catch (e) {

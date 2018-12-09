@@ -6,7 +6,7 @@ main() async {
     baseUrl: "http://localhost:8000",
     services: [
       // the generated service
-      MyService()
+      MyService.create()
     ],
     jsonApi: true,
   );

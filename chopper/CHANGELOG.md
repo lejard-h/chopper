@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.0
+
+- ***BreakingChange***
+    Removed `name` parameter on `ChopperApi`
+    New way to instanciate a service
+        ```dart
+            @ChopperApi()
+            abstract class MyService extends ChopperService {
+                static MyService create([ChopperClient client]) => _$MyService(client);
+            }
+        ```
+
 ## 1.0.0
 
 - Multipart request

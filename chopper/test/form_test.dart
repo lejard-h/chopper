@@ -16,7 +16,7 @@ void main() {
           ChopperClient(
             services: [
               // the generated service
-              HttpTestService(),
+              HttpTestService.create(),
             ],
             client: httpClient,
             jsonApi: json,

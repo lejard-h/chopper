@@ -6,11 +6,13 @@ part of 'test_service.dart';
 // ChopperGenerator
 // **************************************************************************
 
-class HttpTestService extends ChopperService
-    implements HttpTestServiceDefinition {
-  HttpTestService() : super();
+class _$HttpTestService extends HttpTestService with ChopperServiceMixin {
+  _$HttpTestService([ChopperClient client]) {
+    if (client == null) return;
+    this.client = client;
+  }
 
-  HttpTestService.withClient(ChopperClient client) : super.withClient(client);
+  final definitionType = HttpTestService;
 
   Future<Response> getTest(String id, {String dynamicHeader}) {
     final url = '/test/get/$id';

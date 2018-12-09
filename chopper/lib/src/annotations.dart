@@ -8,8 +8,10 @@ import 'request.dart';
 /// [name] generate class name
 class ChopperApi {
   final String baseUrl;
-  final String name;
-  const ChopperApi(this.name, {this.baseUrl: "/"});
+
+  const ChopperApi({
+    this.baseUrl: "/",
+  });
 }
 
 @immutable

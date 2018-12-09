@@ -5,8 +5,11 @@ import 'package:chopper_example/model.dart';
 
 part "definition.chopper.dart";
 
-@ChopperApi("MyService", baseUrl: "/resources")
-abstract class MyServiceDefinition {
+@ChopperApi(baseUrl: "/resources")
+abstract class MyService extends ChopperService {
+
+  static MyService create([ChopperClient client]) => _$MyService(client);
+
   @Get(url: "/{id}/")
   Future<Response> getResource(@Path() String id);
 

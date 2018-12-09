@@ -45,7 +45,7 @@ void main() {
 
       final chopper = buildClient(httpClient);
 
-      final service = HttpTestService.withClient(chopper);
+      final service = HttpTestService.create(chopper);
 
       try {
         await service.getTest('1');

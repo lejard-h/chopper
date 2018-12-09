@@ -7,19 +7,16 @@ import 'angular_example.template.dart' as ng;
 
 final appFactory = ng.ChopperExampleComponentNgFactory;
 
-MyServiceDefinition serviceFactory(ChopperClient client) =>
-    MyService.withClient(client);
+MyService serviceFactory(ChopperClient client) => MyService.create(client);
 
 @Component(
   selector: 'app-component',
   template: '{{client}} {{service}}',
-  providers: [
-    FactoryProvider<MyServiceDefinition>(MyServiceDefinition, serviceFactory)
-  ],
+  providers: [FactoryProvider<MyService>(MyService, serviceFactory)],
 )
 class ChopperExampleComponent {
   final ChopperClient client;
-  final MyServiceDefinition service;
+  final MyService service;
 
   ChopperExampleComponent(this.client, this.service);
 }

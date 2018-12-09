@@ -13,6 +13,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:chopper/chopper.dart' as chopper;
 
 const _urlVar = "url";
+const _baseUrlVar = "baseUrl";
 const _parametersVar = "params";
 const _headersVar = "headers";
 const _requestVar = "request";
@@ -30,49 +31,65 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     if (element is! ClassElement) {
       final friendlyName = element.displayName;
       throw new InvalidGenerationSourceError(
-          'Generator cannot target `$friendlyName`.',
-          todo:
-              'Remove the ServiceDefinition annotation from `$friendlyName`.');
+        'Generator cannot target `$friendlyName`.',
+        todo: 'Remove the [ChopperApi] annotation from `$friendlyName`.',
+      );
     }
 
     return _buildImplementionClass(annotation, element);
   }
 
+  bool _extendsChopperService(InterfaceType t) =>
+      _typeChecker(chopper.ChopperService).isExactlyType(t);
+
+  Field _buildDefinitionTypeMethod(String superType) => Field(
+        (m) => m
+          ..name = 'definitionType'
+          ..modifier = FieldModifier.final$
+          ..assignment = Code(superType),
+      );
+
   String _buildImplementionClass(
     ConstantReader annotation,
     ClassElement element,
   ) {
+    if (element.allSupertypes.any(_extendsChopperService) == false) {
+      final friendlyName = element.displayName;
+      throw new InvalidGenerationSourceError(
+        'Generator cannot target `$friendlyName`.',
+        todo: '`$friendlyName` need to extends the [ChopperService] class.',
+      );
+    }
+
     final friendlyName = element.name;
-    final name = annotation?.peek("name")?.stringValue ?? "${friendlyName}Impl";
-    final baseUrl = annotation?.peek('baseUrl')?.stringValue ?? '';
+    final name = '_\$${friendlyName}';
+    final baseUrl = annotation?.peek(_baseUrlVar)?.stringValue ?? '';
 
     final classBuilder = new Class((c) {
       c
         ..name = name
-        ..extend = new Reference("${chopper.ChopperService}")
         ..constructors.addAll([
           _generateConstructor(),
-          _generateBinder(),
         ])
         ..methods.addAll(_parseMethods(element, baseUrl))
-        ..implements.add(new Reference(friendlyName));
+        ..fields.add(_buildDefinitionTypeMethod(friendlyName))
+        ..extend = refer(friendlyName)
+        ..mixins.add(refer('${chopper.ChopperServiceMixin}'));
     });
 
     final emitter = new DartEmitter();
     return new DartFormatter().format('${classBuilder.accept(emitter)}');
   }
 
-  Constructor _generateBinder() => Constructor((c) {
-        c.name = 'withClient';
-        c.requiredParameters.add(Parameter((p) {
-          p.type = refer('ChopperClient');
-          p.name = _clientVar;
-        }));
-        c.initializers.add(Code('super.withClient(client)'));
-      });
-
   Constructor _generateConstructor() => Constructor((c) {
-        c.initializers.add(Code('super()'));
+        c.optionalParameters.add(Parameter((p) {
+          p.name = _clientVar;
+          p.type = refer('${chopper.ChopperClient}');
+        }));
+
+        c.body = Code(
+          'if ($_clientVar == null) return;this.$_clientVar = $_clientVar;',
+        );
       });
 
   Iterable<Method> _parseMethods(ClassElement element, String baseUrl) =>

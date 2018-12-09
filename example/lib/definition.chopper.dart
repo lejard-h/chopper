@@ -6,10 +6,13 @@ part of 'definition.dart';
 // ChopperGenerator
 // **************************************************************************
 
-class MyService extends ChopperService implements MyServiceDefinition {
-  MyService() : super();
+class _$MyService extends MyService with ChopperServiceMixin {
+  _$MyService([ChopperClient client]) {
+    if (client == null) return;
+    this.client = client;
+  }
 
-  MyService.withClient(ChopperClient client) : super.withClient(client);
+  final definitionType = MyService;
 
   Future<Response> getResource(String id) {
     final url = '/resources/$id/';

@@ -23,7 +23,7 @@ main() async {
     errorConverter: ErrorConverter(),
     services: [
       // the generated service
-      MyService(),
+      MyService.create(),
     ],
     jsonApi: true,
   );

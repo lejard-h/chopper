@@ -30,7 +30,9 @@ void main() {
     test('RequestInterceptor', () async {
       final chopper = ChopperClient(
         interceptors: [RequestIntercept()],
-        services: [HttpTestService()],
+        services: [
+          HttpTestService.create(),
+        ],
         client: requestClient,
       );
 
@@ -42,7 +44,9 @@ void main() {
         interceptors: [
           (Request request) => request.replace(url: '${request.url}/intercept'),
         ],
-        services: [HttpTestService()],
+        services: [
+          HttpTestService.create(),
+        ],
         client: requestClient,
       );
 
@@ -52,7 +56,9 @@ void main() {
     test('ResponseInterceptor', () async {
       final chopper = ChopperClient(
         interceptors: [ResponseIntercept()],
-        services: [HttpTestService()],
+        services: [
+          HttpTestService.create(),
+        ],
         client: responseClient,
       );
 
@@ -70,7 +76,9 @@ void main() {
                 body: _Intercepted(response.body),
               ),
         ],
-        services: [HttpTestService()],
+        services: [
+          HttpTestService.create(),
+        ],
         client: responseClient,
       );
 
@@ -92,7 +100,9 @@ void main() {
         interceptors: [
           HeadersInterceptor({'foo': 'bar'})
         ],
-        services: [HttpTestService()],
+        services: [
+          HttpTestService.create(),
+        ],
         client: client,
       );
 
