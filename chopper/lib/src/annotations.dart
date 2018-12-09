@@ -17,7 +17,7 @@ class ChopperApi {
 /// Define path paremeter of an url
 ///
 ///     @Get(url: '/{id}')
-///     Future<Response> fetch(@Patch('id') String resourceId);
+///     Future<Response> fetch(@Path('id') String resourceId);
 class Path {
   final String name;
   const Path([this.name]);
