@@ -5,8 +5,8 @@ part "test_service.chopper.dart";
 
 @ChopperApi(baseUrl: "/test")
 abstract class HttpTestService extends ChopperService {
-
-  static HttpTestService create([ChopperClient client]) => _$HttpTestService(client);
+  static HttpTestService create([ChopperClient client]) =>
+      _$HttpTestService(client);
 
   @Get(url: "get/{id}")
   Future<Response> getTest(

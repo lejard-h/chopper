@@ -157,7 +157,9 @@ void main() {
       });
 
       final chopper = ChopperClient(
-        services: [HttpTestService.create(),],
+        services: [
+          HttpTestService.create(),
+        ],
         client: client,
       );
 
@@ -176,7 +178,9 @@ void main() {
       });
 
       final chopper = ChopperClient(
-        services: [HttpTestService.create(),],
+        services: [
+          HttpTestService.create(),
+        ],
         client: client,
       );
 

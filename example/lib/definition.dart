@@ -7,7 +7,6 @@ part "definition.chopper.dart";
 
 @ChopperApi(baseUrl: "/resources")
 abstract class MyService extends ChopperService {
-
   static MyService create([ChopperClient client]) => _$MyService(client);
 
   @Get(url: "/{id}/")
