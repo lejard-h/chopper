@@ -299,7 +299,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }) {
     final params = <Expression>[
       literal(method.peek("method").stringValue),
-      refer(_urlVar)
+      refer(_urlVar),
+      refer('$_clientVar.$_baseUrlVar'),
     ];
 
     final namedParams = <String, Expression>{};
@@ -316,7 +317,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     if (hasJson) {
       namedParams['json'] = literalBool(true);
     } else if (hasFormUrlEncoded) {
-      namedParams['formUrlEncoded'] = literal(true);
+      namedParams['json'] = literalBool(false);
+    } else {
+      namedParams['json'] = refer('$_clientVar.jsonApi');
     }
 
     if (useQueries) {

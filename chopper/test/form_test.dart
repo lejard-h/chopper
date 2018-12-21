@@ -56,7 +56,7 @@ void main() {
           return http.Response('ok', 200);
         });
 
-        final chopper = buildClient(false, httpClient);
+        final chopper = buildClient(false, httpClient, json: true);
 
         final result = await chopper
             .service<HttpTestService>(HttpTestService)

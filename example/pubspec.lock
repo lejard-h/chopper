@@ -133,14 +133,14 @@ packages:
       path: "../chopper"
       relative: true
     source: path
-    version: "1.0.1"
+    version: "1.2.0-dev1"
   chopper_generator:
     dependency: "direct dev"
     description:
       path: "../chopper_generator"
       relative: true
     source: path
-    version: "1.0.1"
+    version: "1.2.0-dev1"
   code_builder:
     dependency: transitive
     description:

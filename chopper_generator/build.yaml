@@ -6,4 +6,4 @@ builders:
     builder_factories: ["chopperGeneratorFactory"]
     build_extensions: {".dart": [".chopper.dart"]}
     auto_apply: root_package
-    build_to: source
+    build_to: cache

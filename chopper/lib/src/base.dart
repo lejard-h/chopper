@@ -42,6 +42,8 @@ class ChopperClient {
   final _responseController = StreamController<Response>.broadcast();
   final _responseErrorController = StreamController<Response>.broadcast();
 
+  final bool _clientIsInternal;
+
   ChopperClient({
     this.baseUrl: "",
     http.Client client,
@@ -50,8 +52,9 @@ class ChopperClient {
     this.errorConverter,
     Iterable<ChopperService> services: const [],
     this.jsonApi: false,
-    this.formUrlEncodedApi: true,
-  }) : httpClient = client ?? http.Client() {
+    this.formUrlEncodedApi: false,
+  })  : httpClient = client ?? http.Client(),
+        _clientIsInternal = client == null {
     if (interceptors.every(_isAnInterceptor) == false) {
       throw Exception(
           "Unsupported type for interceptors, it only support the following types: RequestInterceptor, RequestInterceptorFunc, ResponseInterceptor, ResponseInterceptorFunc");
@@ -85,7 +88,7 @@ class ChopperClient {
   }
 
   Future<Request> _encodeRequest(Request request) async {
-    final convertJson = jsonApi || request.json == true;
+    final convertJson = request.json == true;
 
     var converted = request;
 
@@ -156,17 +159,13 @@ class ChopperClient {
     req = await _interceptRequest(req);
 
     _requestController.add(req);
-    final stream = await httpClient.send(await req.toHttpRequest(
-      baseUrl,
-      jsonApi: jsonApi,
-      formUrlEncodedApi: formUrlEncodedApi,
-    ));
+    final stream = await httpClient.send(await req.toHttpRequest());
 
     final response = await http.Response.fromStream(stream);
 
     Response res = Response(response, response.body);
 
-    if ((jsonApi == true && req.formUrlEncoded != true) || req.json == true) {
+    if (req.json == true) {
       res = _tryDecodeJson(res);
     }
 
@@ -200,6 +199,7 @@ class ChopperClient {
     _requestController.close();
     _responseController.close();
     _responseErrorController.close();
+    httpClient.close();
   }
 
   Stream<Request> get onRequest => _requestController.stream;

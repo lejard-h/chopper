@@ -7,10 +7,12 @@ import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'test_service.dart';
 
+const baseUrl = "http://localhost:8000";
+
 void main() {
   group('Converter', () {
     final buildClient = (http.BaseClient client) => ChopperClient(
-          baseUrl: "http://localhost:8000",
+          baseUrl: baseUrl,
           client: client,
           converter: TestConverter(),
           errorConverter: TestErrorConverter(),
@@ -31,7 +33,7 @@ void main() {
       final converter = TestConverter();
 
       final encoded = await converter.encode<_Converted<String>>(
-        Request('GET', '/', body: _Converted<String>('foo')),
+        Request('GET', '/', baseUrl, body: _Converted<String>('foo')),
       );
 
       expect(encoded.body is String, isTrue);

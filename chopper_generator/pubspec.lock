@@ -60,10 +60,10 @@ packages:
   chopper:
     dependency: "direct main"
     description:
-      path: "../chopper"
-      relative: true
-    source: path
-    version: "1.1.0"
+      name: chopper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.0-dev1"
   code_builder:
     dependency: "direct main"
     description:

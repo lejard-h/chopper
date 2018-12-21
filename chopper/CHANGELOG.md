@@ -1,16 +1,25 @@
 # Changelog
 
+## 1.2.0
+
+- Request is now containing baseUrl
+- build runner generator is now generating to cache by default
+- Can call `Request.toHttpRequest()` direclty to get the `http.BaseRequest` will receive
+
+- ***BreakingChange***
+  - remove `formUrlEncodedAPI`, this is the default behavior of http package and if `jsonApi` is false
+
 ## 1.1.0
 
 - ***BreakingChange***
     Removed `name` parameter on `ChopperApi`
     New way to instanciate a service
-        ```dart
-            @ChopperApi()
-            abstract class MyService extends ChopperService {
-                static MyService create([ChopperClient client]) => _$MyService(client);
-            }
-        ```
+        
+        @ChopperApi()
+        abstract class MyService extends ChopperService {
+            static MyService create([ChopperClient client]) => _$MyService(client);
+        }
+        
 
 ## 1.0.0
 
