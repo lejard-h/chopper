@@ -69,10 +69,16 @@ class Request {
 
   Uri _buildUri() {
     var uri;
-    if (!baseUrl.endsWith('/') && !url.startsWith('/')) {
-      uri = Uri.parse("$baseUrl/$url");
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      // if the request's url is already a fully qualified URL, we can use
+      // as-is and ignore the baseUrl
+      uri = Uri.parse(url);
     } else {
-      uri = Uri.parse("$baseUrl$url");
+      if (!baseUrl.endsWith('/') && !url.startsWith('/')) {
+        uri = Uri.parse("$baseUrl/$url");
+      } else {
+        uri = Uri.parse("$baseUrl$url");
+      }
     }
 
     if (parameters.isNotEmpty) {
