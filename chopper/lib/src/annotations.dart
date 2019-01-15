@@ -18,7 +18,7 @@ class ChopperApi {
 
 /// Define path paremeter of an url
 ///
-///     @Get(url: '/{id}')
+///     @Get(path: '/{id}')
 ///     Future<Response> fetch(@Path('id') String resourceId);
 class Path {
   final String name;
@@ -29,11 +29,11 @@ class Path {
 
 /// Define query parameters of a request
 ///
-///     @Get(url: '/something')
+///     @Get(path: '/something')
 ///     Future<Response> fetch(@Query('id') String resourceId);
 ///
 ///     fetch('42');
-///     // will request following url: /something?id=42
+///     // will request following path: /something?id=42
 class Query {
   final String name;
   const Query([this.name]);
@@ -63,18 +63,18 @@ class Header {
 @immutable
 class Method {
   final String method;
-  final String url;
+  final String path;
   final Map<String, String> headers;
 
-  const Method(this.method, {this.url: "/", this.headers: const {}});
+  const Method(this.method, {this.path: "/", this.headers: const {}});
 }
 
 @immutable
 
 /// Define a method as an Http GET request
 class Get extends Method {
-  const Get({String url: "/", Map<String, String> headers: const {}})
-      : super(HttpMethod.Get, url: url, headers: headers);
+  const Get({String path: "/", Map<String, String> headers: const {}})
+      : super(HttpMethod.Get, path: path, headers: headers);
 }
 
 @immutable
@@ -82,16 +82,16 @@ class Get extends Method {
 /// Define a method as an Http POST request
 /// use [Body] annotation to determine data to send
 class Post extends Method {
-  const Post({String url: "/", Map<String, String> headers: const {}})
-      : super(HttpMethod.Post, url: url, headers: headers);
+  const Post({String path: "/", Map<String, String> headers: const {}})
+      : super(HttpMethod.Post, path: path, headers: headers);
 }
 
 @immutable
 
 /// Define a method as an Http DELETE request
 class Delete extends Method {
-  const Delete({String url: "/", Map<String, String> headers: const {}})
-      : super(HttpMethod.Delete, url: url, headers: headers);
+  const Delete({String path: "/", Map<String, String> headers: const {}})
+      : super(HttpMethod.Delete, path: path, headers: headers);
 }
 
 @immutable
@@ -99,8 +99,8 @@ class Delete extends Method {
 /// Define a method as an Http PUT request
 /// use [Body] annotation to determine data to send
 class Put extends Method {
-  const Put({String url: "/", Map<String, String> headers: const {}})
-      : super(HttpMethod.Put, url: url, headers: headers);
+  const Put({String path: "/", Map<String, String> headers: const {}})
+      : super(HttpMethod.Put, path: path, headers: headers);
 }
 
 @immutable
@@ -108,13 +108,13 @@ class Put extends Method {
 /// Define a method as an Http PATCH request
 /// use [Body] annotation to determine data to send
 class Patch extends Method {
-  const Patch({String url: "/", Map<String, String> headers: const {}})
-      : super(HttpMethod.Patch, url: url, headers: headers);
+  const Patch({String path: "/", Map<String, String> headers: const {}})
+      : super(HttpMethod.Patch, path: path, headers: headers);
 }
 
 /// Use to encode a single methode
 /// with application/json
-///     @Get(url: '/')
+///     @Get(path: '/')
 ///     @JsonEncoded()
 ///     Future<Response> fetch();
 @immutable
@@ -125,7 +125,7 @@ class JsonEncoded {
 /// Use to encode a single methode
 /// with application/x-www-form-urlencoded
 ///
-///     @Get(url: '/')
+///     @Get(path: '/')
 ///     @FormUrlEncoded()
 ///     Future<Response> fetch();
 @immutable
@@ -135,7 +135,7 @@ class FormUrlEncoded {
 
 /// Define field for [FormUrlEncoded] method
 ///
-///     @Post(url: '/')
+///     @Post(path: '/')
 ///     @FormUrlEncoded()
 ///     Future<Response> create(@Field('id') String name);
 @immutable
@@ -146,7 +146,7 @@ class Field {
 
 /// define a mutlipart request
 ///
-///     @Post(url: '/')
+///     @Post(path: '/')
 ///     @Multipart()
 ///     Future<Response> create(@Part('id') String name);
 @immutable
@@ -162,7 +162,7 @@ class Part {
 }
 
 /// Use to define a file filed for [Multipart] request
-///     @Post(url: 'file')
+///     @Post(path: 'file')
 ///     @multipart
 ///     Future<Response> postFile(@FileField('file') List<int> bytes);
 @immutable

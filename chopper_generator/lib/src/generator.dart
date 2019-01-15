@@ -276,7 +276,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     Map<ParameterElement, ConstantReader> paths,
     String baseUrl,
   ) {
-    String value = "${method.read("url").stringValue}";
+    String value = "${method.read("path").stringValue}";
     paths.forEach((p, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? p.displayName;
       value = value.replaceFirst("{$name}", "\$${p.displayName}");

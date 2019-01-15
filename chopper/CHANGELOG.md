@@ -3,11 +3,12 @@
 ## 1.2.0
 
 - Request is now containing baseUrl
-- build runner generator is now generating to cache by default
 - Can call `Request.toHttpRequest()` direclty to get the `http.BaseRequest` will receive
+- If a full url is specified in the `path` (ex: @Get(path: 'https://...')), it won't be concaten with the baseUrl of the ChopperClient and the ChopperAPI
 
 - ***BreakingChange***
   - remove `formUrlEncodedAPI`, this is the default behavior of http package and if `jsonApi` is false
+  - Method.url renamed to url
 
 ## 1.1.0
 
