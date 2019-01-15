@@ -71,6 +71,8 @@ typedef FutureOr<Request> RequestInterceptorFunc(Request request);
 /// Interceptor that print a curl request
 /// thanks @edwardaux
 class CurlInterceptor implements RequestInterceptor {
+  final _log = Logger('Chopper');
+
   Future<Request> onRequest(Request request) async {
     final baseRequest = await request.toHttpRequest();
     final method = baseRequest.method;
@@ -91,7 +93,7 @@ class CurlInterceptor implements RequestInterceptor {
       }
     }
     curl += ' $url';
-    print(curl);
+    _log.info(curl);
     return request;
   }
 }
