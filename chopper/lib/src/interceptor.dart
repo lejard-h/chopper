@@ -1,5 +1,6 @@
 import 'dart:async';
 import "package:meta/meta.dart";
+import 'package:http/http.dart' as http;
 
 import 'request.dart';
 import 'response.dart';
@@ -65,3 +66,31 @@ class HeadersInterceptor implements RequestInterceptor {
 typedef FutureOr<Response> ResponseInterceptorFunc<Value>(
     Response<Value> response);
 typedef FutureOr<Request> RequestInterceptorFunc(Request request);
+
+/// Interceptor that print a curl request
+/// thanks @edwardaux
+class CurlInterceptor implements RequestInterceptor {
+  Future<Request> onRequest(Request request) async {
+    final baseRequest = await request.toHttpRequest();
+    final method = baseRequest.method;
+    final url = baseRequest.url.toString();
+    final headers = baseRequest.headers;
+    var curl = '';
+    curl += 'curl';
+    curl += ' -v';
+    curl += ' -X $method';
+    headers.forEach((k, v) {
+      curl += ' -H \'$k: $v\'';
+    });
+    // this is fairly naive, but it should cover most cases
+    if (baseRequest is http.Request) {
+      final body = baseRequest.body;
+      if (body != null && body.isNotEmpty) {
+        curl += ' -d \'$body\'';
+      }
+    }
+    curl += ' $url';
+    print(curl);
+    return request;
+  }
+}

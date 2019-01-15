@@ -5,6 +5,7 @@
 - Request is now containing baseUrl
 - Can call `Request.toHttpRequest()` direclty to get the `http.BaseRequest` will receive
 - If a full url is specified in the `path` (ex: @Get(path: 'https://...')), it won't be concaten with the baseUrl of the ChopperClient and the ChopperAPI
+- Add `CurlInterceptor` thanks @edwardaux
 
 - ***BreakingChange***
   - remove `formUrlEncodedAPI`, this is the default behavior of http package and if `jsonApi` is false
