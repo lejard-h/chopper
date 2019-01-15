@@ -12,14 +12,14 @@ import 'package:source_gen/source_gen.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:chopper/chopper.dart' as chopper;
 
-const _urlVar = "url";
-const _baseUrlVar = "baseUrl";
-const _parametersVar = "params";
-const _headersVar = "headers";
-const _requestVar = "request";
-const _bodyVar = 'body';
-const _partsVar = 'parts';
 const _clientVar = 'client';
+const _baseUrlVar = "baseUrl";
+const _parametersVar = "\$params";
+const _headersVar = "\$headers";
+const _requestVar = "\$request";
+const _bodyVar = '\$body';
+const _partsVar = '\$parts';
+const _urlVar = "\$url";
 
 class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   @override
@@ -313,11 +313,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final namedParams = <String, Expression>{};
 
     if (hasBody) {
-      namedParams[_bodyVar] = refer(_bodyVar);
+      namedParams['body'] = refer(_bodyVar);
     }
 
     if (hasParts) {
-      namedParams[_partsVar] = refer(_partsVar);
+      namedParams['parts'] = refer(_partsVar);
       namedParams['multipart'] = literalBool(true);
     }
 
