@@ -186,6 +186,83 @@ class ChopperClient {
     return res;
   }
 
+  Future<Response<Body>> get<Body>(
+    String url, {
+    Map<String, String> headers,
+  }) =>
+      send(
+        Request(
+          'GET',
+          url,
+          baseUrl,
+          headers: headers,
+        ),
+      );
+
+  Future<Response<Body>> post<Body>(
+    String url, {
+    dynamic body,
+    List<PartValue> parts,
+    Map<String, String> headers,
+  }) =>
+      send(
+        Request(
+          'POST',
+          url,
+          baseUrl,
+          body: body,
+          parts: parts,
+          headers: headers,
+        ),
+      );
+
+  Future<Response<Body>> put<Body>(
+    String url, {
+    dynamic body,
+    List<PartValue> parts,
+    Map<String, String> headers,
+  }) =>
+      send(
+        Request(
+          'PUT',
+          url,
+          baseUrl,
+          body: body,
+          parts: parts,
+          headers: headers,
+        ),
+      );
+
+  Future<Response<Body>> patch<Body>(
+    String url, {
+    dynamic body,
+    List<PartValue> parts,
+    Map<String, String> headers,
+  }) =>
+      send(
+        Request(
+          'PATCH',
+          url,
+          baseUrl,
+          body: body,
+          parts: parts,
+          headers: headers,
+        ),
+      );
+      
+  Future<Response<Body>> delete<Body>(
+    String url, {
+    Map<String, String> headers,
+  }) =>
+      send(
+        Request(
+          'DELETE',
+          url,
+          baseUrl,
+          headers: headers,
+        ),
+      );
+
   Response _tryDecodeJson(Response res) {
     try {
       return res.replace(body: json.decode(res.body));
@@ -199,13 +276,21 @@ class ChopperClient {
     _requestController.close();
     _responseController.close();
     _responseErrorController.close();
-    httpClient.close();
+    if (_clientIsInternal) {
+      httpClient.close();
+    }
   }
 
+  /// Event stream of request just before http call
+  /// all converters and interceptors have been run
   Stream<Request> get onRequest => _requestController.stream;
 
+  /// Event stream of response
+  /// all converters and interceptors have been run
   Stream<Response> get onResponse => _responseController.stream;
 
+  /// Event stream of error response (status code <200 >=300)
+  /// all converters and interceptors have been run
   Stream<Response> get onError => _responseErrorController.stream;
 }
 
