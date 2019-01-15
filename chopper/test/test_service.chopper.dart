@@ -93,4 +93,11 @@ class _$HttpTestService extends HttpTestService with ChopperServiceMixin {
         parts: parts, multipart: true, json: client.jsonApi);
     return client.send(request);
   }
+
+  Future fullUrl() {
+    final url = 'https://test.com';
+    final request =
+        new Request('GET', url, client.baseUrl, json: client.jsonApi);
+    return client.send(request);
+  }
 }

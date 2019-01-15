@@ -256,6 +256,27 @@ void main() {
 
       expect(req3.headers, equals({'foo': 'foo'}));
     });
+
+    test('fullUrl', () async {
+      final client = MockClient((http.Request req) async {
+        return http.Response('ok', 200);
+      });
+
+      final chopper = buildClient(client);
+
+      chopper.onRequest.listen((request) {
+        expect(
+          request.url.toString(),
+          equals('https://test.com'),
+        );
+      });
+
+      final service = HttpTestService.create(chopper);
+      await service.fullUrl();
+
+      client.close();
+      chopper.close();
+    });
   });
 
   group('Streams', () {

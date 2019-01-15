@@ -281,11 +281,18 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       final name = r.peek("name")?.stringValue ?? p.displayName;
       value = value.replaceFirst("{$name}", "\$${p.displayName}");
     });
-    if (!baseUrl.endsWith('/') && !value.startsWith('/')) {
-      return literal('$baseUrl/$value');
-    }
 
-    return literal('$baseUrl$value');
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      // if the request's url is already a fully qualified URL, we can use
+      // as-is and ignore the baseUrl
+      return literal(value);
+    } else {
+      if (!baseUrl.endsWith('/') && !value.startsWith('/')) {
+        return literal('$baseUrl/$value');
+      }
+
+      return literal('$baseUrl$value');
+    }
   }
 
   Expression _generateRequest(

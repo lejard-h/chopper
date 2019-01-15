@@ -49,4 +49,7 @@ abstract class HttpTestService extends ChopperService {
   Future<Response> postFile(
     @FileField('file') List<int> bytes,
   );
+
+  @Get(path: 'https://test.com')
+  Future fullUrl();
 }
