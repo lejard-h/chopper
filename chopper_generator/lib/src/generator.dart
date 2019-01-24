@@ -73,8 +73,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         ])
         ..methods.addAll(_parseMethods(element, baseUrl))
         ..fields.add(_buildDefinitionTypeMethod(friendlyName))
-        ..extend = refer(friendlyName)
-        ..mixins.add(refer('${chopper.ChopperServiceMixin}'));
+        ..extend = refer(friendlyName);
     });
 
     final emitter = new DartEmitter();

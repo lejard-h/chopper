@@ -10,7 +10,6 @@ import 'response.dart';
 
 /// Root object of chopper
 /// Used to manager services, encode data, intercept request, response and error.
-@immutable
 class ChopperClient {
   /// base url of each request to your api
   /// hostname of your api for example
@@ -64,9 +63,8 @@ class ChopperClient {
     _responseInterceptors.addAll(interceptors.where(_isResponseInterceptor));
 
     services.toSet().forEach((s) {
-      final mix = (s as ChopperServiceMixin);
-      mix.client = this;
-      _services[mix.definitionType] = s;
+      s.client = this;
+      _services[s.definitionType] = s;
     });
   }
 
@@ -263,7 +261,7 @@ class ChopperClient {
           headers: headers,
         ),
       );
-      
+
   Future<Response<Body>> delete<Body>(
     String url, {
     Map<String, String> headers,
@@ -285,11 +283,25 @@ class ChopperClient {
     }
   }
 
-  /// dispose [ChopperClient] to clean memory
+  @Deprecated('use dispose')
+  @mustCallSuper
   void close() {
+    dispose();
+  }
+
+  /// dispose [ChopperClient] to clean memory
+  @mustCallSuper
+  void dispose() {
     _requestController.close();
     _responseController.close();
     _responseErrorController.close();
+
+    _services.forEach((_, s) => s.dispose());
+    _services.clear();
+
+    _requestInterceptors.clear();
+    _responseInterceptors.clear();
+
     if (_clientIsInternal) {
       httpClient.close();
     }
@@ -309,10 +321,13 @@ class ChopperClient {
 }
 
 /// Used by generator to generate apis
-abstract class ChopperService {}
-
-abstract class ChopperServiceMixin {
+abstract class ChopperService {
   ChopperClient client;
 
-  Type get definitionType;
+  Type get definitionType => null;
+
+  @mustCallSuper
+  void dispose() {
+    client = null;
+  }
 }
