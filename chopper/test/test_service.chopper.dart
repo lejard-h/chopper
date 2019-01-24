@@ -6,7 +6,7 @@ part of 'test_service.dart';
 // ChopperGenerator
 // **************************************************************************
 
-class _$HttpTestService extends HttpTestService with ChopperServiceMixin {
+class _$HttpTestService extends HttpTestService {
   _$HttpTestService([ChopperClient client]) {
     if (client == null) return;
     this.client = client;
