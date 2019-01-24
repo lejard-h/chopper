@@ -16,7 +16,7 @@ class ChopperApi {
 
 @immutable
 
-/// Define path paremeter of an url
+/// Define path parameter of an url
 ///
 ///     @Get(url: '/{id}')
 ///     Future<Response> fetch(@Path('id') String resourceId);
@@ -112,7 +112,7 @@ class Patch extends Method {
       : super(HttpMethod.Patch, url: url, headers: headers);
 }
 
-/// Use to encode a single methode
+/// Use to encode a single method
 /// with application/json
 ///     @Get(url: '/')
 ///     @JsonEncoded()
@@ -122,7 +122,7 @@ class JsonEncoded {
   const JsonEncoded();
 }
 
-/// Use to encode a single methode
+/// Use to encode a single method
 /// with application/x-www-form-urlencoded
 ///
 ///     @Get(url: '/')
@@ -144,7 +144,7 @@ class Field {
   const Field([this.name]);
 }
 
-/// define a mutlipart request
+/// define a multipart request
 ///
 ///     @Post(url: '/')
 ///     @Multipart()
