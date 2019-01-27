@@ -6,7 +6,7 @@ part of 'definition.dart';
 // ChopperGenerator
 // **************************************************************************
 
-class _$MyService extends MyService with ChopperServiceMixin {
+class _$MyService extends MyService {
   _$MyService([ChopperClient client]) {
     if (client == null) return;
     this.client = client;
