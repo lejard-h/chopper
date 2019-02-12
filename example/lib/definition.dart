@@ -9,13 +9,13 @@ part "definition.chopper.dart";
 abstract class MyService extends ChopperService {
   static MyService create([ChopperClient client]) => _$MyService(client);
 
-  @Get(url: "/{id}/")
+  @Get(path: "/{id}/")
   Future<Response> getResource(@Path() String id);
 
-  @Get(url: "/")
+  @Get(path: "/")
   Future<Response<Map>> getMapResource(@Query() String id);
 
-  @Get(url: "/", headers: const {"foo": "bar"})
+  @Get(path: "/", headers: const {"foo": "bar"})
   Future<Response<Resource>> getTypedResource();
 
   @Post()

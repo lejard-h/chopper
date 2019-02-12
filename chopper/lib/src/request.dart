@@ -1,30 +1,29 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chopper/src/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 
 @immutable
 class Request {
   final String method;
+  final String baseUrl;
   final String url;
   final dynamic body;
   final List<PartValue> parts;
   final Map<String, dynamic> parameters;
   final Map<String, String> headers;
-  final bool formUrlEncoded;
   final bool multipart;
-  final bool json;
 
   const Request(
     this.method,
-    this.url, {
+    this.url,
+    this.baseUrl, {
     this.body,
     this.parameters: const {},
     this.headers: const {},
     this.multipart: false,
-    this.formUrlEncoded,
-    this.json,
     this.parts: const [],
   });
 
@@ -51,28 +50,32 @@ class Request {
     Map<String, String> headers,
     Encoding encoding,
     List<PartValue> parts,
-    bool json,
     bool multipart,
-    bool formUrlEncoded,
+    String baseUrl,
   }) =>
       Request(
         method ?? this.method,
         url ?? this.url,
+        baseUrl ?? this.baseUrl,
         body: body ?? this.body,
         parameters: parameters ?? this.parameters,
         headers: headers ?? this.headers,
         parts: parts ?? this.parts,
-        json: json ?? this.json,
-        formUrlEncoded: formUrlEncoded ?? this.formUrlEncoded,
         multipart: multipart ?? this.multipart,
       );
 
-  Uri _buildUri(String baseUrl) {
+  Uri _buildUri() {
     var uri;
-    if (!baseUrl.endsWith('/') && !url.startsWith('/')) {
-      uri = Uri.parse("$baseUrl/$url");
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      // if the request's url is already a fully qualified URL, we can use
+      // as-is and ignore the baseUrl
+      uri = Uri.parse(url);
     } else {
-      uri = Uri.parse("$baseUrl$url");
+      if (!baseUrl.endsWith('/') && !url.startsWith('/')) {
+        uri = Uri.parse("$baseUrl/$url");
+      } else {
+        uri = Uri.parse("$baseUrl$url");
+      }
     }
 
     if (parameters.isNotEmpty) {
@@ -83,16 +86,11 @@ class Request {
     return uri;
   }
 
-  Map<String, String> _buildHeaders({
-    bool formUrlEncodedApi: false,
-    bool jsonApi: false,
-  }) {
+  Map<String, String> _buildHeaders() {
     final heads = Map<String, String>.from(headers);
 
-    if ((jsonApi == true && formUrlEncoded != true) || json == true) {
+    if (json == true) {
       heads["Content-Type"] = 'application/json';
-    } else if (formUrlEncodedApi == true || formUrlEncoded == true) {
-      heads["Content-Type"] = 'application/x-www-form-urlencoded';
     }
 
     return heads;
@@ -146,19 +144,10 @@ class Request {
     return baseRequest;
   }
 
-  /// [formUrlEncodedApi] override [this.formUrlEncoded]
-  /// [jsonApi] override [this.json]
-  Future<http.BaseRequest> toHttpRequest(
-    String baseUrl, {
-    bool formUrlEncodedApi: false,
-    bool jsonApi: false,
-  }) async {
-    final uri = _buildUri(baseUrl);
+  Future<http.BaseRequest> toHttpRequest() async {
+    final uri = _buildUri();
     final met = _getMethod(method);
-    final heads = _buildHeaders(
-      jsonApi: jsonApi,
-      formUrlEncodedApi: formUrlEncodedApi,
-    );
+    final heads = _buildHeaders();
 
     if (multipart) {
       return _toMultipartRequest(
@@ -173,6 +162,8 @@ class Request {
       heads,
     );
   }
+
+  bool get isJson => headers[contentTypeKey] == jsonHeaders;
 }
 
 class HttpMethod {

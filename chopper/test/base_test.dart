@@ -4,9 +4,11 @@ import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'test_service.dart';
 
+const baseUrl = 'http://localhost:8000';
+
 void main() {
   final buildClient = ([http.Client httpClient]) => ChopperClient(
-        baseUrl: "http://localhost:8000",
+        baseUrl: baseUrl,
         services: [
           // the generated service
           HttpTestService.create(),
@@ -23,7 +25,7 @@ void main() {
 
     test('get service not found', () async {
       final chopper = ChopperClient(
-        baseUrl: "http://localhost:8000",
+        baseUrl: baseUrl,
       );
 
       try {
@@ -40,7 +42,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('http://localhost:8000/test/get/1234'),
+          equals('$baseUrl/test/get/1234'),
         );
         expect(request.method, equals('GET'));
 
@@ -62,7 +64,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('http://localhost:8000/test/post'),
+          equals('$baseUrl/test/post'),
         );
         expect(request.method, equals('POST'));
         expect(request.body, equals('post body'));
@@ -85,7 +87,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('http://localhost:8000/test/put/1234'),
+          equals('$baseUrl/test/put/1234'),
         );
         expect(request.method, equals('PUT'));
         expect(request.body, equals('put body'));
@@ -108,7 +110,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('http://localhost:8000/test/patch/1234'),
+          equals('$baseUrl/test/patch/1234'),
         );
         expect(request.method, equals('PATCH'));
         expect(request.body, equals('patch body'));
@@ -131,7 +133,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('http://localhost:8000/test/delete/1234'),
+          equals('$baseUrl/test/delete/1234'),
         );
         expect(request.method, equals('DELETE'));
 
@@ -196,13 +198,13 @@ void main() {
       final client = MockClient((http.Request req) async {
         expect(
           req.url.toString(),
-          equals('http://localhost:8000/test/get/1234'),
+          equals('$baseUrl/test/get/1234'),
         );
         return http.Response('', 200);
       });
 
       final chopper = ChopperClient(
-        baseUrl: 'http://localhost:8000',
+        baseUrl: baseUrl,
         client: client,
       );
 
@@ -214,12 +216,19 @@ void main() {
     });
 
     test('applyHeader', () {
-      final req1 = applyHeader(Request('GET', '/'), 'foo', 'bar');
+      final req1 = applyHeader(
+          Request(
+            'GET',
+            '/',
+            baseUrl,
+          ),
+          'foo',
+          'bar');
 
       expect(req1.headers, equals({'foo': 'bar'}));
 
       final req2 = applyHeader(
-        Request('GET', '/', headers: {'foo': 'bar'}),
+        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
         'bar',
         'foo',
       );
@@ -227,7 +236,7 @@ void main() {
       expect(req2.headers, equals({'foo': 'bar', 'bar': 'foo'}));
 
       final req3 = applyHeader(
-        Request('GET', '/', headers: {'foo': 'bar'}),
+        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
         'foo',
         'foo',
       );
@@ -236,23 +245,44 @@ void main() {
     });
 
     test('applyHeaders', () {
-      final req1 = applyHeaders(Request('GET', '/'), {'foo': 'bar'});
+      final req1 = applyHeaders(Request('GET', '/', baseUrl), {'foo': 'bar'});
 
       expect(req1.headers, equals({'foo': 'bar'}));
 
       final req2 = applyHeaders(
-        Request('GET', '/', headers: {'foo': 'bar'}),
+        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
         {'bar': 'foo'},
       );
 
       expect(req2.headers, equals({'foo': 'bar', 'bar': 'foo'}));
 
       final req3 = applyHeaders(
-        Request('GET', '/', headers: {'foo': 'bar'}),
+        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
         {'foo': 'foo'},
       );
 
       expect(req3.headers, equals({'foo': 'foo'}));
+    });
+
+    test('fullUrl', () async {
+      final client = MockClient((http.Request req) async {
+        return http.Response('ok', 200);
+      });
+
+      final chopper = buildClient(client);
+
+      chopper.onRequest.listen((request) {
+        expect(
+          request.url.toString(),
+          equals('https://test.com'),
+        );
+      });
+
+      final service = HttpTestService.create(chopper);
+      await service.fullUrl();
+
+      client.close();
+      chopper.dispose();
     });
   });
 
@@ -275,7 +305,7 @@ void main() {
       await service.getTest('1234');
 
       client.close();
-      chopper.close();
+      chopper.dispose();
     });
 
     test('response', () async {
@@ -294,7 +324,7 @@ void main() {
       await service.getTest('1234');
 
       client.close();
-      chopper.close();
+      chopper.dispose();
     });
 
     test('error', () async {
@@ -317,7 +347,7 @@ void main() {
       }
 
       client.close();
-      chopper.close();
+      chopper.dispose();
     });
   });
 }
