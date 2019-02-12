@@ -14,7 +14,7 @@
   - `Converter.encode` and `Converter.decode` removed, implement `Converter.convertResponse` and Converter.convertRequest` instead
   - `ChopperClient.jsonApi` deprecated, use a `JsonConverter` instead
   - `ChopperClient.formUrlEncodedApi`, use `FormUrlEncodedConverter` instead
-  - remove `JsonEncoded` annotation
+  - remove `JsonEncoded` annotation, use `FactoryConverter` instead
 
 ## 1.1.0
 

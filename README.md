@@ -30,7 +30,6 @@ part "my_service.chopper.dart";
 
 @ChopperApi(baseUrl: "/resources")
 abstract class MyService extends ChopperService {
-
   static MyService create([ChopperClient client]) => _$MyService(client);
 
   @Get(url: "{id}")
@@ -67,10 +66,14 @@ flutter packages pub run build_runner build
 ### Use it
 
 ```dart
-final chopper = new ChopperClient(
+final chopper = ChopperClient(
     baseUrl: "http://localhost:8000",
-    jsonApi: true,
-);
+    services: [
+      // the generated service
+      MyService.create()
+    ],
+    converter: JsonConverter(),
+  );
 
 final myService = MyService.create(chopper);
 
@@ -91,7 +94,7 @@ final chopper = new ChopperClient(
       // the generated service
       MyService.create()
     ],
-    jsonApi: true,
+    converter: JsonConverter(),
 );
 
 final myService = chopper.service<MyService>(MyService);
@@ -136,7 +139,7 @@ Both `converter` and `errorConverter` are called before request and response int
 ```dart
 final chopper = new ChopperClient(
    converter: MyConverter(),
-   errorConverter: MyErrorConverter
+   errorConverter: MyErrorConverter()
 );
 ```
 
