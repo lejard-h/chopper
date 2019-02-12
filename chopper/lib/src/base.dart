@@ -1,12 +1,11 @@
 import "dart:async";
-import 'dart:convert' hide Converter;
-import 'package:chopper/src/interceptor.dart';
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
 
 import "interceptor.dart";
 import "request.dart";
 import 'response.dart';
+import 'annotations.dart';
 
 /// Root object of chopper
 /// Used to manager services, encode data, intercept request, response and error.
@@ -26,14 +25,6 @@ class ChopperClient {
   /// converter call on error request
   final Converter errorConverter;
 
-  /// default: false
-  /// Use to define your a api need json encoded data
-  final bool jsonApi;
-
-  /// default: true
-  /// Use to define your a api need form url encoded data
-  final bool formUrlEncodedApi;
-
   final Map<Type, ChopperService> _services = {};
   final _requestInterceptors = [];
   final _responseInterceptors = [];
@@ -50,8 +41,6 @@ class ChopperClient {
     this.converter,
     this.errorConverter,
     Iterable<ChopperService> services: const [],
-    this.jsonApi: false,
-    this.formUrlEncodedApi: false,
   })  : httpClient = client ?? http.Client(),
         _clientIsInternal = client == null {
     if (interceptors.every(_isAnInterceptor) == false) {
@@ -86,26 +75,11 @@ class ChopperClient {
   }
 
   Future<Request> _encodeRequest(Request request) async {
-    final convertJson = request.json == true;
-
-    var converted = request;
-
     if (converter != null) {
-      converted = await converter.encode(request);
+      return converter.convertRequest(request);
     }
 
-    if (convertJson) {
-      if (converted.body != null) {
-        return converted.replace(body: json.encode(converted.body));
-      } else if (converted.parts?.isNotEmpty == true) {
-        final parts = converted.parts
-            .map((p) => p.replace(value: json.encode(p.value)))
-            .toList();
-        return converted.replace(parts: parts);
-      }
-    }
-
-    return converted;
+    return request;
   }
 
   Future<Response> _decodeResponse<Value>(
@@ -114,7 +88,7 @@ class ChopperClient {
   ) async {
     if (withConverter == null) return response;
 
-    final converted = await withConverter.decode<Value>(response);
+    final converted = await withConverter.convertResponse<Value>(response);
 
     if (converted == null) {
       throw Exception("No converter found for type $Value");
@@ -147,11 +121,19 @@ class ChopperClient {
     return res;
   }
 
-  Future<Response<Value>> send<Value>(Request request) async {
+  Future<Response> send<Value>(
+    Request request, {
+    ConvertRequest requestConverter,
+    ConvertResponse<Value> responseConverter,
+  }) async {
     Request req = request;
 
     if (req.body != null || req.parts.isNotEmpty) {
-      req = await _encodeRequest(request);
+      if (requestConverter != null) {
+        req = await requestConverter(request);
+      } else {
+        req = await _encodeRequest(request);
+      }
     }
 
     req = await _interceptRequest(req);
@@ -160,29 +142,14 @@ class ChopperClient {
     final stream = await httpClient.send(await req.toHttpRequest());
 
     final response = await http.Response.fromStream(stream);
-
-    String responseBody;
-    var contentType = response.headers['content-type'];
-    if (contentType != null && contentType.contains("application/json")) {
-      // If we're decoding JSON, there's some ambiguity in https://tools.ietf.org/html/rfc2616
-      // about what encoding should be used if the content-type doesn't contain a 'charset'
-      // parameter. See https://github.com/dart-lang/http/issues/186. In a nutshell, without
-      // an explicit charset, the Dart http library will fall back to using ISO-8859-1, however,
-      // https://tools.ietf.org/html/rfc8259 says that JSON must be encoded using UTF-8. So,
-      // we're going to explicitly decode using UTF-8... if we don't do this, then we can easily
-      // end up with our JSON string containing incorrectly decoded characters.
-      responseBody = utf8.decode(response.bodyBytes);
-    } else {
-      responseBody = response.body;
-    }
-    Response res = Response(response, responseBody);
-
-    if (req.json == true) {
-      res = _tryDecodeJson(res);
-    }
+    Response res = Response(response, response.body);
 
     if (res.isSuccessful) {
-      res = await _decodeResponse<Value>(res, converter);
+      if (responseConverter != null) {
+        res = await responseConverter(res);
+      } else {
+        res = await _decodeResponse<Value>(res, converter);
+      }
     } else {
       res = await _decodeResponse(res, errorConverter);
     }
@@ -274,14 +241,6 @@ class ChopperClient {
           headers: headers,
         ),
       );
-
-  Response _tryDecodeJson(Response res) {
-    try {
-      return res.replace(body: json.decode(res.body));
-    } catch (_) {
-      return res;
-    }
-  }
 
   @Deprecated('use dispose')
   @mustCallSuper

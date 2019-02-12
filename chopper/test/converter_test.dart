@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:chopper/chopper.dart';
-import 'package:meta/meta.dart';
 import 'package:test/test.dart';
 import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +18,7 @@ void main() {
     test('base decode', () async {
       final converter = TestConverter();
 
-      final decoded = await converter.decode<_Converted<String>>(
+      final decoded = await converter.convertResponse<_Converted<String>>(
         Response<String>(http.Response('', 200), 'foo'),
       );
 
@@ -32,7 +29,7 @@ void main() {
     test('base encode', () async {
       final converter = TestConverter();
 
-      final encoded = await converter.encode<_Converted<String>>(
+      final encoded = await converter.convertRequest(
         Request('GET', '/', baseUrl, body: _Converted<String>('foo')),
       );
 
@@ -63,33 +60,35 @@ void main() {
 
 class TestConverter extends Converter {
   @override
-  @protected
-  Future decodeEntity<T>(entity) async {
-    if (entity is String) return _Converted<String>(entity);
-    return null;
+  Response<T> convertResponse<T>(Response res) {
+    if (res.body is String) {
+      return res.replace<_Converted<String>>(body: _Converted<String>(res.body))
+          as Response<T>;
+    }
+    return res;
   }
 
   @override
-  @protected
-  Future encodeEntity<T>(T entity) async {
-    if (entity is _Converted) return entity.data;
-    return entity;
+  Request convertRequest(Request req) {
+    if (req.body is _Converted) return req.replace(body: req.body.data);
+    return req;
   }
 }
 
 class TestErrorConverter extends Converter {
   @override
-  @protected
-  Future decodeEntity<T>(entity) async {
-    if (entity is String) return _ConvertedError<String>(entity);
-    return null;
+  Response<T> convertResponse<T>(Response res) {
+    if (res.body is String) {
+      return res.replace<_ConvertedError<String>>(
+          body: _ConvertedError<String>(res.body));
+    }
+    return res;
   }
 
   @override
-  @protected
-  Future encodeEntity<T>(T entity) async {
-    if (entity is _ConvertedError) return entity.data;
-    return entity;
+  Request convertRequest(Request req) {
+    if (req.body is _ConvertedError) return req.replace(body: req.body);
+    return req;
   }
 }
 

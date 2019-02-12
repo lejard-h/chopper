@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chopper/src/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,17 +15,15 @@ class Request {
   final Map<String, dynamic> parameters;
   final Map<String, String> headers;
   final bool multipart;
-  final bool json;
 
   const Request(
     this.method,
-    this.url, 
+    this.url,
     this.baseUrl, {
     this.body,
     this.parameters: const {},
     this.headers: const {},
     this.multipart: false,
-    this.json,
     this.parts: const [],
   });
 
@@ -51,7 +50,6 @@ class Request {
     Map<String, String> headers,
     Encoding encoding,
     List<PartValue> parts,
-    bool json,
     bool multipart,
     String baseUrl,
   }) =>
@@ -63,7 +61,6 @@ class Request {
         parameters: parameters ?? this.parameters,
         headers: headers ?? this.headers,
         parts: parts ?? this.parts,
-        json: json ?? this.json,
         multipart: multipart ?? this.multipart,
       );
 
@@ -165,6 +162,8 @@ class Request {
       heads,
     );
   }
+
+  bool get isJson => headers[contentTypeKey] == jsonHeaders;
 }
 
 class HttpMethod {

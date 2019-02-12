@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.0.0
+
+- Request is now containing baseUrl
+- Can call `Request.toHttpRequest()` direclty to get the `http.BaseRequest` will receive
+- If a full url is specified in the `path` (ex: @Get(path: 'https://...')), it won't be concaten with the baseUrl of the ChopperClient and the ChopperAPI
+- Add `CurlInterceptor` thanks @edwardaux
+- Add `HttpLoggingInterceptor`
+- Add `FactoryConverter` annotation `@FactoryConverter(request: convertRequest, response: convertResponse)`
+
+- ***BreakingChange***
+  - Method.url renamed to path
+  - `Converter.encode` and `Converter.decode` removed, implement `Converter.convertResponse` and Converter.convertRequest` instead
+  - `ChopperClient.jsonApi` deprecated, use a `JsonConverter` instead
+  - `ChopperClient.formUrlEncodedApi`, use `FormUrlEncodedConverter` instead
+  - remove `JsonEncoded` annotation, use `FactoryConverter` instead
+
 ## 1.1.0
 
 - ***BreakingChange***

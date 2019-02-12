@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
@@ -19,39 +20,8 @@ abstract class RequestInterceptor {
 
 @immutable
 abstract class Converter {
-  FutureOr<Request> encode<T>(Request request) async {
-    if (request.body != null) {
-      return request.replace(body: await encodeEntity<T>(request.body));
-    } else if (request.parts.isNotEmpty) {
-      final parts = new List(request.parts.length);
-      final futures = <Future>[];
-
-      for (int i = 0; i < parts.length; i++) {
-        final p = request.parts[i];
-        futures.add(encodeEntity(p.value).then((e) {
-          parts[i] = PartValue(p.name, e);
-        }));
-      }
-
-      await Future.wait(futures);
-      return request.replace(parts: parts);
-    }
-    return request;
-  }
-
-  Future<Response<T>> decode<T>(Response response) async {
-    if (response.body != null) {
-      final decoded = await decodeEntity<T>(response.body);
-      return response.replaceWithNull<T>(body: decoded);
-    }
-    return response.replaceWithNull<T>();
-  }
-
-  @protected
-  Future encodeEntity<T>(T entity);
-
-  @protected
-  Future decodeEntity<T>(entity);
+  FutureOr<Request> convertRequest(Request request);
+  FutureOr<Response> convertResponse<ConvertedResponseType>(Response response);
 }
 
 @immutable
@@ -71,8 +41,6 @@ typedef FutureOr<Request> RequestInterceptorFunc(Request request);
 /// Interceptor that print a curl request
 /// thanks @edwardaux
 class CurlInterceptor implements RequestInterceptor {
-  final _log = Logger('Chopper');
-
   Future<Request> onRequest(Request request) async {
     final baseRequest = await request.toHttpRequest();
     final method = baseRequest.method;
@@ -93,7 +61,7 @@ class CurlInterceptor implements RequestInterceptor {
       }
     }
     curl += ' $url';
-    _log.info(curl);
+    chopperLogger.info(curl);
     return request;
   }
 }
@@ -141,4 +109,58 @@ class HttpLoggingInterceptor
     _log.info('--> END ${base.method}$bytes');
     return response;
   }
+}
+
+@immutable
+class JsonConverter implements Converter {
+  @override
+  Request convertRequest(Request request) => applyHeader(
+        request,
+        contentTypeKey,
+        jsonHeaders,
+      ).replace(
+        body: json.encode(request.body),
+      );
+
+  @override
+  Response convertResponse<ConvertedResponseType>(Response response) {
+    var contentType = response.headers[contentTypeKey];
+    if (contentType != null && contentType.contains(jsonHeaders)) {
+      // If we're decoding JSON, there's some ambiguity in https://tools.ietf.org/html/rfc2616
+      // about what encoding should be used if the content-type doesn't contain a 'charset'
+      // parameter. See https://github.com/dart-lang/http/issues/186. In a nutshell, without
+      // an explicit charset, the Dart http library will fall back to using ISO-8859-1, however,
+      // https://tools.ietf.org/html/rfc8259 says that JSON must be encoded using UTF-8. So,
+      // we're going to explicitly decode using UTF-8... if we don't do this, then we can easily
+      // end up with our JSON string containing incorrectly decoded characters.
+      return response.replace(
+        body: _tryDecodeJson(
+          utf8.decode(response.bodyBytes),
+        ),
+      );
+    }
+    return response;
+  }
+
+  dynamic _tryDecodeJson(String data) {
+    try {
+      return json.decode(data);
+    } catch (e) {
+      chopperLogger.warning(e);
+      return data;
+    }
+  }
+}
+
+class FormUrlEncodedConverter implements Converter {
+  @override
+  Request convertRequest(Request request) => applyHeader(
+        request,
+        contentTypeKey,
+        formEncodedHeaders,
+      );
+
+  @override
+  Response convertResponse<ConvertedResponseType>(Response response) =>
+      response;
 }

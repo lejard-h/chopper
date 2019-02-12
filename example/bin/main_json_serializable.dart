@@ -31,7 +31,6 @@ main() async {
     ],
     /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
     interceptors: [authHeader],
-    jsonApi: true,
   );
 
   final myService = chopper.service<MyService>(MyService);
@@ -60,12 +59,12 @@ Future<Request> authHeader(Request request) async => applyHeader(
 
 typedef T JsonFactory<T>(Map<String, dynamic> json);
 
-class JsonSerializableConverter extends Converter {
+class JsonSerializableConverter extends JsonConverter {
   final Map<Type, JsonFactory> factories;
 
   JsonSerializableConverter(this.factories);
 
-  T _decode<T>(Map<String, dynamic> values) {
+  T _decodeMap<T>(Map<String, dynamic> values) {
     /// Get jsonFactory using Type parameters
     /// if not found or invalid, throw error or return null
     final jsonFactory = factories[T];
@@ -80,28 +79,37 @@ class JsonSerializableConverter extends Converter {
   List<T> _decodeList<T>(List values) =>
       values.where((v) => v != null).map((v) => _decode<T>(v)).toList();
 
-  @override
-  Future decodeEntity<T>(entity) async {
-    if (entity == null) return null;
-
-    /// handle case when we want to access to Map<String, dynamic> directly
-    /// getResource or getMapResource
-    /// Avoid dynamic or unconverted value, this could lead to several issues
-    if (entity is T) return entity;
-
+  dynamic _decode<T>(entity) {
     if (entity is Iterable) return _decodeList<T>(entity);
 
-    return _decode<T>(entity);
+    if (entity is Map) return _decodeMap<T>(entity);
+
+    return entity;
   }
 
   @override
-  encodeEntity<T>(T entity) async => entity;
+  Response convertResponse<T>(Response response) {
+    // use [JsonConverter] to decode json
+    final jsonRes = super.convertResponse(response);
+
+    return jsonRes.replace(
+      body: _decode<T>(response.body),
+    );
+  }
+
+  @override
+  // all objects should implements toJson method
+  Request convertRequest(Request request) => super.convertRequest(request);
 }
 
-class ErrorConverter extends Converter {
+class ErrorConverter extends JsonConverter {
   @override
-  Future decodeEntity<T>(entity) async => ResourceError.fromJsonFactory(entity);
+  Response convertResponse<ConvertedResponseType>(Response response) {
+    // use [JsonConverter] to decode json
+    final jsonRes = super.convertResponse(response);
 
-  @override
-  encodeEntity<T>(T entity) async => entity;
+    return jsonRes.replace(
+      body: ResourceError.fromJsonFactory(response.body),
+    );
+  }
 }

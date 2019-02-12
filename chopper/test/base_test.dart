@@ -216,12 +216,19 @@ void main() {
     });
 
     test('applyHeader', () {
-      final req1 = applyHeader(Request('GET', '/', baseUrl,), 'foo', 'bar');
+      final req1 = applyHeader(
+          Request(
+            'GET',
+            '/',
+            baseUrl,
+          ),
+          'foo',
+          'bar');
 
       expect(req1.headers, equals({'foo': 'bar'}));
 
       final req2 = applyHeader(
-        Request('GET', '/', baseUrl,headers: {'foo': 'bar'}),
+        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
         'bar',
         'foo',
       );
@@ -229,7 +236,7 @@ void main() {
       expect(req2.headers, equals({'foo': 'bar', 'bar': 'foo'}));
 
       final req3 = applyHeader(
-        Request('GET', '/', baseUrl,headers: {'foo': 'bar'}),
+        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
         'foo',
         'foo',
       );
@@ -275,7 +282,7 @@ void main() {
       await service.fullUrl();
 
       client.close();
-      chopper.close();
+      chopper.dispose();
     });
   });
 
@@ -298,7 +305,7 @@ void main() {
       await service.getTest('1234');
 
       client.close();
-      chopper.close();
+      chopper.dispose();
     });
 
     test('response', () async {
@@ -317,7 +324,7 @@ void main() {
       await service.getTest('1234');
 
       client.close();
-      chopper.close();
+      chopper.dispose();
     });
 
     test('error', () async {
@@ -340,7 +347,7 @@ void main() {
       }
 
       client.close();
-      chopper.close();
+      chopper.dispose();
     });
   });
 }

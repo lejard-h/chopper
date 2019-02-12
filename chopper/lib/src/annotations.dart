@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'request.dart';
+import 'response.dart';
 
 @immutable
 
@@ -112,31 +113,24 @@ class Patch extends Method {
       : super(HttpMethod.Patch, path: path, headers: headers);
 }
 
-/// Use to encode a single method
-/// with application/json
-///     @Get(path: '/')
-///     @JsonEncoded()
-///     Future<Response> fetch();
+typedef Request ConvertRequest(Request request);
+typedef Response ConvertResponse<T>(Response response);
+
 @immutable
-class JsonEncoded {
-  const JsonEncoded();
+class FactoryConverter {
+  final ConvertRequest request;
+  final ConvertResponse response;
+
+  const FactoryConverter({
+    this.request,
+    this.response,
+  });
 }
 
-/// Use to encode a single method
-/// with application/x-www-form-urlencoded
-///
-///     @Get(path: '/')
-///     @FormUrlEncoded()
-///     Future<Response> fetch();
-@immutable
-class FormUrlEncoded {
-  const FormUrlEncoded();
-}
-
-/// Define field for [FormUrlEncoded] method
+/// Define fields
+///   witll be convert to { 'key': value }
 ///
 ///     @Post(path: '/')
-///     @FormUrlEncoded()
 ///     Future<Response> create(@Field('id') String name);
 @immutable
 class Field {
@@ -173,7 +167,5 @@ class FileField {
 }
 
 const multipart = Multipart();
-const formUrlEncoded = FormUrlEncoded();
-const jsonEncoded = JsonEncoded();
 const body = Body();
 //const parts = Parts();

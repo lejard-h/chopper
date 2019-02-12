@@ -16,8 +16,7 @@ class _$MyService extends MyService {
 
   Future<Response> getResource(String id) {
     final $url = '/resources/$id';
-    final $request =
-        new Request('GET', $url, client.baseUrl, json: client.jsonApi);
+    final $request = new Request('GET', $url, client.baseUrl);
     return client.send($request);
   }
 
@@ -26,15 +25,20 @@ class _$MyService extends MyService {
     final $params = {'id': id};
     final $headers = {'foo': 'bar'};
     final $request = new Request('GET', $url, client.baseUrl,
-        json: client.jsonApi, parameters: $params, headers: $headers);
+        parameters: $params, headers: $headers);
+    return client.send<Map>($request);
+  }
+
+  Future<Response<List<Map>>> getListResources() {
+    final $url = '/resources/resources';
+    final $request = new Request('GET', $url, client.baseUrl);
     return client.send<Map>($request);
   }
 
   Future<Response> postResourceUrlEncoded(String toto, String b) {
     final $url = '/resources/';
     final $body = {'a': toto, 'b': b};
-    final $request =
-        new Request('POST', $url, client.baseUrl, body: $body, json: false);
+    final $request = new Request('POST', $url, client.baseUrl, body: $body);
     return client.send($request);
   }
 
@@ -46,7 +50,7 @@ class _$MyService extends MyService {
       new PartValue<String>('3', c)
     ];
     final $request = new Request('POST', $url, client.baseUrl,
-        parts: $parts, multipart: true, json: client.jsonApi);
+        parts: $parts, multipart: true);
     return client.send($request);
   }
 
@@ -54,7 +58,7 @@ class _$MyService extends MyService {
     final $url = '/resources/file';
     final $parts = [new PartFile<List<int>>('file', bytes)];
     final $request = new Request('POST', $url, client.baseUrl,
-        parts: $parts, multipart: true, json: client.jsonApi);
+        parts: $parts, multipart: true);
     return client.send($request);
   }
 }

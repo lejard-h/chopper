@@ -1,4 +1,5 @@
 import "dart:async";
+import 'dart:convert';
 import 'package:chopper/chopper.dart';
 
 part "test_service.chopper.dart";
@@ -30,12 +31,9 @@ abstract class HttpTestService extends ChopperService {
   Future<Response> mapTest(@Body() Map map);
 
   @Post(path: 'map/json')
-  @JsonEncoded()
+  @FactoryConverter(
+      request: customConvertRequest, response: customConvertResponse)
   Future<Response> forceJsonTest(@Body() Map map);
-
-  @Post(path: 'map/form')
-  @FormUrlEncoded()
-  Future<Response> forceFormTest(@Body() Map map);
 
   @Post(path: 'multi')
   @multipart
@@ -53,3 +51,11 @@ abstract class HttpTestService extends ChopperService {
   @Get(path: 'https://test.com')
   Future fullUrl();
 }
+
+Request customConvertRequest(Request req) {
+  final r = JsonConverter().convertRequest(req);
+  return applyHeader(r, 'customConverter', 'true');
+}
+
+Response<T> customConvertResponse<T>(Response res) =>
+    res.replace(body: json.decode(res.body));

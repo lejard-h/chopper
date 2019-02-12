@@ -17,8 +17,10 @@ abstract class MyService extends ChopperService {
     @Query() String id,
   );
 
+  @Get(path: "/resources")
+  Future<Response<List<Map>>> getListResources();
+
   @Post(path: '/')
-  @formUrlEncoded
   Future<Response> postResourceUrlEncoded(
     @Field('a') String toto,
     @Field() String b,

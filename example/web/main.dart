@@ -8,7 +8,7 @@ import 'package:http/browser_client.dart';
 import 'main.template.dart' as ng;
 
 ChopperClient chopperClientFactory(http.Client httpClient) => ChopperClient(
-      jsonApi: true,
+      converter: JsonConverter(),
       baseUrl: 'http://localhost:9000',
       client: httpClient,
     );

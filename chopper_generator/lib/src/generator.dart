@@ -102,8 +102,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   Method _generateMethod(MethodElement m, String baseUrl) {
     final method = _getMethodAnnotation(m);
     final multipart = _hasAnnotation(m, chopper.Multipart);
-    final formUrlEncoded = _hasAnnotation(m, chopper.FormUrlEncoded);
-    final hasJson = _hasAnnotation(m, chopper.JsonEncoded);
+    final factoryConverter = _getFactoryConverterAnotation(m);
 
     final body = _getAnnotation(m, chopper.Body);
     final paths = _getAnnotations(m, chopper.Path);
@@ -150,8 +149,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         blocks.add(headers);
       }
 
-      final hasBody =
-          body.isNotEmpty || (formUrlEncoded == true && fields.isNotEmpty);
+      final hasBody = body.isNotEmpty || fields.isNotEmpty;
       if (hasBody) {
         if (body.isNotEmpty) {
           blocks.add(
@@ -177,11 +175,26 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         useQueries: queries.isNotEmpty,
         useHeaders: headers != null,
         hasParts: hasParts,
-        hasFormUrlEncoded: formUrlEncoded,
-        hasJson: hasJson,
       ).assignFinal(_requestVar).statement);
 
       final namedArguments = <String, Expression>{};
+
+      final requestFactory = factoryConverter?.peek('request');
+      if (requestFactory != null) {
+        final el = requestFactory.objectValue.type.element;
+        if (el is FunctionTypedElement) {
+          namedArguments['requestConverter'] = refer(_factoryForFunction(el));
+        }
+      }
+
+      final responseFactory = factoryConverter?.peek('response');
+      if (responseFactory != null) {
+        final el = responseFactory.objectValue.type.element;
+        if (el is FunctionTypedElement) {
+          namedArguments['responseConverter'] = refer(_factoryForFunction(el));
+        }
+      }
+
       final typeArguments = <Reference>[];
       if (responseType != null) {
         typeArguments.add(refer(responseType.displayName));
@@ -194,6 +207,13 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       b.body = new Block.of(blocks);
     });
+  }
+
+  String _factoryForFunction(FunctionTypedElement function) {
+    if (function.enclosingElement is ClassElement) {
+      return '${function.enclosingElement.name}.${function.name}';
+    }
+    return function.name;
   }
 
   Map<String, ConstantReader> _getAnnotation(MethodElement m, Type type) {
@@ -235,6 +255,13 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     return null;
   }
 
+  ConstantReader _getFactoryConverterAnotation(MethodElement method) {
+    final annot = _typeChecker(chopper.FactoryConverter)
+        .firstAnnotationOf(method, throwOnUnresolved: false);
+    if (annot != null) return new ConstantReader(annot);
+    return null;
+  }
+
   bool _hasAnnotation(MethodElement method, Type type) {
     final annot =
         _typeChecker(type).firstAnnotationOf(method, throwOnUnresolved: false);
@@ -259,14 +286,13 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
   DartType _getResponseType(DartType type) {
     final generic = _genericOf(type);
-    if (generic == null ||
-        _typeChecker(Map).isExactlyType(type) ||
-        _typeChecker(List).isExactlyType(type)) {
-      return type;
-    }
-    if (generic.isDynamic) {
-      return null;
-    }
+
+    if (generic == null || _typeChecker(Map).isExactlyType(type)) return type;
+
+    if (generic.isDynamic) return null;
+
+    if (_typeChecker(List).isExactlyType(type)) return generic;
+
     return _getResponseType(generic);
   }
 
@@ -300,8 +326,6 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     bool hasParts: false,
     bool useQueries: false,
     bool useHeaders: false,
-    bool hasFormUrlEncoded: false,
-    bool hasJson: false,
   }) {
     final params = <Expression>[
       literal(method.peek("method").stringValue),
@@ -318,14 +342,6 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     if (hasParts) {
       namedParams['parts'] = refer(_partsVar);
       namedParams['multipart'] = literalBool(true);
-    }
-
-    if (hasJson) {
-      namedParams['json'] = literalBool(true);
-    } else if (hasFormUrlEncoded) {
-      namedParams['json'] = literalBool(false);
-    } else {
-      namedParams['json'] = refer('$_clientVar.jsonApi');
     }
 
     if (useQueries) {

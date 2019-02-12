@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:chopper/chopper.dart';
 import 'package:chopper_example/definition.dart';
 import 'package:chopper_example/jaguar_serializer.dart';
@@ -25,7 +23,6 @@ main() async {
       // the generated service
       MyService.create(),
     ],
-    jsonApi: true,
   );
 
   final myService = chopper.service<MyService>(MyService);
@@ -51,37 +48,58 @@ final repository = SerializerRepo(serializers: [
   ResourceSerializer(),
 ]);
 
-class JaguarConverter extends Converter {
-  @override
-  Future<T> decodeEntity<T>(entity) async {
+class JaguarConverter extends JsonConverter {
+  dynamic _decode<ConvertedResponseType>(entity) {
     /// handle case when we want to access to Map<String, dynamic> directly
     /// getResource or getMapResource
     /// Avoid dynamic or unconverted value, this could lead to several issues
-    if (entity is T) return entity;
+    if (entity is ConvertedResponseType) return entity;
 
-    if (entity is Map) {
-      final serializer = repository.getByType<T>(T);
+    final serializer = repository.getByType<ConvertedResponseType>(
+      ConvertedResponseType,
+    );
 
-      if (serializer == null) {
-        /// throw serializer not found error;
-        return null;
-      }
+    /// throw serializer not found error;
+    if (serializer == null) return null;
 
-      return serializer.fromMap(entity);
-    }
+    if (entity is Map) return serializer.fromMap(entity);
+
+    if (entity is List) return serializer.fromList(entity);
+
     return entity;
   }
 
   @override
-  Future encodeEntity<T>(entity) async => repository.to(entity);
+  Response convertResponse<ConvertedResponseType>(Response response) {
+    // use [JsonConverter] to decode json
+    final jsonRes = super.convertResponse(response);
+
+    return jsonRes.replace(
+      body: _decode<ConvertedResponseType>(jsonRes.body),
+    );
+  }
+
+  @override
+  Request convertRequest(Request request) => super.convertRequest(
+        request.replace(
+          body: repository.to(request.body),
+        ),
+      );
 }
 
-class ErrorConverter extends Converter {
+class ErrorConverter extends JsonConverter {
   final _serializer = ResourceErrorSerializer();
 
   @override
-  Future decodeEntity<T>(entity) async => _serializer.fromMap(entity);
+  Response convertResponse<ConvertedResponseType>(Response response) {
+    // use [JsonConverter] to decode json
+    final jsonRes = super.convertResponse(response);
+
+    return jsonRes.replace(
+      body: _serializer.fromMap(jsonRes.body),
+    );
+  }
 
   @override
-  encodeEntity<T>(T entity) async => entity;
+  Request convertRequest(Request request) => request;
 }
