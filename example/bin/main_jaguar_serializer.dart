@@ -44,7 +44,7 @@ main() async {
 }
 
 /// Map all your serializer in a repository
-final repository = SerializerRepo(serializers: [
+final repository = SerializerRepoImpl(serializers: [
   ResourceSerializer(),
 ]);
 
