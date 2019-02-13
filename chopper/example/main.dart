@@ -24,18 +24,3 @@ main() async {
 
   chopper.dispose();
 }
-
-class _Converter implements Converter {
-  @override
-  FutureOr<Request> convertRequest(Request request) {
-    // TODO: implement convertRequest
-    return null;
-  }
-
-  @override
-  FutureOr<Response<ConvertedResponseType>>
-      convertResponse<ConvertedResponseType>(Response response) {
-    // TODO: implement convertResponse
-    return null;
-  }
-}

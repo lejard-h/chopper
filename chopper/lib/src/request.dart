@@ -86,15 +86,7 @@ class Request {
     return uri;
   }
 
-  Map<String, String> _buildHeaders() {
-    final heads = Map<String, String>.from(headers);
-
-    if (json == true) {
-      heads["Content-Type"] = 'application/json';
-    }
-
-    return heads;
-  }
+  Map<String, String> _buildHeaders() => Map<String, String>.from(headers);
 
   Future<http.BaseRequest> _toMultipartRequest(
     String method,
