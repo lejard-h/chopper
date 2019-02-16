@@ -64,6 +64,7 @@ class BuiltValueConverter extends JsonConverter {
   dynamic _decode<T>(entity) {
     print(entity);
     print(entity.runtimeType);
+
     /// handle case when we want to access to Map<String, dynamic> directly
     /// getResource or getMapResource
     /// Avoid dynamic or unconverted value, this could lead to several issues

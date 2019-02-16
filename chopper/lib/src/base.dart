@@ -89,7 +89,7 @@ class ChopperClient {
     if (withConverter == null) return response;
 
     final converted = await withConverter.convertResponse<ToDecode>(response);
-    
+
     if (converted == null) {
       throw Exception("No converter found for type $ToDecode");
     }
