@@ -1,0 +1,22 @@
+targets:
+  $default:
+    sources:
+      include: ["lib/built_value.dart", 
+                "lib/built_value_serializers.dart", 
+                "lib/json_serializable.dart", 
+                "lib/jaguar_serializer.dart" ]
+    builders:
+      json_serializable:
+        options:
+          # Options configure how source code is generated for every
+          # `@JsonSerializable`-annotated class in the package.
+          #
+          # The default value for each is listed.
+          #
+          # For usage information, reference the corresponding field in
+          # `JsonSerializableGenerator`.
+          use_wrappers: false
+          any_map: false
+          checked: false
+          explicit_to_json: true
+          generate_to_json_function: true

@@ -82,16 +82,16 @@ class ChopperClient {
     return request;
   }
 
-  Future<Response> _decodeResponse<Value>(
+  Future<Response<Body>> _decodeResponse<Body, ToDecode>(
     Response response,
     Converter withConverter,
   ) async {
     if (withConverter == null) return response;
 
-    final converted = await withConverter.convertResponse<Value>(response);
-
+    final converted = await withConverter.convertResponse<ToDecode>(response);
+    
     if (converted == null) {
-      throw Exception("No converter found for type $Value");
+      throw Exception("No converter found for type $ToDecode");
     }
 
     return converted;
@@ -121,10 +121,10 @@ class ChopperClient {
     return res;
   }
 
-  Future<Response> send<Value>(
+  Future<Response<Body>> send<Body, ToDecode>(
     Request request, {
     ConvertRequest requestConverter,
-    ConvertResponse<Value> responseConverter,
+    ConvertResponse responseConverter,
   }) async {
     Request req = request;
 
@@ -148,7 +148,7 @@ class ChopperClient {
       if (responseConverter != null) {
         res = await responseConverter(res);
       } else {
-        res = await _decodeResponse<Value>(res, converter);
+        res = await _decodeResponse<Body, ToDecode>(res, converter);
       }
     } else {
       res = await _decodeResponse(res, errorConverter);

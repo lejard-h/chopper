@@ -125,6 +125,7 @@ class JsonConverter implements Converter {
   @override
   Response convertResponse<ConvertedResponseType>(Response response) {
     var contentType = response.headers[contentTypeKey];
+    var body = response.body;
     if (contentType != null && contentType.contains(jsonHeaders)) {
       // If we're decoding JSON, there's some ambiguity in https://tools.ietf.org/html/rfc2616
       // about what encoding should be used if the content-type doesn't contain a 'charset'
@@ -133,13 +134,11 @@ class JsonConverter implements Converter {
       // https://tools.ietf.org/html/rfc8259 says that JSON must be encoded using UTF-8. So,
       // we're going to explicitly decode using UTF-8... if we don't do this, then we can easily
       // end up with our JSON string containing incorrectly decoded characters.
-      return response.replace(
-        body: _tryDecodeJson(
-          utf8.decode(response.bodyBytes),
-        ),
-      );
+      body = utf8.decode(response.bodyBytes);
     }
-    return response;
+    return response.replace(
+      body: _tryDecodeJson(body),
+    );
   }
 
   dynamic _tryDecodeJson(String data) {

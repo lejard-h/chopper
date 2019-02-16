@@ -1,8 +1,6 @@
 import "dart:async";
 import 'package:chopper/chopper.dart';
-import 'package:chopper/src/interceptor.dart';
-import 'package:chopper_example/definition.dart';
-import 'package:chopper_example/model.dart';
+import 'package:chopper_example/json_serializable.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -90,10 +88,10 @@ class JsonSerializableConverter extends JsonConverter {
   @override
   Response convertResponse<T>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse(response);
+    final jsonRes = super.convertResponse<T>(response);
 
-    return jsonRes.replace(
-      body: _decode<T>(response.body),
+    return jsonRes.replace<T>(
+      body: _decode<T>(jsonRes.body),
     );
   }
 
@@ -104,12 +102,12 @@ class JsonSerializableConverter extends JsonConverter {
 
 class ErrorConverter extends JsonConverter {
   @override
-  Response convertResponse<ConvertedResponseType>(Response response) {
+  Response convertResponse<T>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse(response);
+    final jsonRes = super.convertResponse<T>(response);
 
-    return jsonRes.replace(
-      body: ResourceError.fromJsonFactory(response.body),
+    return jsonRes.replace<ResourceError>(
+      body: ResourceError.fromJsonFactory(jsonRes.body),
     );
   }
 }

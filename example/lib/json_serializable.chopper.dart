@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'definition.dart';
+part of 'json_serializable.dart';
 
 // **************************************************************************
 // ChopperGenerator
@@ -16,32 +16,30 @@ class _$MyService extends MyService {
 
   Future<Response> getResource(String id) {
     final $url = '/resources/$id/';
-    final $request = new Request('GET', $url, client.baseUrl);
-    return client.send($request);
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response<Map>> getMapResource(String id) {
     final $url = '/resources/';
     final $params = {'id': id};
-    final $request =
-        new Request('GET', $url, client.baseUrl, parameters: $params);
-    return client.send<Map>($request);
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<Map, Map>($request);
   }
 
   Future<Response<Resource>> getTypedResource() {
     final $url = '/resources/';
     final $headers = {'foo': 'bar'};
-    final $request =
-        new Request('GET', $url, client.baseUrl, headers: $headers);
-    return client.send<Resource>($request);
+    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    return client.send<Resource, Resource>($request);
   }
 
   Future<Response<Resource>> newResource(Resource resource, {String name}) {
     final $url = '/resources/';
     final $headers = {'name': name};
     final $body = resource;
-    final $request = new Request('POST', $url, client.baseUrl,
-        body: $body, headers: $headers);
-    return client.send<Resource>($request);
+    final $request =
+        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    return client.send<Resource, Resource>($request);
   }
 }

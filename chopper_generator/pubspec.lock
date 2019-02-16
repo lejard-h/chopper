@@ -37,7 +37,7 @@ packages:
     source: hosted
     version: "1.0.1"
   built_collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: built_collection
       url: "https://pub.dartlang.org"
@@ -60,10 +60,10 @@ packages:
   chopper:
     dependency: "direct main"
     description:
-      name: chopper
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
+      path: "../chopper"
+      relative: true
+    source: path
+    version: "2.1.0"
   code_builder:
     dependency: "direct main"
     description:

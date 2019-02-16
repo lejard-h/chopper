@@ -1,6 +1,6 @@
 import 'package:angular/angular.dart';
 import 'package:chopper/chopper.dart';
-import 'package:chopper_example/definition.dart';
+import 'package:chopper_example/built_value_resource.dart';
 
 // ignore: uri_has_not_been_generated
 import 'angular_example.template.dart' as ng;

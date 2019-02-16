@@ -6,6 +6,7 @@ import 'package:analyzer/dart/element/type.dart';
 
 import 'package:build/build.dart';
 import 'package:build/src/builder/build_step.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:dart_style/dart_style.dart';
 
 import 'package:source_gen/source_gen.dart';
@@ -114,6 +115,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final headers = _generateHeaders(m, method);
     final url = _generateUrl(method, paths, baseUrl);
     final responseType = _getResponseType(m.returnType);
+    final responseInnerType =
+        _getResponseInnerType(m.returnType) ?? responseType;
 
     return new Method((b) {
       b.name = m.displayName;
@@ -198,6 +201,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       final typeArguments = <Reference>[];
       if (responseType != null) {
         typeArguments.add(refer(responseType.displayName));
+        typeArguments.add(refer(responseInnerType.displayName));
       }
 
       blocks.add(refer("client.send")
@@ -285,15 +289,22 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }
 
   DartType _getResponseType(DartType type) {
+    return _genericOf(_genericOf(type));
+  }
+
+  DartType _getResponseInnerType(DartType type) {
     final generic = _genericOf(type);
 
-    if (generic == null || _typeChecker(Map).isExactlyType(type)) return type;
+    if (generic == null ||
+        _typeChecker(Map).isExactlyType(type) ||
+        _typeChecker(BuiltMap).isExactlyType(type)) return type;
 
     if (generic.isDynamic) return null;
 
-    if (_typeChecker(List).isExactlyType(type)) return generic;
+    if (_typeChecker(List).isExactlyType(type) ||
+        _typeChecker(BuiltList).isExactlyType(type)) return generic;
 
-    return _getResponseType(generic);
+    return _getResponseInnerType(generic);
   }
 
   Expression _generateUrl(

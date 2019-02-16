@@ -1,29 +1,31 @@
 import 'package:chopper/chopper.dart';
-import 'package:jaguar_serializer/jaguar_serializer.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part "jaguar_serializer.jser.dart";
-part "jaguar_serializer.chopper.dart";
+part 'json_serializable.g.dart';
+part 'json_serializable.chopper.dart';
 
-@GenSerializer()
-class ResourceSerializer extends Serializer<Resource>
-    with _$ResourceSerializer {}
-
-@GenSerializer()
-class ResourceErrorSerializer extends Serializer<ResourceError>
-    with _$ResourceErrorSerializer {}
-
+@JsonSerializable()
 class Resource {
   final String id;
   final String name;
 
   Resource(this.id, this.name);
+
+  static const fromJsonFactory = _$ResourceFromJson;
+
+  Map<String, dynamic> toJson() => _$ResourceToJson(this);
 }
 
+@JsonSerializable()
 class ResourceError {
   final String type;
   final String message;
 
   ResourceError(this.type, this.message);
+
+  static const fromJsonFactory = _$ResourceErrorFromJson;
+
+  Map<String, dynamic> toJson() => _$ResourceErrorToJson(this);
 }
 
 @ChopperApi(baseUrl: "/resources")

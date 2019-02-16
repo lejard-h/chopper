@@ -17,7 +17,7 @@ class _$MyService extends MyService {
   Future<Response> getResource(String id) {
     final $url = '/resources/$id';
     final $request = new Request('GET', $url, client.baseUrl);
-    return client.send($request);
+    return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response<Map>> getMapResource(String id) {
@@ -26,20 +26,20 @@ class _$MyService extends MyService {
     final $headers = {'foo': 'bar'};
     final $request = new Request('GET', $url, client.baseUrl,
         parameters: $params, headers: $headers);
-    return client.send<Map>($request);
+    return client.send<Map, Map>($request);
   }
 
   Future<Response<List<Map>>> getListResources() {
     final $url = '/resources/resources';
     final $request = new Request('GET', $url, client.baseUrl);
-    return client.send<Map>($request);
+    return client.send<List<Map>, Map>($request);
   }
 
   Future<Response> postResourceUrlEncoded(String toto, String b) {
     final $url = '/resources/';
     final $body = {'a': toto, 'b': b};
     final $request = new Request('POST', $url, client.baseUrl, body: $body);
-    return client.send($request);
+    return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response> postResources(Map a, Map b, String c) {
@@ -51,7 +51,7 @@ class _$MyService extends MyService {
     ];
     final $request = new Request('POST', $url, client.baseUrl,
         parts: $parts, multipart: true);
-    return client.send($request);
+    return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response> postFile(List<int> bytes) {
@@ -59,6 +59,6 @@ class _$MyService extends MyService {
     final $parts = [new PartFile<List<int>>('file', bytes)];
     final $request = new Request('POST', $url, client.baseUrl,
         parts: $parts, multipart: true);
-    return client.send($request);
+    return client.send<dynamic, dynamic>($request);
   }
 }

@@ -1,7 +1,5 @@
 import 'package:chopper/chopper.dart';
-import 'package:chopper_example/definition.dart';
 import 'package:chopper_example/jaguar_serializer.dart';
-import 'package:chopper_example/model.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
@@ -44,7 +42,7 @@ main() async {
 }
 
 /// Map all your serializer in a repository
-final repository = SerializerRepo(serializers: [
+final repository = SerializerRepoImpl(serializers: [
   ResourceSerializer(),
 ]);
 
@@ -72,9 +70,9 @@ class JaguarConverter extends JsonConverter {
   @override
   Response convertResponse<ConvertedResponseType>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse(response);
+    final jsonRes = super.convertResponse<ConvertedResponseType>(response);
 
-    return jsonRes.replace(
+    return jsonRes.replace<ConvertedResponseType>(
       body: _decode<ConvertedResponseType>(jsonRes.body),
     );
   }
