@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:built_collection/built_collection.dart';
-import 'package:built_value/serializer.dart';
 import 'package:chopper/chopper.dart';
 import 'package:chopper_example/built_value_resource.dart';
 import 'package:chopper_example/built_value_serializers.dart';
