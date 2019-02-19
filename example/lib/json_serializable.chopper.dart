@@ -22,7 +22,7 @@ class _$MyService extends MyService {
 
   Future<Response<Map>> getMapResource(String id) {
     final $url = '/resources/';
-    final $params = {'id': id};
+    final $params = {'id': '$id'};
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<Map, Map>($request);
   }

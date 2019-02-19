@@ -145,7 +145,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       if (queries.isNotEmpty) {
-        blocks.add(_genereteMap(queries).assignFinal(_parametersVar).statement);
+        blocks.add(_generateMap(queries).assignFinal(_parametersVar).statement);
       }
 
       if (headers != null) {
@@ -160,7 +160,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           );
         } else {
           blocks.add(
-            _genereteMap(fields).assignFinal(_bodyVar).statement,
+            _generateMap(fields).assignFinal(_bodyVar).statement,
           );
         }
       }
@@ -169,7 +169,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           multipart == true && (parts.isNotEmpty || fileFields.isNotEmpty);
       if (hasParts) {
         blocks.add(
-            _genereteList(parts, fileFields).assignFinal(_partsVar).statement);
+            _generateList(parts, fileFields).assignFinal(_partsVar).statement);
       }
 
       blocks.add(_generateRequest(
@@ -366,17 +366,17 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     return refer("Request").newInstance(params, namedParams);
   }
 
-  Expression _genereteMap(Map<ParameterElement, ConstantReader> queries) {
+  Expression _generateMap(Map<ParameterElement, ConstantReader> queries) {
     final map = {};
     queries.forEach((p, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? p.displayName;
-      map[literal(name)] = refer(p.displayName);
+      map[literal(name)] = literal("\$${p.displayName}");
     });
 
     return literalMap(map);
   }
 
-  Expression _genereteList(
+  Expression _generateList(
     Map<ParameterElement, ConstantReader> parts,
     Map<ParameterElement, ConstantReader> fileFields,
   ) {
