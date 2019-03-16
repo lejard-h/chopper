@@ -12,7 +12,7 @@ main() async {
     converter: JsonConverter(),
   );
 
-  final myService = chopper.service<MyService>(MyService);
+  final myService = chopper.getService<MyService>();
 
   final response = await myService.getMapResource("1");
   print(response.body);

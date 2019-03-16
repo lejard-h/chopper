@@ -34,9 +34,8 @@ void main() {
 
         final chopper = buildClient(httpClient);
 
-        final result = await chopper
-            .service<HttpTestService>(HttpTestService)
-            .mapTest(sample);
+        final result =
+            await chopper.getService<HttpTestService>().mapTest(sample);
 
         expect(result.body, equals('ok'));
 

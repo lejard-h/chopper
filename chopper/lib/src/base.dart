@@ -7,6 +7,8 @@ import "request.dart";
 import 'response.dart';
 import 'annotations.dart';
 
+Type typeOf<T>() => T;
+
 /// Root object of chopper
 /// Used to manager services, encode data, intercept request, response and error.
 class ChopperClient {
@@ -66,13 +68,23 @@ class ChopperClient {
   bool _isAnInterceptor(value) =>
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
-  T service<T extends ChopperService>(Type type) {
-    final s = _services[type];
-    if (s == null) {
-      throw Exception("Service of type '$type' not found.");
+  ServiceType getService<ServiceType extends ChopperService>() {
+    Type serviceType = typeOf<ServiceType>();
+    if (serviceType == dynamic) {
+      throw Exception(
+          "Service type should be provided, `dynamic` is not allowed.");
     }
-    return s;
+    final service = _services[serviceType];
+    if (service == null) {
+      throw Exception("Service of type '$serviceType' not found.");
+    }
+    return service;
   }
+
+  @Deprecated(
+      'Highly recommended to use `getService<ServiceType>()` instead. Will be removed soon')
+  ServiceType service<ServiceType extends ChopperService>(Type type) =>
+      getService<ServiceType>();
 
   Future<Request> _encodeRequest(Request request) async {
     if (converter != null) {

@@ -41,9 +41,8 @@ void main() {
         httpClient,
       );
 
-      final result = await chopper
-          .service<HttpTestService>(HttpTestService)
-          .mapTest(sample);
+      final result =
+          await chopper.getService<HttpTestService>().mapTest(sample);
 
       expect(result.body, equals(res));
 
@@ -68,9 +67,8 @@ void main() {
         httpClient,
       );
 
-      final result = await chopper
-          .service<HttpTestService>(HttpTestService)
-          .forceJsonTest(sample);
+      final result =
+          await chopper.getService<HttpTestService>().forceJsonTest(sample);
 
       expect(result.body, equals(res));
 

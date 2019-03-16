@@ -33,7 +33,7 @@ main() async {
     interceptors: [authHeader],
   );
 
-  final myService = chopper.service<MyService>(MyService);
+  final myService = chopper.getService<MyService>();
 
   final response1 = await myService.getResource("1");
   print('response 1: ${response1.body}'); // undecoded String
