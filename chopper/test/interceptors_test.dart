@@ -36,7 +36,7 @@ void main() {
         client: requestClient,
       );
 
-      await chopper.service<HttpTestService>(HttpTestService).getTest('1234');
+      await chopper.getService<HttpTestService>().getTest('1234');
     });
 
     test('RequestInterceptorFunc', () async {
@@ -50,7 +50,7 @@ void main() {
         client: requestClient,
       );
 
-      await chopper.service<HttpTestService>(HttpTestService).getTest('1234');
+      await chopper.getService<HttpTestService>().getTest('1234');
     });
 
     test('ResponseInterceptor', () async {
@@ -62,9 +62,7 @@ void main() {
         client: responseClient,
       );
 
-      final res = await chopper
-          .service<HttpTestService>(HttpTestService)
-          .getTest('1234');
+      final res = await chopper.getService<HttpTestService>().getTest('1234');
 
       expect(res.body is _Intercepted, isTrue);
     });
@@ -82,9 +80,7 @@ void main() {
         client: responseClient,
       );
 
-      final res = await chopper
-          .service<HttpTestService>(HttpTestService)
-          .getTest('1234');
+      final res = await chopper.getService<HttpTestService>().getTest('1234');
 
       expect(res.body is _Intercepted, isTrue);
     });
@@ -106,7 +102,7 @@ void main() {
         client: client,
       );
 
-      await chopper.service<HttpTestService>(HttpTestService).getTest('1234');
+      await chopper.getService<HttpTestService>().getTest('1234');
     });
   });
 }

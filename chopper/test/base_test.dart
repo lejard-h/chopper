@@ -18,7 +18,7 @@ void main() {
   group('Base', () {
     test('get service', () async {
       final chopper = buildClient();
-      final service = chopper.service<HttpTestService>(HttpTestService);
+      final service = chopper.getService<HttpTestService>();
 
       expect(service is HttpTestService, isTrue);
     });
@@ -29,7 +29,7 @@ void main() {
       );
 
       try {
-        chopper.service<HttpTestService>(HttpTestService);
+        chopper.getService<HttpTestService>();
       } catch (e) {
         expect(e is Exception, isTrue);
         expect(
@@ -50,7 +50,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>(HttpTestService);
+      final service = chopper.getService<HttpTestService>();
 
       final response = await service.getTest('1234');
 
@@ -73,7 +73,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>(HttpTestService);
+      final service = chopper.getService<HttpTestService>();
 
       final response = await service.postTest('post body');
 
@@ -96,7 +96,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>(HttpTestService);
+      final service = chopper.getService<HttpTestService>();
 
       final response = await service.putTest('1234', 'put body');
 
@@ -119,7 +119,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>(HttpTestService);
+      final service = chopper.getService<HttpTestService>();
 
       final response = await service.patchTest('1234', 'patch body');
 
@@ -141,7 +141,7 @@ void main() {
       });
 
       final chopper = buildClient(httpClient);
-      final service = chopper.service<HttpTestService>(HttpTestService);
+      final service = chopper.getService<HttpTestService>();
 
       final response = await service.deleteTest('1234');
 
@@ -165,9 +165,7 @@ void main() {
         client: client,
       );
 
-      await chopper
-          .service<HttpTestService>(HttpTestService)
-          .deleteTest('1234');
+      await chopper.getService<HttpTestService>().deleteTest('1234');
 
       client.close();
     });
@@ -186,7 +184,7 @@ void main() {
         client: client,
       );
 
-      await chopper.service<HttpTestService>(HttpTestService).getTest(
+      await chopper.getService<HttpTestService>().getTest(
             '1234',
             dynamicHeader: '42',
           );
