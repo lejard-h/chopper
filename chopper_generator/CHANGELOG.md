@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.0
+
+- Fix converter issue on List
+  - ***Breaking Change*** 
+  on `Converter.convertResponse<ResultType>(response)`, 
+  it take a new generic type => `Converter.convertResponse<ResultType, ItemType>(response)`
+                 
+- deprecated `Chopper.service<Type>(Type)`, use `Chopper.getservice<Type>()` instead
+thanks to @MichaelDark
+
+## 2.1.0
+
+- fix casting issue
+
 ## 2.0.0
 
 - Request is now containing baseUrl
