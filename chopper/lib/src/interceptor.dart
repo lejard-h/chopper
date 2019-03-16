@@ -9,22 +9,35 @@ import 'response.dart';
 import 'utils.dart';
 
 @immutable
+/// [ResponseInterceptor] are call after [Converter.convertResponse]
 abstract class ResponseInterceptor {
   FutureOr<Response> onResponse(Response response);
 }
 
 @immutable
+/// [RequestInterceptor] are call after [Converter.convertRequest]
 abstract class RequestInterceptor {
   FutureOr<Request> onRequest(Request request);
 }
 
 @immutable
+/// [Converter] is is used to convert Request or Response
+/// [convertRequest] is call before [RequestInsterceptor]
+/// and [convertResponse] just after the http response
 abstract class Converter {
   FutureOr<Request> convertRequest(Request request);
+
+  /// [ResultType] is the expected type of your response
+  /// ex: `String` or `CustomObject`
+  ///
+  /// In the case of [ResultType] is a `List` or `BuildList`
+  /// [ItemType] will be the type of the generic
+  /// ex: `convertResponse<List<CustomObject>, CustomObject>(response)`
   FutureOr<Response> convertResponse<ResultType, ItemType>(Response response);
 }
 
 @immutable
+/// Add [headers] to each request
 class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
@@ -112,6 +125,8 @@ class HttpLoggingInterceptor
 }
 
 @immutable
+/// [json.encode] on [Request] and [json.decode] on [Request]
+/// Also add `application/json` header to each request
 class JsonConverter implements Converter {
   @override
   Request convertRequest(Request request) => applyHeader(

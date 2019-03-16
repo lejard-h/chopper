@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.0
+
+- Fix converter issue on List, thanks to @MichaelDark
+
+## 2.1.0
+
+- fix casting issue
+
 ## 2.0.0
 
 - Fix type safety

@@ -88,4 +88,10 @@ class _$HttpTestService extends HttpTestService {
     final $request = new Request('GET', $url, client.baseUrl);
     return client.send($request);
   }
+
+  Future<Response<List<String>>> listString() {
+    final $url = '/test/list/string';
+    final $request = new Request('GET', $url, client.baseUrl);
+    return client.send<List<String>, String>($request);
+  }
 }
