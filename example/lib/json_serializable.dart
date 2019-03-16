@@ -35,6 +35,9 @@ abstract class MyService extends ChopperService {
   @Get(path: "/{id}/")
   Future<Response> getResource(@Path() String id);
 
+  @Get(path: "/all", headers: const {"test": "list"})
+  Future<Response<List<Resource>>> getResources();
+
   @Get(path: "/")
   Future<Response<Map>> getMapResource(@Query() String id);
 

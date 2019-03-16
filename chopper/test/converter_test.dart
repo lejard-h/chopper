@@ -62,7 +62,8 @@ class TestConverter extends Converter {
   @override
   Response<T> convertResponse<T, V>(Response res) {
     if (res.body is String) {
-      return res.replace<_Converted<String>>(body: _Converted<String>(res.body)) as Response<T>;
+      return res.replace<_Converted<String>>(body: _Converted<String>(res.body)) 
+          as Response<T>;
     }
     return res;
   }
@@ -78,7 +79,8 @@ class TestErrorConverter extends Converter {
   @override
   Response<T> convertResponse<T, V>(Response res) {
     if (res.body is String) {
-      return res.replace<_ConvertedError<String>>(body: _ConvertedError<String>(res.body));
+      return res.replace<_ConvertedError<String>>(
+          body: _ConvertedError<String>(res.body));
     }
     return res;
   }

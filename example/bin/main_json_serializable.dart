@@ -9,6 +9,8 @@ import 'package:http/testing.dart';
 final client = MockClient((req) async {
   if (req.method == 'POST')
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
+  if (req.method == 'GET' && req.headers['test'] == 'list') 
+    return http.Response('[{"id":"1","name":"Foo"}]', 200);
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
 
@@ -34,13 +36,16 @@ main() async {
   final myService = chopper.service<MyService>(MyService);
 
   final response1 = await myService.getResource("1");
-  print(response1.body); // undecoded String
+  print('response 1: ${response1.body}'); // undecoded String
 
-  final response2 = await myService.getTypedResource();
-  print(response2.body); // decoded Resour
+  final response2 = await myService.getResources();
+  print('response 2: ${response2.body}'); // decoded list of Resources 
 
-  final response3 = await myService.getMapResource("1");
-  print(response3.body); // undecoded Stringce
+  final response3 = await myService.getTypedResource();
+  print('response 3: ${response3.body}'); // decoded Resource
+
+  final response4 = await myService.getMapResource("1");
+  print('response 4: ${response4.body}'); // undecoded Resource
 
   try {
     await myService.newResource(Resource("3", "Super Name"));
@@ -75,7 +80,7 @@ class JsonSerializableConverter extends JsonConverter {
   }
 
   List<T> _decodeList<T>(List values) =>
-      values.where((v) => v != null).map((v) => _decode<T>(v)).toList();
+      values.where((v) => v != null).map<T>((v) => _decode<T>(v)).toList();
 
   dynamic _decode<T>(entity) {
     if (entity is Iterable) return _decodeList<T>(entity);
@@ -86,12 +91,12 @@ class JsonSerializableConverter extends JsonConverter {
   }
 
   @override
-  Response convertResponse<T>(Response response) {
+  Response convertResponse<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse<T>(response);
+    final jsonRes = super.convertResponse<ResultType, Item>(response);
 
-    return jsonRes.replace<T>(
-      body: _decode<T>(jsonRes.body),
+    return jsonRes.replace<ResultType>(
+      body: _decode<Item>(jsonRes.body),
     );
   }
 
@@ -102,9 +107,9 @@ class JsonSerializableConverter extends JsonConverter {
 
 class ErrorConverter extends JsonConverter {
   @override
-  Response convertResponse<T>(Response response) {
+  Response convertResponse<T, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse<T>(response);
+    final jsonRes = super.convertResponse<T, Item>(response);
 
     return jsonRes.replace<ResourceError>(
       body: ResourceError.fromJsonFactory(jsonRes.body),

@@ -33,13 +33,13 @@ main() async {
   final myService = chopper.service<MyService>(MyService);
 
   final response1 = await myService.getResource("1");
-  print(response1.body); // undecoded String
+  print('response 1: ${response1.body}'); // undecoded String
 
   final response2 = await myService.getTypedResource();
-  print(response2.body); // decoded Resource
+  print('response 2: ${response2.body}'); // decoded Resource
 
   final response3 = await myService.getBuiltListResources();
-  print(response3.body);
+  print('response 3: ${response3.body}');
 
   try {
     final builder = ResourceBuilder()
@@ -77,14 +77,14 @@ class BuiltValueConverter extends JsonConverter {
   }
 
   @override
-  Response convertResponse<T>(Response response) {
+  Response convertResponse<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse<T>(response);
+    final jsonRes = super.convertResponse<ResultType, Item>(response);
 
-    final body = _decode<T>(jsonRes.body);
+    final body = _decode<ResultType>(jsonRes.body);
 
-    if (body is BuiltList) return jsonRes.replace<BuiltList<T>>(body: body);
-    return jsonRes.replace<T>(body: body);
+    if (body is BuiltList) return jsonRes.replace<BuiltList<Item>>(body: body);
+    return jsonRes.replace<ResultType>(body: body);
   }
 
   @override
