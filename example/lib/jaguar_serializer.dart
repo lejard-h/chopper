@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chopper/chopper.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
 
@@ -32,6 +34,9 @@ abstract class MyService extends ChopperService {
 
   @Get(path: "/{id}/")
   Future<Response> getResource(@Path() String id);
+
+  @Get(path: "/all", headers: const {"test": "list"})
+  Future<Response<List<Resource>>> getResources();
 
   @Get(path: "/")
   Future<Response<Map>> getMapResource(@Query() String id);

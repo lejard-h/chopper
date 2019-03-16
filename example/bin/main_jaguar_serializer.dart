@@ -8,6 +8,8 @@ import 'package:jaguar_serializer/jaguar_serializer.dart';
 final client = MockClient((req) async {
   if (req.method == 'POST')
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
+  if (req.method == 'GET' && req.headers['test'] == 'list')
+    return http.Response('[{"id":"1","name":"Foo"}]', 200);
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
 
@@ -26,13 +28,16 @@ main() async {
   final myService = chopper.service<MyService>(MyService);
 
   final response1 = await myService.getResource("1");
-  print(response1.body); // undecoded String
+  print('response 1: ${response1.body}'); // undecoded String
 
-  final response2 = await myService.getTypedResource();
-  print(response2.body); // decoded Resour
+  final response2 = await myService.getResources();
+  print('response 2: ${response2.body}'); // decoded list of Resources
 
-  final response3 = await myService.getMapResource("1");
-  print(response3.body); // und Resource
+  final response3 = await myService.getTypedResource();
+  print('response 3: ${response3.body}'); // decoded Resource
+
+  final response4 = await myService.getMapResource("1");
+  print('response 4: ${response4.body}'); // undecoded Resource
 
   try {
     await myService.newResource(Resource("3", "Super Name"));
@@ -47,14 +52,14 @@ final repository = SerializerRepoImpl(serializers: [
 ]);
 
 class JaguarConverter extends JsonConverter {
-  dynamic _decode<ConvertedResponseType>(entity) {
+  dynamic _decode<Item>(entity) {
     /// handle case when we want to access to Map<String, dynamic> directly
     /// getResource or getMapResource
     /// Avoid dynamic or unconverted value, this could lead to several issues
-    if (entity is ConvertedResponseType) return entity;
+    if (entity is Item) return entity;
 
-    final serializer = repository.getByType<ConvertedResponseType>(
-      ConvertedResponseType,
+    final serializer = repository.getByType<Item>(
+      Item,
     );
 
     /// throw serializer not found error;
@@ -62,18 +67,18 @@ class JaguarConverter extends JsonConverter {
 
     if (entity is Map) return serializer.fromMap(entity);
 
-    if (entity is List) return serializer.fromList(entity);
+    if (entity is List) return serializer.fromList(entity.cast<Map>());
 
     return entity;
   }
 
   @override
-  Response convertResponse<ConvertedResponseType>(Response response) {
+  Response<ResultType> convertResponse<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse<ConvertedResponseType>(response);
+    final jsonRes = super.convertResponse<ResultType, Item>(response);
 
-    return jsonRes.replace<ConvertedResponseType>(
-      body: _decode<ConvertedResponseType>(jsonRes.body),
+    return jsonRes.replace<ResultType>(
+      body: _decode<Item>(jsonRes.body),
     );
   }
 
@@ -89,7 +94,7 @@ class ErrorConverter extends JsonConverter {
   final _serializer = ResourceErrorSerializer();
 
   @override
-  Response convertResponse<ConvertedResponseType>(Response response) {
+  Response<ResultType> convertResponse<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
     final jsonRes = super.convertResponse(response);
 

@@ -21,7 +21,7 @@ abstract class RequestInterceptor {
 @immutable
 abstract class Converter {
   FutureOr<Request> convertRequest(Request request);
-  FutureOr<Response> convertResponse<ConvertedResponseType>(Response response);
+  FutureOr<Response> convertResponse<ResultType, ItemType>(Response response);
 }
 
 @immutable
@@ -123,7 +123,7 @@ class JsonConverter implements Converter {
       );
 
   @override
-  Response convertResponse<ConvertedResponseType>(Response response) {
+  Response convertResponse<ResultType, ItemType>(Response response) {
     var contentType = response.headers[contentTypeKey];
     var body = response.body;
     if (contentType != null && contentType.contains(jsonHeaders)) {
@@ -160,6 +160,5 @@ class FormUrlEncodedConverter implements Converter {
       );
 
   @override
-  Response convertResponse<ConvertedResponseType>(Response response) =>
-      response;
+  Response convertResponse<ResultType, ItemType>(Response response) => response;
 }

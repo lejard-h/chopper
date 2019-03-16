@@ -20,6 +20,13 @@ class _$MyService extends MyService {
     return client.send<dynamic, dynamic>($request);
   }
 
+  Future<Response<List<Resource>>> getResources() {
+    final $url = '/resources/all';
+    final $headers = {'test': 'list'};
+    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    return client.send<List<Resource>, Resource>($request);
+  }
+
   Future<Response<Map>> getMapResource(String id) {
     final $url = '/resources/';
     final $params = {'id': '$id'};
