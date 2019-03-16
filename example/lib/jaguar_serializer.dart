@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chopper/chopper.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
 

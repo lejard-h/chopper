@@ -18,7 +18,8 @@ void main() {
     test('base decode', () async {
       final converter = TestConverter();
 
-      final decoded = await converter.convertResponse<_Converted<String>, _Converted<String>>(
+      final decoded = await converter
+          .convertResponse<_Converted<String>, _Converted<String>>(
         Response<String>(http.Response('', 200), 'foo'),
       );
 
@@ -62,7 +63,7 @@ class TestConverter extends Converter {
   @override
   Response<T> convertResponse<T, V>(Response res) {
     if (res.body is String) {
-      return res.replace<_Converted<String>>(body: _Converted<String>(res.body)) 
+      return res.replace<_Converted<String>>(body: _Converted<String>(res.body))
           as Response<T>;
     }
     return res;

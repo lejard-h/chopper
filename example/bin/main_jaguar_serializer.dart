@@ -8,7 +8,7 @@ import 'package:jaguar_serializer/jaguar_serializer.dart';
 final client = MockClient((req) async {
   if (req.method == 'POST')
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
-  if (req.method == 'GET' && req.headers['test'] == 'list') 
+  if (req.method == 'GET' && req.headers['test'] == 'list')
     return http.Response('[{"id":"1","name":"Foo"}]', 200);
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
@@ -31,7 +31,7 @@ main() async {
   print('response 1: ${response1.body}'); // undecoded String
 
   final response2 = await myService.getResources();
-  print('response 2: ${response2.body}'); // decoded list of Resources 
+  print('response 2: ${response2.body}'); // decoded list of Resources
 
   final response3 = await myService.getTypedResource();
   print('response 3: ${response3.body}'); // decoded Resource
