@@ -88,11 +88,6 @@ class ChopperClient {
     return service;
   }
 
-  @Deprecated(
-      'Highly recommended to use `getService<ServiceType>()` instead. Will be removed soon')
-  ServiceType service<ServiceType extends ChopperService>(Type type) =>
-      getService<ServiceType>();
-
   Future<Request> _encodeRequest(Request request) async {
     if (converter != null) {
       return converter.convertRequest(request);

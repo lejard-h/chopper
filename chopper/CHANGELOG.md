@@ -9,7 +9,7 @@
     FutureOr<Response> convertError<ResultType, ItemType>(Response response);
   }
   ```
-
+- Remove deprecated `Chopper.service<Type>(Type)`
 
 ## 2.2.0
 

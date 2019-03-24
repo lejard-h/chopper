@@ -54,7 +54,7 @@ void main() {
       } catch (e) {
         expect(e is Response, isTrue);
         expect((e as Response).body is _ConvertedError, isTrue);
-        final res =  e as Response<_ConvertedError>;
+        final res = e as Response<_ConvertedError>;
         expect(res.body.data is Map, isTrue);
         expect(res.body.data['list'], equals([1, 2]));
         expect(res.body.data['foo'], equals('bar'));
