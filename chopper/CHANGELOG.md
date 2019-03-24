@@ -10,6 +10,8 @@
   }
   ```
 - Remove deprecated `Chopper.service<Type>(Type)`
+- Fix https://github.com/lejard-h/chopper/issues/28
+- Fix https://github.com/lejard-h/chopper/issues/21
 
 ## 2.2.0
 

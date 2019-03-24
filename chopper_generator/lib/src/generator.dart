@@ -131,14 +131,16 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           .where((p) => p.isOptionalPositional)
           .map((p) => new Parameter((pb) => pb
             ..name = p.name
-            ..type = new Reference(p.type.displayName))));
+            ..type = new Reference(p.type.displayName)
+            ..defaultTo = Code(p.defaultValueCode))));
 
       b.optionalParameters.addAll(m.parameters
           .where((p) => p.isNamed)
           .map((p) => new Parameter((pb) => pb
             ..named = true
             ..name = p.name
-            ..type = new Reference(p.type.displayName))));
+            ..type = new Reference(p.type.displayName)
+            ..defaultTo = Code(p.defaultValueCode))));
 
       final blocks = [
         url.assignFinal(_urlVar).statement,
@@ -370,7 +372,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final map = {};
     queries.forEach((p, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? p.displayName;
-      map[literal(name)] = literal("\$${p.displayName}");
+      map[literal(name)] = refer(p.displayName);
     });
 
     return literalMap(map);

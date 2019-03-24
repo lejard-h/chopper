@@ -153,7 +153,7 @@ class ChopperClient {
     req = await _interceptRequest(req);
 
     _requestController.add(req);
-    final stream = await httpClient.send(await req.toHttpRequest());
+    final stream = await httpClient.send(await req.toBaseRequest());
 
     final response = await http.Response.fromStream(stream);
     Response res = Response(response, response.body);
@@ -179,28 +179,28 @@ class ChopperClient {
     return res;
   }
 
-  Future<Response<Body>> get<Body>(
+  Future<Response<ResultType>> get<ResultType, ItemType>(
     String url, {
     Map<String, String> headers,
   }) =>
-      send(
+      send<ResultType, ItemType>(
         Request(
-          'GET',
+          HttpMethod.Get,
           url,
           baseUrl,
           headers: headers,
         ),
       );
 
-  Future<Response<Body>> post<Body>(
+  Future<Response<ResultType>> post<ResultType, ItemType>(
     String url, {
     dynamic body,
     List<PartValue> parts,
     Map<String, String> headers,
   }) =>
-      send(
+      send<ResultType, ItemType>(
         Request(
-          'POST',
+          HttpMethod.Post,
           url,
           baseUrl,
           body: body,
@@ -209,15 +209,15 @@ class ChopperClient {
         ),
       );
 
-  Future<Response<Body>> put<Body>(
+  Future<Response<ResultType>> put<ResultType, ItemType>(
     String url, {
     dynamic body,
     List<PartValue> parts,
     Map<String, String> headers,
   }) =>
-      send(
+      send<ResultType, ItemType>(
         Request(
-          'PUT',
+          HttpMethod.Put,
           url,
           baseUrl,
           body: body,
@@ -226,15 +226,15 @@ class ChopperClient {
         ),
       );
 
-  Future<Response<Body>> patch<Body>(
+  Future<Response<ResultType>> patch<ResultType, ItemType>(
     String url, {
     dynamic body,
     List<PartValue> parts,
     Map<String, String> headers,
   }) =>
-      send(
+      send<ResultType, ItemType>(
         Request(
-          'PATCH',
+          HttpMethod.Patch,
           url,
           baseUrl,
           body: body,
@@ -243,24 +243,18 @@ class ChopperClient {
         ),
       );
 
-  Future<Response<Body>> delete<Body>(
+  Future<Response<ResultType>> delete<ResultType, ItemType>(
     String url, {
     Map<String, String> headers,
   }) =>
-      send(
+      send<ResultType, ItemType>(
         Request(
-          'DELETE',
+          HttpMethod.Delete,
           url,
           baseUrl,
           headers: headers,
         ),
       );
-
-  @Deprecated('use dispose')
-  @mustCallSuper
-  void close() {
-    dispose();
-  }
 
   /// dispose [ChopperClient] to clean memory
   @mustCallSuper

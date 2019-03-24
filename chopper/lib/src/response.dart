@@ -13,9 +13,6 @@ class Response<Body> {
   Response replace<BodyType>({http.Response base, BodyType body}) =>
       Response<BodyType>(base ?? this.base, body ?? this.body);
 
-  Response<Body> replaceWithNull<Body>({http.Response base, Body body}) =>
-      Response(base ?? this.base, body);
-
   int get statusCode => base.statusCode;
 
   bool get isSuccessful => statusCode >= 200 && statusCode < 300;

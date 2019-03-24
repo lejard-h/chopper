@@ -22,7 +22,7 @@ class _$MyService extends MyService {
 
   Future<Response<Map>> getMapResource(String id) {
     final $url = '/resources/';
-    final $params = {'id': '$id'};
+    final $params = {'id': id};
     final $headers = {'foo': 'bar'};
     final $request = new Request('GET', $url, client.baseUrl,
         parameters: $params, headers: $headers);
@@ -37,7 +37,7 @@ class _$MyService extends MyService {
 
   Future<Response> postResourceUrlEncoded(String toto, String b) {
     final $url = '/resources/';
-    final $body = {'a': '$toto', 'b': '$b'};
+    final $body = {'a': toto, 'b': b};
     final $request = new Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }

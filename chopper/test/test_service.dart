@@ -15,6 +15,13 @@ abstract class HttpTestService extends ChopperService {
     @Header('test') String dynamicHeader,
   });
 
+  @Get(path: "query")
+  Future<Response> getQueryTest({
+    @Query('name') String name,
+    @Query('int') int number,
+    @Query('default_value') int def = 42,
+  });
+
   @Post(path: "post")
   Future<Response> postTest(@Body() String data);
 

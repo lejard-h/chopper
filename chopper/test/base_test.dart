@@ -60,6 +60,73 @@ void main() {
       httpClient.close();
     });
 
+    test('GET with query params, null value', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/query'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getQueryTest(def: null);
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('GET with query params, default value', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/query?default_value=42'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getQueryTest();
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('GET with query params', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/query?name=Foo&int=18&default_value=40'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response =
+          await service.getQueryTest(name: "Foo", def: 40, number: 18);
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('POST', () async {
       final httpClient = MockClient((request) async {
         expect(
@@ -281,6 +348,70 @@ void main() {
 
       client.close();
       chopper.dispose();
+    });
+
+    test('url concatenation', () async {
+      final url1 = buildUri('foo', 'bar', {});
+      expect(url1.toString(), equals('foo/bar'));
+
+      final url2 = buildUri('foo/', 'bar', {});
+      expect(url2.toString(), equals('foo/bar'));
+
+      final url3 = buildUri('foo', '/bar', {});
+      expect(url3.toString(), equals('foo/bar'));
+
+      final url4 = buildUri('foo/', '/bar', {});
+      expect(url4.toString(), equals('foo//bar'));
+
+      final url5 = buildUri('http://foo', '/bar', {});
+      expect(url5.toString(), equals('http://foo/bar'));
+
+      final url6 = buildUri('https://foo', '/bar', {});
+      expect(url6.toString(), equals('https://foo/bar'));
+
+      final url7 = buildUri('https://foo/', '/bar', {});
+      expect(url7.toString(), equals('https://foo//bar'));
+    });
+
+    test('BodyBytes', () async {
+      final request = await toHttpRequest(
+        [1, 2, 3],
+        HttpMethod.Post,
+        Uri.parse('/foo'),
+        {},
+      );
+
+      expect(request.bodyBytes, equals([1, 2, 3]));
+    });
+
+    test('BodyFields', () async {
+      final request = await toHttpRequest(
+        {"foo": "bar"},
+        HttpMethod.Post,
+        Uri.parse('/foo'),
+        {},
+      );
+
+      expect(request.bodyFields, equals({"foo": "bar"}));
+    });
+
+    test("Wrong body", () async {
+      try {
+        await toHttpRequest(
+          {"foo": 42},
+          HttpMethod.Post,
+          Uri.parse('/foo'),
+          {},
+        );
+      } on ArgumentError catch (e) {
+        expect(e.toString(), equals('Invalid argument (body): "{foo: 42}"'));
+      }
+    });
+
+    test('constants', () {
+      expect(contentTypeKey, equals('content-type'));
+      expect(jsonHeaders, equals('application/json'));
+      expect(formEncodedHeaders, equals('application/x-www-form-urlencoded'));
     });
   });
 

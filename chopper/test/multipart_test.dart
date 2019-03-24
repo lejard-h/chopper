@@ -63,4 +63,21 @@ ${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}\r
       chopper.dispose();
     });
   });
+
+  test('PartValue.replace', () {
+    dynamic part = PartValue<String>("foo", "bar");
+
+    expect(part.name, equals("foo"));
+    expect(part.value, equals("bar"));
+
+    part = part.replace<int>(value: 42);
+
+    expect(part.name, equals("foo"));
+    expect(part.value, equals(42));
+
+    part = part.replace<int>(name: "int");
+
+    expect(part.name, equals("int"));
+    expect(part.value, equals(42));
+  });
 }

@@ -61,7 +61,7 @@ typedef FutureOr<Request> RequestInterceptorFunc(Request request);
 @immutable
 class CurlInterceptor implements RequestInterceptor {
   Future<Request> onRequest(Request request) async {
-    final baseRequest = await request.toHttpRequest();
+    final baseRequest = await request.toBaseRequest();
     final method = baseRequest.method;
     final url = baseRequest.url.toString();
     final headers = baseRequest.headers;
@@ -92,7 +92,7 @@ class HttpLoggingInterceptor
 
   @override
   FutureOr<Request> onRequest(Request request) async {
-    final base = await request.toHttpRequest();
+    final base = await request.toBaseRequest();
     _log.info('--> ${base.method} ${base.url}');
     base.headers.forEach((k, v) {
       _log.info('$k: $v');
