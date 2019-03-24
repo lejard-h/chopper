@@ -108,6 +108,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final body = _getAnnotation(m, chopper.Body);
     final paths = _getAnnotations(m, chopper.Path);
     final queries = _getAnnotations(m, chopper.Query);
+    final queryMap = _getAnnotation(m, chopper.QueryMap);
     final fields = _getAnnotations(m, chopper.Field);
     final parts = _getAnnotations(m, chopper.Part);
     final fileFields = _getAnnotations(m, chopper.FileField);
@@ -147,8 +148,25 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       if (queries.isNotEmpty) {
-        blocks.add(_generateMap(queries).assignFinal(_parametersVar).statement);
+        blocks.add(_generateMap(queries)
+            .assignFinal(_parametersVar, refer('Map<String, dynamic>'))
+            .statement);
       }
+
+      final hasQueryMap = queryMap.isNotEmpty;
+      if (hasQueryMap) {
+        if (queries.isNotEmpty) {
+          blocks.add(refer('$_parametersVar.addAll').call(
+            [refer(queryMap.keys.first)],
+          ).statement);
+        } else {
+          blocks.add(
+            refer(queryMap.keys.first).assignFinal(_parametersVar).statement,
+          );
+        }
+      }
+
+      final hasQuery = hasQueryMap || queries.isNotEmpty;
 
       if (headers != null) {
         blocks.add(headers);
@@ -177,7 +195,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       blocks.add(_generateRequest(
         method,
         hasBody: hasBody,
-        useQueries: queries.isNotEmpty,
+        useQueries: hasQuery,
         useHeaders: headers != null,
         hasParts: hasParts,
       ).assignFinal(_requestVar).statement);

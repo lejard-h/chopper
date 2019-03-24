@@ -25,7 +25,29 @@ class _$HttpTestService extends HttpTestService {
   Future<Response> getQueryTest(
       {String name: null, int number: null, int def: 42}) {
     final $url = '/test/query';
-    final $params = {'name': name, 'int': number, 'default_value': def};
+    final Map<String, dynamic> $params = {
+      'name': name,
+      'int': number,
+      'default_value': def
+    };
+    final $request =
+        new Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> getQueryMapTest(Map<String, dynamic> query) {
+    final $url = '/test/query_map';
+    final $params = query;
+    final $request =
+        new Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> getQueryMapTest2(Map<String, dynamic> query,
+      {bool test: null}) {
+    final $url = '/test/query_map';
+    final Map<String, dynamic> $params = {'test': test};
+    $params.addAll(query);
     final $request =
         new Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<dynamic, dynamic>($request);

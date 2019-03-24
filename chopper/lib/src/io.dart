@@ -1,3 +1,3 @@
 import 'package:http/http.dart';
 
-Client createHttpClient() => IOClient();
+Client createHttpClient() => Client();

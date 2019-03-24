@@ -2,11 +2,10 @@ import 'package:meta/meta.dart';
 import 'request.dart';
 import 'response.dart';
 
-@immutable
-
 /// Define an APi
 /// [baseUrl] determine the prefix of every request in this api
 /// [name] generate class name
+@immutable
 class ChopperApi {
   final String baseUrl;
 
@@ -15,18 +14,15 @@ class ChopperApi {
   });
 }
 
-@immutable
-
 /// Define path parameter of an url
 ///
 ///     @Get(path: '/{id}')
 ///     Future<Response> fetch(@Path('id') String resourceId);
+@immutable
 class Path {
   final String name;
   const Path([this.name]);
 }
-
-@immutable
 
 /// Define query parameters of a request
 ///
@@ -35,27 +31,38 @@ class Path {
 ///
 ///     fetch('42');
 ///     // will request following path: /something?id=42
+@immutable
 class Query {
   final String name;
   const Query([this.name]);
 }
 
+/// Define query parameters of a request as Map<String, dynamic>
+///
+///     @Get(path: '/something')
+///     Future<Response> fetch(@QueryMap() Map<String, dynamic> query);
+///
+///     fetch({"foo":"bar","list":[1,2]});
+///     // will request following path: /something?foo=bar&list=1&list=2
 @immutable
+class QueryMap {
+  const QueryMap();
+}
 
 /// Declare Body of [POST], [PUT], [PATCH] request
 ///
 ///     @Post()
 ///     Future<Response> post(@Body() Map<String, dynamic> body);
+@immutable
 class Body {
   const Body();
 }
-
-@immutable
 
 /// Override header using method parameter
 ///
 ///     @Get()
 ///     Future<Response> fetch(@Header('foo') String headerFoo);
+@immutable
 class Header {
   final String name;
   const Header([this.name]);
@@ -70,44 +77,39 @@ class Method {
   const Method(this.method, {this.path: "/", this.headers: const {}});
 }
 
-@immutable
-
 /// Define a method as an Http GET request
+@immutable
 class Get extends Method {
   const Get({String path: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Get, path: path, headers: headers);
 }
 
-@immutable
-
 /// Define a method as an Http POST request
 /// use [Body] annotation to determine data to send
+@immutable
 class Post extends Method {
   const Post({String path: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Post, path: path, headers: headers);
 }
 
-@immutable
-
 /// Define a method as an Http DELETE request
+@immutable
 class Delete extends Method {
   const Delete({String path: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Delete, path: path, headers: headers);
 }
 
-@immutable
-
 /// Define a method as an Http PUT request
 /// use [Body] annotation to determine data to send
+@immutable
 class Put extends Method {
   const Put({String path: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Put, path: path, headers: headers);
 }
 
-@immutable
-
 /// Define a method as an Http PATCH request
 /// use [Body] annotation to determine data to send
+@immutable
 class Patch extends Method {
   const Patch({String path: "/", Map<String, String> headers: const {}})
       : super(HttpMethod.Patch, path: path, headers: headers);

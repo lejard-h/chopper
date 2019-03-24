@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
+import 'utils.dart';
 
 @immutable
 class Request {
@@ -116,12 +117,9 @@ Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
     }
   }
 
-  final params = Map<String, dynamic>.from(parameters);
-  params.removeWhere((k, v) => v == null);
-  if (params.isNotEmpty) {
-    return uri.replace(
-      queryParameters: params.map((k, v) => MapEntry(k, "$v")),
-    );
+  final query = mapToQuery(parameters);
+  if (query.isNotEmpty) {
+    return uri.replace(query: query);
   }
   return uri;
 }
@@ -150,7 +148,7 @@ Future<http.Request> toHttpRequest(
 }
 
 Future<http.MultipartRequest> toMultipartRequest(
-  List parts,
+  List<PartValue> parts,
   String method,
   Uri uri,
   Map<String, String> headers,

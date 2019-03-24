@@ -22,6 +22,15 @@ abstract class HttpTestService extends ChopperService {
     @Query('default_value') int def = 42,
   });
 
+  @Get(path: "query_map")
+  Future<Response> getQueryMapTest(@QueryMap() Map<String, dynamic> query);
+
+  @Get(path: "query_map")
+  Future<Response> getQueryMapTest2(
+    @QueryMap() Map<String, dynamic> query, {
+    @Query('test') bool test,
+  });
+
   @Post(path: "post")
   Future<Response> postTest(@Body() String data);
 

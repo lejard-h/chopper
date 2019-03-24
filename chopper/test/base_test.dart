@@ -413,6 +413,62 @@ void main() {
       expect(jsonHeaders, equals('application/json'));
       expect(formEncodedHeaders, equals('application/x-www-form-urlencoded'));
     });
+
+    test('Query Map 1', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/query_map?foo=bar&list=1&list=2&inner.test=42'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getQueryMapTest({
+        "foo": "bar",
+        "list": [1, 2],
+        "inner": {"test": 42},
+      });
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('Query Map 2', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals(
+              '$baseUrl/test/query_map?test=true&foo=bar&list=1&list=2&inner.test=42'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getQueryMapTest2(
+        {
+          "foo": "bar",
+          "list": [1, 2],
+          "inner": {"test": 42},
+        },
+        test: true,
+      );
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
   });
 
   group('Streams', () {
