@@ -77,7 +77,7 @@ class ChopperClient {
 
   ServiceType getService<ServiceType extends ChopperService>() {
     Type serviceType = typeOf<ServiceType>();
-    if (serviceType == dynamic) {
+    if (serviceType == dynamic || serviceType == ChopperService) {
       throw Exception(
           "Service type should be provided, `dynamic` is not allowed.");
     }
@@ -291,7 +291,7 @@ class ChopperClient {
 abstract class ChopperService {
   ChopperClient client;
 
-  Type get definitionType => null;
+  Type get definitionType;
 
   @mustCallSuper
   void dispose() {

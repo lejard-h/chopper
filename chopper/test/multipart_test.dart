@@ -64,6 +64,39 @@ ${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}\r
     });
   });
 
+  test('PartValue', () async {
+    final req = await toMultipartRequest(
+      [
+        PartValue<String>("foo", "bar"),
+        PartValue<int>("int", 42),
+      ],
+      HttpMethod.Post,
+      Uri.parse('/foo'),
+      {},
+    );
+
+    expect(req.fields['foo'], equals('bar'));
+    expect(req.fields['int'], equals('42'));
+  });
+
+  test('PartFile', () async {
+    final req = await toMultipartRequest(
+      [
+        PartFile<String>("foo", "test/multipart_test.dart"),
+        PartFile<List<int>>("int", [1, 2]),
+      ],
+      HttpMethod.Post,
+      Uri.parse('/foo'),
+      {},
+    );
+
+    expect(req.files.firstWhere((f) => f.field == 'foo').filename,
+        equals('multipart_test.dart'));
+    final bytes =
+        await req.files.firstWhere((f) => f.field == 'int').finalize().first;
+    expect(bytes, equals([1, 2]));
+  }, testOn: 'vm');
+
   test('PartValue.replace', () {
     dynamic part = PartValue<String>("foo", "bar");
 

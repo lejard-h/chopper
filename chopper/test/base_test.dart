@@ -23,19 +23,25 @@ void main() {
       expect(service is HttpTestService, isTrue);
     });
 
-    test('get service not found', () async {
+    test('get service errors', () async {
       final chopper = ChopperClient(
         baseUrl: baseUrl,
       );
 
       try {
         chopper.getService<HttpTestService>();
-      } catch (e) {
-        expect(e is Exception, isTrue);
+      } on Exception catch (e) {
         expect(
-          e.message,
-          equals("Service of type 'HttpTestService' not found."),
+          e.toString(),
+          equals("Exception: Service of type 'HttpTestService' not found."),
         );
+      }
+
+      try {
+        chopper.getService();
+      } on Exception catch (e) {
+        expect(e.toString(),
+            'Exception: Service type should be provided, `dynamic` is not allowed.');
       }
     });
     test('GET', () async {
@@ -412,6 +418,12 @@ void main() {
       expect(contentTypeKey, equals('content-type'));
       expect(jsonHeaders, equals('application/json'));
       expect(formEncodedHeaders, equals('application/x-www-form-urlencoded'));
+
+      expect(HttpMethod.Get, equals('GET'));
+      expect(HttpMethod.Post, equals('POST'));
+      expect(HttpMethod.Put, equals('PUT'));
+      expect(HttpMethod.Patch, equals('PATCH'));
+      expect(HttpMethod.Delete, equals('DELETE'));
     });
 
     test('Query Map 1', () async {
