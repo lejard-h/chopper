@@ -8,25 +8,22 @@ import 'request.dart';
 import 'response.dart';
 import 'utils.dart';
 
-@immutable
-
 /// [ResponseInterceptor] are call after [Converter.convertResponse]
+@immutable
 abstract class ResponseInterceptor {
   FutureOr<Response> onResponse(Response response);
 }
 
-@immutable
-
 /// [RequestInterceptor] are call after [Converter.convertRequest]
+@immutable
 abstract class RequestInterceptor {
   FutureOr<Request> onRequest(Request request);
 }
 
-@immutable
-
 /// [Converter] is is used to convert Request or Response
 /// [convertRequest] is call before [RequestInsterceptor]
 /// and [convertResponse] just after the http response
+@immutable
 abstract class Converter {
   FutureOr<Request> convertRequest(Request request);
 
@@ -36,12 +33,16 @@ abstract class Converter {
   /// In the case of [ResultType] is a `List` or `BuildList`
   /// [ItemType] will be the type of the generic
   /// ex: `convertResponse<List<CustomObject>, CustomObject>(response)`
-  FutureOr<Response> convertResponse<ResultType, ItemType>(Response response);
+  FutureOr<Response<ResultType>> convertResponse<ResultType, ItemType>(
+      Response response);
 }
 
-@immutable
+abstract class ErrorConverter {
+  FutureOr<Response> convertError<ResultType, ItemType>(Response response);
+}
 
 /// Add [headers] to each request
+@immutable
 class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
@@ -57,6 +58,7 @@ typedef FutureOr<Request> RequestInterceptorFunc(Request request);
 
 /// Interceptor that print a curl request
 /// thanks @edwardaux
+@immutable
 class CurlInterceptor implements RequestInterceptor {
   Future<Request> onRequest(Request request) async {
     final baseRequest = await request.toHttpRequest();
@@ -83,6 +85,7 @@ class CurlInterceptor implements RequestInterceptor {
   }
 }
 
+@immutable
 class HttpLoggingInterceptor
     implements RequestInterceptor, ResponseInterceptor {
   final _log = Logger('Chopper');
@@ -128,22 +131,21 @@ class HttpLoggingInterceptor
   }
 }
 
-@immutable
-
 /// [json.encode] on [Request] and [json.decode] on [Request]
 /// Also add `application/json` header to each request
-class JsonConverter implements Converter {
+@immutable
+class JsonConverter implements Converter, ErrorConverter {
   @override
   Request convertRequest(Request request) => applyHeader(
-        request,
+        encodeJson(request),
         contentTypeKey,
         jsonHeaders,
-      ).replace(
-        body: json.encode(request.body),
       );
 
-  @override
-  Response convertResponse<ResultType, ItemType>(Response response) {
+  Request encodeJson(Request request) =>
+      request.replace(body: json.encode(request.body));
+
+  Response decodeJson(Response response) {
     var contentType = response.headers[contentTypeKey];
     var body = response.body;
     if (contentType != null && contentType.contains(jsonHeaders)) {
@@ -161,6 +163,11 @@ class JsonConverter implements Converter {
     );
   }
 
+  @override
+  Response<ResultType> convertResponse<ResultType, ItemType>(
+          Response response) =>
+      decodeJson(response) as Response<ResultType>;
+
   dynamic _tryDecodeJson(String data) {
     try {
       return json.decode(data);
@@ -169,9 +176,14 @@ class JsonConverter implements Converter {
       return data;
     }
   }
+
+  @override
+  Response convertError<ResultType, ItemType>(Response response) =>
+      decodeJson(response);
 }
 
-class FormUrlEncodedConverter implements Converter {
+@immutable
+class FormUrlEncodedConverter implements Converter, ErrorConverter {
   @override
   Request convertRequest(Request request) => applyHeader(
         request,
@@ -180,5 +192,11 @@ class FormUrlEncodedConverter implements Converter {
       );
 
   @override
-  Response convertResponse<ResultType, ItemType>(Response response) => response;
+  Response<ResultType> convertResponse<ResultType, ItemType>(
+          Response response) =>
+      response;
+
+  @override
+  FutureOr<Response> convertError<ResultType, ItemType>(Response response) =>
+      response;
 }

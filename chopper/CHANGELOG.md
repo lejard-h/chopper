@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.0
+
+- ***Breaking Change***
+  `ChopperClient.errorConverter` is now taking an `ErrorConverter` as a parameter
+  ```dart
+  abstract class ErrorConverter {
+    FutureOr<Response> convertError<ResultType, ItemType>(Response response);
+  }
+  ```
+
+
 ## 2.2.0
 
 - Fix converter issue on List

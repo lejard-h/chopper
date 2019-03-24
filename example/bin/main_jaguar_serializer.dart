@@ -18,7 +18,7 @@ main() async {
     client: client,
     baseUrl: "http://localhost:8000",
     converter: JaguarConverter(),
-    errorConverter: ErrorConverter(),
+    errorConverter: JaguarConverter(),
     services: [
       // the generated service
       MyService.create(),
@@ -88,21 +88,13 @@ class JaguarConverter extends JsonConverter {
           body: repository.to(request.body),
         ),
       );
-}
 
-class ErrorConverter extends JsonConverter {
-  final _serializer = ResourceErrorSerializer();
+  final _errorSerializer = ResourceErrorSerializer();
 
   @override
-  Response<ResultType> convertResponse<ResultType, Item>(Response response) {
+  Response convertError<ResultType, ItemType>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse(response);
-
-    return jsonRes.replace(
-      body: _serializer.fromMap(jsonRes.body),
-    );
+    final jsonRes = super.convertError(response);
+    return jsonRes.replace(body: _errorSerializer.fromMap(jsonRes.body));
   }
-
-  @override
-  Request convertRequest(Request request) => request;
 }

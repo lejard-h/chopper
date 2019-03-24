@@ -15,16 +15,16 @@ final client = MockClient((req) async {
 });
 
 main() async {
+  final converter = JsonSerializableConverter({
+    Resource: Resource.fromJsonFactory,
+  });
+
   final chopper = ChopperClient(
     client: client,
     baseUrl: "http://localhost:8000",
     // bind your object factories here
-    converter: JsonSerializableConverter(
-      {
-        Resource: Resource.fromJsonFactory,
-      },
-    ),
-    errorConverter: ErrorConverter(),
+    converter: converter,
+    errorConverter: converter,
     services: [
       // the generated service
       MyService.create(),
@@ -91,25 +91,20 @@ class JsonSerializableConverter extends JsonConverter {
   }
 
   @override
-  Response convertResponse<ResultType, Item>(Response response) {
+  Response<ResultType> convertResponse<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse<ResultType, Item>(response);
+    final jsonRes = super.convertResponse(response);
 
-    return jsonRes.replace<ResultType>(
-      body: _decode<Item>(jsonRes.body),
-    );
+    return jsonRes.replace<ResultType>(body: _decode<Item>(jsonRes.body));
   }
 
   @override
   // all objects should implements toJson method
   Request convertRequest(Request request) => super.convertRequest(request);
-}
 
-class ErrorConverter extends JsonConverter {
-  @override
-  Response convertResponse<T, Item>(Response response) {
+  Response convertError<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse<T, Item>(response);
+    final jsonRes = super.convertError(response);
 
     return jsonRes.replace<ResourceError>(
       body: ResourceError.fromJsonFactory(jsonRes.body),

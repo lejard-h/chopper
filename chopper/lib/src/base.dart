@@ -2,6 +2,13 @@ import "dart:async";
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
 
+// ignore: uri_does_not_exist
+import 'io.dart'
+    // ignore: uri_does_not_exist
+    if (dart.library.html) 'browser.dart'
+    // ignore: uri_does_not_exist
+    if (dart.library.io) 'io.dart';
+
 import "interceptor.dart";
 import "request.dart";
 import 'response.dart';
@@ -25,7 +32,7 @@ class ChopperClient {
   final Converter converter;
 
   /// converter call on error request
-  final Converter errorConverter;
+  final ErrorConverter errorConverter;
 
   final Map<Type, ChopperService> _services = {};
   final _requestInterceptors = [];
@@ -43,7 +50,7 @@ class ChopperClient {
     this.converter,
     this.errorConverter,
     Iterable<ChopperService> services: const [],
-  })  : httpClient = client ?? http.Client(),
+  })  : httpClient = client ?? createHttpClient(),
         _clientIsInternal = client == null {
     if (interceptors.every(_isAnInterceptor) == false) {
       throw Exception(
@@ -162,8 +169,8 @@ class ChopperClient {
       } else {
         res = await _decodeResponse<Body, Item>(res, converter);
       }
-    } else {
-      res = await _decodeResponse(res, errorConverter);
+    } else if (errorConverter != null) {
+      res = await errorConverter.convertError<Body, Item>(res);
     }
 
     res = await _interceptResponse(res);

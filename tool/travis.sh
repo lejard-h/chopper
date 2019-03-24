@@ -53,7 +53,8 @@ while (( "$#" )); do
   command) echo
     echo -e '\033[1mTASK: command\033[22m'
     echo -e 'pub run build_runner test -- -p chrome -p vm'
-    pub run build_runner test --delete-conflicting-outputs -- --reporter expanded || EXIT_CODE=$?
+    pub run build_runner build --delete-conflicting-outputs
+    pub run test -p chrome -p vm --reporter expanded || EXIT_CODE=$?
     pkg_coverage
     ;;
   dartanalyzer) echo

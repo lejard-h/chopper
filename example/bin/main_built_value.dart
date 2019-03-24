@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:chopper/chopper.dart';
 import 'package:chopper_example/built_value_resource.dart';
@@ -52,24 +54,24 @@ main() async {
 }
 
 class BuiltValueConverter extends JsonConverter {
-  T deserialize<T>(dynamic value) => jsonSerializers.deserializeWith<T>(
-      jsonSerializers.serializerForType(T), value);
+  T _deserialize<T>(dynamic value) => jsonSerializers.deserializeWith<T>(
+        jsonSerializers.serializerForType(T),
+        value,
+      );
 
-  BuiltList<T> deserializeListOf<T>(Iterable value) => BuiltList(
-      value.map((value) => deserialize<T>(value)).toList(growable: false));
+  BuiltList<T> _deserializeListOf<T>(Iterable value) => BuiltList(
+        value.map((value) => _deserialize<T>(value)).toList(growable: false),
+      );
 
   dynamic _decode<T>(entity) {
-    print(entity);
-    print(entity.runtimeType);
-
     /// handle case when we want to access to Map<String, dynamic> directly
     /// getResource or getMapResource
     /// Avoid dynamic or unconverted value, this could lead to several issues
     if (entity is T) return entity;
 
     try {
-      if (entity is List) return deserializeListOf<T>(entity);
-      return deserialize<T>(entity);
+      if (entity is List) return _deserializeListOf<T>(entity);
+      return _deserialize<T>(entity);
     } catch (e) {
       print(e);
       return null;
@@ -77,22 +79,17 @@ class BuiltValueConverter extends JsonConverter {
   }
 
   @override
-  Response convertResponse<ResultType, Item>(Response response) {
+  Response<ResultType> convertResponse<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse<ResultType, Item>(response);
-
-    final body = _decode<ResultType>(jsonRes.body);
-
-    if (body is BuiltList) return jsonRes.replace<BuiltList<Item>>(body: body);
+    final jsonRes = super.convertResponse(response);
+    final body = _decode<Item>(jsonRes.body);
     return jsonRes.replace<ResultType>(body: body);
   }
 
   @override
-  Request convertRequest(Request request) {
-    return super.convertRequest(
-      request.replace(
-        body: serializers.serialize(request.body),
-      ),
-    );
-  }
+  Request convertRequest(Request request) => super.convertRequest(
+        request.replace(
+          body: serializers.serialize(request.body),
+        ),
+      );
 }

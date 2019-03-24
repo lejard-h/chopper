@@ -1,3 +1,5 @@
+import 'dart:convert' as dart_convert;
+
 import 'package:chopper/chopper.dart';
 import 'package:test/test.dart';
 import 'package:http/testing.dart';
@@ -40,7 +42,7 @@ void main() {
 
     test('on error converter', () async {
       final httpClient = MockClient((http.Request request) async {
-        return http.Response('error', 404);
+        return http.Response('{"list":[1,2],"foo":"bar","int": 42}', 404);
       });
 
       final chopper = buildClient(httpClient);
@@ -52,14 +54,18 @@ void main() {
       } catch (e) {
         expect(e is Response, isTrue);
         expect((e as Response).body is _ConvertedError, isTrue);
-        expect(e.body.data, equals('error'));
+        final res =  e as Response<_ConvertedError>;
+        expect(res.body.data is Map, isTrue);
+        expect(res.body.data['list'], equals([1, 2]));
+        expect(res.body.data['foo'], equals('bar'));
+        expect(res.body.data['int'], equals(42));
       }
       httpClient.close();
     });
   });
 }
 
-class TestConverter extends Converter {
+class TestConverter implements Converter {
   @override
   Response<T> convertResponse<T, V>(Response res) {
     if (res.body is String) {
@@ -76,20 +82,14 @@ class TestConverter extends Converter {
   }
 }
 
-class TestErrorConverter extends Converter {
+class TestErrorConverter implements ErrorConverter {
   @override
-  Response<T> convertResponse<T, V>(Response res) {
+  Response convertError<T, V>(Response res) {
     if (res.body is String) {
-      return res.replace<_ConvertedError<String>>(
-          body: _ConvertedError<String>(res.body));
+      final error = dart_convert.jsonDecode(res.body);
+      return res.replace<_ConvertedError>(body: _ConvertedError(error));
     }
     return res;
-  }
-
-  @override
-  Request convertRequest(Request req) {
-    if (req.body is _ConvertedError) return req.replace(body: req.body);
-    return req;
   }
 }
 
