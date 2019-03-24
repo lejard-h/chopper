@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chopper/src/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 
