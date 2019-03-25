@@ -417,18 +417,6 @@ void main() {
       }
     });
 
-    test('constants', () {
-      expect(contentTypeKey, equals('content-type'));
-      expect(jsonHeaders, equals('application/json'));
-      expect(formEncodedHeaders, equals('application/x-www-form-urlencoded'));
-
-      expect(HttpMethod.Get, equals('GET'));
-      expect(HttpMethod.Post, equals('POST'));
-      expect(HttpMethod.Put, equals('PUT'));
-      expect(HttpMethod.Patch, equals('PATCH'));
-      expect(HttpMethod.Delete, equals('DELETE'));
-    });
-
     test("wrong type for interceptor", () {
       try {
         ChopperClient(
