@@ -104,6 +104,76 @@ void main() {
 
       await chopper.getService<HttpTestService>().getTest('1234');
     });
+
+    final fakeRequest = Request(
+      'POST',
+      '/',
+      'base',
+      body: 'test',
+      headers: {'foo': 'bar'},
+    );
+
+    test('Curl interceptors', () async {
+      final curl = CurlInterceptor();
+      String log;
+      chopperLogger.onRecord.listen((r) => log = r.message);
+      await curl.onRequest(fakeRequest);
+
+      expect(
+        log,
+        equals(
+          "curl -v -X POST -H 'foo: bar' -H 'content-type: text/plain; charset=utf-8' -d 'test' base/",
+        ),
+      );
+    });
+
+    test('Http logger interceptor request', () async {
+      final logger = HttpLoggingInterceptor();
+
+      final logs = [];
+      chopperLogger.onRecord.listen((r) => logs.add(r.message));
+      await logger.onRequest(fakeRequest);
+
+      expect(
+        logs,
+        equals(
+          [
+            '--> POST base/',
+            'foo: bar',
+            'content-type: text/plain; charset=utf-8',
+            'test',
+            '--> END POST (4-byte body)',
+          ],
+        ),
+      );
+    });
+
+    test('Http logger interceptor response', () async {
+      final logger = HttpLoggingInterceptor();
+
+      final fakeResponse = Response<String>(
+        http.Response('responseBodyBase', 200,
+            headers: {'foo': 'bar'},
+            request: await fakeRequest.toBaseRequest()),
+        'responseBody',
+      );
+
+      final logs = [];
+      chopperLogger.onRecord.listen((r) => logs.add(r.message));
+      await logger.onResponse(fakeResponse);
+
+      expect(
+        logs,
+        equals(
+          [
+            '<-- 200 base/',
+            'foo: bar',
+            'responseBodyBase',
+            '--> END POST (16-byte body)',
+          ],
+        ),
+      );
+    });
   });
 }
 

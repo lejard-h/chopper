@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 
 import 'request.dart';
 import 'response.dart';
@@ -88,45 +87,39 @@ class CurlInterceptor implements RequestInterceptor {
 @immutable
 class HttpLoggingInterceptor
     implements RequestInterceptor, ResponseInterceptor {
-  final _log = Logger('Chopper');
-
   @override
   FutureOr<Request> onRequest(Request request) async {
     final base = await request.toBaseRequest();
-    _log.info('--> ${base.method} ${base.url}');
-    base.headers.forEach((k, v) {
-      _log.info('$k: $v');
-    });
+    chopperLogger.info('--> ${base.method} ${base.url}');
+    base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
     var bytes = '';
     if (base is http.Request) {
       final body = base.body;
       if (body != null && body.isNotEmpty) {
-        _log.info(body);
+        chopperLogger.info(body);
         bytes = ' (${base.bodyBytes.length}-byte body)';
       }
     }
 
-    _log.info('--> END ${base.method}$bytes');
+    chopperLogger.info('--> END ${base.method}$bytes');
     return request;
   }
 
   @override
   FutureOr<Response> onResponse(Response response) {
     final base = response.base.request;
-    _log.info('<-- ${response.statusCode} ${base.url}');
+    chopperLogger.info('<-- ${response.statusCode} ${base.url}');
 
-    response.base.headers.forEach((k, v) {
-      _log.info('$k: $v');
-    });
+    response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
     var bytes;
     if (response.base.body != null && response.base.body.isNotEmpty) {
-      _log.info(response.base.body);
+      chopperLogger.info(response.base.body);
       bytes = ' (${response.base.bodyBytes.length}-byte body)';
     }
 
-    _log.info('--> END ${base.method}$bytes');
+    chopperLogger.info('--> END ${base.method}$bytes');
     return response;
   }
 }
