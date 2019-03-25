@@ -1,0 +1,4 @@
+coverage:
+  ignore:
+    - "chopper/lib/src/annotations.dart"
+    - "chopper/lib/src/constants.dart"
