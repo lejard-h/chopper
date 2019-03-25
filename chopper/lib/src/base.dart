@@ -16,6 +16,13 @@ import 'annotations.dart';
 
 Type typeOf<T>() => T;
 
+final allowedInterceptorsType = <Type>[
+  RequestInterceptor,
+  RequestInterceptorFunc,
+  ResponseInterceptor,
+  ResponseInterceptorFunc
+];
+
 /// Root object of chopper
 /// Used to manager services, encode data, intercept request, response and error.
 class ChopperClient {
@@ -53,8 +60,9 @@ class ChopperClient {
   })  : httpClient = client ?? createHttpClient(),
         _clientIsInternal = client == null {
     if (interceptors.every(_isAnInterceptor) == false) {
-      throw Exception(
-          "Unsupported type for interceptors, it only support the following types: RequestInterceptor, RequestInterceptorFunc, ResponseInterceptor, ResponseInterceptorFunc");
+      throw ArgumentError(
+        "Unsupported type for interceptors, it only support the following types: $allowedInterceptorsType",
+      );
     }
 
     _requestInterceptors.addAll(interceptors.where(_isRequestInterceptor));
@@ -182,6 +190,7 @@ class ChopperClient {
   Future<Response<ResultType>> get<ResultType, ItemType>(
     String url, {
     Map<String, String> headers,
+    Map<String, dynamic> parameters,
   }) =>
       send<ResultType, ItemType>(
         Request(
@@ -189,6 +198,7 @@ class ChopperClient {
           url,
           baseUrl,
           headers: headers,
+          parameters: parameters,
         ),
       );
 
@@ -197,6 +207,8 @@ class ChopperClient {
     dynamic body,
     List<PartValue> parts,
     Map<String, String> headers,
+    Map<String, dynamic> parameters,
+    bool multipart,
   }) =>
       send<ResultType, ItemType>(
         Request(
@@ -206,6 +218,8 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
+          multipart: multipart,
+          parameters: parameters,
         ),
       );
 
@@ -214,6 +228,8 @@ class ChopperClient {
     dynamic body,
     List<PartValue> parts,
     Map<String, String> headers,
+    Map<String, dynamic> parameters,
+    bool multipart,
   }) =>
       send<ResultType, ItemType>(
         Request(
@@ -223,6 +239,8 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
+          multipart: multipart,
+          parameters: parameters,
         ),
       );
 
@@ -231,6 +249,8 @@ class ChopperClient {
     dynamic body,
     List<PartValue> parts,
     Map<String, String> headers,
+    Map<String, dynamic> parameters,
+    bool multipart,
   }) =>
       send<ResultType, ItemType>(
         Request(
@@ -240,12 +260,15 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
+          multipart: multipart,
+          parameters: parameters,
         ),
       );
 
   Future<Response<ResultType>> delete<ResultType, ItemType>(
     String url, {
     Map<String, String> headers,
+    Map<String, dynamic> parameters,
   }) =>
       send<ResultType, ItemType>(
         Request(
@@ -253,6 +276,7 @@ class ChopperClient {
           url,
           baseUrl,
           headers: headers,
+          parameters: parameters,
         ),
       );
 

@@ -426,6 +426,21 @@ void main() {
       expect(HttpMethod.Delete, equals('DELETE'));
     });
 
+    test("wrong type for interceptor", () {
+      try {
+        ChopperClient(
+          interceptors: [
+            (bool foo) => "bar",
+          ],
+        );
+      } on ArgumentError catch (e) {
+        expect(
+          e.toString(),
+          'Invalid argument(s): Unsupported type for interceptors, it only support the following types: $allowedInterceptorsType',
+        );
+      }
+    });
+
     test('Query Map 1', () async {
       final httpClient = MockClient((request) async {
         expect(

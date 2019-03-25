@@ -21,11 +21,14 @@ class Request {
     this.url,
     this.baseUrl, {
     this.body,
-    this.parameters: const {},
-    this.headers: const {},
-    this.multipart: false,
-    this.parts: const [],
-  });
+    Map<String, dynamic> parameters,
+    Map<String, String> headers,
+    bool multipart,
+    List<PartValue> parts,
+  })  : this.parameters = parameters ?? const {},
+        this.headers = headers ?? const {},
+        this.multipart = multipart ?? false,
+        this.parts = parts ?? const [];
 
   Request replace({
     HttpMethod method,

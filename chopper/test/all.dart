@@ -4,6 +4,7 @@ import 'form_test.dart' as form;
 import 'interceptors_test.dart' as interceptors;
 import 'json_test.dart' as json;
 import 'multipart_test.dart' as multipart;
+import 'client_test.dart' as client;
 
 main() {
   base.main();
@@ -12,4 +13,5 @@ main() {
   form.main();
   json.main();
   multipart.main();
+  client.main();
 }
