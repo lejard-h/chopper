@@ -4,7 +4,6 @@ import 'package:chopper/chopper.dart';
 import 'package:test/test.dart';
 import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
-import 'test_service.dart';
 
 const baseUrl = 'http://localhost:8000';
 
