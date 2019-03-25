@@ -17,34 +17,10 @@ pub upgrade || exit $?
 EXIT_CODE=0
 
 function pkg_coverage {
-    # Gather coverage and upload to Coveralls.
-if [ "$COVERALLS_TOKEN" ] ; then
-  OBS_PORT=9292
-  echo "Collecting coverage on port $OBS_PORT..."
-
-  # Start tests in one VM.
-  dart \
-    --enable-vm-service=$OBS_PORT \
-    --pause-isolates-on-exit \
-    test/all.dart &
-
-  # Run the coverage collector to generate the JSON coverage report.
-  pub run coverage:collect_coverage \
-    --port=$OBS_PORT \
-    --out=var/coverage.json \
-    --wait-paused \
-    --resume-isolates
-
-  echo "Generating LCOV report..."
-  pub run coverage:format_coverage \
-    --lcov \
-    --in=var/coverage.json \
-    --out=var/lcov.info \
-    --packages=.packages \
-    --report-on=lib
-
-  coveralls-lcov var/lcov.info
-fi
+  if [ "$CODECOV_TOKEN"] ; then
+    pub run test_coverage
+    bash <(curl -s https://codecov.io/bash)
+  fi
 }
 
 while (( "$#" )); do

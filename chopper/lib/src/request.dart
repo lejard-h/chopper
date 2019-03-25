@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'utils.dart';
+import 'constants.dart';
 
 @immutable
 class Request {
@@ -75,14 +76,6 @@ class Request {
       heads,
     );
   }
-}
-
-class HttpMethod {
-  static const String Get = "GET";
-  static const String Post = "POST";
-  static const String Put = "PUT";
-  static const String Delete = "DELETE";
-  static const String Patch = "PATCH";
 }
 
 @immutable

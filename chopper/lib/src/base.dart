@@ -1,13 +1,12 @@
 import "dart:async";
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
+import 'constants.dart';
 
 // ignore: uri_does_not_exist
 import 'io.dart'
     // ignore: uri_does_not_exist
-    if (dart.library.html) 'browser.dart'
-    // ignore: uri_does_not_exist
-    if (dart.library.io) 'io.dart';
+    if (dart.library.html) 'browser.dart';
 
 import "interceptor.dart";
 import "request.dart";

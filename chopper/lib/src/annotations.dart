@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 import 'request.dart';
 import 'response.dart';
+import 'constants.dart';
 
 /// Define an APi
 /// [baseUrl] determine the prefix of every request in this api
@@ -170,4 +171,3 @@ class FileField {
 
 const multipart = Multipart();
 const body = Body();
-//const parts = Parts();

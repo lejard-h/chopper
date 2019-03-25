@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'request.dart';
 import 'response.dart';
 import 'utils.dart';
+import 'constants.dart';
 
 /// [ResponseInterceptor] are call after [Converter.convertResponse]
 @immutable

@@ -9,3 +9,5 @@ pubspec.lock
 doc/api/
 .dart_tool
 .idea/
+.test_coverage.dart
+coverage

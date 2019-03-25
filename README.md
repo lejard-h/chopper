@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper)
-[![Coverage Status](https://coveralls.io/repos/github/lejard-h/chopper/badge.svg?branch=master)](https://coveralls.io/github/lejard-h/chopper?branch=master)
+[![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
 
 Chopper is an http client generator using source_gen and inspired by Retrofit.
 

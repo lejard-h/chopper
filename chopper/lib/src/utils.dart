@@ -14,10 +14,6 @@ Request applyHeaders(Request request, Map<String, String> headers) {
 
 final chopperLogger = Logger('Chopper');
 
-const contentTypeKey = 'content-type';
-const jsonHeaders = "application/json";
-const formEncodedHeaders = "application/x-www-form-urlencoded";
-
 /// transform {'foo': 'bar', 'ints': [ 1337, 42 ] }
 /// to 'foo=bar&ints=1337&ints=42'
 String mapToQuery(Map<String, dynamic> map) => _mapToQuery(map).join('&');
