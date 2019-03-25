@@ -7,13 +7,16 @@ import 'test_service.dart';
 const baseUrl = 'http://localhost:8000';
 
 void main() {
-  final buildClient = ([http.Client httpClient]) => ChopperClient(
+  final buildClient = (
+          [http.Client httpClient, ErrorConverter errorConverter]) =>
+      ChopperClient(
         baseUrl: baseUrl,
         services: [
           // the generated service
           HttpTestService.create(),
         ],
         client: httpClient,
+        errorConverter: errorConverter,
       );
   group('Base', () {
     test('get service', () async {
@@ -498,68 +501,89 @@ void main() {
     });
   });
 
-  group('Streams', () {
-    test('request', () async {
-      final client = MockClient((http.Request req) async {
-        return http.Response('ok', 200);
-      });
+  test('onRequest Stream', () async {
+    final client = MockClient((http.Request req) async {
+      return http.Response('ok', 200);
+    });
 
-      final chopper = buildClient(client);
+    final chopper = buildClient(client);
 
-      chopper.onRequest.listen((request) {
-        expect(
-          request.url.toString(),
-          equals('/test/get/1234'),
-        );
-      });
+    chopper.onRequest.listen((request) {
+      expect(
+        request.url.toString(),
+        equals('/test/get/1234'),
+      );
+    });
 
-      final service = HttpTestService.create(chopper);
+    final service = HttpTestService.create(chopper);
+    await service.getTest('1234');
+
+    client.close();
+    chopper.dispose();
+  });
+
+  test('onResponse Stream', () async {
+    final client = MockClient((http.Request req) async {
+      return http.Response('ok', 200);
+    });
+
+    final chopper = buildClient(client);
+
+    chopper.onResponse.listen((response) {
+      expect(response.statusCode, equals(200));
+      expect(response.body, equals('ok'));
+    });
+
+    final service = HttpTestService.create(chopper);
+    await service.getTest('1234');
+
+    client.close();
+    chopper.dispose();
+  });
+
+  test('onError Stream', () async {
+    final client = MockClient((http.Request req) async {
+      return http.Response('error', 400);
+    });
+
+    final chopper = buildClient(client);
+
+    chopper.onError.listen((response) {
+      expect(response.statusCode, equals(400));
+      expect(response.body, equals('error'));
+    });
+
+    final service = HttpTestService.create(chopper);
+    try {
       await service.getTest('1234');
+    } catch (e) {
+      expect(e is Response, isTrue);
+    }
 
-      client.close();
-      chopper.dispose();
+    client.close();
+    chopper.dispose();
+  });
+
+  test('error Converter', () async {
+    final client = MockClient((http.Request req) async {
+      return http.Response('{"error":true}', 400);
     });
 
-    test('response', () async {
-      final client = MockClient((http.Request req) async {
-        return http.Response('ok', 200);
-      });
+    final chopper = buildClient(client, JsonConverter());
 
-      final chopper = buildClient(client);
+    chopper.onError.listen((response) {
+      expect(response.statusCode, equals(400));
+      expect(response.body, equals({"error": true}));
+    });
 
-      chopper.onResponse.listen((response) {
-        expect(response.statusCode, equals(200));
-        expect(response.body, equals('ok'));
-      });
-
-      final service = HttpTestService.create(chopper);
+    final service = HttpTestService.create(chopper);
+    try {
       await service.getTest('1234');
+    } catch (e) {
+      expect((e as Response).body, equals({"error": true}));
+    }
 
-      client.close();
-      chopper.dispose();
-    });
-
-    test('error', () async {
-      final client = MockClient((http.Request req) async {
-        return http.Response('error', 400);
-      });
-
-      final chopper = buildClient(client);
-
-      chopper.onError.listen((response) {
-        expect(response.statusCode, equals(400));
-        expect(response.body, equals('error'));
-      });
-
-      final service = HttpTestService.create(chopper);
-      try {
-        await service.getTest('1234');
-      } catch (e) {
-        expect(e is Response, isTrue);
-      }
-
-      client.close();
-      chopper.dispose();
-    });
+    client.close();
+    chopper.dispose();
   });
 }
