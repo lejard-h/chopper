@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.3.1
+
+- Fixed @Path issue, thanks to @kiruto
+- update `built_collection` to `4.0.0`
+
+## 2.3.0
+
+- ***Breaking Change***
+  `ChopperClient.errorConverter` is now taking an `ErrorConverter` as a parameter
+  ```dart
+  abstract class ErrorConverter {
+    FutureOr<Response> convertError<ResultType, ItemType>(Response response);
+  }
+  ```
+- Remove deprecated `Chopper.service<Type>(Type)`
+- Add `QueryMap` annotation
+- Fix https://github.com/lejard-h/chopper/issues/28
+- Fix https://github.com/lejard-h/chopper/issues/21
+- Fix https://github.com/lejard-h/chopper/issues/37
+
 ## 2.2.0
 
 - Fix converter issue on List
