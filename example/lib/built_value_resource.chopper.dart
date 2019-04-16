@@ -15,7 +15,7 @@ class _$MyService extends MyService {
   final definitionType = MyService;
 
   Future<Response> getResource(String id) {
-    final $url = '/resources/$id/';
+    final $url = '/resources/${id}/';
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
@@ -33,7 +33,8 @@ class _$MyService extends MyService {
     return client.send<Resource, Resource>($request);
   }
 
-  Future<Response<Resource>> newResource(Resource resource, {String name}) {
+  Future<Response<Resource>> newResource(Resource resource,
+      {String name = null}) {
     final $url = '/resources/';
     final $headers = {'name': name};
     final $body = resource;
