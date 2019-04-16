@@ -50,4 +50,12 @@ class _$MyService extends MyService {
         Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
     return client.send<Resource, Resource>($request);
   }
+
+  Future<Response> fieldsPost(String a, int b, double c) {
+    final $url = '/resources/feilds/post';
+    final $body = {'1': a, '2': b, '3': c};
+    $body.removeWhere((key, value) => value == null);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
+  }
 }

@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:chopper/chopper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'json_serializable.g.dart';
 part 'json_serializable.chopper.dart';
+
+part 'json_serializable.g.dart';
 
 @JsonSerializable()
 class Resource {
@@ -49,4 +50,11 @@ abstract class MyService extends ChopperService {
   @Post()
   Future<Response<Resource>> newResource(@Body() Resource resource,
       {@Header() String name});
+
+  @Post(path: "feilds/post")
+  Future<Response> fieldsPost(
+    @Field('1') String a,
+    @Field('2') int b,
+    @Field('3') double c,
+  );
 }
