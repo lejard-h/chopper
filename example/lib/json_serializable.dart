@@ -57,4 +57,29 @@ abstract class MyService extends ChopperService {
     @Field('2') int b,
     @Field('3') double c,
   );
+
+  @Post(path: 'multi')
+  @multipart
+  Future<Response> postResources(
+    @Part('1') Map a,
+    @Part('2') Map b,
+    @Part('3') String c,
+  );
+
+  @Post(path: 'file')
+  @multipart
+  Future<Response> postFile(
+    @FileField('file') List<int> bytes,
+  );
+
+  @Post(path: 'file')
+  @multipart
+  Future<Response> postMultiOptional(
+    @Part('map') Map map,
+    @Part('str') String str,
+    @FileField('file') List<int> bytes, {
+    @Part('opMap') Map opMap,
+    @Part('opStr') String opStr,
+    @FileField('opBytes') List<int> opBytes,
+  });
 }

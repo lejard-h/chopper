@@ -58,4 +58,43 @@ class _$MyService extends MyService {
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
+
+  Future<Response> postResources(Map a, Map b, String c) {
+    final $url = '/resources/multi';
+    final $parts = [
+      a == null ? null : PartValue<Map>('1', a),
+      b == null ? null : PartValue<Map>('2', b),
+      c == null ? null : PartValue<String>('3', c)
+    ];
+    $parts.removeWhere((val) => val == null);
+    final $request =
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> postFile(List<int> bytes) {
+    final $url = '/resources/file';
+    final $parts = [bytes == null ? null : PartFile<List<int>>('file', bytes)];
+    $parts.removeWhere((val) => val == null);
+    final $request =
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> postMultiOptional(Map map, String str, List<int> bytes,
+      {Map opMap = null, String opStr = null, List<int> opBytes = null}) {
+    final $url = '/resources/file';
+    final $parts = [
+      map == null ? null : PartValue<Map>('map', map),
+      str == null ? null : PartValue<String>('str', str),
+      opMap == null ? null : PartValue<Map>('opMap', opMap),
+      opStr == null ? null : PartValue<String>('opStr', opStr),
+      bytes == null ? null : PartFile<List<int>>('file', bytes),
+      opBytes == null ? null : PartFile<List<int>>('opBytes', opBytes)
+    ];
+    $parts.removeWhere((val) => val == null);
+    final $request =
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
+  }
 }

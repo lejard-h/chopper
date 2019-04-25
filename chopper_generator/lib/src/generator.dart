@@ -192,6 +192,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       if (hasParts) {
         blocks.add(
             _generateList(parts, fileFields).assignFinal(_partsVar).statement);
+        blocks.add(
+          Code('$_partsVar.removeWhere((val) => val == null);'),
+        );
       }
 
       blocks.add(_generateRequest(
@@ -405,21 +408,19 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final list = [];
     parts.forEach((p, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? p.displayName;
-      final params = <Expression>[
-        literal(name),
-        refer(p.displayName),
-      ];
 
-      list.add(refer('PartValue<${p.type.displayName}>').newInstance(params));
+      list.add(
+        Code(
+            "${p.displayName} == null ? null : PartValue<${p.type.displayName}>('$name', ${p.displayName})"),
+      );
     });
     fileFields.forEach((p, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? p.displayName;
-      final params = <Expression>[
-        literal(name),
-        refer(p.displayName),
-      ];
 
-      list.add(refer('PartFile<${p.type.displayName}>').newInstance(params));
+      list.add(
+        Code(
+            "${p.displayName} == null ? null : PartFile<${p.type.displayName}>('$name', ${p.displayName})"),
+      );
     });
     return literalList(list);
   }
