@@ -190,8 +190,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       final hasParts =
           multipart == true && (parts.isNotEmpty || fileFields.isNotEmpty);
       if (hasParts) {
-        blocks.add(
-            _generateList(parts, fileFields).assignFinal(_partsVar).statement);
+        blocks.add(_generateList(parts, fileFields)
+            .assignFinal(_partsVar, refer('List<PartValue>'))
+            .statement);
         blocks.add(
           Code('$_partsVar.removeWhere((val) => val == null);'),
         );

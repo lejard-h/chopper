@@ -61,7 +61,7 @@ class _$MyService extends MyService {
 
   Future<Response> postResources(Map a, Map b, String c) {
     final $url = '/resources/multi';
-    final $parts = [
+    final List<PartValue> $parts = [
       a == null ? null : PartValue<Map>('1', a),
       b == null ? null : PartValue<Map>('2', b),
       c == null ? null : PartValue<String>('3', c)
@@ -74,7 +74,9 @@ class _$MyService extends MyService {
 
   Future<Response> postFile(List<int> bytes) {
     final $url = '/resources/file';
-    final $parts = [bytes == null ? null : PartFile<List<int>>('file', bytes)];
+    final List<PartValue> $parts = [
+      bytes == null ? null : PartFile<List<int>>('file', bytes)
+    ];
     $parts.removeWhere((val) => val == null);
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
@@ -84,7 +86,7 @@ class _$MyService extends MyService {
   Future<Response> postMultiOptional(Map map, String str, List<int> bytes,
       {Map opMap = null, String opStr = null, List<int> opBytes = null}) {
     final $url = '/resources/file';
-    final $parts = [
+    final List<PartValue> $parts = [
       map == null ? null : PartValue<Map>('map', map),
       str == null ? null : PartValue<String>('str', str),
       opMap == null ? null : PartValue<Map>('opMap', opMap),
