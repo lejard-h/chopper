@@ -15,7 +15,7 @@ class _$MyService extends MyService {
   final definitionType = MyService;
 
   Future<Response> getResource(String id) {
-    final $url = '/resources/$id/';
+    final $url = '/resources/${id}/';
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }

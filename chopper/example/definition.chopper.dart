@@ -15,8 +15,8 @@ class _$MyService extends MyService {
   final definitionType = MyService;
 
   Future<Response> getResource(String id) {
-    final $url = '/resources/$id';
-    final $request = new Request('GET', $url, client.baseUrl);
+    final $url = '/resources/${id}';
+    final $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -24,41 +24,41 @@ class _$MyService extends MyService {
     final $url = '/resources/';
     final Map<String, dynamic> $params = {'id': id};
     final $headers = {'foo': 'bar'};
-    final $request = new Request('GET', $url, client.baseUrl,
+    final $request = Request('GET', $url, client.baseUrl,
         parameters: $params, headers: $headers);
     return client.send<Map, Map>($request);
   }
 
   Future<Response<List<Map>>> getListResources() {
     final $url = '/resources/resources';
-    final $request = new Request('GET', $url, client.baseUrl);
+    final $request = Request('GET', $url, client.baseUrl);
     return client.send<List<Map>, Map>($request);
   }
 
   Future<Response> postResourceUrlEncoded(String toto, String b) {
     final $url = '/resources/';
     final $body = {'a': toto, 'b': b};
-    final $request = new Request('POST', $url, client.baseUrl, body: $body);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response> postResources(Map a, Map b, String c) {
     final $url = '/resources/multi';
     final $parts = [
-      new PartValue<Map>('1', a),
-      new PartValue<Map>('2', b),
-      new PartValue<String>('3', c)
+      PartValue<Map>('1', a),
+      PartValue<Map>('2', b),
+      PartValue<String>('3', c)
     ];
-    final $request = new Request('POST', $url, client.baseUrl,
-        parts: $parts, multipart: true);
+    final $request =
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response> postFile(List<int> bytes) {
     final $url = '/resources/file';
-    final $parts = [new PartFile<List<int>>('file', bytes)];
-    final $request = new Request('POST', $url, client.baseUrl,
-        parts: $parts, multipart: true);
+    final $parts = [PartFile<List<int>>('file', bytes)];
+    final $request =
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);
   }
 }

@@ -130,18 +130,29 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       b.optionalParameters.addAll(m.parameters
           .where((p) => p.isOptionalPositional)
-          .map((p) => new Parameter((pb) => pb
-            ..name = p.name
-            ..type = new Reference(p.type.displayName)
-            ..defaultTo = Code(p.defaultValueCode))));
+          .map((p) => new Parameter((pb) {
+                pb
+                  ..name = p.name
+                  ..type = new Reference(p.type.displayName);
 
-      b.optionalParameters.addAll(m.parameters
-          .where((p) => p.isNamed)
-          .map((p) => new Parameter((pb) => pb
-            ..named = true
-            ..name = p.name
-            ..type = new Reference(p.type.displayName)
-            ..defaultTo = Code(p.defaultValueCode))));
+                if (p.defaultValueCode != null) {
+                  pb.defaultTo = Code(p.defaultValueCode);
+                }
+                return pb;
+              })));
+
+      b.optionalParameters.addAll(
+          m.parameters.where((p) => p.isNamed).map((p) => new Parameter((pb) {
+                pb
+                  ..named = true
+                  ..name = p.name
+                  ..type = new Reference(p.type.displayName);
+
+                if (p.defaultValueCode != null) {
+                  pb.defaultTo = Code(p.defaultValueCode);
+                }
+                return pb;
+              })));
 
       final blocks = [
         url.assignFinal(_urlVar).statement,

@@ -107,7 +107,7 @@ class _$Resource extends Resource {
   @override
   final String name;
 
-  factory _$Resource([void updates(ResourceBuilder b)]) =>
+  factory _$Resource([void Function(ResourceBuilder) updates]) =>
       (new ResourceBuilder()..update(updates)).build();
 
   _$Resource._({this.id, this.name}) : super._() {
@@ -120,7 +120,7 @@ class _$Resource extends Resource {
   }
 
   @override
-  Resource rebuild(void updates(ResourceBuilder b)) =>
+  Resource rebuild(void Function(ResourceBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -177,7 +177,7 @@ class ResourceBuilder implements Builder<Resource, ResourceBuilder> {
   }
 
   @override
-  void update(void updates(ResourceBuilder b)) {
+  void update(void Function(ResourceBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -195,7 +195,7 @@ class _$ResourceError extends ResourceError {
   @override
   final String message;
 
-  factory _$ResourceError([void updates(ResourceErrorBuilder b)]) =>
+  factory _$ResourceError([void Function(ResourceErrorBuilder) updates]) =>
       (new ResourceErrorBuilder()..update(updates)).build();
 
   _$ResourceError._({this.type, this.message}) : super._() {
@@ -208,7 +208,7 @@ class _$ResourceError extends ResourceError {
   }
 
   @override
-  ResourceError rebuild(void updates(ResourceErrorBuilder b)) =>
+  ResourceError rebuild(void Function(ResourceErrorBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -268,7 +268,7 @@ class ResourceErrorBuilder
   }
 
   @override
-  void update(void updates(ResourceErrorBuilder b)) {
+  void update(void Function(ResourceErrorBuilder) updates) {
     if (updates != null) updates(this);
   }
 

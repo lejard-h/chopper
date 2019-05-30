@@ -15,7 +15,7 @@ class _$MyService extends MyService {
   final definitionType = MyService;
 
   Future<Response> getResource(String id) {
-    final $url = '/resources/$id/';
+    final $url = '/resources/${id}/';
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
@@ -29,7 +29,7 @@ class _$MyService extends MyService {
 
   Future<Response<Map>> getMapResource(String id) {
     final $url = '/resources/';
-    final $params = {'id': '$id'};
+    final Map<String, dynamic> $params = {'id': id};
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<Map, Map>($request);
   }
