@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.3
+
+- update analyzer to `0.35.0`
+
 ## 2.3.2
 
 - do not set to null explicitly

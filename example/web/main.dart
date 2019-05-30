@@ -19,7 +19,15 @@ ChopperClient chopperClientFactory(http.Client httpClient) => ChopperClient(
 ])
 final InjectorFactory chopperApp = ng.chopperApp$Injector;
 
-void main() => runApp(
-      appFactory,
-      createInjector: chopperApp,
-    );
+ComponentRef _app;
+
+void main() {
+  _app = runApp(
+    appFactory,
+    createInjector: chopperApp,
+  );
+}
+
+Object hot$onDestroy() {
+  _app.destroy();
+}
