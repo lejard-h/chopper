@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.1
+
+- Default value for a path is now `''` instead of '/'
+- Do not send null value for Multipart request
+
 ## 2.3.0
 
 - ***Breaking Change***
