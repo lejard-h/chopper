@@ -113,4 +113,25 @@ ${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}\r
     expect(part.name, equals("int"));
     expect(part.value, equals(42));
   });
+
+  test('Multipart request non nullable', () async {
+    final req = await toMultipartRequest(
+      [
+        PartValue<int>("int", 42),
+        PartFile<List<int>>("list int", [1, 2]),
+        null,
+        PartValue('null value', null),
+        PartFile('null file', null),
+      ],
+      HttpMethod.Post,
+      Uri.parse('/foo'),
+      {},
+    );
+
+    expect(req.fields.length, equals(1));
+    expect(req.fields['int'], equals('42'));
+    expect(req.files.length, equals(1));
+    final bytes = await req.files.first.finalize().first;
+    expect(bytes, equals([1, 2]));
+  });
 }

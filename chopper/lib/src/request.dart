@@ -153,6 +153,8 @@ Future<http.MultipartRequest> toMultipartRequest(
   baseRequest.headers.addAll(headers);
 
   for (final part in parts) {
+    if (part == null || part.value == null) continue;
+
     if (part is PartFile) {
       if (part.value is List<int>) {
         baseRequest.files.add(
@@ -164,7 +166,7 @@ Future<http.MultipartRequest> toMultipartRequest(
         );
       }
     } else {
-      baseRequest.fields[part.name] = part.value?.toString();
+      baseRequest.fields[part.name] = part.value.toString();
     }
   }
   return baseRequest;
