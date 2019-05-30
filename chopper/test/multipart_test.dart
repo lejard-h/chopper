@@ -13,16 +13,16 @@ void main() {
           req.body,
           contains(
             'content-disposition: form-data; name="1"\r\n'
-                '\r\n'
-                '{foo: bar}\r\n',
+            '\r\n'
+            '{foo: bar}\r\n',
           ),
         );
         expect(
           req.body,
           contains(
             'content-disposition: form-data; name="2"\r\n'
-                '\r\n'
-                '{bar: foo}\r\n',
+            '\r\n'
+            '{bar: foo}\r\n',
           ),
         );
         return http.Response('ok', 200);

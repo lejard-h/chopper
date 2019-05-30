@@ -4,14 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 @immutable
-class Response<Body> {
+class Response<BodyType> {
   final http.Response base;
-  final Body body;
+  final BodyType body;
 
   const Response(this.base, this.body);
 
-  Response replace<BodyType>({http.Response base, BodyType body}) =>
-      Response<BodyType>(base ?? this.base, body ?? this.body);
+  Response replace<NewBodyType>({http.Response base, NewBodyType body}) =>
+      Response<NewBodyType>(base ?? this.base, body ?? this.body);
 
   int get statusCode => base.statusCode;
 

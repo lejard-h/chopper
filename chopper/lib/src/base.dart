@@ -103,16 +103,17 @@ class ChopperClient {
     return request;
   }
 
-  Future<Response<Body>> _decodeResponse<Body, Item>(
+  Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
     Response response,
     Converter withConverter,
   ) async {
     if (withConverter == null) return response;
 
-    final converted = await withConverter.convertResponse<Body, Item>(response);
+    final converted =
+        await withConverter.convertResponse<BodyType, InnerType>(response);
 
     if (converted == null) {
-      throw Exception("No converter found for type $Item");
+      throw Exception("No converter found for type $InnerType");
     }
 
     return converted;
@@ -142,7 +143,13 @@ class ChopperClient {
     return res;
   }
 
-  Future<Response<Body>> send<Body, Item>(
+  /// [BodyType] is the expected type of your response
+  /// ex: `String` or `CustomObject`
+  ///
+  /// In the case of [BodyType] is a `List` or `BuildList`
+  /// [InnerType] will be the type of the generic
+  /// ex: `convertResponse<List<CustomObject>, CustomObject>(response)`
+  Future<Response<BodyType>> send<BodyType, InnerType>(
     Request request, {
     ConvertRequest requestConverter,
     ConvertResponse responseConverter,
@@ -169,10 +176,10 @@ class ChopperClient {
       if (responseConverter != null) {
         res = await responseConverter(res);
       } else {
-        res = await _decodeResponse<Body, Item>(res, converter);
+        res = await _decodeResponse<BodyType, InnerType>(res, converter);
       }
     } else if (errorConverter != null) {
-      res = await errorConverter.convertError<Body, Item>(res);
+      res = await errorConverter.convertError<BodyType, InnerType>(res);
     }
 
     res = await _interceptResponse(res);
@@ -186,12 +193,13 @@ class ChopperClient {
     return res;
   }
 
-  Future<Response<ResultType>> get<ResultType, ItemType>(
+  /// Http GET request using [send] function
+  Future<Response<BodyType>> get<BodyType, InnerType>(
     String url, {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
   }) =>
-      send<ResultType, ItemType>(
+      send<BodyType, InnerType>(
         Request(
           HttpMethod.Get,
           url,
@@ -201,7 +209,8 @@ class ChopperClient {
         ),
       );
 
-  Future<Response<ResultType>> post<ResultType, ItemType>(
+  /// Http POST request using [send] function
+  Future<Response<BodyType>> post<BodyType, InnerType>(
     String url, {
     dynamic body,
     List<PartValue> parts,
@@ -209,7 +218,7 @@ class ChopperClient {
     Map<String, dynamic> parameters,
     bool multipart,
   }) =>
-      send<ResultType, ItemType>(
+      send<BodyType, InnerType>(
         Request(
           HttpMethod.Post,
           url,
@@ -222,7 +231,8 @@ class ChopperClient {
         ),
       );
 
-  Future<Response<ResultType>> put<ResultType, ItemType>(
+  /// Http PUT request using [send] function
+  Future<Response<BodyType>> put<BodyType, InnerType>(
     String url, {
     dynamic body,
     List<PartValue> parts,
@@ -230,7 +240,7 @@ class ChopperClient {
     Map<String, dynamic> parameters,
     bool multipart,
   }) =>
-      send<ResultType, ItemType>(
+      send<BodyType, InnerType>(
         Request(
           HttpMethod.Put,
           url,
@@ -243,7 +253,8 @@ class ChopperClient {
         ),
       );
 
-  Future<Response<ResultType>> patch<ResultType, ItemType>(
+  /// Http PATCH request using [send] function
+  Future<Response<BodyType>> patch<BodyType, InnerType>(
     String url, {
     dynamic body,
     List<PartValue> parts,
@@ -251,7 +262,7 @@ class ChopperClient {
     Map<String, dynamic> parameters,
     bool multipart,
   }) =>
-      send<ResultType, ItemType>(
+      send<BodyType, InnerType>(
         Request(
           HttpMethod.Patch,
           url,
@@ -264,12 +275,13 @@ class ChopperClient {
         ),
       );
 
-  Future<Response<ResultType>> delete<ResultType, ItemType>(
+  /// Http DELETE request using [send] function
+  Future<Response<BodyType>> delete<BodyType, InnerType>(
     String url, {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
   }) =>
-      send<ResultType, ItemType>(
+      send<BodyType, InnerType>(
         Request(
           HttpMethod.Delete,
           url,

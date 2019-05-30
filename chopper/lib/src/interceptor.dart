@@ -27,18 +27,18 @@ abstract class RequestInterceptor {
 abstract class Converter {
   FutureOr<Request> convertRequest(Request request);
 
-  /// [ResultType] is the expected type of your response
+  /// [BodyType] is the expected type of your response
   /// ex: `String` or `CustomObject`
   ///
-  /// In the case of [ResultType] is a `List` or `BuildList`
-  /// [ItemType] will be the type of the generic
+  /// In the case of [BodyType] is a `List` or `BuildList`
+  /// [InnerType] will be the type of the generic
   /// ex: `convertResponse<List<CustomObject>, CustomObject>(response)`
-  FutureOr<Response<ResultType>> convertResponse<ResultType, ItemType>(
+  FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
       Response response);
 }
 
 abstract class ErrorConverter {
-  FutureOr<Response> convertError<ResultType, ItemType>(Response response);
+  FutureOr<Response> convertError<BodyType, InnerType>(Response response);
 }
 
 /// Add [headers] to each request
@@ -158,9 +158,8 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   @override
-  Response<ResultType> convertResponse<ResultType, ItemType>(
-          Response response) =>
-      decodeJson(response) as Response<ResultType>;
+  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
+      decodeJson(response) as Response<BodyType>;
 
   dynamic _tryDecodeJson(String data) {
     try {
@@ -172,7 +171,7 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   @override
-  Response convertError<ResultType, ItemType>(Response response) =>
+  Response convertError<BodyType, InnerType>(Response response) =>
       decodeJson(response);
 }
 
@@ -186,11 +185,10 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
       );
 
   @override
-  Response<ResultType> convertResponse<ResultType, ItemType>(
-          Response response) =>
+  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
       response;
 
   @override
-  FutureOr<Response> convertError<ResultType, ItemType>(Response response) =>
+  FutureOr<Response> convertError<BodyType, InnerType>(Response response) =>
       response;
 }
