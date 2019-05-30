@@ -332,22 +332,24 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     Map<ParameterElement, ConstantReader> paths,
     String baseUrl,
   ) {
-    String value = "${method.read("path").stringValue}";
+    String path = "${method.read("path").stringValue}";
     paths.forEach((p, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? p.displayName;
-      value = value.replaceFirst("{$name}", "\${${p.displayName}}");
+      path = path.replaceFirst("{$name}", "\${${p.displayName}}");
     });
 
-    if (value.startsWith('http://') || value.startsWith('https://')) {
+    if (path.startsWith('http://') || path.startsWith('https://')) {
       // if the request's url is already a fully qualified URL, we can use
       // as-is and ignore the baseUrl
-      return literal(value);
+      return literal(path);
+    } else if (path.isEmpty && baseUrl.isEmpty) {
+      return literal('');
     } else {
-      if (!baseUrl.endsWith('/') && !value.startsWith('/')) {
-        return literal('$baseUrl/$value');
+      if (!baseUrl.endsWith('/') && !path.startsWith('/')) {
+        return literal('$baseUrl/$path');
       }
 
-      return literal('$baseUrl$value');
+      return literal('$baseUrl$path');
     }
   }
 
