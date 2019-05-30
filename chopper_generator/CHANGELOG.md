@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.2
+
+- do not set to null explicitly
+
 ## 2.3.1
 
 - Fixed @Path issue, thanks to @kiruto
