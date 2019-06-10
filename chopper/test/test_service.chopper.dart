@@ -21,6 +21,12 @@ class _$HttpTestService extends HttpTestService {
     return client.send<dynamic, dynamic>($request);
   }
 
+  Future<Response<Stream<List<int>>>> getStreamTest() {
+    final $url = '/test/get';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<Stream<List<int>>, int>($request);
+  }
+
   Future<Response> getQueryTest({String name, int number, int def = 42}) {
     final $url = '/test/query';
     final Map<String, dynamic> $params = {
@@ -50,6 +56,13 @@ class _$HttpTestService extends HttpTestService {
   Future<Response> postTest(String data) {
     final $url = '/test/post';
     final $body = data;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> postStreamTest(Stream<List<int>> byteStream) {
+    final $url = '/test/post';
+    final $body = byteStream;
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.0
+
+- ***Breaking Change***
+  `Response.base` is now a `BaseRequest` instead of a `Request`, which means that you can't do base.body now.
+  Please use Response.bodyBytes or Response.bodyString instead for non streaming case.
+- Now supports streams !
+  - You can pass `Stream<List<int>>` as a body to a request
+  - You can also use `Stream<List<int>>` as the BodyType for the response, in this case the returned response will contain a stream in `body`.
+
 ## 2.3.1
 
 - Default value for a path is now `''` instead of '/'

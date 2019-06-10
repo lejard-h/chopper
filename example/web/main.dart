@@ -30,4 +30,5 @@ void main() {
 
 Object hot$onDestroy() {
   _app.destroy();
+  return null;
 }

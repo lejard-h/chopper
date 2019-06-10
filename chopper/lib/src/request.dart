@@ -61,6 +61,16 @@ class Request {
     final uri = _buildUri();
     final heads = _buildHeaders();
 
+    // TODO implements stream for multipart
+    if (body is Stream<List<int>>) {
+      return toStreamedRequest(
+        body,
+        method,
+        uri,
+        heads,
+      );
+    }
+
     if (multipart) {
       return toMultipartRequest(
         parts,
@@ -170,4 +180,19 @@ Future<http.MultipartRequest> toMultipartRequest(
     }
   }
   return baseRequest;
+}
+
+Future<http.BaseRequest> toStreamedRequest(
+  Stream<List<int>> bodyStream,
+  String method,
+  Uri uri,
+  Map<String, String> headers,
+) async {
+  final req = http.StreamedRequest(method, uri);
+  req.headers.addAll(headers);
+
+  bodyStream.listen(req.sink.add,
+      onDone: req.sink.close, onError: req.sink.addError);
+
+  return req;
 }

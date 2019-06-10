@@ -12,6 +12,7 @@ import "interceptor.dart";
 import "request.dart";
 import 'response.dart';
 import 'annotations.dart';
+import 'utils.dart';
 
 Type typeOf<T>() => T;
 
@@ -167,9 +168,12 @@ class ChopperClient {
     req = await _interceptRequest(req);
 
     _requestController.add(req);
-    final stream = await httpClient.send(await req.toBaseRequest());
+    final streamRes = await httpClient.send(await req.toBaseRequest());
+    if (isTypeOf<BodyType, Stream<List<int>>>()) {
+      return Response(streamRes, (streamRes.stream) as BodyType);
+    }
 
-    final response = await http.Response.fromStream(stream);
+    final response = await http.Response.fromStream(streamRes);
     Response res = Response(response, response.body);
 
     if (res.isSuccessful) {
