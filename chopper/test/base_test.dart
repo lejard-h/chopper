@@ -636,4 +636,38 @@ void main() {
     client.close();
     chopper.dispose();
   });
+
+  test('Empty path gives no trailing slash', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final _ = await service.getAll();
+  });
+
+  test('Slash in path gives a trailing slash', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final _ = await service.getAllWithTrailingSlash();
+  });
 }
