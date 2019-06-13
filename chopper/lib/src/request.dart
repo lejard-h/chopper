@@ -61,7 +61,6 @@ class Request {
     final uri = _buildUri();
     final heads = _buildHeaders();
 
-    // TODO implements stream for multipart
     if (body is Stream<List<int>>) {
       return toStreamedRequest(
         body,
@@ -165,7 +164,9 @@ Future<http.MultipartRequest> toMultipartRequest(
   for (final part in parts) {
     if (part == null || part.value == null) continue;
 
-    if (part is PartFile) {
+    if (part.value is http.MultipartFile) {
+      baseRequest.files.add(part.value);
+    } else if (part is PartFile) {
       if (part.value is List<int>) {
         baseRequest.files.add(
           http.MultipartFile.fromBytes(part.name, part.value),
@@ -173,6 +174,14 @@ Future<http.MultipartRequest> toMultipartRequest(
       } else if (part.value is String) {
         baseRequest.files.add(
           await http.MultipartFile.fromPath(part.name, part.value),
+        );
+      } else {
+        throw ArgumentError(
+          'Type ${part.value.runtimeType} is not a supported type for PartFile'
+          'Please use one of the following types'
+          ' - List<int>'
+          ' - String (path of your file) '
+          ' - MultipartFile (from package:http)',
         );
       }
     } else {

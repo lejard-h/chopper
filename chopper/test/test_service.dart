@@ -2,6 +2,8 @@ import "dart:async";
 import 'dart:convert';
 import 'package:chopper/chopper.dart';
 
+import 'package:http/http.dart' show MultipartFile;
+
 part "test_service.chopper.dart";
 
 @ChopperApi(baseUrl: "/test")
@@ -68,6 +70,12 @@ abstract class HttpTestService extends ChopperService {
   @multipart
   Future<Response> postFile(
     @FileField('file') List<int> bytes,
+  );
+
+  @Post(path: 'file')
+  @multipart
+  Future<Response> postMultipartFile(
+    @FileField() MultipartFile file,
   );
 
   @Get(path: 'https://test.com')

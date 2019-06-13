@@ -8,6 +8,7 @@
 - Now supports streams !
   - You can pass `Stream<List<int>>` as a body to a request
   - You can also use `Stream<List<int>>` as the BodyType for the response, in this case the returned response will contain a stream in `body`.
+- Support passing `MutlipartFile` (from packages:http) directly to `@FileField` annotation
 
 ## 2.3.2
 

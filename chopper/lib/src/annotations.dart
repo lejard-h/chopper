@@ -152,6 +152,8 @@ class Multipart {
 }
 
 /// Use to define part of [Multipart] request
+/// All values will are converted to [String] using [toString] method
+/// accept MultipartFile (from package:http)
 @immutable
 class Part {
   final String name;
@@ -162,6 +164,11 @@ class Part {
 ///     @Post(path: 'file')
 ///     @multipart
 ///     Future<Response> postFile(@FileField('file') List<int> bytes);
+///
+/// Support the following values
+///   - List<int>'
+///   - String (path of your file)
+///   - MultipartFile (from package:http)
 @immutable
 class FileField {
   final String name;
