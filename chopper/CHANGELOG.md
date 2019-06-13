@@ -9,6 +9,10 @@
   - You can pass `Stream<List<int>>` as a body to a request
   - You can also use `Stream<List<int>>` as the BodyType for the response, in this case the returned response will contain a stream in `body`.
 
+## 2.3.2
+
+- Fix trailing slash when path empty
+
 ## 2.3.1
 
 - Default value for a path is now `''` instead of '/'
