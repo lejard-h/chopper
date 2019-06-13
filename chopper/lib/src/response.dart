@@ -5,12 +5,12 @@ import 'package:meta/meta.dart';
 
 @immutable
 class Response<BodyType> {
-  final http.Response base;
+  final http.BaseResponse base;
   final BodyType body;
 
-  const Response(this.base, this.body);
+  Response(this.base, this.body);
 
-  Response replace<NewBodyType>({http.Response base, NewBodyType body}) =>
+  Response replace<NewBodyType>({http.BaseResponse base, NewBodyType body}) =>
       Response<NewBodyType>(base ?? this.base, body ?? this.body);
 
   int get statusCode => base.statusCode;
@@ -19,5 +19,9 @@ class Response<BodyType> {
 
   Map<String, String> get headers => base.headers;
 
-  Uint8List get bodyBytes => base.bodyBytes;
+  Uint8List get bodyBytes =>
+      base is http.Response ? (base as http.Response).bodyBytes : null;
+
+  String get bodyString =>
+      base is http.Response ? (base as http.Response).body : null;
 }

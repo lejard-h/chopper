@@ -115,9 +115,12 @@ class HttpLoggingInterceptor
     response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
     var bytes;
-    if (response.base.body != null && response.base.body.isNotEmpty) {
-      chopperLogger.info(response.base.body);
-      bytes = ' (${response.base.bodyBytes.length}-byte body)';
+    if (response.base is http.Response) {
+      final resp = response.base as http.Response;
+      if (resp.body != null && resp.body.isNotEmpty) {
+        chopperLogger.info(resp.body);
+        bytes = ' (${response.bodyBytes?.length}-byte body)';
+      }
     }
 
     chopperLogger.info('--> END ${base.method}$bytes');

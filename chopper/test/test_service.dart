@@ -15,6 +15,9 @@ abstract class HttpTestService extends ChopperService {
     @Header('test') String dynamicHeader,
   });
 
+  @Get(path: "get")
+  Future<Response<Stream<List<int>>>> getStreamTest();
+
   @Get(path: "query")
   Future<Response> getQueryTest({
     @Query('name') String name,
@@ -33,6 +36,9 @@ abstract class HttpTestService extends ChopperService {
 
   @Post(path: "post")
   Future<Response> postTest(@Body() String data);
+
+  @Post(path: "post")
+  Future<Response> postStreamTest(@Body() Stream<List<int>> byteStream);
 
   @Put(path: 'put/{id}')
   Future<Response> putTest(@Path('id') String test, @Body() String data);

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chopper/chopper.dart';
 import 'package:test/test.dart';
 import 'package:http/testing.dart';
@@ -64,6 +66,38 @@ void main() {
       final response = await service.getTest('1234');
 
       expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('GET stream', () async {
+      final httpClient = MockClient.streaming((request, stream) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/get'),
+        );
+        expect(request.method, equals('GET'));
+
+        final bodyStreamList = List<Future<List<int>>>();
+        bodyStreamList.add(Future.value(Utf8Encoder().convert('get ')));
+        bodyStreamList.add(Future.value(Utf8Encoder().convert('response')));
+        final s = Stream.fromFutures(bodyStreamList);
+
+        return http.StreamedResponse(s, 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getStreamTest();
+
+      final bytes = List<int>();
+      await response.body.forEach((d) {
+        bytes.addAll(d);
+      });
+
+      expect(Utf8Decoder().convert(bytes), equals('get response'));
       expect(response.statusCode, equals(200));
 
       httpClient.close();
@@ -152,6 +186,34 @@ void main() {
       final service = chopper.getService<HttpTestService>();
 
       final response = await service.postTest('post body');
+
+      expect(response.body, equals('post response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('POST with streamed body', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/post'),
+        );
+        expect(request.method, equals('POST'));
+        expect(request.body, equals('post body'));
+
+        return http.Response('post response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final bodyStreamList = List<Future<List<int>>>();
+      bodyStreamList.add(Future.value(Utf8Encoder().convert('post ')));
+      bodyStreamList.add(Future.value(Utf8Encoder().convert('body')));
+      final s = Stream.fromFutures(bodyStreamList);
+
+      final response = await service.postStreamTest(s);
 
       expect(response.body, equals('post response'));
       expect(response.statusCode, equals(200));
