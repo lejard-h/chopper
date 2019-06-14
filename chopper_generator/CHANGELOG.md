@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.4
+
+  fix trailing slash when empty path
+	
 ## 2.3.3
 
 - update analyzer to `0.35.0`
