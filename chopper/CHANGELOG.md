@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1
+
+- Deprecate `@FieldField`, use `@PartFile` instead
+
 ## 2.4.0
 
 - ***Breaking Change***

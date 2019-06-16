@@ -111,7 +111,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final queryMap = _getAnnotation(m, chopper.QueryMap);
     final fields = _getAnnotations(m, chopper.Field);
     final parts = _getAnnotations(m, chopper.Part);
-    final fileFields = _getAnnotations(m, chopper.FileField);
+    final fileFields = _getAnnotations(m, chopper.PartFile);
 
     final headers = _generateHeaders(m, method);
     final url = _generateUrl(method, paths, baseUrl);
@@ -430,7 +430,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         refer(p.displayName),
       ];
 
-      list.add(refer('PartFile<${p.type.displayName}>').newInstance(params));
+      list.add(
+        refer('PartValueFile<${p.type.displayName}>').newInstance(params),
+      );
     });
     return literalList(list);
   }

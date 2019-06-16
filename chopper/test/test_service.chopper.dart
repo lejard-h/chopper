@@ -114,15 +114,18 @@ class _$HttpTestService extends HttpTestService {
 
   Future<Response> postFile(List<int> bytes) {
     final $url = '/test/file';
-    final $parts = [PartFile<List<int>>('file', bytes)];
+    final $parts = [PartValueFile<List<int>>('file', bytes)];
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);
   }
 
-  Future<Response> postMultipartFile(MultipartFile file) {
+  Future<Response> postMultipartFile(MultipartFile file, {String id}) {
     final $url = '/test/file';
-    final $parts = [PartFile<MultipartFile>('file', file)];
+    final $parts = <PartValue>[
+      PartValue<String>('id', id),
+      PartValueFile<MultipartFile>('file', file)
+    ];
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);

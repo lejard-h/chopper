@@ -37,6 +37,6 @@ abstract class MyService extends ChopperService {
   @Post(path: '/file')
   @multipart
   Future<Response> postFile(
-    @FileField('file') List<int> bytes,
+    @Part('file') List<int> bytes,
   );
 }

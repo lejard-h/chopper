@@ -104,8 +104,8 @@ class PartValue<T> {
 }
 
 @immutable
-class PartFile<T> extends PartValue<T> {
-  PartFile(String name, T value) : super(name, value);
+class PartValueFile<T> extends PartValue<T> {
+  PartValueFile(String name, T value) : super(name, value);
 }
 
 Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
@@ -166,7 +166,7 @@ Future<http.MultipartRequest> toMultipartRequest(
 
     if (part.value is http.MultipartFile) {
       baseRequest.files.add(part.value);
-    } else if (part is PartFile) {
+    } else if (part is PartValueFile) {
       if (part.value is List<int>) {
         baseRequest.files.add(
           http.MultipartFile.fromBytes(part.name, part.value),

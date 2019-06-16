@@ -73,6 +73,11 @@ void main() {
         req.body,
         contains('content-type: application/octet-stream'),
       );
+
+      expect(
+        req.body,
+        isNot(contains('content-disposition: form-data; name="id"')),
+      );
       expect(
           req.body,
           contains(
@@ -100,6 +105,44 @@ void main() {
     chopper.dispose();
   });
 
+  test("MultipartFile with other Part", () async {
+    final httpClient = MockClient((http.Request req) async {
+      expect(req.headers['Content-Type'], contains('multipart/form-data;'));
+
+      expect(req.body,
+          contains('content-disposition: form-data; name="id"\r\n\r\n42\r\n'));
+
+      expect(
+        req.body,
+        contains('content-type: application/octet-stream'),
+      );
+      expect(
+          req.body,
+          contains(
+            'content-disposition: form-data; name="file_field"; filename="file_name"',
+          ));
+      expect(
+        req.body,
+        contains('${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}'),
+      );
+      return http.Response('ok', 200);
+    });
+
+    final chopper = ChopperClient(client: httpClient);
+    final service = HttpTestService.create(chopper);
+
+    final file = http.MultipartFile.fromBytes(
+      'file_field',
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      filename: 'file_name',
+      contentType: MediaType.parse('application/octet-stream'),
+    );
+
+    await service.postMultipartFile(file, id: '42');
+
+    chopper.dispose();
+  });
+
   test('PartValue', () async {
     final req = await toMultipartRequest(
       [
@@ -118,8 +161,8 @@ void main() {
   test('PartFile', () async {
     final req = await toMultipartRequest(
       [
-        PartFile<String>("foo", "test/multipart_test.dart"),
-        PartFile<List<int>>("int", [1, 2]),
+        PartValueFile<String>("foo", "test/multipart_test.dart"),
+        PartValueFile<List<int>>("int", [1, 2]),
       ],
       HttpMethod.Post,
       Uri.parse('/foo'),
@@ -154,10 +197,10 @@ void main() {
     final req = await toMultipartRequest(
       [
         PartValue<int>("int", 42),
-        PartFile<List<int>>("list int", [1, 2]),
+        PartValueFile<List<int>>("list int", [1, 2]),
         null,
         PartValue('null value', null),
-        PartFile('null file', null),
+        PartValueFile('null file', null),
       ],
       HttpMethod.Post,
       Uri.parse('/foo'),
@@ -182,7 +225,7 @@ void main() {
             filename: 'list int 1',
           ),
         ),
-        PartFile<http.MultipartFile>(
+        PartValueFile<http.MultipartFile>(
           null,
           http.MultipartFile.fromBytes(
             "second",

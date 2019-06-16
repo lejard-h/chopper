@@ -163,6 +163,22 @@ class Part {
 /// Use to define a file filed for [Multipart] request
 ///     @Post(path: 'file')
 ///     @multipart
+///     Future<Response> postFile(@PartFile('file') List<int> bytes);
+///
+/// Support the following values
+///   - List<int>'
+///   - String (path of your file)
+///   - MultipartFile (from package:http)
+@immutable
+class PartFile {
+  final String name;
+
+  const PartFile([this.name]);
+}
+
+/// Use to define a file filed for [Multipart] request
+///     @Post(path: 'file')
+///     @multipart
 ///     Future<Response> postFile(@FileField('file') List<int> bytes);
 ///
 /// Support the following values
@@ -170,10 +186,9 @@ class Part {
 ///   - String (path of your file)
 ///   - MultipartFile (from package:http)
 @immutable
-class FileField {
-  final String name;
-
-  const FileField([this.name]);
+@Deprecated('use PartFile')
+class FileField extends PartFile {
+  const FileField([String name]) : super(name);
 }
 
 const multipart = Multipart();

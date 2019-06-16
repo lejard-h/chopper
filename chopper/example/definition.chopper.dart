@@ -56,7 +56,7 @@ class _$MyService extends MyService {
 
   Future<Response> postFile(List<int> bytes) {
     final $url = '/resources/file';
-    final $parts = [PartFile<List<int>>('file', bytes)];
+    final $parts = [PartValue<List<int>>('file', bytes)];
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);

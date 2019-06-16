@@ -1,6 +1,6 @@
 name: chopper
 description: Chopper is an http client generator using source_gen and inspired from retrofit
-version: 2.4.0
+version: 2.4.1
 homepage: https://github.com/lejard-h/chopper
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
 

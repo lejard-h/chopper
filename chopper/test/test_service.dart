@@ -69,14 +69,15 @@ abstract class HttpTestService extends ChopperService {
   @Post(path: 'file')
   @multipart
   Future<Response> postFile(
-    @FileField('file') List<int> bytes,
+    @PartFile('file') List<int> bytes,
   );
 
   @Post(path: 'file')
   @multipart
   Future<Response> postMultipartFile(
-    @FileField() MultipartFile file,
-  );
+    @PartFile() MultipartFile file, {
+    @Part() String id,
+  });
 
   @Get(path: 'https://test.com')
   Future fullUrl();
