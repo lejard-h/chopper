@@ -356,7 +356,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     } else if (path.isEmpty && baseUrl.isEmpty) {
       return literal('');
     } else {
-      if (path.length > 0 && !baseUrl.endsWith('/') && !path.startsWith('/')) {
+      if (path.length > 0 && baseUrl.isNotEmpty && !baseUrl.endsWith('/') &&
+          !path.startsWith('/')) {
         return literal('$baseUrl/$path');
       }
 
