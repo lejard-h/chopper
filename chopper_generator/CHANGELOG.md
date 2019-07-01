@@ -2,7 +2,7 @@
 
 ## 2.4.0
 
-- Deprecate `@FieldField`, use `@PartFile` instead
+- Deprecate `@FileField`, use `@PartFile` instead
 - support `chopper: ^2.4.1`
 
 ## 2.3.4

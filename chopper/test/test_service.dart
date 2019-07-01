@@ -1,7 +1,6 @@
 import "dart:async";
 import 'dart:convert';
 import 'package:chopper/chopper.dart';
-import 'package:chopper/chopper.dart' as prefix0;
 
 import 'package:http/http.dart' show MultipartFile;
 
