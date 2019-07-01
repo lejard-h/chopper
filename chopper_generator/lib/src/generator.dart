@@ -434,7 +434,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         refer('PartValueFile<${p.type.displayName}>').newInstance(params),
       );
     });
-    return literalList(list);
+    return literalList(list, refer('PartValue'));
   }
 
   Code _generateHeaders(MethodElement m, ConstantReader method) {
