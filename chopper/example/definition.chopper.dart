@@ -44,7 +44,7 @@ class _$MyService extends MyService {
 
   Future<Response> postResources(Map a, Map b, String c) {
     final $url = '/resources/multi';
-    final $parts = [
+    final $parts = <PartValue>[
       PartValue<Map>('1', a),
       PartValue<Map>('2', b),
       PartValue<String>('3', c)
@@ -56,7 +56,7 @@ class _$MyService extends MyService {
 
   Future<Response> postFile(List<int> bytes) {
     final $url = '/resources/file';
-    final $parts = [PartValue<List<int>>('file', bytes)];
+    final $parts = <PartValue>[PartValue<List<int>>('file', bytes)];
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);

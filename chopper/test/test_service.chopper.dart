@@ -88,11 +88,27 @@ class _$HttpTestService extends HttpTestService {
     return client.send<dynamic, dynamic>($request);
   }
 
-  Future<Response> mapTest(Map map) {
+  Future<Response> mapTest(Map<String, String> map) {
     final $url = '/test/map';
     final $body = map;
     final $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> postForm(Map<String, String> fields) {
+    final $url = '/test/form/body';
+    final $body = fields;
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request,
+        requestConverter: convertForm);
+  }
+
+  Future<Response> postFormFields(String foo, int bar) {
+    final $url = '/test/form/body/fields';
+    final $body = {'foo': foo, 'bar': bar};
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request,
+        requestConverter: convertForm);
   }
 
   Future<Response> forceJsonTest(Map map) {
@@ -106,7 +122,7 @@ class _$HttpTestService extends HttpTestService {
 
   Future<Response> postResources(Map a, Map b) {
     final $url = '/test/multi';
-    final $parts = [PartValue<Map>('1', a), PartValue<Map>('2', b)];
+    final $parts = <PartValue>[PartValue<Map>('1', a), PartValue<Map>('2', b)];
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);
@@ -114,7 +130,7 @@ class _$HttpTestService extends HttpTestService {
 
   Future<Response> postFile(List<int> bytes) {
     final $url = '/test/file';
-    final $parts = [PartValueFile<List<int>>('file', bytes)];
+    final $parts = <PartValue>[PartValueFile<List<int>>('file', bytes)];
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
     return client.send<dynamic, dynamic>($request);
