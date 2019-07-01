@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1
+
+- Fix PartValue cast
+
 ## 2.4.0
 
 - Deprecate `@FileField`, use `@PartFile` instead
