@@ -1,6 +1,7 @@
 import "dart:async";
 import 'dart:convert';
 import 'package:chopper/chopper.dart';
+import 'package:chopper/src/constants.dart';
 
 import 'package:http/http.dart' show MultipartFile;
 
@@ -57,6 +58,9 @@ abstract class HttpTestService extends ChopperService {
   @FactoryConverter(request: convertForm)
   @Post(path: 'form/body')
   Future<Response> postForm(@Body() Map<String, String> fields);
+
+  @Post(path: 'form/body', headers: {contentTypeKey: formEncodedHeaders})
+  Future<Response> postFormUsingHeaders(@Body() Map<String, String> fields);
 
   @FactoryConverter(request: convertForm)
   @Post(path: 'form/body/fields')

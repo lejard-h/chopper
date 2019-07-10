@@ -103,6 +103,15 @@ class _$HttpTestService extends HttpTestService {
         requestConverter: convertForm);
   }
 
+  Future<Response> postFormUsingHeaders(Map<String, String> fields) {
+    final $url = '/test/form/body';
+    final $headers = {'content-type': 'application/x-www-form-urlencoded'};
+    final $body = fields;
+    final $request =
+        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
+  }
+
   Future<Response> postFormFields(String foo, int bar) {
     final $url = '/test/form/body/fields';
     final $body = {'foo': foo, 'bar': bar};

@@ -16,7 +16,7 @@ void main() {
               converter: isJson ? JsonConverter() : null,
             );
 
-    test('form-urlencoded default', () async {
+    test('form-urlencoded default if no converter', () async {
       final httpClient = MockClient((http.Request req) async {
         expect(req.url.toString(), equals('/test/map'));
         expect(
@@ -52,6 +52,29 @@ void main() {
       final chopper = buildClient(httpClient, isJson: true);
 
       final result = await chopper.getService<HttpTestService>().postForm({
+        'foo': 'test',
+        'factory': 'converter',
+      });
+
+      expect(result.body, equals('ok'));
+
+      httpClient.close();
+    });
+
+    test('form-urlencoded using headers field of annotation', () async {
+      final httpClient = MockClient((http.Request req) async {
+        expect(
+          req.headers['content-type'],
+          'application/x-www-form-urlencoded; charset=utf-8',
+        );
+        expect(req.body, 'foo=test&factory=converter');
+        return http.Response('ok', 200);
+      });
+
+      final chopper = buildClient(httpClient, isJson: true);
+
+      final result =
+          await chopper.getService<HttpTestService>().postFormUsingHeaders({
         'foo': 'test',
         'factory': 'converter',
       });
