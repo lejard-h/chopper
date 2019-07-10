@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
@@ -635,5 +636,23 @@ void main() {
 
     client.close();
     chopper.dispose();
+  });
+
+  test('timeout', () async {
+    final httpClient = MockClient((http.Request req) async {
+      await Future.delayed(const Duration(minutes: 1));
+      return http.Response('ok', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    try {
+      await service.getTest('1234').timeout(const Duration(seconds: 3));
+    } catch (e) {
+      expect(e is TimeoutException, isTrue);
+    }
+
+    httpClient.close();
   });
 }
