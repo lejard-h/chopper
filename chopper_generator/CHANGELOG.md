@@ -8,6 +8,8 @@
 
 - add `bool override` on `applyHeader(s)` functions, true by default
 
+- support `List<MultipartFile>`
+
 ## 2.4.1
 
 - Fix PartValue cast

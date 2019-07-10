@@ -20,7 +20,7 @@ abstract class HttpTestService extends ChopperService {
 
   @Get(path: "get")
   Future<Response<Stream<List<int>>>> getStreamTest();
-  
+
   @Get(path: '')
   Future<Response> getAll();
 
@@ -96,6 +96,10 @@ abstract class HttpTestService extends ChopperService {
     @PartFile() MultipartFile file, {
     @Part() String id,
   });
+
+  @Post(path: 'files')
+  @multipart
+  Future<Response> postListFiles(@PartFile() List<MultipartFile> files);
 
   @Get(path: 'https://test.com')
   Future fullUrl();

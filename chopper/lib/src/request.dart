@@ -166,6 +166,8 @@ Future<http.MultipartRequest> toMultipartRequest(
 
     if (part.value is http.MultipartFile) {
       baseRequest.files.add(part.value);
+    } else if (part.value is Iterable<http.MultipartFile>) {
+      baseRequest.files.addAll(part.value);
     } else if (part is PartValueFile) {
       if (part.value is List<int>) {
         baseRequest.files.add(

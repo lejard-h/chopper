@@ -143,6 +143,54 @@ void main() {
     chopper.dispose();
   });
 
+  test('support List<MultipartFile>', () async {
+    final httpClient = MockClient((http.Request req) async {
+      expect(req.headers['Content-Type'], contains('multipart/form-data;'));
+
+      expect(
+        req.body,
+        contains(
+          'content-type: application/octet-stream\r\n'
+          'content-disposition: form-data; name="file_1"; filename="file_name_1"\r\n'
+          '\r\n'
+          'Hello',
+        ),
+      );
+
+      expect(
+        req.body,
+        contains(
+          'content-type: application/octet-stream\r\n'
+          'content-disposition: form-data; name="file_2"; filename="file_name_2"\r\n'
+          '\r\n'
+          'World',
+        ),
+      );
+      return http.Response('ok', 200);
+    });
+
+    final chopper = ChopperClient(client: httpClient);
+    final service = HttpTestService.create(chopper);
+
+    final file1 = http.MultipartFile.fromBytes(
+      'file_1',
+      'Hello'.codeUnits,
+      filename: 'file_name_1',
+      contentType: MediaType.parse('application/octet-stream'),
+    );
+
+    final file2 = http.MultipartFile.fromBytes(
+      'file_2',
+      'World'.codeUnits,
+      filename: 'file_name_2',
+      contentType: MediaType.parse('application/octet-stream'),
+    );
+
+    await service.postListFiles([file1, file2]);
+
+    chopper.dispose();
+  });
+
   test('PartValue', () async {
     final req = await toMultipartRequest(
       [

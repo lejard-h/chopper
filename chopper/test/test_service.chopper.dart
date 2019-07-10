@@ -26,7 +26,7 @@ class _$HttpTestService extends HttpTestService {
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<Stream<List<int>>, int>($request);
   }
-  
+
   Future<Response> getAll() {
     final $url = '/test';
     final $request = Request('GET', $url, client.baseUrl);
@@ -162,6 +162,16 @@ class _$HttpTestService extends HttpTestService {
     final $parts = <PartValue>[
       PartValue<String>('id', id),
       PartValueFile<MultipartFile>('file', file)
+    ];
+    final $request =
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> postListFiles(List<MultipartFile> files) {
+    final $url = '/test/files';
+    final $parts = <PartValue>[
+      PartValueFile<List<MultipartFile>>('files', files)
     ];
     final $request =
         Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
