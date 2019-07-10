@@ -130,7 +130,7 @@ class HttpLoggingInterceptor
 
 /// [json.encode] on [Request] and [json.decode] on [Request]
 /// Also add `application/json` header to each request
-/// 
+///
 /// If content type header overrided using @Post(headers: {'content-type': '...'})
 /// The converter won't add json header and won't apply json.encode if content type is not JSON
 @immutable
