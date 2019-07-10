@@ -1,14 +1,33 @@
 import 'package:chopper/chopper.dart';
 import 'package:logging/logging.dart';
 
-Request applyHeader(Request request, String name, String value) =>
-    applyHeaders(request, {
-      name: value,
-    });
+/// see [applyHeaders]
+Request applyHeader(
+  Request request,
+  String name,
+  String value, {
+  bool override = true,
+}) =>
+    applyHeaders(
+      request,
+      {name: value},
+      override: override,
+    );
 
-Request applyHeaders(Request request, Map<String, String> headers) {
+/// apply given [headers] to the [request]
+/// if [override] is true, it will erase already present headers with the new value
+Request applyHeaders(
+  Request request,
+  Map<String, String> headers, {
+  bool override = true,
+}) {
   final h = Map<String, String>.from(request.headers);
-  h.addAll(headers);
+
+  for (var k in headers.keys) {
+    if (!override && h.containsKey(k)) continue;
+    h[k] = headers[k];
+  }
+
   return request.replace(headers: h);
 }
 

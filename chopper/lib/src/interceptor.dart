@@ -130,17 +130,30 @@ class HttpLoggingInterceptor
 
 /// [json.encode] on [Request] and [json.decode] on [Request]
 /// Also add `application/json` header to each request
+/// 
+/// If content type header overrided using @Post(headers: {'content-type': '...'})
+/// The converter won't add json header and won't apply json.encode if content type is not JSON
 @immutable
 class JsonConverter implements Converter, ErrorConverter {
   @override
-  Request convertRequest(Request request) => applyHeader(
-        encodeJson(request),
-        contentTypeKey,
-        jsonHeaders,
-      );
+  Request convertRequest(Request request) {
+    final req = applyHeader(
+      request,
+      contentTypeKey,
+      jsonHeaders,
+      override: false,
+    );
 
-  Request encodeJson(Request request) =>
-      request.replace(body: json.encode(request.body));
+    return encodeJson(req);
+  }
+
+  Request encodeJson(Request request) {
+    var contentType = request.headers[contentTypeKey];
+    if (contentType != null && contentType.contains(jsonHeaders)) {
+      return request.replace(body: json.encode(request.body));
+    }
+    return request;
+  }
 
   Response decodeJson(Response response) {
     var contentType = response.headers[contentTypeKey];
@@ -185,6 +198,7 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
         request,
         contentTypeKey,
         formEncodedHeaders,
+        override: false,
       );
 
   @override

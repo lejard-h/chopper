@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.4.2
+
+- Fix on JsonConverter 
+    If content type header overrided using @Post(headers: {'content-type': '...'})
+    The converter won't add json header and won't apply json.encode if content type is not JSON
+
+- add `bool override` on `applyHeader(s)` functions, true by default
+
 ## 2.4.1
 
 - Deprecate `@FieldField`, use `@PartFile` instead
