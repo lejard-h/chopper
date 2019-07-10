@@ -26,6 +26,18 @@ class _$HttpTestService extends HttpTestService {
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<Stream<List<int>>, int>($request);
   }
+  
+  Future<Response> getAll() {
+    final $url = '/test';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  Future<Response> getAllWithTrailingSlash() {
+    final $url = '/test/';
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
+  }
 
   Future<Response> getQueryTest({String name, int number, int def = 42}) {
     final $url = '/test/query';

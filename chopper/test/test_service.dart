@@ -19,6 +19,12 @@ abstract class HttpTestService extends ChopperService {
 
   @Get(path: "get")
   Future<Response<Stream<List<int>>>> getStreamTest();
+  
+  @Get(path: '')
+  Future<Response> getAll();
+
+  @Get(path: '/')
+  Future<Response> getAllWithTrailingSlash();
 
   @Get(path: "query")
   Future<Response> getQueryTest({
