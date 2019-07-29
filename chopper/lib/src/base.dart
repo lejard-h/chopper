@@ -190,7 +190,6 @@ class ChopperClient {
 
     if (!res.isSuccessful) {
       _responseErrorController.add(res);
-      throw res;
     }
     _responseController.add(res);
 
