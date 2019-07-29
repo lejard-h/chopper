@@ -11,11 +11,11 @@ Add the generator to your dev dependencies
 
 ```yaml
 dependencies:
-  chopper: ^2.0.0
+  chopper: ^[latest version]
 
 dev_dependencies:
-  build_runner: ^1.0.0
-  chopper_generator: ^2.0.0
+  build_runner: ^[latest version]
+  chopper_generator: ^[latest version]
 ```
 
 ### Define and Generate your API
