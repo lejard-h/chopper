@@ -21,6 +21,12 @@ class _$HttpTestService extends HttpTestService {
     return client.send<dynamic, dynamic>($request);
   }
 
+  Future<Response> headTest() {
+    final $url = '/test/head';
+    final $request = Request('HEAD', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
+  }
+
   Future<Response<Stream<List<int>>>> getStreamTest() {
     final $url = '/test/get';
     final $request = Request('GET', $url, client.baseUrl);

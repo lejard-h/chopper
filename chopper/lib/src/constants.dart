@@ -8,4 +8,5 @@ class HttpMethod {
   static const String Put = "PUT";
   static const String Delete = "DELETE";
   static const String Patch = "PATCH";
+  static const String Head = "HEAD";
 }

@@ -18,6 +18,9 @@ abstract class HttpTestService extends ChopperService {
     @Header('test') String dynamicHeader,
   });
 
+  @Head(path: "head")
+  Future<Response> headTest();
+
   @Get(path: "get")
   Future<Response<Stream<List<int>>>> getStreamTest();
 

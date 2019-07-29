@@ -290,6 +290,28 @@ void main() {
       httpClient.close();
     });
 
+    test('Head', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/head'),
+        );
+        expect(request.method, equals('HEAD'));
+
+        return http.Response('head response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.headTest();
+
+      expect(response.body, equals('head response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('const headers', () async {
       final client = MockClient((http.Request req) async {
         expect(req.headers.containsKey('foo'), isTrue);

@@ -294,6 +294,22 @@ class ChopperClient {
         ),
       );
 
+  /// Http Head request using [send] function
+  Future<Response<BodyType>> head<BodyType, InnerType>(
+    String url, {
+    Map<String, String> headers,
+    Map<String, dynamic> parameters,
+  }) =>
+      send<BodyType, InnerType>(
+        Request(
+          HttpMethod.Head,
+          url,
+          baseUrl,
+          headers: headers,
+          parameters: parameters,
+        ),
+      );
+
   /// dispose [ChopperClient] to clean memory
   @mustCallSuper
   void dispose() {

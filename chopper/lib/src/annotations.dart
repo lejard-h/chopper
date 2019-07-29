@@ -116,6 +116,13 @@ class Patch extends Method {
       : super(HttpMethod.Patch, path: path, headers: headers);
 }
 
+/// Define a method as an Http HEAD request
+@immutable
+class Head extends Method {
+  const Head({String path: "", Map<String, String> headers: const {}})
+      : super(HttpMethod.Head, path: path, headers: headers);
+}
+
 typedef Request ConvertRequest(Request request);
 typedef Response ConvertResponse<T>(Response response);
 

@@ -3,6 +3,7 @@
 ## 2.5.0
 
 - Unsuccessful response are not throw anymore, use `Response.isSuccessful` getter or `statusCode` instead
+- Support HEAD request
 
 ## 2.4.2
 
