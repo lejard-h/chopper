@@ -11,44 +11,64 @@ install:
 
 jobs:
   include:
-    - stage: analyzer_and_format
-      name: "SDK: stable - DIR: example - TASKS: dartfmt -n --set-exit-if-changed ."
-      script: ./tool/travis.sh dartfmt
+    - stage: packages
+      name: "SDK: stable - DIR: example - packages"
+      script: ./tool/packages.sh
       env: PKG="example"
       dart: stable
-    - stage: analyzer_and_format
-      name: "SDK: stable - DIR: example - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
-      script: ./tool/travis.sh dartanalyzer
+    - stage: format
+      name: "SDK: stable - DIR: chopper - packages"
+      script: ./tool/packages.sh
+      env: PKG="chopper"
+      dart: stable
+    - stage: format
+      name: "SDK: stable - DIR: chopper_generator - packages"
+      script: ./tool/packages.sh
+      env: PKG="chopper_generator"
+      dart: stable
+    
+    - stage: format
+      name: "SDK: stable - DIR: chopper - format"
+      script: ./tool/format.sh
+      env: PKG="chopper"
+      dart: stable
+    - stage: format
+      name: "SDK: stable - DIR: example - format"
+      script: ./tool/format.sh
       env: PKG="example"
       dart: stable
-    - stage: analyzer_and_format
-      name: "SDK: stable - DIR: chopper_generator - TASKS: dartfmt -n --set-exit-if-changed ."
-      script: ./tool/travis.sh dartfmt
+    - stage: format
+      name: "SDK: stable - DIR: chopper_generator - format"
+      script: ./tool/format.sh
       env: PKG="chopper_generator"
       dart: stable
-    - stage: analyzer_and_format
-      name: "SDK: stable - DIR: chopper_generator - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
-      script: ./tool/travis.sh dartanalyzer
+
+    - stage: analyzer
+      name: "SDK: stable - DIR: example - analyze"
+      script: ./tool/analyze.sh
+      env: PKG="example"
+      dart: stable
+    - stage: analyzer
+      name: "SDK: stable - DIR: chopper_generator - analyze"
+      script: ./tool/analyze.sh
       env: PKG="chopper_generator"
       dart: stable
-    - stage: analyzer_and_format
-      name: "SDK: stable - DIR: chopper - TASKS: dartfmt -n --set-exit-if-changed ."
-      script: ./tool/travis.sh dartfmt
+    - stage: analyzer
+      name: "SDK: stable - DIR: chopper - analyze"
+      script: ./tool/analyze.sh
       env: PKG="chopper"
       dart: stable
-    - stage: analyzer_and_format
-      name: "SDK: stable - DIR: chopper - TASKS: dartanalyzer --fatal-infos --fatal-warnings ."
-      script: ./tool/travis.sh dartanalyzer
-      env: PKG="chopper"
-      dart: stable
+
     - stage: unit_test
-      name: "SDK: stable - DIR: chopper - TASKS: pub run build_runner test -- -p chrome"
-      script: ./tool/travis.sh command
+      name: "SDK: stable - DIR: chopper - Unit test"
+      script: ./tool/test.sh test
       env: PKG="chopper"
       dart: stable
 
 stages:
-  - analyzer_and_format
+  - packages
+  - format
+  - analyze
   - unit_test
 
 # Only building master means that we don't run two builds for each pull request.
@@ -59,4 +79,6 @@ branches:
 cache:
   directories:
     - "$HOME/.pub-cache"
-    - chopper/.dart_tool/build
+    - chopper/.dart_tool
+    - chopper_generator/.dart_tool
+    - example/.dart_tool
