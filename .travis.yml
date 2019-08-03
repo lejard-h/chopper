@@ -11,65 +11,26 @@ install:
 
 jobs:
   include:
-    - stage: packages
-      name: "SDK: stable - DIR: example - packages"
-      script: ./tool/packages.sh
-      env: PKG="example"
-      dart: stable
-    - stage: packages
-      name: "SDK: stable - DIR: chopper - packages"
-      script: ./tool/packages.sh
+    - stage: chopper
+      name: "SDK: stable - chopper"
+      script: ./tool/travis.sh dartanalyzer dartfmt test
       env: PKG="chopper"
       dart: stable
-    - stage: packages
-      name: "SDK: stable - DIR: chopper_generator - packages"
-      script: ./tool/packages.sh
+    - stage: chopper_generator
+      name: "SDK: stable - chopper generator"
+      script: ./tool/travis.sh dartanalyzer dartfmt test
       env: PKG="chopper_generator"
       dart: stable
-    
-    - stage: format
-      name: "SDK: stable - DIR: chopper - format"
-      script: ./tool/format.sh
-      env: PKG="chopper"
-      dart: stable
-    - stage: format
-      name: "SDK: stable - DIR: example - format"
-      script: ./tool/format.sh
+    - stage: example
+      name: "SDK: stable - example"
+      script: ./tool/travis.sh dartanalyzer dartfmt test
       env: PKG="example"
-      dart: stable
-    - stage: format
-      name: "SDK: stable - DIR: chopper_generator - format"
-      script: ./tool/format.sh
-      env: PKG="chopper_generator"
-      dart: stable
-
-    - stage: analyzer
-      name: "SDK: stable - DIR: example - analyze"
-      script: ./tool/analyze.sh
-      env: PKG="example"
-      dart: stable
-    - stage: analyzer
-      name: "SDK: stable - DIR: chopper_generator - analyze"
-      script: ./tool/analyze.sh
-      env: PKG="chopper_generator"
-      dart: stable
-    - stage: analyzer
-      name: "SDK: stable - DIR: chopper - analyze"
-      script: ./tool/analyze.sh
-      env: PKG="chopper"
-      dart: stable
-
-    - stage: unit_test
-      name: "SDK: stable - DIR: chopper - Unit test"
-      script: ./tool/test.sh test
-      env: PKG="chopper"
       dart: stable
 
 stages:
-  - packages
-  - format
-  - analyze
-  - unit_test
+  - chopper
+  - chopper_generator
+  - example
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
