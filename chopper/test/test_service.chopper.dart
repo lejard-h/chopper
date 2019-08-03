@@ -14,11 +14,11 @@ class _$HttpTestService extends HttpTestService {
 
   final definitionType = HttpTestService;
 
-  Future<Response> getTest(String id, {String dynamicHeader}) {
+  Future<Response<String>> getTest(String id, {String dynamicHeader}) {
     final $url = '/test/get/${id}';
     final $headers = {'test': dynamicHeader};
     final $request = Request('GET', $url, client.baseUrl, headers: $headers);
-    return client.send<dynamic, dynamic>($request);
+    return client.send<String, String>($request);
   }
 
   Future<Response> headTest() {

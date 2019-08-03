@@ -614,24 +614,20 @@ void main() {
     chopper.dispose();
   });
 
-  test('onError Stream', () async {
+  test('error response', () async {
     final client = MockClient((http.Request req) async {
       return http.Response('error', 400);
     });
 
     final chopper = buildClient(client);
 
-    chopper.onError.listen((response) {
-      expect(response.statusCode, equals(400));
-      expect(response.body, equals('error'));
-    });
-
     final service = HttpTestService.create(chopper);
-    try {
-      await service.getTest('1234');
-    } catch (e) {
-      expect(e is Response, isTrue);
-    }
+    final res = await service.getTest('1234');
+
+    expect(res.isSuccessful, isFalse);
+    expect(res.statusCode, equals(400));
+    expect(res.body, isNull);
+    expect(res.error, equals('error'));
 
     client.close();
     chopper.dispose();
@@ -644,17 +640,12 @@ void main() {
 
     final chopper = buildClient(client, JsonConverter());
 
-    chopper.onError.listen((response) {
-      expect(response.statusCode, equals(400));
-      expect(response.body, equals({"error": true}));
-    });
-
     final service = HttpTestService.create(chopper);
-    try {
-      await service.getTest('1234');
-    } catch (e) {
-      expect((e as Response).body, equals({"error": true}));
-    }
+    final res = await service.getTest('1234');
+
+    expect(res.isSuccessful, isFalse);
+    expect(res.statusCode, equals(400));
+    expect(res.error, equals({"error": true}));
 
     client.close();
     chopper.dispose();

@@ -62,17 +62,20 @@ void main() {
         client: responseClient,
       );
 
-      final res = await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest('1234');
 
-      expect(res.body is _Intercepted, isTrue);
+      expect(ResponseIntercept.intercepted is _Intercepted, isTrue);
     });
 
     test('ResponseInterceptorFunc', () async {
+      var intercepted;
+
       final chopper = ChopperClient(
         interceptors: [
-          (Response response) => response.replace(
-                body: _Intercepted(response.body),
-              ),
+          (Response response) {
+            intercepted = _Intercepted(response.body);
+            return response;
+          },
         ],
         services: [
           HttpTestService.create(),
@@ -80,9 +83,9 @@ void main() {
         client: responseClient,
       );
 
-      final res = await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest('1234');
 
-      expect(res.body is _Intercepted, isTrue);
+      expect(intercepted is _Intercepted, isTrue);
     });
 
     test('headers', () async {
@@ -178,11 +181,13 @@ void main() {
 }
 
 class ResponseIntercept implements ResponseInterceptor {
+  static dynamic intercepted;
+
   @override
-  FutureOr<Response> onResponse(Response response) =>
-      response.replace<_Intercepted>(
-        body: _Intercepted(response.body),
-      );
+  FutureOr<Response> onResponse(Response response) {
+    intercepted = _Intercepted(response.body);
+    return response;
+  }
 }
 
 class RequestIntercept implements RequestInterceptor {

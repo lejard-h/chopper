@@ -1,4 +1,5 @@
 import "dart:async";
+import 'dart:typed_data';
 import "package:meta/meta.dart";
 import 'package:http/http.dart' as http;
 import 'constants.dart';
@@ -46,7 +47,6 @@ class ChopperClient {
   final _responseInterceptors = [];
   final _requestController = StreamController<Request>.broadcast();
   final _responseController = StreamController<Response>.broadcast();
-  final _responseErrorController = StreamController<Response>.broadcast();
 
   final bool _clientIsInternal;
 
@@ -108,8 +108,6 @@ class ChopperClient {
     Response response,
     Converter withConverter,
   ) async {
-    if (withConverter == null) return response;
-
     final converted =
         await withConverter.convertResponse<BodyType, InnerType>(response);
 
@@ -120,8 +118,8 @@ class ChopperClient {
     return converted;
   }
 
-  Future<Request> _interceptRequest(Request request) async {
-    Request req = request;
+  Future<Request> _interceptRequest(Request req) async {
+    final body = req.body;
     for (final i in _requestInterceptors) {
       if (i is RequestInterceptor) {
         req = await i.onRequest(req);
@@ -129,11 +127,19 @@ class ChopperClient {
         req = await i(req);
       }
     }
+
+    assert(
+      body == req.body,
+      'Intercptors should not transform the body of the request'
+      'Use Request converter instead',
+    );
     return req;
   }
 
-  Future<Response> _interceptResponse(Response response) async {
-    var res = response;
+  Future<Response<BodyType>> _interceptResponse<BodyType>(
+    Response<BodyType> res,
+  ) async {
+    final body = res.body;
     for (final i in _responseInterceptors) {
       if (i is ResponseInterceptor) {
         res = await i.onResponse(res);
@@ -141,7 +147,64 @@ class ChopperClient {
         res = await i(res);
       }
     }
+
+    assert(
+      body == res.body,
+      'Intercptors should not transform the body of the response'
+      'Use Response converter instead',
+    );
+
     return res;
+  }
+
+  Future<Response<BodyType>> _handleErrorResponse<BodyType, InnerType>(
+    Response response,
+  ) async {
+    var error = response.body;
+    if (errorConverter != null) {
+      final errorRes = await errorConverter.convertError<BodyType, InnerType>(
+        response,
+      );
+      error = errorRes.error ?? errorRes.body;
+    }
+
+    return Response<BodyType>(
+      response.base,
+      null,
+      error: error,
+    );
+  }
+
+  Future<Response<BodyType>> _handleSuccessResponse<BodyType, InnerType>(
+    Response response,
+    ConvertResponse responseConverter,
+  ) async {
+    if (responseConverter != null) {
+      response = await responseConverter(response);
+    } else if (converter != null) {
+      response =
+          await _decodeResponse<BodyType, InnerType>(response, converter);
+    }
+
+    return Response<BodyType>(
+      response.base,
+      response.body,
+    );
+  }
+
+  Future<Request> _handleRequestConverter(
+    Request request,
+    ConvertRequest requestConverter,
+  ) async {
+    if (request.body != null || request.parts.isNotEmpty) {
+      if (requestConverter != null) {
+        request = await requestConverter(request);
+      } else {
+        request = await _encodeRequest(request);
+      }
+    }
+
+    return request;
   }
 
   /// [BodyType] is the expected type of your response
@@ -155,19 +218,10 @@ class ChopperClient {
     ConvertRequest requestConverter,
     ConvertResponse responseConverter,
   }) async {
-    Request req = request;
-
-    if (req.body != null || req.parts.isNotEmpty) {
-      if (requestConverter != null) {
-        req = await requestConverter(request);
-      } else {
-        req = await _encodeRequest(request);
-      }
-    }
-
+    Request req = await _handleRequestConverter(request, requestConverter);
     req = await _interceptRequest(req);
-
     _requestController.add(req);
+
     final streamRes = await httpClient.send(await req.toBaseRequest());
     if (isTypeOf<BodyType, Stream<List<int>>>()) {
       return Response(streamRes, (streamRes.stream) as BodyType);
@@ -176,21 +230,17 @@ class ChopperClient {
     final response = await http.Response.fromStream(streamRes);
     Response res = Response(response, response.body);
 
-    if (res.isSuccessful) {
-      if (responseConverter != null) {
-        res = await responseConverter(res);
-      } else {
-        res = await _decodeResponse<BodyType, InnerType>(res, converter);
-      }
-    } else if (errorConverter != null) {
-      res = await errorConverter.convertError<BodyType, InnerType>(res);
+    if (responseIsSuccessful(response.statusCode)) {
+      res = await _handleSuccessResponse<BodyType, InnerType>(
+        res,
+        responseConverter,
+      );
+    } else {
+      res = await _handleErrorResponse<BodyType, InnerType>(res);
     }
 
-    res = await _interceptResponse(res);
+    res = await _interceptResponse<BodyType>(res);
 
-    if (!res.isSuccessful) {
-      _responseErrorController.add(res);
-    }
     _responseController.add(res);
 
     return res;
@@ -315,7 +365,6 @@ class ChopperClient {
   void dispose() {
     _requestController.close();
     _responseController.close();
-    _responseErrorController.close();
 
     _services.forEach((_, s) => s.dispose());
     _services.clear();
@@ -335,10 +384,6 @@ class ChopperClient {
   /// Event stream of response
   /// all converters and interceptors have been run
   Stream<Response> get onResponse => _responseController.stream;
-
-  /// Event stream of error response (status code <200 >=300)
-  /// all converters and interceptors have been run
-  Stream<Response> get onError => _responseErrorController.stream;
 }
 
 /// Used by generator to generate apis

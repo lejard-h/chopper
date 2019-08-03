@@ -13,7 +13,7 @@ abstract class HttpTestService extends ChopperService {
       _$HttpTestService(client);
 
   @Get(path: "get/{id}")
-  Future<Response> getTest(
+  Future<Response<String>> getTest(
     @Path() String id, {
     @Header('test') String dynamicHeader,
   });

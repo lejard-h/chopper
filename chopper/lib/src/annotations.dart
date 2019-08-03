@@ -138,7 +138,7 @@ class FactoryConverter {
 }
 
 /// Define fields
-///   witll be convert to { 'key': value }
+///   will be convert to { 'key': value }
 ///
 ///     @Post(path: '/')
 ///     Future<Response> create(@Field('id') String name);
