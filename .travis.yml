@@ -11,26 +11,24 @@ install:
 
 jobs:
   include:
-    - stage: chopper
+    - stage: analyze_format_test
       name: "SDK: stable - chopper"
       script: ./tool/travis.sh dartanalyzer dartfmt test
       env: PKG="chopper"
       dart: stable
-    - stage: chopper_generator
+    - stage: analyze_format_test
       name: "SDK: stable - chopper generator"
       script: ./tool/travis.sh dartanalyzer dartfmt test
       env: PKG="chopper_generator"
       dart: stable
-    - stage: example
+    - stage: analyze_format_test
       name: "SDK: stable - example"
       script: ./tool/travis.sh dartanalyzer dartfmt test
       env: PKG="example"
       dart: stable
 
 stages:
-  - chopper
-  - chopper_generator
-  - example
+  - analyze_format_test
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
