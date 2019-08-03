@@ -79,6 +79,12 @@ final myService = MyService.create(chopper);
 
 final response = await myService.getMapResource("1");
 
+if (response.isSuccessful) {
+  final body = response.body;
+} else {
+  final error = response.error;
+}
+
 chopper.close();
 
 ```
@@ -110,7 +116,10 @@ Request interceptor are called just before sending request
 ```dart
 final chopper = new ChopperClient(
    interceptors: [
-     (request) async => request.replace(body: {}),
+     (request) async {
+       logger.log(request.body);
+       return request;
+     }
    ]
 );
 ```
@@ -123,10 +132,15 @@ Called after successfull or failed request
 ```dart
 final chopper = new ChopperClient(
    interceptors: [
-     (response) async => response.replace(body: {}),
+     (response) async {
+       logger.log(response.body);
+       return response;
+     }
    ]
 );
 ```
+
+**Interceptors should not change the body of the request or response, use converters instead**
 
 #### Converter
 

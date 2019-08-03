@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.2
+
+- Fix error handling by introducing `Response.error` getter
+- Remove `onError` since every response are available via `onResponse` stream
+
 ## 2.5.0
 
 - Unsuccessful response are not throw anymore, use `Response.isSuccessful` getter or `statusCode` instead
