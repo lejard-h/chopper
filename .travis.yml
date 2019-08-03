@@ -16,12 +16,12 @@ jobs:
       script: ./tool/packages.sh
       env: PKG="example"
       dart: stable
-    - stage: format
+    - stage: packages
       name: "SDK: stable - DIR: chopper - packages"
       script: ./tool/packages.sh
       env: PKG="chopper"
       dart: stable
-    - stage: format
+    - stage: packages
       name: "SDK: stable - DIR: chopper_generator - packages"
       script: ./tool/packages.sh
       env: PKG="chopper_generator"
