@@ -97,7 +97,8 @@ class PartValue<T> {
     this.value,
   );
 
-  PartValue<T> replace<T>({String name, T value}) => PartValue<T>(
+  PartValue<NewType> replace<NewType>({String name, NewType value}) =>
+      PartValue<NewType>(
         name ?? this.name,
         value ?? this.value,
       );
