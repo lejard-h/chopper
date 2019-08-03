@@ -17,7 +17,7 @@ pub upgrade || exit $?
 EXIT_CODE=0
 
 function pkg_coverage {
-  if [ "$CODECOV_TOKEN"] ; then
+  if [ "$CODECOV_TOKEN" ] ; then
     pub run test_coverage
     bash <(curl -s https://codecov.io/bash)
   fi
