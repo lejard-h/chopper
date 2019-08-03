@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+
+- Maintenance release to support last version of `chopper` package (3.0.0) that introduced a breaking change on error handling
+
 ## 2.5.0
 
 - Unsuccessful response are not throw anymore, use `Response.isSuccessful` getter or `statusCode` instead

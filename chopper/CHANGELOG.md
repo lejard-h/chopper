@@ -1,9 +1,17 @@
 # Changelog
 
-## 2.5.2
+## 3.0.0
 
+**Breaking change**
+New way to handle errors
+    if (response.isSuccessful) {
+      final body = response.body;
+    } else {
+      final error = response.error;
+    }
 - Fix error handling by introducing `Response.error` getter
 - Remove `onError` since every response are available via `onResponse` stream
+
 
 ## 2.5.0
 
