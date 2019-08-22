@@ -126,10 +126,15 @@ class ChopperClient {
         req = await i(req);
       }
     }
+      
+    assert(
+      req == null,
+      'Interceptors should return modified request'
+    );
 
     assert(
       body == req.body,
-      'Intercptors should not transform the body of the request'
+      'Interceptors should not transform the body of the request'
       'Use Request converter instead',
     );
     return req;
@@ -146,10 +151,15 @@ class ChopperClient {
         res = await i(res);
       }
     }
+      
+    assert(
+      res == null,
+      'Interceptors should return modified response'
+    );
 
     assert(
       body == res.body,
-      'Intercptors should not transform the body of the response'
+      'Interceptors should not transform the body of the response'
       'Use Response converter instead',
     );
 
