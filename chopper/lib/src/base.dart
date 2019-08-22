@@ -20,7 +20,8 @@ final allowedInterceptorsType = <Type>[
   RequestInterceptor,
   RequestInterceptorFunc,
   ResponseInterceptor,
-  ResponseInterceptorFunc
+  ResponseInterceptorFunc,
+  DynamicResponseInterceptorFunc,
 ];
 
 /// Root object of chopper
@@ -77,7 +78,9 @@ class ChopperClient {
       value is RequestInterceptor || value is RequestInterceptorFunc;
 
   bool _isResponseInterceptor(value) =>
-      value is ResponseInterceptor || value is ResponseInterceptorFunc;
+      value is ResponseInterceptor ||
+      value is ResponseInterceptorFunc ||
+      value is DynamicResponseInterceptorFunc;
 
   bool _isAnInterceptor(value) =>
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
@@ -145,6 +148,8 @@ class ChopperClient {
       if (i is ResponseInterceptor) {
         res = await i.onResponse(res);
       } else if (i is ResponseInterceptorFunc) {
+        res = await i(res);
+      } else if (i is DynamicResponseInterceptorFunc) {
         res = await i(res);
       }
     }
