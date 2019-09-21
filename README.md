@@ -32,13 +32,13 @@ part "my_service.chopper.dart";
 abstract class MyService extends ChopperService {
   static MyService create([ChopperClient client]) => _$MyService(client);
 
-  @Get(url: "{id}")
+  @Get(path: "{id}")
   Future<Response> getResource(@Path() String id);
 
   @Get(headers: const {"foo": "bar"})
   Future<Response<Map>> getMapResource(@Query() String id);
 
-  @Post(url: 'multi')
+  @Post(path: 'multi')
   @multipart
   Future<Response> postResources(
     @Part('1') Map a,
@@ -46,10 +46,10 @@ abstract class MyService extends ChopperService {
     @Part('3') String c,
   );
 
-  @Post(url: 'file')
+  @Post(path: 'file')
   @multipart
   Future<Response> postFile(
-    @FileField('file') List<int> bytes,
+    @PartFile('file') List<int> bytes,
   );
 }
 ```
