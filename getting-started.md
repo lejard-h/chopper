@@ -61,7 +61,7 @@ Using `{id}` and the `Path` annotation your are telling chopper to replace `{id}
 
 ## ChopperClient
 
-After defining your `ChopperService` you need to attribute a `ChopperClient` to it. The `ChopperClient` will manage the server hostname to call and can handle multiple `ChopperService`. It is also responsible of applying [interceptors](/get-started/interceptors) and [converter](/get-started/converters) to your requests.
+After defining your `ChopperService` you need to attribute a `ChopperClient` to it. The `ChopperClient` will manage the server hostname to call and can handle multiple `ChopperService`. It is also responsible of applying [interceptors](interceptors.md) and [converter](untitled.md) to your requests.
 
 ```dart
 import "dart:async";
@@ -69,7 +69,7 @@ import 'package:chopper/chopper.dart';
 
 import 'YOUR_FILE.dart';
 
-void main() {
+void main() async {
   final chopper = ChopperClient(
       baseUrl: "http://my-server:8000",
       services: [
@@ -84,21 +84,16 @@ void main() {
   final todosService = TodosListService.create(chopper);
 
   /// then call your function
-  todosService.getTodosList()
-              .then((response) {
-                // successful request
-                final body = response.body;
-              })
-              .catchError((error) {
-                // an error happen
-                if (error is Response) {
-                  // error from server
-                  // bad response status code
-                  final code = error.statusCode;
-                } else {
-                  // unkown error
-                }
-              });
+  final response = await todosService.getTodosList();
+  
+  if (response.isSuccessful) {
+    // successful request
+    final body = response.body;
+  } else {
+    // error from server
+    final code = response.statusCode;
+    final error = response.error;
+  }
 }
 
 ```
