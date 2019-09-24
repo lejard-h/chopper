@@ -1,0 +1,4 @@
+targets:
+  $default:
+    sources:
+      include: ["test/data.dart", "test/serializers.dart"]
