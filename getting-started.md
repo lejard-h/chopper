@@ -61,7 +61,7 @@ Using `{id}` and the `Path` annotation your are telling chopper to replace `{id}
 
 ## ChopperClient
 
-After defining your `ChopperService` you need to attribute a `ChopperClient` to it. The `ChopperClient` will manage the server hostname to call and can handle multiple `ChopperService`. It is also responsible of applying [interceptors](interceptors.md) and [converter](converter.md) to your requests.
+After defining your `ChopperService` you need to attribute a `ChopperClient` to it. The `ChopperClient` will manage the server hostname to call and can handle multiple `ChopperService`. It is also responsible of applying [interceptors](interceptors.md) and [converter]() to your requests.
 
 ```dart
 import "dart:async";

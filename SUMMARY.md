@@ -2,7 +2,12 @@
 
 * [Chopper](README.md)
 * [Getting started](getting-started.md)
-* [Converter](converter.md)
 * [Interceptors](interceptors.md)
+
+## Converters
+
+* [Converters](converters/converters.md)
+* [Built Value Converter](converters/built-value-converter.md)
+* [Untitled](converters/untitled.md)
 * [API Reference](https://pub.dev/documentation/chopper/latest/)
 

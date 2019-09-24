@@ -1,4 +1,4 @@
-# Converter
+# Converters
 
 Converter are used to apply transformation to a request or response body, for example transforming a Dart object to a `Map<String, dynamic>`
 
