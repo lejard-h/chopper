@@ -50,12 +50,12 @@ class ChopperClient {
   final bool _clientIsInternal;
 
   ChopperClient({
-    this.baseUrl: "",
+    this.baseUrl = "",
     http.Client client,
-    Iterable interceptors: const [],
+    Iterable interceptors = const [],
     this.converter,
     this.errorConverter,
-    Iterable<ChopperService> services: const [],
+    Iterable<ChopperService> services = const [],
   })  : httpClient = client ?? createHttpClient(),
         _clientIsInternal = client == null {
     if (interceptors.every(_isAnInterceptor) == false) {
@@ -126,11 +126,8 @@ class ChopperClient {
         req = await i(req);
       }
     }
-      
-    assert(
-      req == null,
-      'Interceptors should return modified request'
-    );
+
+    assert(req == null, 'Interceptors should return modified request');
 
     assert(
       body == req.body,
@@ -151,11 +148,8 @@ class ChopperClient {
         res = await i(res);
       }
     }
-      
-    assert(
-      res == null,
-      'Interceptors should return modified response'
-    );
+
+    assert(res == null, 'Interceptors should return modified response');
 
     assert(
       body == res.body,

@@ -12,7 +12,7 @@ abstract class MyService extends ChopperService {
     @Path() String id,
   );
 
-  @Get(path: "/", headers: const {"foo": "bar"})
+  @Get(path: "/", headers: {"foo": "bar"})
   Future<Response<Map>> getMapResource(
     @Query() String id,
   );
