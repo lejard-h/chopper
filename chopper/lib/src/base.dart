@@ -127,7 +127,7 @@ class ChopperClient {
       }
     }
 
-    assert(req == null, 'Interceptors should return modified request');
+    assert(req != null, 'Interceptors should return modified request');
 
     assert(
       body == req.body,
@@ -149,7 +149,7 @@ class ChopperClient {
       }
     }
 
-    assert(res == null, 'Interceptors should return modified response');
+    assert(res != null, 'Interceptors should return modified response');
 
     assert(
       body == res.body,

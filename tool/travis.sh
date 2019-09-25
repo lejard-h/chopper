@@ -11,10 +11,9 @@ if [ "$#" == "0" ]; then
   exit 1
 fi
 
-pushd $PKG
-pub upgrade || exit $?
-
-EXIT_CODE=0
+echo -e "\033[1mPKG: ${PKG}\033[22m"
+pushd "${PKG}" || exit $?
+pub upgrade --no-precompile || exit $?
 
 function pkg_coverage {
   if [ "$CODECOV_TOKEN" ] ; then
@@ -25,7 +24,7 @@ function pkg_coverage {
 
 function run_analyze {
   echo -e '\033[1mTASK: dartanalyzer\033[22m'
-  dartfmt -n --set-exit-if-changed .
+  dartanalyzer --fatal-warnings --fatal-infos .
 }
 
 function run_format {
@@ -35,29 +34,26 @@ function run_format {
 
 function run_test {
   echo -e '\033[1mTASK: test\033[22m'
-  pub run build_runner build --delete-conflicting-outputs
-  pub run test -p chrome -p vm --reporter expanded 
+  pub run build_runner test --delete-conflicting-outputs -- -p chrome -p vm --reporter expanded 
   pkg_coverage    
 }
 
-while (( "$#" )); do
-  TASK=$1
+for TASK in "$@"; do
   case $TASK in
   test) echo
-    run_test
+    run_test || EXIT_CODE=$?
     ;;
   dartanalyzer) echo
-    run_analyze
+    run_analyze || EXIT_CODE=$?
     ;;
   dartfmt) echo
-    run_format
+    run_format || EXIT_CODE=$?
     ;;
   *) echo -e "\033[31mNot expecting TASK '${TASK}'. Error!\033[0m"
     EXIT_CODE=1
     ;;
   esac
 
-  shift
 done
 
 exit $EXIT_CODE
