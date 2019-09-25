@@ -34,14 +34,22 @@ function run_format {
   dartfmt -n --set-exit-if-changed .
 }
 
+function run_build {
+  echo -e '\033[1mTASK: build\033[22m'
+  pub run build_runner build --delete-conflicting-outputs
+}
+
 function run_test {
   echo -e '\033[1mTASK: test\033[22m'
-  pub run build_runner test --delete-conflicting-outputs -- -p vm --reporter expanded
+  pub run test -p chrome -p vm --reporter expanded
   pkg_coverage    
 }
 
 for TASK in "$@"; do
   case $TASK in
+  build) echo
+    run_build
+    ;;
   test) echo
     run_test
     ;;
