@@ -42,7 +42,7 @@ class _$MyService extends MyService {
   }
 
   Future<Response<Resource>> newResource(Resource resource, {String name}) {
-    final $url = '/resources/';
+    final $url = '/resources';
     final $headers = {'name': name};
     final $body = resource;
     final $request =

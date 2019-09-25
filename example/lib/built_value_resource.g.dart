@@ -17,7 +17,7 @@ class _$ResourceSerializer implements StructuredSerializer<Resource> {
   final String wireName = 'Resource';
 
   @override
-  Iterable serialize(Serializers serializers, Resource object,
+  Iterable<Object> serialize(Serializers serializers, Resource object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'id',
@@ -30,7 +30,7 @@ class _$ResourceSerializer implements StructuredSerializer<Resource> {
   }
 
   @override
-  Resource deserialize(Serializers serializers, Iterable serialized,
+  Resource deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new ResourceBuilder();
 
@@ -62,7 +62,7 @@ class _$ResourceErrorSerializer implements StructuredSerializer<ResourceError> {
   final String wireName = 'ResourceError';
 
   @override
-  Iterable serialize(Serializers serializers, ResourceError object,
+  Iterable<Object> serialize(Serializers serializers, ResourceError object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'type',
@@ -76,7 +76,8 @@ class _$ResourceErrorSerializer implements StructuredSerializer<ResourceError> {
   }
 
   @override
-  ResourceError deserialize(Serializers serializers, Iterable serialized,
+  ResourceError deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new ResourceErrorBuilder();
 
