@@ -1,6 +1,8 @@
 #!/bin/bash
 # Created with https://github.com/dart-lang/mono_repo
 
+set -e
+
 if [ -z "$PKG" ]; then
   echo -e '\033[31mPKG environment variable must be set!\033[0m'
   exit 1
@@ -12,8 +14,8 @@ if [ "$#" == "0" ]; then
 fi
 
 echo -e "\033[1mPKG: ${PKG}\033[22m"
-pushd "${PKG}" || exit $?
-pub upgrade --no-precompile || exit $?
+pushd "${PKG}"
+pub upgrade --no-precompile
 
 function pkg_coverage {
   if [ "$CODECOV_TOKEN" ] ; then
@@ -34,26 +36,24 @@ function run_format {
 
 function run_test {
   echo -e '\033[1mTASK: test\033[22m'
-  pub run build_runner test --delete-conflicting-outputs -- -p chrome -p vm --reporter expanded 
+  pub run build_runner test --delete-conflicting-outputs -- -p vm --reporter expanded
   pkg_coverage    
 }
 
 for TASK in "$@"; do
   case $TASK in
   test) echo
-    run_test || EXIT_CODE=$?
+    run_test
     ;;
   dartanalyzer) echo
-    run_analyze || EXIT_CODE=$?
+    run_analyze
     ;;
   dartfmt) echo
-    run_format || EXIT_CODE=$?
+    run_format
     ;;
   *) echo -e "\033[31mNot expecting TASK '${TASK}'. Error!\033[0m"
-    EXIT_CODE=1
+    exit 1
     ;;
   esac
 
 done
-
-exit $EXIT_CODE
