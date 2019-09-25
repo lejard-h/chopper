@@ -15,7 +15,7 @@ fi
 
 echo -e "\033[1mPKG: ${PKG}\033[22m"
 pushd "${PKG}"
-pub upgrade --no-precompile
+pub upgrade
 
 function pkg_coverage {
   if [ "$CODECOV_TOKEN" ] ; then
