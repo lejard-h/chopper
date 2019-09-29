@@ -52,8 +52,10 @@ class HeadersInterceptor implements RequestInterceptor {
       applyHeaders(request, headers);
 }
 
-typedef ResponseInterceptorFunc<Value> = FutureOr<Response> Function(
+typedef ResponseInterceptorFunc = FutureOr<Response<Value>> Function<Value>(
     Response<Value> response);
+typedef DynamicResponseInterceptorFunc = FutureOr<Response> Function(
+    Response response);
 typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
 
 /// Interceptor that print a curl request
