@@ -112,7 +112,6 @@ abstract class HttpTestService extends ChopperService {
 
   @Post(path: 'no-body')
   Future<Response> noBody();
-
 }
 
 Request customConvertRequest(Request req) {
