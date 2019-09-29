@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.1
+
+- ResponseInterceptor function support typed parameter
+- Fix JsonConverter when converting core types
+
 ## 3.0.0
 
 **Breaking change**

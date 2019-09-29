@@ -157,7 +157,7 @@ class JsonConverter implements Converter, ErrorConverter {
     return request;
   }
 
-  Response decodeJson(Response response) {
+  Response decodeJson<BodyType, InnerType>(Response response) {
     var contentType = response.headers[contentTypeKey];
     var body = response.body;
     if (contentType != null && contentType.contains(jsonHeaders)) {
@@ -170,14 +170,21 @@ class JsonConverter implements Converter, ErrorConverter {
       // end up with our JSON string containing incorrectly decoded characters.
       body = utf8.decode(response.bodyBytes);
     }
-    return response.replace(
-      body: _tryDecodeJson(body),
-    );
+
+    body = _tryDecodeJson(body);
+    if (isTypeOf<BodyType, Iterable<InnerType>>()) {
+      body = body.cast<InnerType>();
+    } else if (isTypeOf<BodyType, Map<String, InnerType>>()) {
+      body = body.cast<String, InnerType>();
+    }
+
+    return response.replace<BodyType>(body: body);
   }
 
   @override
-  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
-      decodeJson(response) as Response<BodyType>;
+  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
+    return decodeJson<BodyType, InnerType>(response);
+  }
 
   dynamic _tryDecodeJson(String data) {
     try {

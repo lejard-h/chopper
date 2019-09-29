@@ -63,6 +63,51 @@ void main() {
       httpClient.close();
     });
   });
+
+  group('JsonConverter', () {
+    final jsonConverter = JsonConverter();
+
+    test('decode String', () {
+      final value = 'foo';
+      final res = Response(http.Response('"$value"', 200), '"$value"');
+      final converted = jsonConverter.convertResponse<String, String>(res);
+
+      expect(converted is Response<String>, isTrue);
+      expect(converted.body, equals(value));
+    });
+
+    test('decode List String', () {
+      final res = Response(
+        http.Response('["foo","bar"]', 200),
+        '["foo","bar"]',
+      );
+      final converted =
+          jsonConverter.convertResponse<List<String>, String>(res);
+
+      expect(converted is Response<List<String>>, isTrue);
+      expect(converted.body, equals(['foo', 'bar']));
+    });
+
+    test('decode List int', () {
+      final res = Response(http.Response('[1,2]', 200), '[1,2]');
+      final converted = jsonConverter.convertResponse<List<int>, int>(res);
+
+      expect(converted is Response<List<int>>, isTrue);
+      expect(converted.body, equals([1, 2]));
+    });
+
+    test('decode Map', () {
+      final res = Response(
+        http.Response('{"foo":"bar"}', 200),
+        '{"foo":"bar"}',
+      );
+      final converted =
+          jsonConverter.convertResponse<Map<String, String>, String>(res);
+
+      expect(converted is Response<Map<String, String>>, isTrue);
+      expect(converted.body, equals({"foo": "bar"}));
+    });
+  });
 }
 
 class TestConverter implements Converter {
