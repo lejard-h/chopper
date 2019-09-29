@@ -40,7 +40,8 @@ part "YOUR_FILE.chopper.dart";
 abstract class TodosListService extends ChopperService {
 
   // helper methods that help you instanciate your service
-  static TodosListService create([ChopperClient client]) => _$TodosListService(client);
+  static TodosListService create([ChopperClient client]) => 
+      _$TodosListService(client);
 }
 ```
 
@@ -98,17 +99,9 @@ void main() async {
 
 ```
 
-## Common errors
 
-### \*.chopper.dart not found ?
 
-If you have this error, you probably forgot to run the `build` package. To do that, simply run the following command in your shell.
-
-`pub run build_runner build`
-
-It will generate the code that actually do the HTTP request \(YOUR\_FILE.chopper.dart\). If you wish to update the code automatically when you change your definition run the `watch` command.
-
-`pub run build_runner watch`
+### 
 
 
 
