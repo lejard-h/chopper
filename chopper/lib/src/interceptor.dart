@@ -224,12 +224,30 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
   const FormUrlEncodedConverter();
 
   @override
-  Request convertRequest(Request request) => applyHeader(
-        request,
-        contentTypeKey,
-        formEncodedHeaders,
-        override: false,
-      );
+  Request convertRequest(Request request) {
+    var req = applyHeader(
+      request,
+      contentTypeKey,
+      formEncodedHeaders,
+      override: false,
+    );
+
+    if (req.body is Map<String, String>) return req;
+
+    if (req.body is Map) {
+      final body = <String, String>{};
+
+      req.body.forEach((key, val) {
+        if (val != null) {
+          body[key.toString()] = val.toString();
+        }
+      });
+
+      req = req.replace(body: body);
+    }
+
+    return req;
+  }
 
   @override
   Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
@@ -238,13 +256,6 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
   @override
   FutureOr<Response> convertError<BodyType, InnerType>(Response response) =>
       response;
-
-  static Response<BodyType> responseFactory<BodyType, InnerType>(
-    Response response,
-  ) {
-    return const FormUrlEncodedConverter()
-        .convertResponse<BodyType, InnerType>(response);
-  }
 
   static Request requestFactory(Request request) {
     return const FormUrlEncodedConverter().convertRequest(request);
