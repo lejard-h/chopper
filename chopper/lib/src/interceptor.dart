@@ -144,6 +144,8 @@ class HttpLoggingInterceptor
 /// The converter won't add json header and won't apply json.encode if content type is not JSON
 @immutable
 class JsonConverter implements Converter, ErrorConverter {
+  const JsonConverter();
+
   @override
   Request convertRequest(Request request) {
     final req = applyHeader(
@@ -205,10 +207,22 @@ class JsonConverter implements Converter, ErrorConverter {
   @override
   Response convertError<BodyType, InnerType>(Response response) =>
       decodeJson(response);
+
+  static Response<BodyType> responseFactory<BodyType, InnerType>(
+    Response response,
+  ) {
+    return const JsonConverter().convertResponse<BodyType, InnerType>(response);
+  }
+
+  static Request requestFactory(Request request) {
+    return const JsonConverter().convertRequest(request);
+  }
 }
 
 @immutable
 class FormUrlEncodedConverter implements Converter, ErrorConverter {
+  const FormUrlEncodedConverter();
+
   @override
   Request convertRequest(Request request) => applyHeader(
         request,
@@ -224,4 +238,15 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
   @override
   FutureOr<Response> convertError<BodyType, InnerType>(Response response) =>
       response;
+
+  static Response<BodyType> responseFactory<BodyType, InnerType>(
+    Response response,
+  ) {
+    return const FormUrlEncodedConverter()
+        .convertResponse<BodyType, InnerType>(response);
+  }
+
+  static Request requestFactory(Request request) {
+    return const FormUrlEncodedConverter().convertRequest(request);
+  }
 }
