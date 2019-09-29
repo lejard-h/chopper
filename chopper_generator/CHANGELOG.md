@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1
+
+- Fix Avoid using braces in interpolation when not needed
+
 ## 3.0.0
 
 - Maintenance release to support last version of `chopper` package (3.0.0) that introduced a breaking change on error handling

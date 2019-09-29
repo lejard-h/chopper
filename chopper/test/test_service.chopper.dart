@@ -15,7 +15,7 @@ class _$HttpTestService extends HttpTestService {
   final definitionType = HttpTestService;
 
   Future<Response<String>> getTest(String id, {String dynamicHeader}) {
-    final $url = '/test/get/${id}';
+    final $url = '/test/get/$id';
     final $headers = {'test': dynamicHeader};
     final $request = Request('GET', $url, client.baseUrl, headers: $headers);
     return client.send<String, String>($request);
@@ -86,21 +86,21 @@ class _$HttpTestService extends HttpTestService {
   }
 
   Future<Response> putTest(String test, String data) {
-    final $url = '/test/put/${test}';
+    final $url = '/test/put/$test';
     final $body = data;
     final $request = Request('PUT', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response> deleteTest(String id) {
-    final $url = '/test/delete/${id}';
+    final $url = '/test/delete/$id';
     final $headers = {'foo': 'bar'};
     final $request = Request('DELETE', $url, client.baseUrl, headers: $headers);
     return client.send<dynamic, dynamic>($request);
   }
 
   Future<Response> patchTest(String id, String data) {
-    final $url = '/test/patch/${id}';
+    final $url = '/test/patch/$id';
     final $body = data;
     final $request = Request('PATCH', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
