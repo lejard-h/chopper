@@ -512,7 +512,8 @@ void main() {
       } on ArgumentError catch (e) {
         expect(
           e.toString(),
-          'Invalid argument(s): Unsupported type for interceptors, it only support the following types: $allowedInterceptorsType',
+          'Invalid argument(s): Unsupported type for interceptors, it only support the following types:\n'
+          '${allowedInterceptorsType.join('\n - ')}',
         );
       }
     });

@@ -20,7 +20,8 @@ final allowedInterceptorsType = <Type>[
   RequestInterceptor,
   RequestInterceptorFunc,
   ResponseInterceptor,
-  ResponseInterceptorFunc,
+  ResponseInterceptorFunc1,
+  ResponseInterceptorFunc2,
   DynamicResponseInterceptorFunc,
 ];
 
@@ -61,7 +62,8 @@ class ChopperClient {
         _clientIsInternal = client == null {
     if (interceptors.every(_isAnInterceptor) == false) {
       throw ArgumentError(
-        "Unsupported type for interceptors, it only support the following types: $allowedInterceptorsType",
+        'Unsupported type for interceptors, it only support the following types:\n'
+        '${allowedInterceptorsType.join('\n - ')}',
       );
     }
 
@@ -79,7 +81,8 @@ class ChopperClient {
 
   bool _isResponseInterceptor(value) =>
       value is ResponseInterceptor ||
-      value is ResponseInterceptorFunc ||
+      value is ResponseInterceptorFunc1 ||
+      value is ResponseInterceptorFunc2 ||
       value is DynamicResponseInterceptorFunc;
 
   bool _isAnInterceptor(value) =>
@@ -140,15 +143,17 @@ class ChopperClient {
     return req;
   }
 
-  Future<Response<BodyType>> _interceptResponse<BodyType>(
+  Future<Response<BodyType>> _interceptResponse<BodyType, InnerType>(
     Response<BodyType> res,
   ) async {
     final body = res.body;
     for (final i in _responseInterceptors) {
       if (i is ResponseInterceptor) {
         res = await i.onResponse(res);
-      } else if (i is ResponseInterceptorFunc) {
-        res = await i(res);
+      } else if (i is ResponseInterceptorFunc1) {
+        res = await i<BodyType>(res);
+      } else if (i is ResponseInterceptorFunc2) {
+        res = await i<BodyType, InnerType>(res);
       } else if (i is DynamicResponseInterceptorFunc) {
         res = await i(res);
       }
@@ -247,7 +252,7 @@ class ChopperClient {
       res = await _handleErrorResponse<BodyType, InnerType>(res);
     }
 
-    res = await _interceptResponse<BodyType>(res);
+    res = await _interceptResponse<BodyType, InnerType>(res);
 
     _responseController.add(res);
 
