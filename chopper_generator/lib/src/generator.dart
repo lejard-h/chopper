@@ -12,6 +12,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:chopper/chopper.dart' as chopper;
+import 'package:logging/logging.dart';
 
 const _clientVar = 'client';
 const _baseUrlVar = "baseUrl";
@@ -21,6 +22,8 @@ const _requestVar = "\$request";
 const _bodyVar = '\$body';
 const _partsVar = '\$parts';
 const _urlVar = "\$url";
+
+final _logger = Logger('Chopper Generator');
 
 class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   @override
@@ -183,6 +186,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         blocks.add(headers);
       }
 
+      final methodName = getMethodName(method);
+      final methodUrl = getMethodPath(method);
       final hasBody = body.isNotEmpty || fields.isNotEmpty;
       if (hasBody) {
         if (body.isNotEmpty) {
@@ -201,6 +206,15 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       if (hasParts) {
         blocks.add(
             _generateList(parts, fileFields).assignFinal(_partsVar).statement);
+      }
+
+      if (!hasBody && !hasParts && _methodWithBody(methodName)) {
+        _logger.warning(
+          '$methodName $methodUrl\n'
+          'Body is null\n'
+          'Use @Body() annotation on your method parameter to provide a body to your request\n'
+          '   e.g.: Future<Response> postRequest(@Body() Map body);',
+        );
       }
 
       blocks.add(_generateRequest(
@@ -344,7 +358,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     Map<ParameterElement, ConstantReader> paths,
     String baseUrl,
   ) {
-    String path = "${method.read("path").stringValue}";
+    String path = getMethodPath(method);
     paths.forEach((p, ConstantReader r) {
       final name = r.peek("name")?.stringValue ?? p.displayName;
       path = path.replaceFirst("{$name}", "\$${p.displayName}");
@@ -376,7 +390,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     bool useHeaders = false,
   }) {
     final params = <Expression>[
-      literal(method.peek("method").stringValue),
+      literal(getMethodName(method)),
       refer(_urlVar),
       refer('$_clientVar.$_baseUrlVar'),
     ];
@@ -470,3 +484,12 @@ Builder chopperGeneratorFactoryBuilder({String header}) => PartBuilder(
       ".chopper.dart",
       header: header,
     );
+
+bool _methodWithBody(String method) =>
+    method == chopper.HttpMethod.Post ||
+    method == chopper.HttpMethod.Patch ||
+    method == chopper.HttpMethod.Put;
+
+String getMethodPath(ConstantReader method) => method.read("path").stringValue;
+String getMethodName(ConstantReader method) =>
+    method.read("method").stringValue;

@@ -109,6 +109,10 @@ abstract class HttpTestService extends ChopperService {
 
   @Get(path: '/list/string')
   Future<Response<List<String>>> listString();
+
+  @Post(path: 'no-body')
+  Future<Response> noBody();
+
 }
 
 Request customConvertRequest(Request req) {

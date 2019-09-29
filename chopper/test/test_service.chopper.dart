@@ -195,4 +195,10 @@ class _$HttpTestService extends HttpTestService {
     final $request = Request('GET', $url, client.baseUrl);
     return client.send<List<String>, String>($request);
   }
+
+  Future<Response> noBody() {
+    final $url = '/test/no-body';
+    final $request = Request('POST', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
+  }
 }
