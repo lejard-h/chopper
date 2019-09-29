@@ -264,12 +264,13 @@ class ChopperClient {
     String url, {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
+    String baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Get,
           url,
-          baseUrl,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
@@ -283,12 +284,13 @@ class ChopperClient {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
     bool multipart,
+    String baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Post,
           url,
-          baseUrl,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -305,12 +307,13 @@ class ChopperClient {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
     bool multipart,
+    String baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Put,
           url,
-          baseUrl,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -327,12 +330,13 @@ class ChopperClient {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
     bool multipart,
+    String baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Patch,
           url,
-          baseUrl,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -346,12 +350,13 @@ class ChopperClient {
     String url, {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
+    String baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Delete,
           url,
-          baseUrl,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
@@ -362,12 +367,13 @@ class ChopperClient {
     String url, {
     Map<String, String> headers,
     Map<String, dynamic> parameters,
+    String baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Head,
           url,
-          baseUrl,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
