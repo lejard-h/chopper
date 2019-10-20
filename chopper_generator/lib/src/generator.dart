@@ -229,18 +229,14 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       final requestFactory = factoryConverter?.peek('request');
       if (requestFactory != null) {
-        final el = requestFactory.objectValue.type.element;
-        if (el is FunctionTypedElement) {
-          namedArguments['requestConverter'] = refer(_factoryForFunction(el));
-        }
+        final func = requestFactory.objectValue.toFunctionValue();
+        namedArguments['requestConverter'] = refer(_factoryForFunction(func));
       }
 
       final responseFactory = factoryConverter?.peek('response');
       if (responseFactory != null) {
-        final el = responseFactory.objectValue.type.element;
-        if (el is FunctionTypedElement) {
-          namedArguments['responseConverter'] = refer(_factoryForFunction(el));
-        }
+        final func = responseFactory.objectValue.toFunctionValue();
+        namedArguments['responseConverter'] = refer(_factoryForFunction(func));
       }
 
       final typeArguments = <Reference>[];

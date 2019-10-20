@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.2
+
+- Fix factory converter
+
 ## 3.0.1
 
 - Fix Avoid using braces in interpolation when not needed
