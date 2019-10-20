@@ -47,3 +47,24 @@ class MyConverter implements Converter {
 
  In the case of `BodyType` is a `List` or `BuildList`, `InnerType` will be the type of the generic \(ex: `convertResponse<List<CustomObject>, CustomObject>(response)` \)
 
+## Factory Converter
+
+In case you want to apply a converter to a single endpoint, you can use a `FactoryConverter`
+
+```dart
+@ChopperApi(baseUrl: "/todos")
+abstract class TodosListService extends ChopperService {
+
+  @FactoryConverter(
+      request: FormUrlEncodedConverter.requestFactory,
+      response: convertResponse,
+  )
+  @Post(path: '/')
+  Future<Response> post(@Field() String foo, @Field() int bar);
+
+}
+
+Response<T> convertResponse<T>(Response res) => 
+    JsonConverter().convertResponse(res);
+```
+
