@@ -3,11 +3,23 @@ import 'request.dart';
 import 'response.dart';
 import 'constants.dart';
 
-/// Define an APi
-/// [baseUrl] determine the prefix of every request in this api
-/// [name] generate class name
+/// Define a Chopper API
+///
+/// Must be use on an abstract class that extend the [ChopperService] class.
+/// To simplify instantiation, it's recommanded to define a statis `create` method.
+///
+/// ```dart
+/// @ChopperApi(baseUrl: "/todos")
+/// abstract class TodosListService extends ChopperService {
+///   static TodosListService create([ChopperClient client]) =>
+///       _$TodosListService(client);
+/// }
+/// ```
+///
+/// See [Method] to define an HTTP request
 @immutable
 class ChopperApi {
+  /// Url that will prefix every request define inside that API.
   final String baseUrl;
 
   const ChopperApi({
@@ -15,64 +27,130 @@ class ChopperApi {
   });
 }
 
-/// Define path parameter of an url
+/// Provide parameter inside url.
 ///
-///     @Get(path: '/{id}')
-///     Future<Response> fetch(@Path('id') String resourceId);
+/// Determine as follow inside the path String
+/// ```dart
+/// @Get(path: '/{param}')
+/// ```
+///
+/// And available inside method declaration
+/// ```dart
+/// @Get(path: '/{param}')
+/// Future<Response> fetch(@Path() String param);
+/// ```
 @immutable
 class Path {
+  /// Name is used to bind a method parameter to
+  /// the url parameter.
+  /// ```dart
+  /// @Get(path: '/{param}')
+  /// Future<Response> fetch(@Path('param') String hello);
+  /// ```
   final String name;
+
   const Path([this.name]);
 }
 
-/// Define query parameters of a request
+/// Provide query parameters of a request.
 ///
-///     @Get(path: '/something')
-///     Future<Response> fetch(@Query('id') String resourceId);
+/// [Query] is use to add query parameters after the request url
+/// Example /something?id=42
+/// ```dart
+/// @Get(path: '/something')
+/// Future<Response> fetch({@Query() String id});
+/// ```
 ///
-///     fetch('42');
-///     // will request following path: /something?id=42
+/// See [QueryMap] to pass an [Map<String, dynamic>] as value
 @immutable
 class Query {
+  /// Name is used to bind a method parameter to
+  /// the query parameter.
+  /// ```dart
+  /// @Get(path: '/something')
+  /// Future<Response> fetch({@Query('id') String mySuperId});
+  /// ```
   final String name;
+
   const Query([this.name]);
 }
 
-/// Define query parameters of a request as Map<String, dynamic>
+/// Provide query parameters of a request as [Map<String, dynamic>]
 ///
-///     @Get(path: '/something')
-///     Future<Response> fetch(@QueryMap() Map<String, dynamic> query);
+/// ```dart
+/// @Get(path: '/something')
+/// Future<Response> fetch(@QueryMap() Map<String, dynamic> query);
+/// ```
 ///
-///     fetch({"foo":"bar","list":[1,2]});
-///     // will request following path: /something?foo=bar&list=1&list=2
+/// Support list passing value as follow
+/// ```dart
+/// fetch({"foo":"bar","list":[1,2]});
+/// // something?foo=bar&list=1&list=2
+/// ```
 @immutable
 class QueryMap {
   const QueryMap();
 }
 
-/// Declare Body of [POST], [PUT], [PATCH] request
+/// Declare Body of [Post], [Put], [Patch] request
 ///
-///     @Post()
-///     Future<Response> post(@Body() Map<String, dynamic> body);
+/// ```dart
+/// @Post()
+/// Future<Response> post(@Body() Map<String, dynamic> body);
+/// ```
+///
+/// The body can be of any type, however chopper does not automatically convert it to JSON for example.
+/// See [Converter] to apply conversion to the body.
 @immutable
 class Body {
   const Body();
 }
 
-/// Override header using method parameter
+/// Pass value to header of the request
+/// Use the name of the method parameter or the name specified in the annotation.
 ///
-///     @Get()
-///     Future<Response> fetch(@Header('foo') String headerFoo);
+/// ```dart
+/// @Get()
+/// Future<Response> fetch(@Header() String foo);
+/// ```
 @immutable
 class Header {
+  /// Name is used to bind a method parameter to
+  /// the header name you want.
+  /// ```dart
+  /// @Get()
+  /// Future<Response> fetch(@Header('foo') String headerFoo);
+  /// ```
   final String name;
+
   const Header([this.name]);
 }
 
+/// Define an HTTP method
+/// Must be use inside a [ChopperApi] definition.
+///
+/// Recommended:
+/// [Get], [Post], [Put], [Delete], [Patch], [Head] should be use instead.
+///
+/// ```dart
+/// @Get(headers: const {'foo': 'bar' })
+/// Future<Response> myGetRequest();
+/// ```
+/// 
+/// The annotated method must always return a [Future<Response>].
+/// 
+/// The [Response] type also support typed parameters like `Future<Response<MyObject>>`.
+/// However chopper will not automatically convert the body response to you type,
+/// a [Converter] need to be specified.
 @immutable
 class Method {
+  /// HTTP method for the request
   final String method;
+
+  /// Path to the request that will be concatenated with the [ChopperApi.baseUrl].
   final String path;
+
+  /// Headers [Map] that should be apply to the request
   final Map<String, String> headers;
 
   const Method(this.method, {this.path = "", this.headers = const {}});
@@ -137,22 +215,36 @@ class FactoryConverter {
   });
 }
 
-/// Define fields
-///   will be convert to { 'key': value }
+/// Define fields for a `x-www-form-urlencoded` request.
+/// Automatically bind to the name of the method parameter.
 ///
-///     @Post(path: '/')
-///     Future<Response> create(@Field('id') String name);
+/// ```dart
+/// @Post(path: '/')
+/// Future<Response> create(@Field() String name);
+/// ```
+/// Will be convert to `{ 'name': value }`
 @immutable
 class Field {
+  /// Name can be use to specify the name of the field
+  /// ```dart
+  /// @Post(path: '/')
+  /// Future<Response> create(@Field('id') String myId);
+  /// ```
   final String name;
+
   const Field([this.name]);
 }
 
-/// define a multipart request
+/// Define a multipart request
 ///
-///     @Post(path: '/')
-///     @Multipart()
-///     Future<Response> create(@Part('id') String name);
+/// ```dart
+/// @Post(path: '/')
+/// @Multipart()
+/// Future<Response> create(@Part() String name);
+/// ```
+///
+/// Use [Part] annotation to send simple data.
+/// Use [PartFile] annotation to send `File` or `List<int>`.
 @immutable
 class Multipart {
   const Multipart();
@@ -160,7 +252,8 @@ class Multipart {
 
 /// Use to define part of [Multipart] request
 /// All values will are converted to [String] using [toString] method
-/// accept MultipartFile (from package:http)
+///
+/// Also accept `MultipartFile` (from package:http)
 @immutable
 class Part {
   final String name;
@@ -168,14 +261,17 @@ class Part {
 }
 
 /// Use to define a file filed for [Multipart] request
-///     @Post(path: 'file')
-///     @multipart
-///     Future<Response> postFile(@PartFile('file') List<int> bytes);
+///
+/// ```
+/// @Post(path: 'file')
+/// @multipart
+/// Future<Response> postFile(@PartFile('file') List<int> bytes);
+/// ```
 ///
 /// Support the following values
-///   - List<int>'
-///   - String (path of your file)
-///   - MultipartFile (from package:http)
+///   - `List<int>`
+///   - [String] (path of your file)
+///   - `MultipartFile` (from package:http)
 @immutable
 class PartFile {
   final String name;
@@ -183,15 +279,18 @@ class PartFile {
   const PartFile([this.name]);
 }
 
-/// Use to define a file filed for [Multipart] request
-///     @Post(path: 'file')
-///     @multipart
-///     Future<Response> postFile(@FileField('file') List<int> bytes);
+/// Use to define a file field for [Multipart] request
+/// 
+/// ```dart
+/// @Post(path: 'file')
+/// @multipart
+/// Future<Response> postFile(@FileField('file') List<int> bytes);
+/// ```
 ///
 /// Support the following values
-///   - List<int>'
-///   - String (path of your file)
-///   - MultipartFile (from package:http)
+///   - `List<int>`
+///   - [String] (path of your file)
+///   - `MultipartFile` (from package:http)
 @immutable
 @Deprecated('use PartFile')
 class FileField extends PartFile {

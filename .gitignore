@@ -11,3 +11,4 @@ doc/api/
 .idea/
 .test_coverage.dart
 coverage
+chopper/doc/
