@@ -498,7 +498,7 @@ void main() {
           {},
         );
       } on ArgumentError catch (e) {
-        expect(e.toString(), equals('Invalid argument (body): \'{foo: 42}\''));
+        expect(e.toString(), equals('Invalid argument (body): "{foo: 42}"'));
       }
     });
 
@@ -636,7 +636,7 @@ void main() {
 
   test('error Converter', () async {
     final client = MockClient((http.Request req) async {
-      return http.Response('{\'error\':true}', 400);
+      return http.Response('{"error":true}', 400);
     });
 
     final chopper = buildClient(client, JsonConverter());

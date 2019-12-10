@@ -13,7 +13,7 @@ void main() {
         expect(
           req.body,
           contains(
-            'content-disposition: form-data; name=\'1\'\r\n'
+            'content-disposition: form-data; name="1"\r\n'
             '\r\n'
             '{foo: bar}\r\n',
           ),
@@ -21,7 +21,7 @@ void main() {
         expect(
           req.body,
           contains(
-            'content-disposition: form-data; name=\'2\'\r\n'
+            'content-disposition: form-data; name="2"\r\n'
             '\r\n'
             '{bar: foo}\r\n',
           ),
@@ -48,7 +48,7 @@ void main() {
         expect(
             req.body,
             contains(
-              'content-disposition: form-data; name=\'file\'',
+              'content-disposition: form-data; name="file"',
             ));
         expect(
           req.body,
@@ -76,12 +76,12 @@ void main() {
 
       expect(
         req.body,
-        isNot(contains('content-disposition: form-data; name=\'id\'')),
+        isNot(contains('content-disposition: form-data; name="id"')),
       );
       expect(
           req.body,
           contains(
-            'content-disposition: form-data; name=\'file_field\'; filename=\'file_name\'',
+            'content-disposition: form-data; name="file_field"; filename="file_name"',
           ));
       expect(
         req.body,
@@ -109,10 +109,8 @@ void main() {
     final httpClient = MockClient((http.Request req) async {
       expect(req.headers['Content-Type'], contains('multipart/form-data;'));
 
-      expect(
-          req.body,
-          contains(
-              'content-disposition: form-data; name=\'id\'\r\n\r\n42\r\n'));
+      expect(req.body,
+          contains('content-disposition: form-data; name="id"\r\n\r\n42\r\n'));
 
       expect(
         req.body,
@@ -121,7 +119,7 @@ void main() {
       expect(
           req.body,
           contains(
-            'content-disposition: form-data; name=\'file_field\'; filename=\'file_name\'',
+            'content-disposition: form-data; name="file_field"; filename="file_name"',
           ));
       expect(
         req.body,
@@ -153,7 +151,7 @@ void main() {
         req.body,
         contains(
           'content-type: application/octet-stream\r\n'
-          'content-disposition: form-data; name=\'file_1\'; filename=\'file_name_1\'\r\n'
+          'content-disposition: form-data; name="file_1"; filename="file_name_1"\r\n'
           '\r\n'
           'Hello',
         ),
@@ -163,7 +161,7 @@ void main() {
         req.body,
         contains(
           'content-type: application/octet-stream\r\n'
-          'content-disposition: form-data; name=\'file_2\'; filename=\'file_name_2\'\r\n'
+          'content-disposition: form-data; name="file_2"; filename="file_name_2"\r\n'
           '\r\n'
           'World',
         ),
