@@ -260,7 +260,7 @@ class Part {
   const Part([this.name]);
 }
 
-/// Use to define a file filed for [Multipart] request
+/// Use to define a file field for [Multipart] request
 ///
 /// ```
 /// @Post(path: 'file')

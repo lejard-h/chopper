@@ -15,13 +15,13 @@ import 'package:chopper/chopper.dart' as chopper;
 import 'package:logging/logging.dart';
 
 const _clientVar = 'client';
-const _baseUrlVar = "baseUrl";
-const _parametersVar = "\$params";
-const _headersVar = "\$headers";
-const _requestVar = "\$request";
+const _baseUrlVar = 'baseUrl';
+const _parametersVar = '\$params';
+const _headersVar = '\$headers';
+const _requestVar = '\$request';
 const _bodyVar = '\$body';
 const _partsVar = '\$parts';
-const _urlVar = "\$url";
+const _urlVar = '\$url';
 
 final _logger = Logger('Chopper Generator');
 
@@ -245,7 +245,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         typeArguments.add(refer(responseInnerType.displayName));
       }
 
-      blocks.add(refer("client.send")
+      blocks.add(refer('client.send')
           .call([refer(_requestVar)], namedArguments, typeArguments)
           .returned
           .statement);
@@ -354,10 +354,10 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     Map<ParameterElement, ConstantReader> paths,
     String baseUrl,
   ) {
-    String path = getMethodPath(method);
+    var path = getMethodPath(method);
     paths.forEach((p, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? p.displayName;
-      path = path.replaceFirst("{$name}", "\$${p.displayName}");
+      final name = r.peek('name')?.stringValue ?? p.displayName;
+      path = path.replaceFirst('{$name}', '\$${p.displayName}');
     });
 
     if (path.startsWith('http://') || path.startsWith('https://')) {
@@ -403,20 +403,20 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     }
 
     if (useQueries) {
-      namedParams["parameters"] = refer(_parametersVar);
+      namedParams['parameters'] = refer(_parametersVar);
     }
 
     if (useHeaders) {
-      namedParams["headers"] = refer(_headersVar);
+      namedParams['headers'] = refer(_headersVar);
     }
 
-    return refer("Request").newInstance(params, namedParams);
+    return refer('Request').newInstance(params, namedParams);
   }
 
   Expression _generateMap(Map<ParameterElement, ConstantReader> queries) {
     final map = {};
     queries.forEach((p, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? p.displayName;
+      final name = r.peek('name')?.stringValue ?? p.displayName;
       map[literal(name)] = refer(p.displayName);
     });
 
@@ -429,7 +429,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   ) {
     final list = [];
     parts.forEach((p, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? p.displayName;
+      final name = r.peek('name')?.stringValue ?? p.displayName;
       final params = <Expression>[
         literal(name),
         refer(p.displayName),
@@ -438,7 +438,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       list.add(refer('PartValue<${p.type.displayName}>').newInstance(params));
     });
     fileFields.forEach((p, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? p.displayName;
+      final name = r.peek('name')?.stringValue ?? p.displayName;
       final params = <Expression>[
         literal(name),
         refer(p.displayName),
@@ -457,11 +457,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final annotations = _getAnnotations(m, chopper.Header);
 
     annotations.forEach((p, ConstantReader r) {
-      final name = r.peek("name")?.stringValue ?? p.displayName;
+      final name = r.peek('name')?.stringValue ?? p.displayName;
       map[literal(name)] = refer(p.displayName);
     });
 
-    final methodAnnotations = method.peek("headers").mapValue;
+    final methodAnnotations = method.peek('headers').mapValue;
 
     methodAnnotations.forEach((k, v) {
       map[literal(k.toStringValue())] = literal(v.toStringValue());
@@ -477,7 +477,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
 Builder chopperGeneratorFactoryBuilder({String header}) => PartBuilder(
       [ChopperGenerator()],
-      ".chopper.dart",
+      '.chopper.dart',
       header: header,
     );
 
@@ -486,6 +486,6 @@ bool _methodWithBody(String method) =>
     method == chopper.HttpMethod.Patch ||
     method == chopper.HttpMethod.Put;
 
-String getMethodPath(ConstantReader method) => method.read("path").stringValue;
+String getMethodPath(ConstantReader method) => method.read('path').stringValue;
 String getMethodName(ConstantReader method) =>
-    method.read("method").stringValue;
+    method.read('method').stringValue;
