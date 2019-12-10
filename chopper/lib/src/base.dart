@@ -63,7 +63,7 @@ class ChopperClient {
   /// Interceptors can be use to apply modification or log infos for each
   /// requests and responsed happening in that client.
   /// See [ResponseInterceptor] and [RequestInterceptor]
-  /// 
+  ///
   /// ```dart
   /// final chopper = ChopperClient(
   ///     ...
@@ -72,13 +72,13 @@ class ChopperClient {
   ///     ]
   ///   );
   /// ```
-  /// 
+  ///
   /// [Converter] is used to apply modification on the body of a request/response
   /// like converting an object to json (or json to object).
   /// A different converter is used when an error is happening ([Response.isSuccessful] == false)
   /// See [JsonConverter]
-  /// 
-  /// 
+  ///
+  ///
   /// ```dart
   /// final chopper = ChopperClient(
   ///     ...
@@ -124,7 +124,7 @@ class ChopperClient {
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
   /// Retrieve any service injected into the [ChopperClient]
-  /// 
+  ///
   /// ```dart
   /// final chopper = ChopperClient(
   ///     baseUrl: 'localhost:8000',
@@ -133,7 +133,7 @@ class ChopperClient {
   ///       TodosListService.create()
   ///     ],
   ///   );
-  /// 
+  ///
   /// final todoService = chopper.getService<TodosListService>();
   /// ```
   ServiceType getService<ServiceType extends ChopperService>() {
@@ -275,7 +275,7 @@ class ChopperClient {
   ///
   /// In the case of [BodyType] is a `List` or `BuildList`
   /// [InnerType] will be the type of the generic
-  /// 
+  ///
   /// ```dart
   /// Response<List<CustomObject>> res = await send<List<CustomObject>, CustomObject>(request);
   /// ````
@@ -433,7 +433,7 @@ class ChopperClient {
       );
 
   /// dispose [ChopperClient] to clean memory.
-  /// 
+  ///
   /// It won't close the http client if you provided it in the [ChopperClient] constructor.
   @mustCallSuper
   void dispose() {

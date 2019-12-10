@@ -54,7 +54,7 @@ abstract class RequestInterceptor {
 /// [Converter] is is used to convert body of Request or Response
 /// [convertRequest] is call before [RequestInterceptor]
 /// and [convertResponse] just after the http response, before [ResponseInterceptor].
-/// 
+///
 /// See [JsonConverter], [FormUrlEncodedConverter]
 @immutable
 abstract class Converter {

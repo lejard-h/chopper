@@ -136,9 +136,9 @@ class Header {
 /// @Get(headers: const {'foo': 'bar' })
 /// Future<Response> myGetRequest();
 /// ```
-/// 
+///
 /// The annotated method must always return a [Future<Response>].
-/// 
+///
 /// The [Response] type also support typed parameters like `Future<Response<MyObject>>`.
 /// However chopper will not automatically convert the body response to you type,
 /// a [Converter] need to be specified.
@@ -280,7 +280,7 @@ class PartFile {
 }
 
 /// Use to define a file field for [Multipart] request
-/// 
+///
 /// ```dart
 /// @Post(path: 'file')
 /// @multipart

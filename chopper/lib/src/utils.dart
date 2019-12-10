@@ -3,7 +3,7 @@ import 'package:logging/logging.dart';
 
 /// Apply [value] to the header field [name] of the [request]
 /// if [override] is true, it will erase already present headers with the new value
-/// 
+///
 /// ```dart
 /// final newRequest = applyHeader(request, 'foo', 'bar');
 /// ```
@@ -21,7 +21,7 @@ Request applyHeader(
 
 /// Apply given [headers] to the [request]
 /// if [override] is true, it will erase already present headers with the new value
-/// 
+///
 /// ```dart
 /// final newRequest = applyHeaders(request, {'foo': 'bar'});
 /// ```
