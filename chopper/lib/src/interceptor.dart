@@ -8,21 +8,54 @@ import 'response.dart';
 import 'utils.dart';
 import 'constants.dart';
 
-/// [ResponseInterceptor] are call after [Converter.convertResponse]
+/// Interface to implements a response interceptor.
+/// Not recommended to modify body inside interceptor, see [Converter] to decode body response.
+///
+/// [ResponseInterceptor] are call after [Converter.convertResponse].
+///
+/// See builtin interceptor [HttpLoggingInterceptor]
+///
+/// ```dart
+/// class MyResponseInterceptor  implements ResponseInterceptor {
+///   String _token;
+///
+///   @override
+///   FutureOr<Response> onResponse(Response response) {
+///     _token ??= response.headers['auth_token'];
+///     return response;
+///   }
+/// }
+/// ```
 @immutable
 abstract class ResponseInterceptor {
   FutureOr<Response> onResponse(Response response);
 }
 
+/// Interface to implements a request interceptor.
+/// Not recommended to modify body inside interceptor, see [Converter] to encode body request.
+///
 /// [RequestInterceptor] are call after [Converter.convertRequest]
+///
+/// See builtin interceptor [CurlInterceptor], [HttpLoggingInterceptor]
+///
+/// ```dart
+/// class MyRequestInterceptor implements ResponseInterceptor {
+///   @override
+///   FutureOr<Request> onRequest(Request request) {
+///     return applyHeader(request, 'auth_token', 'Bearer $token');
+///   }
+/// }
+/// ```
 @immutable
 abstract class RequestInterceptor {
   FutureOr<Request> onRequest(Request request);
 }
 
-/// [Converter] is is used to convert Request or Response
-/// [convertRequest] is call before [RequestInsterceptor]
-/// and [convertResponse] just after the http response
+/// [Converter] is is used to convert body of Request or Response
+/// [convertRequest] is call before [RequestInterceptor]
+/// and [convertResponse] just after the http response, before [ResponseInterceptor].
+/// 
+/// See [JsonConverter], [FormUrlEncodedConverter]
 @immutable
 abstract class Converter {
   FutureOr<Request> convertRequest(Request request);
@@ -34,7 +67,8 @@ abstract class Converter {
   /// [InnerType] will be the type of the generic
   /// ex: `convertResponse<List<CustomObject>, CustomObject>(response)`
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
-      Response response);
+    Response response,
+  );
 }
 
 abstract class ErrorConverter {

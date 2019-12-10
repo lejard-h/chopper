@@ -148,7 +148,6 @@ final chopper = new ChopperClient(
 
   - [Json serializable](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
   - [Built Value](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
-  - [Jaguar Serializer](https://github.com/lejard-h/chopper/blob/master/example/bin/main_jaguar_serializer.dart)
   - [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
   
 ## [Issue Tracker](https://github.com/lejard-h/chopper/issues)

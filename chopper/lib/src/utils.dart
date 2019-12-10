@@ -1,7 +1,12 @@
 import 'package:chopper/chopper.dart';
 import 'package:logging/logging.dart';
 
-/// see [applyHeaders]
+/// Apply [value] to the header field [name] of the [request]
+/// if [override] is true, it will erase already present headers with the new value
+/// 
+/// ```dart
+/// final newRequest = applyHeader(request, 'foo', 'bar');
+/// ```
 Request applyHeader(
   Request request,
   String name,
@@ -14,8 +19,12 @@ Request applyHeader(
       override: override,
     );
 
-/// apply given [headers] to the [request]
+/// Apply given [headers] to the [request]
 /// if [override] is true, it will erase already present headers with the new value
+/// 
+/// ```dart
+/// final newRequest = applyHeaders(request, {'foo': 'bar'});
+/// ```
 Request applyHeaders(
   Request request,
   Map<String, String> headers, {
