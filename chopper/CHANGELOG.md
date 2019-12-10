@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1+1
+
+- Documentations update
+
 ## 3.0.1
 
 - ResponseInterceptor function support typed parameter
