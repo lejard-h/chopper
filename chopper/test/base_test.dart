@@ -39,7 +39,7 @@ void main() {
       } on Exception catch (e) {
         expect(
           e.toString(),
-          equals("Exception: Service of type 'HttpTestService' not found."),
+          equals('Exception: Service of type \'HttpTestService\' not found.'),
         );
       }
 
@@ -80,7 +80,7 @@ void main() {
         );
         expect(request.method, equals('GET'));
 
-        final bodyStreamList = List<Future<List<int>>>();
+        final bodyStreamList = <Future<List<int>>>[];
         bodyStreamList.add(Future.value(Utf8Encoder().convert('get ')));
         bodyStreamList.add(Future.value(Utf8Encoder().convert('response')));
         final s = Stream.fromFutures(bodyStreamList);
@@ -93,7 +93,7 @@ void main() {
 
       final response = await service.getStreamTest();
 
-      final bytes = List<int>();
+      final bytes = <int>[];
       await response.body.forEach((d) {
         bytes.addAll(d);
       });
@@ -163,7 +163,7 @@ void main() {
       final service = chopper.getService<HttpTestService>();
 
       final response =
-          await service.getQueryTest(name: "Foo", def: 40, number: 18);
+          await service.getQueryTest(name: 'Foo', def: 40, number: 18);
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
@@ -209,7 +209,7 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final bodyStreamList = List<Future<List<int>>>();
+      final bodyStreamList = <Future<List<int>>>[];
       bodyStreamList.add(Future.value(Utf8Encoder().convert('post ')));
       bodyStreamList.add(Future.value(Utf8Encoder().convert('body')));
       final s = Stream.fromFutures(bodyStreamList);
@@ -480,33 +480,33 @@ void main() {
 
     test('BodyFields', () async {
       final request = await toHttpRequest(
-        {"foo": "bar"},
+        {'foo': 'bar'},
         HttpMethod.Post,
         Uri.parse('/foo'),
         {},
       );
 
-      expect(request.bodyFields, equals({"foo": "bar"}));
+      expect(request.bodyFields, equals({'foo': 'bar'}));
     });
 
-    test("Wrong body", () async {
+    test('Wrong body', () async {
       try {
         await toHttpRequest(
-          {"foo": 42},
+          {'foo': 42},
           HttpMethod.Post,
           Uri.parse('/foo'),
           {},
         );
       } on ArgumentError catch (e) {
-        expect(e.toString(), equals('Invalid argument (body): "{foo: 42}"'));
+        expect(e.toString(), equals('Invalid argument (body): \'{foo: 42}\''));
       }
     });
 
-    test("wrong type for interceptor", () {
+    test('wrong type for interceptor', () {
       try {
         ChopperClient(
           interceptors: [
-            (bool foo) => "bar",
+            (bool foo) => 'bar',
           ],
         );
       } on ArgumentError catch (e) {
@@ -533,9 +533,9 @@ void main() {
       final service = chopper.getService<HttpTestService>();
 
       final response = await service.getQueryMapTest({
-        "foo": "bar",
-        "list": [1, 2],
-        "inner": {"test": 42},
+        'foo': 'bar',
+        'list': [1, 2],
+        'inner': {'test': 42},
       });
 
       expect(response.body, equals('get response'));
@@ -561,9 +561,9 @@ void main() {
 
       final response = await service.getQueryMapTest2(
         {
-          "foo": "bar",
-          "list": [1, 2],
-          "inner": {"test": 42},
+          'foo': 'bar',
+          'list': [1, 2],
+          'inner': {'test': 42},
         },
         test: true,
       );
@@ -636,7 +636,7 @@ void main() {
 
   test('error Converter', () async {
     final client = MockClient((http.Request req) async {
-      return http.Response('{"error":true}', 400);
+      return http.Response('{\'error\':true}', 400);
     });
 
     final chopper = buildClient(client, JsonConverter());
@@ -646,7 +646,7 @@ void main() {
 
     expect(res.isSuccessful, isFalse);
     expect(res.statusCode, equals(400));
-    expect(res.error, equals({"error": true}));
+    expect(res.error, equals({'error': true}));
 
     client.close();
     chopper.dispose();

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import "package:meta/meta.dart";
+import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 
 import 'request.dart';
@@ -82,6 +82,7 @@ class HeadersInterceptor implements RequestInterceptor {
 
   const HeadersInterceptor(this.headers);
 
+  @override
   Future<Request> onRequest(Request request) async =>
       applyHeaders(request, headers);
 }
@@ -103,6 +104,7 @@ typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
 /// thanks @edwardaux
 @immutable
 class CurlInterceptor implements RequestInterceptor {
+  @override
   Future<Request> onRequest(Request request) async {
     final baseRequest = await request.toBaseRequest();
     final method = baseRequest.method;

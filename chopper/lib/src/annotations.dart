@@ -9,7 +9,7 @@ import 'constants.dart';
 /// To simplify instantiation, it's recommanded to define a statis `create` method.
 ///
 /// ```dart
-/// @ChopperApi(baseUrl: "/todos")
+/// @ChopperApi(baseUrl: '/todos')
 /// abstract class TodosListService extends ChopperService {
 ///   static TodosListService create([ChopperClient client]) =>
 ///       _$TodosListService(client);
@@ -23,7 +23,7 @@ class ChopperApi {
   final String baseUrl;
 
   const ChopperApi({
-    this.baseUrl = "",
+    this.baseUrl = '',
   });
 }
 
@@ -84,7 +84,7 @@ class Query {
 ///
 /// Support list passing value as follow
 /// ```dart
-/// fetch({"foo":"bar","list":[1,2]});
+/// fetch({'foo':'bar','list':[1,2]});
 /// // something?foo=bar&list=1&list=2
 /// ```
 @immutable
@@ -153,13 +153,13 @@ class Method {
   /// Headers [Map] that should be apply to the request
   final Map<String, String> headers;
 
-  const Method(this.method, {this.path = "", this.headers = const {}});
+  const Method(this.method, {this.path = '', this.headers = const {}});
 }
 
 /// Define a method as an Http GET request
 @immutable
 class Get extends Method {
-  const Get({String path = "", Map<String, String> headers = const {}})
+  const Get({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Get, path: path, headers: headers);
 }
 
@@ -167,14 +167,14 @@ class Get extends Method {
 /// use [Body] annotation to determine data to send
 @immutable
 class Post extends Method {
-  const Post({String path = "", Map<String, String> headers = const {}})
+  const Post({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Post, path: path, headers: headers);
 }
 
 /// Define a method as an Http DELETE request
 @immutable
 class Delete extends Method {
-  const Delete({String path = "", Map<String, String> headers = const {}})
+  const Delete({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Delete, path: path, headers: headers);
 }
 
@@ -182,7 +182,7 @@ class Delete extends Method {
 /// use [Body] annotation to determine data to send
 @immutable
 class Put extends Method {
-  const Put({String path = "", Map<String, String> headers = const {}})
+  const Put({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Put, path: path, headers: headers);
 }
 
@@ -190,14 +190,14 @@ class Put extends Method {
 /// use [Body] annotation to determine data to send
 @immutable
 class Patch extends Method {
-  const Patch({String path = "", Map<String, String> headers = const {}})
+  const Patch({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Patch, path: path, headers: headers);
 }
 
 /// Define a method as an Http HEAD request
 @immutable
 class Head extends Method {
-  const Head({String path = "", Map<String, String> headers = const {}})
+  const Head({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Head, path: path, headers: headers);
 }
 

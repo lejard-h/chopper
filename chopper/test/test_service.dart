@@ -1,27 +1,27 @@
-import "dart:async";
+import 'dart:async';
 import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:chopper/src/constants.dart';
 
 import 'package:http/http.dart' show MultipartFile;
 
-part "test_service.chopper.dart";
+part 'test_service.chopper.dart';
 
-@ChopperApi(baseUrl: "/test")
+@ChopperApi(baseUrl: '/test')
 abstract class HttpTestService extends ChopperService {
   static HttpTestService create([ChopperClient client]) =>
       _$HttpTestService(client);
 
-  @Get(path: "get/{id}")
+  @Get(path: 'get/{id}')
   Future<Response<String>> getTest(
     @Path() String id, {
     @Header('test') String dynamicHeader,
   });
 
-  @Head(path: "head")
+  @Head(path: 'head')
   Future<Response> headTest();
 
-  @Get(path: "get")
+  @Get(path: 'get')
   Future<Response<Stream<List<int>>>> getStreamTest();
 
   @Get(path: '')
@@ -30,26 +30,26 @@ abstract class HttpTestService extends ChopperService {
   @Get(path: '/')
   Future<Response> getAllWithTrailingSlash();
 
-  @Get(path: "query")
+  @Get(path: 'query')
   Future<Response> getQueryTest({
     @Query('name') String name,
     @Query('int') int number,
     @Query('default_value') int def = 42,
   });
 
-  @Get(path: "query_map")
+  @Get(path: 'query_map')
   Future<Response> getQueryMapTest(@QueryMap() Map<String, dynamic> query);
 
-  @Get(path: "query_map")
+  @Get(path: 'query_map')
   Future<Response> getQueryMapTest2(
     @QueryMap() Map<String, dynamic> query, {
     @Query('test') bool test,
   });
 
-  @Post(path: "post")
+  @Post(path: 'post')
   Future<Response> postTest(@Body() String data);
 
-  @Post(path: "post")
+  @Post(path: 'post')
   Future<Response> postStreamTest(@Body() Stream<List<int>> byteStream);
 
   @Put(path: 'put/{id}')

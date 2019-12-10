@@ -26,10 +26,10 @@ class Request {
     Map<String, String> headers,
     bool multipart,
     List<PartValue> parts,
-  })  : this.parameters = parameters ?? const {},
-        this.headers = headers ?? const {},
-        this.multipart = multipart ?? false,
-        this.parts = parts ?? const [];
+  })  : parameters = parameters ?? const {},
+        headers = headers ?? const {},
+        multipart = multipart ?? false,
+        parts = parts ?? const [];
 
   Request replace({
     HttpMethod method,
@@ -117,9 +117,9 @@ Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
     uri = Uri.parse(url);
   } else {
     if (!baseUrl.endsWith('/') && !url.startsWith('/')) {
-      uri = Uri.parse("$baseUrl/$url");
+      uri = Uri.parse('$baseUrl/$url');
     } else {
-      uri = Uri.parse("$baseUrl$url");
+      uri = Uri.parse('$baseUrl$url');
     }
   }
 

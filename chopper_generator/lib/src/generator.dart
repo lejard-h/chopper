@@ -48,6 +48,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
   Field _buildDefinitionTypeMethod(String superType) => Field(
         (m) => m
+          ..annotations.add(refer('override'))
           ..name = 'definitionType'
           ..modifier = FieldModifier.final$
           ..assignment = Code(superType),
@@ -123,6 +124,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         _getResponseInnerType(m.returnType) ?? responseType;
 
     return Method((b) {
+      b.annotations.add(refer('override'));
       b.name = m.displayName;
       b.returns = Reference(m.returnType.displayName);
       b.requiredParameters.addAll(m.parameters
@@ -162,9 +164,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       if (queries.isNotEmpty) {
-        blocks.add(_generateMap(queries)
-            .assignFinal(_parametersVar, refer('Map<String, dynamic>'))
-            .statement);
+        blocks.add(_generateMap(queries).assignFinal(_parametersVar).statement);
       }
 
       final hasQueryMap = queryMap.isNotEmpty;
@@ -267,7 +267,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     for (final p in m.parameters) {
       final a = _typeChecker(type).firstAnnotationOf(p);
       if (annot != null && a != null) {
-        throw Exception("Too many $type annotation for '${m.displayName}");
+        throw Exception('Too many $type annotation for \'${m.displayName}\'');
       } else if (annot == null && a != null) {
         annot = a;
         name = p.displayName;
@@ -420,7 +420,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       map[literal(name)] = refer(p.displayName);
     });
 
-    return literalMap(map);
+    return literalMap(map, refer('String'), refer('dynamic'));
   }
 
   Expression _generateList(

@@ -1,10 +1,10 @@
-import "dart:async";
-import "package:meta/meta.dart";
+import 'dart:async';
+import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'constants.dart';
 
-import "interceptor.dart";
-import "request.dart";
+import 'interceptor.dart';
+import 'request.dart';
 import 'response.dart';
 import 'annotations.dart';
 import 'utils.dart';
@@ -52,7 +52,7 @@ class ChopperClient {
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///     baseUrl: "localhost:8000",
+  ///     baseUrl: 'localhost:8000',
   ///     services: [
   ///       // inject the generated service
   ///       TodosListService.create()
@@ -87,7 +87,7 @@ class ChopperClient {
   ///   );
   /// ```
   ChopperClient({
-    this.baseUrl = "",
+    this.baseUrl = '',
     http.Client client,
     Iterable interceptors = const [],
     this.converter,
@@ -127,7 +127,7 @@ class ChopperClient {
   /// 
   /// ```dart
   /// final chopper = ChopperClient(
-  ///     baseUrl: "localhost:8000",
+  ///     baseUrl: 'localhost:8000',
   ///     services: [
   ///       // inject the generated service
   ///       TodosListService.create()
@@ -137,14 +137,14 @@ class ChopperClient {
   /// final todoService = chopper.getService<TodosListService>();
   /// ```
   ServiceType getService<ServiceType extends ChopperService>() {
-    Type serviceType = typeOf<ServiceType>();
+    final serviceType = typeOf<ServiceType>();
     if (serviceType == dynamic || serviceType == ChopperService) {
       throw Exception(
-          "Service type should be provided, `dynamic` is not allowed.");
+          'Service type should be provided, `dynamic` is not allowed.');
     }
     final service = _services[serviceType];
     if (service == null) {
-      throw Exception("Service of type '$serviceType' not found.");
+      throw Exception('Service of type \'$serviceType\' not found.');
     }
     return service;
   }
@@ -165,7 +165,7 @@ class ChopperClient {
         await withConverter.convertResponse<BodyType, InnerType>(response);
 
     if (converted == null) {
-      throw Exception("No converter found for type $InnerType");
+      throw Exception('No converter found for type $InnerType');
     }
 
     return converted;
@@ -284,7 +284,7 @@ class ChopperClient {
     ConvertRequest requestConverter,
     ConvertResponse responseConverter,
   }) async {
-    Request req = await _handleRequestConverter(request, requestConverter);
+    var req = await _handleRequestConverter(request, requestConverter);
     req = await _interceptRequest(req);
     _requestController.add(req);
 
@@ -294,7 +294,7 @@ class ChopperClient {
     }
 
     final response = await http.Response.fromStream(streamRes);
-    Response res = Response(response, response.body);
+    dynamic res = Response(response, response.body);
 
     if (responseIsSuccessful(response.statusCode)) {
       res = await _handleSuccessResponse<BodyType, InnerType>(

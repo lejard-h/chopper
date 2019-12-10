@@ -13,7 +13,7 @@ void main() {
         expect(
           req.body,
           contains(
-            'content-disposition: form-data; name="1"\r\n'
+            'content-disposition: form-data; name=\'1\'\r\n'
             '\r\n'
             '{foo: bar}\r\n',
           ),
@@ -21,7 +21,7 @@ void main() {
         expect(
           req.body,
           contains(
-            'content-disposition: form-data; name="2"\r\n'
+            'content-disposition: form-data; name=\'2\'\r\n'
             '\r\n'
             '{bar: foo}\r\n',
           ),
@@ -48,7 +48,7 @@ void main() {
         expect(
             req.body,
             contains(
-              'content-disposition: form-data; name="file"',
+              'content-disposition: form-data; name=\'file\'',
             ));
         expect(
           req.body,
@@ -76,12 +76,12 @@ void main() {
 
       expect(
         req.body,
-        isNot(contains('content-disposition: form-data; name="id"')),
+        isNot(contains('content-disposition: form-data; name=\'id\'')),
       );
       expect(
           req.body,
           contains(
-            'content-disposition: form-data; name="file_field"; filename="file_name"',
+            'content-disposition: form-data; name=\'file_field\'; filename=\'file_name\'',
           ));
       expect(
         req.body,
@@ -105,12 +105,14 @@ void main() {
     chopper.dispose();
   });
 
-  test("MultipartFile with other Part", () async {
+  test('MultipartFile with other Part', () async {
     final httpClient = MockClient((http.Request req) async {
       expect(req.headers['Content-Type'], contains('multipart/form-data;'));
 
-      expect(req.body,
-          contains('content-disposition: form-data; name="id"\r\n\r\n42\r\n'));
+      expect(
+          req.body,
+          contains(
+              'content-disposition: form-data; name=\'id\'\r\n\r\n42\r\n'));
 
       expect(
         req.body,
@@ -119,7 +121,7 @@ void main() {
       expect(
           req.body,
           contains(
-            'content-disposition: form-data; name="file_field"; filename="file_name"',
+            'content-disposition: form-data; name=\'file_field\'; filename=\'file_name\'',
           ));
       expect(
         req.body,
@@ -151,7 +153,7 @@ void main() {
         req.body,
         contains(
           'content-type: application/octet-stream\r\n'
-          'content-disposition: form-data; name="file_1"; filename="file_name_1"\r\n'
+          'content-disposition: form-data; name=\'file_1\'; filename=\'file_name_1\'\r\n'
           '\r\n'
           'Hello',
         ),
@@ -161,7 +163,7 @@ void main() {
         req.body,
         contains(
           'content-type: application/octet-stream\r\n'
-          'content-disposition: form-data; name="file_2"; filename="file_name_2"\r\n'
+          'content-disposition: form-data; name=\'file_2\'; filename=\'file_name_2\'\r\n'
           '\r\n'
           'World',
         ),
@@ -194,8 +196,8 @@ void main() {
   test('PartValue', () async {
     final req = await toMultipartRequest(
       [
-        PartValue<String>("foo", "bar"),
-        PartValue<int>("int", 42),
+        PartValue<String>('foo', 'bar'),
+        PartValue<int>('int', 42),
       ],
       HttpMethod.Post,
       Uri.parse('/foo'),
@@ -209,8 +211,8 @@ void main() {
   test('PartFile', () async {
     final req = await toMultipartRequest(
       [
-        PartValueFile<String>("foo", "test/multipart_test.dart"),
-        PartValueFile<List<int>>("int", [1, 2]),
+        PartValueFile<String>('foo', 'test/multipart_test.dart'),
+        PartValueFile<List<int>>('int', [1, 2]),
       ],
       HttpMethod.Post,
       Uri.parse('/foo'),
@@ -225,27 +227,27 @@ void main() {
   }, testOn: 'vm');
 
   test('PartValue.replace', () {
-    dynamic part = PartValue<String>("foo", "bar");
+    dynamic part = PartValue<String>('foo', 'bar');
 
-    expect(part.name, equals("foo"));
-    expect(part.value, equals("bar"));
+    expect(part.name, equals('foo'));
+    expect(part.value, equals('bar'));
 
     part = part.replace<int>(value: 42);
 
-    expect(part.name, equals("foo"));
+    expect(part.name, equals('foo'));
     expect(part.value, equals(42));
 
-    part = part.replace<int>(name: "int");
+    part = part.replace<int>(name: 'int');
 
-    expect(part.name, equals("int"));
+    expect(part.name, equals('int'));
     expect(part.value, equals(42));
   });
 
   test('Multipart request non nullable', () async {
     final req = await toMultipartRequest(
       [
-        PartValue<int>("int", 42),
-        PartValueFile<List<int>>("list int", [1, 2]),
+        PartValue<int>('int', 42),
+        PartValueFile<List<int>>('list int', [1, 2]),
         null,
         PartValue('null value', null),
         PartValueFile('null file', null),
@@ -268,7 +270,7 @@ void main() {
         PartValue<http.MultipartFile>(
           null,
           http.MultipartFile.fromBytes(
-            "first",
+            'first',
             [1, 2],
             filename: 'list int 1',
           ),
@@ -276,7 +278,7 @@ void main() {
         PartValueFile<http.MultipartFile>(
           null,
           http.MultipartFile.fromBytes(
-            "second",
+            'second',
             [2, 1],
             filename: 'list int 2',
           ),

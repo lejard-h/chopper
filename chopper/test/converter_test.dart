@@ -6,7 +6,7 @@ import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
 import 'test_service.dart';
 
-const baseUrl = "http://localhost:8000";
+const baseUrl = 'http://localhost:8000';
 
 void main() {
   group('Converter', () {
@@ -105,7 +105,7 @@ void main() {
           jsonConverter.convertResponse<Map<String, String>, String>(res);
 
       expect(converted is Response<Map<String, String>>, isTrue);
-      expect(converted.body, equals({"foo": "bar"}));
+      expect(converted.body, equals({'foo': 'bar'}));
     });
   });
 }

@@ -11,15 +11,15 @@ class Response<BodyType> {
 
   Response(this.base, this.body, {this.error});
 
-  Response replace<NewBodyType>({
+  Response<NewBodyType> replace<NewBodyType>({
     http.BaseResponse base,
     NewBodyType body,
     Object bodyError,
   }) =>
       Response<NewBodyType>(
         base ?? this.base,
-        body ?? this.body,
-        error: bodyError ?? this.error,
+        body ?? (this.body as NewBodyType),
+        error: bodyError ?? error,
       );
 
   int get statusCode => base.statusCode;

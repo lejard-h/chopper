@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.3
+
+- Documentations update
+- Generate code compatible with pedantic analysis option
+
 ## 3.0.2
 
 - Fix factory converter

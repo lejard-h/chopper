@@ -50,6 +50,7 @@ Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
   String prefix,
 }) {
+  /// ignore: prefer_collection_literals
   final pairs = Set<_Pair<String, String>>();
 
   map.forEach((key, value) {
@@ -86,6 +87,7 @@ class _Pair<A, B> {
 
   _Pair(this.first, this.second);
 
+  @override
   String toString() => '$first=$second';
 }
 
