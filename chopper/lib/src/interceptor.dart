@@ -173,7 +173,7 @@ class HttpLoggingInterceptor
   }
 }
 
-/// [json.encode] on [Request] and [json.decode] on [Request]
+/// [json.encode] on [Request] and [json.decode] on [Response]
 /// Also add `application/json` header to each request
 ///
 /// If content type header overrided using @Post(headers: {'content-type': '...'})
