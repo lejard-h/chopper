@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.4
+
+- Analyzer update
+
 ## 3.0.3
 
 - Documentations update

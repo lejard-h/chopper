@@ -81,7 +81,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         ..extend = refer(friendlyName);
     });
 
-    final ignore = '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations';
+    final ignore =
+        '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations';
     final emitter = DartEmitter();
     return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
   }
@@ -127,19 +128,19 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     return Method((b) {
       b.annotations.add(refer('override'));
       b.name = m.displayName;
-      b.returns = Reference(m.returnType.displayName);
+      b.returns = Reference(m.returnType.getDisplayString());
       b.requiredParameters.addAll(m.parameters
           .where((p) => p.isNotOptional)
           .map((p) => Parameter((pb) => pb
             ..name = p.name
-            ..type = Reference(p.type.displayName))));
+            ..type = Reference(p.type.getDisplayString()))));
 
       b.optionalParameters.addAll(m.parameters
           .where((p) => p.isOptionalPositional)
           .map((p) => Parameter((pb) {
                 pb
                   ..name = p.name
-                  ..type = Reference(p.type.displayName);
+                  ..type = Reference(p.type.getDisplayString());
 
                 if (p.defaultValueCode != null) {
                   pb.defaultTo = Code(p.defaultValueCode);
@@ -152,7 +153,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 pb
                   ..named = true
                   ..name = p.name
-                  ..type = Reference(p.type.displayName);
+                  ..type = Reference(p.type.getDisplayString());
 
                 if (p.defaultValueCode != null) {
                   pb.defaultTo = Code(p.defaultValueCode);
@@ -242,8 +243,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       final typeArguments = <Reference>[];
       if (responseType != null) {
-        typeArguments.add(refer(responseType.displayName));
-        typeArguments.add(refer(responseInnerType.displayName));
+        typeArguments.add(refer(responseType.getDisplayString()));
+        typeArguments.add(refer(responseInnerType.getDisplayString()));
       }
 
       blocks.add(refer('client.send')
@@ -436,7 +437,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         refer(p.displayName),
       ];
 
-      list.add(refer('PartValue<${p.type.displayName}>').newInstance(params));
+      list.add(
+          refer('PartValue<${p.type.getDisplayString()}>').newInstance(params));
     });
     fileFields.forEach((p, ConstantReader r) {
       final name = r.peek('name')?.stringValue ?? p.displayName;
@@ -446,7 +448,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       list.add(
-        refer('PartValueFile<${p.type.displayName}>').newInstance(params),
+        refer('PartValueFile<${p.type.getDisplayString()}>')
+            .newInstance(params),
       );
     });
     return literalList(list, refer('PartValue'));
