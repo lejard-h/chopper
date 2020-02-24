@@ -81,8 +81,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         ..extend = refer(friendlyName);
     });
 
+    final ignore = '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations';
     final emitter = DartEmitter();
-    return DartFormatter().format('${classBuilder.accept(emitter)}');
+    return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
   }
 
   Constructor _generateConstructor() => Constructor((c) {

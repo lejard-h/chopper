@@ -3,10 +3,10 @@ import 'request.dart';
 import 'response.dart';
 import 'constants.dart';
 
-/// Define a Chopper API
+/// Defines a Chopper API.
 ///
-/// Must be use on an abstract class that extend the [ChopperService] class.
-/// To simplify instantiation, it's recommanded to define a statis `create` method.
+/// Must be used on an abstract class that extends the [ChopperService] class.
+/// To simplify instantiation, it's recommended to define a static `create` method.
 ///
 /// ```dart
 /// @ChopperApi(baseUrl: '/todos')
@@ -27,14 +27,14 @@ class ChopperApi {
   });
 }
 
-/// Provide parameter inside url.
+/// Provides a parameter in the url.
 ///
-/// Determine as follow inside the path String
+/// Declared as follows inside the path String:
 /// ```dart
 /// @Get(path: '/{param}')
 /// ```
 ///
-/// And available inside method declaration
+/// Available inside method declaration:
 /// ```dart
 /// @Get(path: '/{param}')
 /// Future<Response> fetch(@Path() String param);
@@ -52,10 +52,10 @@ class Path {
   const Path([this.name]);
 }
 
-/// Provide query parameters of a request.
+/// Provides the query parameters of a request.
 ///
-/// [Query] is use to add query parameters after the request url
-/// Example /something?id=42
+/// [Query] is used to add query parameters after the request url.
+/// Example: /something?id=42
 /// ```dart
 /// @Get(path: '/something')
 /// Future<Response> fetch({@Query() String id});
@@ -75,14 +75,14 @@ class Query {
   const Query([this.name]);
 }
 
-/// Provide query parameters of a request as [Map<String, dynamic>]
+/// Provides query parameters of a request as [Map<String, dynamic>].
 ///
 /// ```dart
 /// @Get(path: '/something')
 /// Future<Response> fetch(@QueryMap() Map<String, dynamic> query);
 /// ```
 ///
-/// Support list passing value as follow
+/// Supports passing list value as follows:
 /// ```dart
 /// fetch({'foo':'bar','list':[1,2]});
 /// // something?foo=bar&list=1&list=2
@@ -92,21 +92,22 @@ class QueryMap {
   const QueryMap();
 }
 
-/// Declare Body of [Post], [Put], [Patch] request
+/// Declares the Body of [Post], [Put], and [Patch] requests
 ///
 /// ```dart
 /// @Post()
 /// Future<Response> post(@Body() Map<String, dynamic> body);
 /// ```
 ///
-/// The body can be of any type, however chopper does not automatically convert it to JSON for example.
+/// The body can be of any type, but chopper does not automatically convert it to JSON.
 /// See [Converter] to apply conversion to the body.
 @immutable
 class Body {
   const Body();
 }
 
-/// Pass value to header of the request
+/// Passes a value to the header of the request.
+///
 /// Use the name of the method parameter or the name specified in the annotation.
 ///
 /// ```dart
@@ -116,7 +117,7 @@ class Body {
 @immutable
 class Header {
   /// Name is used to bind a method parameter to
-  /// the header name you want.
+  /// a header name.
   /// ```dart
   /// @Get()
   /// Future<Response> fetch(@Header('foo') String headerFoo);
@@ -126,11 +127,12 @@ class Header {
   const Header([this.name]);
 }
 
-/// Define an HTTP method
-/// Must be use inside a [ChopperApi] definition.
+/// Defines an HTTP method.
+///
+/// Must be used inside a [ChopperApi] definition.
 ///
 /// Recommended:
-/// [Get], [Post], [Put], [Delete], [Patch], [Head] should be use instead.
+/// [Get], [Post], [Put], [Delete], [Patch], or [Head] should be used instead.
 ///
 /// ```dart
 /// @Get(headers: const {'foo': 'bar' })
@@ -139,9 +141,9 @@ class Header {
 ///
 /// The annotated method must always return a [Future<Response>].
 ///
-/// The [Response] type also support typed parameters like `Future<Response<MyObject>>`.
-/// However chopper will not automatically convert the body response to you type,
-/// a [Converter] need to be specified.
+/// The [Response] type also supports typed parameters like `Future<Response<MyObject>>`.
+/// However, chopper will not automatically convert the body response to your type.
+/// A [Converter] needs to be specified for conversion.
 @immutable
 class Method {
   /// HTTP method for the request
@@ -156,45 +158,47 @@ class Method {
   const Method(this.method, {this.path = '', this.headers = const {}});
 }
 
-/// Define a method as an Http GET request
+/// Defines a method as an HTTP GET request.
 @immutable
 class Get extends Method {
   const Get({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Get, path: path, headers: headers);
 }
 
-/// Define a method as an Http POST request
-/// use [Body] annotation to determine data to send
+/// Defines a method as an HTTP POST request.
+///
+/// Use the [Body] annotation to pass data to send.
 @immutable
 class Post extends Method {
   const Post({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Post, path: path, headers: headers);
 }
 
-/// Define a method as an Http DELETE request
+/// Defines a method as an HTTP DELETE request.
 @immutable
 class Delete extends Method {
   const Delete({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Delete, path: path, headers: headers);
 }
 
-/// Define a method as an Http PUT request
-/// use [Body] annotation to determine data to send
+/// Defines a method as an HTTP PUT request.
+///
+/// Use the [Body] annotation to pass data to send.
 @immutable
 class Put extends Method {
   const Put({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Put, path: path, headers: headers);
 }
 
-/// Define a method as an Http PATCH request
-/// use [Body] annotation to determine data to send
+/// Defines a method as an HTTP PATCH request.
+/// Use the [Body] annotation to pass data to send.
 @immutable
 class Patch extends Method {
   const Patch({String path = '', Map<String, String> headers = const {}})
       : super(HttpMethod.Patch, path: path, headers: headers);
 }
 
-/// Define a method as an Http HEAD request
+/// Defined a method as an HTTP HEAD request.
 @immutable
 class Head extends Method {
   const Head({String path = '', Map<String, String> headers = const {}})
@@ -215,14 +219,14 @@ class FactoryConverter {
   });
 }
 
-/// Define fields for a `x-www-form-urlencoded` request.
-/// Automatically bind to the name of the method parameter.
+/// Define a field for a `x-www-form-urlencoded` request.
+/// Automatically binds to the name of the method parameter.
 ///
 /// ```dart
 /// @Post(path: '/')
 /// Future<Response> create(@Field() String name);
 /// ```
-/// Will be convert to `{ 'name': value }`
+/// Will be converted to `{ 'name': value }`.
 @immutable
 class Field {
   /// Name can be use to specify the name of the field
@@ -235,7 +239,7 @@ class Field {
   const Field([this.name]);
 }
 
-/// Define a multipart request
+/// Defines a multipart request.
 ///
 /// ```dart
 /// @Post(path: '/')
@@ -250,17 +254,18 @@ class Multipart {
   const Multipart();
 }
 
-/// Use to define part of [Multipart] request
-/// All values will are converted to [String] using [toString] method
+/// Use it to define a part of a [Multipart] request.
 ///
-/// Also accept `MultipartFile` (from package:http)
+/// All values will be converted to [String] using the [toString] method.
+///
+/// Also accepts `MultipartFile` (from package:http).
 @immutable
 class Part {
   final String name;
   const Part([this.name]);
 }
 
-/// Use to define a file field for [Multipart] request
+/// Use it to define a file field for a [Multipart] request.
 ///
 /// ```
 /// @Post(path: 'file')
@@ -268,7 +273,7 @@ class Part {
 /// Future<Response> postFile(@PartFile('file') List<int> bytes);
 /// ```
 ///
-/// Support the following values
+/// Supports the following values:
 ///   - `List<int>`
 ///   - [String] (path of your file)
 ///   - `MultipartFile` (from package:http)
@@ -279,7 +284,7 @@ class PartFile {
   const PartFile([this.name]);
 }
 
-/// Use to define a file field for [Multipart] request
+/// Use it to define a file field for a [Multipart] request.
 ///
 /// ```dart
 /// @Post(path: 'file')
@@ -287,7 +292,7 @@ class PartFile {
 /// Future<Response> postFile(@FileField('file') List<int> bytes);
 /// ```
 ///
-/// Support the following values
+/// Supports the following values:
 ///   - `List<int>`
 ///   - [String] (path of your file)
 ///   - `MultipartFile` (from package:http)
