@@ -1,153 +1,31 @@
-[![Build Status](https://travis-ci.org/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper)
-[![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
+# Chopper
 
-Chopper is an http client generator using source_gen and inspired by Retrofit.
+[![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper) [![Build Status](https://travis-ci.org/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper) [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://paypal.me/HLejard?locale.x=fr_FR)
 
-## Usage
+[Documentations](https://hadrien-lejard.gitbook.io/chopper)
 
-### Generator
-
-Add the generator to your dev dependencies
+## Installation
 
 ```yaml
+# pubspec.yaml
+
 dependencies:
-  chopper: ^[latest version]
+  chopper: ^2.0.0
 
 dev_dependencies:
-  build_runner: ^[latest version]
-  chopper_generator: ^[latest version]
+  build_runner: ^1.0.0
+  chopper_generator: ^2.0.0
 ```
 
-### Define and Generate your API
+* [Getting started](getting-started.md)
+* [Converters](converters/converters.md)
+* [Interceptors](interceptors.md)
 
-```dart
-// my_service.dart
+## Examples
 
-import "dart:async";
-import 'package:chopper/chopper.dart';
+* [Json serializable](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
+* [Built Value](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
+* [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
 
-part "my_service.chopper.dart";
-
-@ChopperApi(baseUrl: "/resources")
-abstract class MyService extends ChopperService {
-  static MyService create([ChopperClient client]) => _$MyService(client);
-
-  @Get(path: "{id}")
-  Future<Response> getResource(@Path() String id);
-
-  @Get(headers: const {"foo": "bar"})
-  Future<Response<Map>> getMapResource(@Query() String id);
-
-  @Post(path: 'multi')
-  @multipart
-  Future<Response> postResources(
-    @Part('1') Map a,
-    @Part('2') Map b,
-    @Part('3') String c,
-  );
-
-  @Post(path: 'file')
-  @multipart
-  Future<Response> postFile(
-    @PartFile('file') List<int> bytes,
-  );
-}
-```
-
-then run the generator
-
-```
-pub run build_runner build
-
-#flutter
-flutter packages pub run build_runner build
-```
-
-### Use it
-
-```dart
-final chopper = ChopperClient(
-    baseUrl: "http://localhost:8000",
-    services: [
-      // the generated service
-      MyService.create()
-    ],
-    converter: JsonConverter(),
-  );
-
-final myService = MyService.create(chopper);
-
-final response = await myService.getMapResource("1");
-
-chopper.close();
-
-```
-
-Or create a Chopper client and inject your generated api.
-
-```dart
-import 'package:chopper/chopper.dart';
-
-final chopper = new ChopperClient(
-    baseUrl: "http://localhost:8000",
-    services: [
-      // the generated service
-      MyService.create()
-    ],
-    converter: JsonConverter(),
-);
-
-final myService = chopper.service<MyService>(MyService);
-```
-
-### Interceptors
-
-#### Request
-implement `RequestInterceptor` class or define function with following signature `FutureOr<Request> RequestInterceptorFunc(Request request)`
-
-Request interceptor are called just before sending request
-
-```dart
-final chopper = new ChopperClient(
-   interceptors: [
-     (request) async => request.replace(body: {}),
-   ]
-);
-```
-
-#### Response
-implement `ResponseInterceptor` class or define function with following signature `FutureOr<Response> ResponseInterceptorFunc(Response response)`
-
-Called after successfull or failed request
-
-```dart
-final chopper = new ChopperClient(
-   interceptors: [
-     (response) async => response.replace(body: {}),
-   ]
-);
-```
-
-#### Converter
-
-Converter is used to transform body, for example transforming a Dart object to a `Map<String, dynamic>`
-
-Both `converter` and `errorConverter` are called before request and response intercptors.
-
-`errorConverter` is called only on error response (statusCode < 200 || statusCode >= 300)
-
-```dart
-final chopper = new ChopperClient(
-   converter: MyConverter(),
-   errorConverter: MyErrorConverter()
-);
-```
-
-
-## More example
-
-  - [Json serializable](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
-  - [Built Value](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
-  - [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
-  
 ## [Issue Tracker](https://github.com/lejard-h/chopper/issues)
+
