@@ -114,8 +114,8 @@ class TestConverter implements Converter {
   @override
   Response<T> convertResponse<T, V>(Response res) {
     if (res.body is String) {
-      return res.copyWith<_Converted<String>>(body: _Converted<String>(res.body))
-          as Response<T>;
+      return res.copyWith<_Converted<String>>(
+          body: _Converted<String>(res.body)) as Response<T>;
     }
     return res;
   }

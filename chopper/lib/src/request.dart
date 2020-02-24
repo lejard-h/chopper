@@ -121,7 +121,11 @@ class PartValue<T> {
     this.value,
   );
 
+  @Deprecated('Prefer copyWith method')
   PartValue<NewType> replace<NewType>({String name, NewType value}) =>
+      copyWith<NewType>(name: name, value: value);
+
+  PartValue<NewType> copyWith<NewType>({String name, NewType value}) =>
       PartValue<NewType>(
         name ?? this.name,
         value ?? this.value,
@@ -149,7 +153,7 @@ Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
 
   final query = mapToQuery(parameters);
   if (query.isNotEmpty) {
-    return uri.copyWith(query: query);
+    return uri.replace(query: query);
   }
   return uri;
 }

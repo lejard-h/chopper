@@ -77,14 +77,14 @@ class JaguarConverter extends JsonConverter {
     // use [JsonConverter] to decode json
     final jsonRes = super.convertResponse<ResultType, Item>(response);
 
-    return jsonRes.replace<ResultType>(
+    return jsonRes.copyWith<ResultType>(
       body: _decode<Item>(jsonRes.body),
     );
   }
 
   @override
   Request convertRequest(Request request) => super.convertRequest(
-        request.replace(
+        request.copyWith(
           body: repository.to(request.body),
         ),
       );
@@ -95,6 +95,6 @@ class JaguarConverter extends JsonConverter {
   Response convertError<ResultType, ItemType>(Response response) {
     // use [JsonConverter] to decode json
     final jsonRes = super.convertError(response);
-    return jsonRes.replace(body: _errorSerializer.fromMap(jsonRes.body));
+    return jsonRes.copyWith(body: _errorSerializer.fromMap(jsonRes.body));
   }
 }

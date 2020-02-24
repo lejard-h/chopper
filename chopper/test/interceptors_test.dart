@@ -42,7 +42,8 @@ void main() {
     test('RequestInterceptorFunc', () async {
       final chopper = ChopperClient(
         interceptors: [
-          (Request request) => request.copyWith(url: '${request.url}/intercept'),
+          (Request request) =>
+              request.copyWith(url: '${request.url}/intercept'),
         ],
         services: [
           HttpTestService.create(),
