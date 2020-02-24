@@ -39,7 +39,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
 
   @override
   Request convertRequest(Request request) {
-    request = request.replace(body: serializers.serialize(request.body));
+    request = request.copyWith(body: serializers.serialize(request.body));
     return jsonConverter.convertRequest(request);
   }
 
@@ -47,7 +47,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
     final jsonResponse = jsonConverter.convertResponse(response);
     final body = deserialize<BodyType, InnerType>(jsonResponse.body);
-    return jsonResponse.replace(body: body);
+    return jsonResponse.copyWith(body: body);
   }
 
   @override
@@ -69,6 +69,6 @@ class BuiltValueConverter implements Converter, ErrorConverter {
       body ??= jsonResponse.body;
     }
 
-    return jsonResponse.replace(body: body);
+    return jsonResponse.copyWith(body: body);
   }
 }

@@ -11,7 +11,7 @@ environment:
 dependencies:
   built_value: ^6.7.1
   built_collection: ^4.2.2
-  chopper: ^3.0.0
+  chopper: ^3.0.2
   http: ^0.12.0
 
 dev_dependencies:
@@ -22,3 +22,7 @@ dev_dependencies:
   test_coverage: ^0.3.0
   built_value_generator: ^6.0.0
   pedantic: ^1.0.0
+
+dependency_overrides:
+  chopper:
+    path: ../chopper
