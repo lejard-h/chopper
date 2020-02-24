@@ -40,7 +40,7 @@ Request _addQuery(Request req) {
   final params = Map<String, dynamic>.from(req.parameters);
   params['key'] = '123';
 
-  return req.replace(parameters: params);
+  return req.copyWith(parameters: params);
 }
 ```
 

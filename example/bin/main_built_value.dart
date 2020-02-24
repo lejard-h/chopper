@@ -86,7 +86,7 @@ class BuiltValueConverter extends JsonConverter {
 
   @override
   Request convertRequest(Request request) => super.convertRequest(
-        request.replace(
+        request.copyWith(
           body: serializers.serialize(request.body),
         ),
       );

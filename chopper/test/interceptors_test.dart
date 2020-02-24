@@ -42,7 +42,7 @@ void main() {
     test('RequestInterceptorFunc', () async {
       final chopper = ChopperClient(
         interceptors: [
-          (Request request) => request.replace(url: '${request.url}/intercept'),
+          (Request request) => request.copyWith(url: '${request.url}/intercept'),
         ],
         services: [
           HttpTestService.create(),
@@ -242,7 +242,7 @@ class ResponseIntercept implements ResponseInterceptor {
 class RequestIntercept implements RequestInterceptor {
   @override
   FutureOr<Request> onRequest(Request request) =>
-      request.replace(url: '${request.url}/intercept');
+      request.copyWith(url: '${request.url}/intercept');
 }
 
 class _Intercepted<BodyType> {

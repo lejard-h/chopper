@@ -197,7 +197,7 @@ class JsonConverter implements Converter, ErrorConverter {
   Request encodeJson(Request request) {
     var contentType = request.headers[contentTypeKey];
     if (contentType != null && contentType.contains(jsonHeaders)) {
-      return request.replace(body: json.encode(request.body));
+      return request.copyWith(body: json.encode(request.body));
     }
     return request;
   }
@@ -223,7 +223,7 @@ class JsonConverter implements Converter, ErrorConverter {
       body = body.cast<String, InnerType>();
     }
 
-    return response.replace<BodyType>(body: body);
+    return response.copyWith<BodyType>(body: body);
   }
 
   @override
@@ -279,7 +279,7 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
         }
       });
 
-      req = req.replace(body: body);
+      req = req.copyWith(body: body);
     }
 
     return req;

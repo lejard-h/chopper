@@ -9,7 +9,7 @@ Request interceptor are called just before sending request
 ```dart
 final chopper = new ChopperClient(
    interceptors: [
-     (request) async => request.replace(body: {}),
+     (request) async => request.copyWith(body: {}),
    ]
 );
 ```
@@ -25,7 +25,7 @@ Called after successful or failed request
 ```dart
 final chopper = new ChopperClient(
    interceptors: [
-     (response) async => response.replace(body: {}),
+     (response) async => response.copyWith(body: {}),
    ]
 );
 ```

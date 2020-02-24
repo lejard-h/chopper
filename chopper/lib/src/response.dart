@@ -11,7 +11,19 @@ class Response<BodyType> {
 
   Response(this.base, this.body, {this.error});
 
+  @Deprecated('Prefer copyWith method')
   Response<NewBodyType> replace<NewBodyType>({
+    http.BaseResponse base,
+    NewBodyType body,
+    Object bodyError,
+  }) =>
+      copyWith<NewBodyType>(
+        base: base,
+        body: body,
+        bodyError: bodyError,
+      );
+
+  Response<NewBodyType> copyWith<NewBodyType>({
     http.BaseResponse base,
     NewBodyType body,
     Object bodyError,

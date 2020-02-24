@@ -120,7 +120,7 @@ Request customConvertRequest(Request req) {
 }
 
 Response<T> customConvertResponse<T>(Response res) =>
-    res.replace(body: json.decode(res.body));
+    res.copyWith(body: json.decode(res.body));
 
 Request convertForm(Request req) {
   req = applyHeader(req, contentTypeKey, formEncodedHeaders);
@@ -134,7 +134,7 @@ Request convertForm(Request req) {
       }
     });
 
-    req = req.replace(body: body);
+    req = req.copyWith(body: body);
   }
 
   return req;

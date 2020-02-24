@@ -37,7 +37,7 @@ Request applyHeaders(
     h[k] = headers[k];
   }
 
-  return request.replace(headers: h);
+  return request.copyWith(headers: h);
 }
 
 final chopperLogger = Logger('Chopper');

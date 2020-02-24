@@ -114,7 +114,7 @@ class TestConverter implements Converter {
   @override
   Response<T> convertResponse<T, V>(Response res) {
     if (res.body is String) {
-      return res.replace<_Converted<String>>(body: _Converted<String>(res.body))
+      return res.copyWith<_Converted<String>>(body: _Converted<String>(res.body))
           as Response<T>;
     }
     return res;
@@ -122,7 +122,7 @@ class TestConverter implements Converter {
 
   @override
   Request convertRequest(Request req) {
-    if (req.body is _Converted) return req.replace(body: req.body.data);
+    if (req.body is _Converted) return req.copyWith(body: req.body.data);
     return req;
   }
 }
@@ -132,7 +132,7 @@ class TestErrorConverter implements ErrorConverter {
   Response convertError<T, V>(Response res) {
     if (res.body is String) {
       final error = dart_convert.jsonDecode(res.body);
-      return res.replace<_ConvertedError>(body: _ConvertedError(error));
+      return res.copyWith<_ConvertedError>(body: _ConvertedError(error));
     }
     return res;
   }

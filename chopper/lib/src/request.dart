@@ -31,7 +31,31 @@ class Request {
         multipart = multipart ?? false,
         parts = parts ?? const [];
 
+  @Deprecated('Prefer copyWith method')
   Request replace({
+    HttpMethod method,
+    String url,
+    dynamic body,
+    Map<String, dynamic> parameters,
+    Map<String, String> headers,
+    Encoding encoding,
+    List<PartValue> parts,
+    bool multipart,
+    String baseUrl,
+  }) =>
+      copyWith(
+        method: method,
+        url: url,
+        body: body,
+        parameters: parameters,
+        headers: headers,
+        encoding: encoding,
+        parts: parts,
+        multipart: multipart,
+        baseUrl: baseUrl,
+      );
+
+  Request copyWith({
     HttpMethod method,
     String url,
     dynamic body,
@@ -125,7 +149,7 @@ Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
 
   final query = mapToQuery(parameters);
   if (query.isNotEmpty) {
-    return uri.replace(query: query);
+    return uri.copyWith(query: query);
   }
   return uri;
 }
