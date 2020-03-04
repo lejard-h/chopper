@@ -9,7 +9,7 @@ import 'response.dart';
 import 'annotations.dart';
 import 'utils.dart';
 
-Type typeOf<T>() => T;
+Type _typeOf<T>() => T;
 
 @visibleForTesting
 final allowedInterceptorsType = <Type>[
@@ -137,7 +137,7 @@ class ChopperClient {
   /// final todoService = chopper.getService<TodosListService>();
   /// ```
   ServiceType getService<ServiceType extends ChopperService>() {
-    final serviceType = typeOf<ServiceType>();
+    final serviceType = _typeOf<ServiceType>();
     if (serviceType == dynamic || serviceType == ChopperService) {
       throw Exception(
           'Service type should be provided, `dynamic` is not allowed.');
@@ -296,7 +296,7 @@ class ChopperClient {
     final response = await http.Response.fromStream(streamRes);
     dynamic res = Response(response, response.body);
 
-    if (responseIsSuccessful(response.statusCode)) {
+    if (_responseIsSuccessful(response.statusCode)) {
       res = await _handleSuccessResponse<BodyType, InnerType>(
         res,
         responseConverter,
@@ -464,10 +464,17 @@ class ChopperClient {
 abstract class ChopperService {
   ChopperClient client;
 
+  /// Internally use to retrieve service from [ChopperClient]
+  /// FIXME: use runtimeType ?
   Type get definitionType;
 
+  /// Cleanup memory
+  /// Should be call when the service is not used anymore
   @mustCallSuper
   void dispose() {
     client = null;
   }
 }
+
+bool _responseIsSuccessful(int statusCode) =>
+    statusCode >= 200 && statusCode < 300;
