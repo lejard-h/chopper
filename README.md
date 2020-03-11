@@ -14,11 +14,11 @@ description: Chopper is an http client generator using source_gen and inspired b
 # pubspec.yaml
 
 dependencies:
-  chopper: ^2.0.0
+  chopper: ^3.0.2
 
 dev_dependencies:
   build_runner: ^1.0.0
-  chopper_generator: ^2.0.0
+  chopper_generator: ^3.0.4
 ```
 
 * [Getting started](getting-started.md)
