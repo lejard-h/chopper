@@ -64,7 +64,24 @@ abstract class TodosListService extends ChopperService {
 
 }
 
-Response<T> convertResponse<T>(Response res) => 
+Response<T> convertResponse<T>(Response res) =>
     JsonConverter().convertResponse(res);
 ```
 
+## GZip converter example
+You can use converters for anything you want to modify the requests / responses.
+For example, to use GZip for post request you can write something like this:
+
+```dart
+Request compressRequest(Request request) {
+  request = applyHeader(request, 'Content-Encoding', 'gzip');
+  request = request.replace(body: gzip.encode(request.body));
+  return request;
+}
+
+...
+
+@FactoryConverter(request: compressRequest)
+@Post()
+Future<Response> postRequest(@Body() Map<String, String> data);
+```
