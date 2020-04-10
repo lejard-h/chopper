@@ -44,6 +44,15 @@ Request _addQuery(Request req) {
 }
 ```
 
+## Mock ChopperClient for testing
+
+Chopper is built on top of `http` package.
+
+So, one can just use the mocking API of the HTTP package.
+https://pub.dev/documentation/http/latest/testing/MockClient-class.html
+
+Also, you can follow this nice example https://github.com/lejard-h/chopper/issues/115#issuecomment-608417333
+
 ## Use Https certificate
 
 Chopper is built on top of `http` package and you can override the inner http client.
