@@ -44,6 +44,24 @@ Request _addQuery(Request req) {
 }
 ```
 
+## GZip converter example
+You can use converters for anything you want to modify the requests / responses.
+For example, to use GZip for post request you can write something like this:
+
+```dart
+Request compressRequest(Request request) {
+  request = applyHeader(request, 'Content-Encoding', 'gzip');
+  request = request.replace(body: gzip.encode(request.body));
+  return request;
+}
+
+...
+
+@FactoryConverter(request: compressRequest)
+@Post()
+Future<Response> postRequest(@Body() Map<String, String> data);
+```
+
 ## Use Https certificate
 
 Chopper is built on top of `http` package and you can override the inner http client.
@@ -53,7 +71,7 @@ import 'dart:io';
 import 'package:http/io_client.dart' as http;
 
 final ioc = new HttpClient();
-ioc.badCertificateCallback = (X509Certificate cert, String host, int port) 
+ioc.badCertificateCallback = (X509Certificate cert, String host, int port)
   => true;
 
 final chopper = ChopperClient(
