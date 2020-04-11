@@ -51,7 +51,45 @@ Chopper is built on top of `http` package.
 So, one can just use the mocking API of the HTTP package.
 https://pub.dev/documentation/http/latest/testing/MockClient-class.html
 
-Also, you can follow this nice example https://github.com/lejard-h/chopper/issues/115#issuecomment-608417333
+Also, you can follow this code by [ozburo](https://github.com/ozburo):
+```dart
+import 'dart:convert';
+
+import 'package:chopper/chopper.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+
+part 'api_service.chopper.dart';
+
+@ChopperApi()
+abstract class ApiService extends ChopperService {
+  static ApiService create() {
+    final client = ChopperClient(
+      client: MockClient((request) async {
+        Map result = mockData[request.url.path]?.firstWhere((mockQueryParams) {
+          if (mockQueryParams['id'] == request.url.queryParameters['id']) return true;
+          return false;
+        }, orElse: () => null);
+        if (result == null) {
+          return http.Response(
+              json.encode({'error': "not found"}), 404);
+        }
+        return http.Response(json.encode(result), 200);
+      }),
+      baseUrl: 'https://mysite.com/api',
+      services: [
+        _$ApiService(),
+      ],
+      converter: JsonConverter(),
+      errorConverter: JsonConverter(),
+    );
+    return _$ApiService(client);
+  }
+
+  @Get(path: "/get")
+  Future<Response> get(@Query() String url);
+}
+```
 
 ## Use Https certificate
 
@@ -62,7 +100,7 @@ import 'dart:io';
 import 'package:http/io_client.dart' as http;
 
 final ioc = new HttpClient();
-ioc.badCertificateCallback = (X509Certificate cert, String host, int port) 
+ioc.badCertificateCallback = (X509Certificate cert, String host, int port)
   => true;
 
 final chopper = ChopperClient(
