@@ -45,7 +45,7 @@ Request _addQuery(Request req) {
 ```
 
 ## GZip converter example
-You can use converters for anything you want to modify the requests / responses.
+You can use converters for modifying requests and responses.
 For example, to use GZip for post request you can write something like this:
 
 ```dart
