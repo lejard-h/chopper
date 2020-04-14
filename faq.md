@@ -86,4 +86,4 @@ interceptors: [
 ]
 ```
 
-Of course, the actual implementation may vary based on how the backend API of your project looks like.
+The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and session handling - of your app looks like.
