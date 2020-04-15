@@ -108,3 +108,29 @@ final chopper = ChopperClient(
 );
 ```
 
+## Authorized HTTP requests
+
+Basically, the algorithm goes like this (credits to [stewemetal](https://github.com/stewemetal)):
+
+Add the authentication token to the request (by "Authorization" header, for example) -> try the request -> if it fails use the refresh token to get a new auth token ->
+  if that succeeds, save the auth token and retry the original request with it
+  if the refresh token is not valid anymore, drop the session (and navigate to the login screen, for example)
+
+Simple code example:
+```dart
+interceptors: [
+  // Auth Interceptor
+  (Request request) async => applyHeader(request, 'authorization',
+      SharedPrefs.localStorage.getString(tokenHeader),
+      override: false),
+  (Response response) async {
+    if (response?.statusCode == 401) {
+      SharedPrefs.localStorage.remove(tokenHeader);
+      // Navigate to some login page or just request new token
+    }
+    return response;
+  },
+]
+```
+
+The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and session handling - of your app looks like.
