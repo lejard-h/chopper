@@ -64,7 +64,6 @@ abstract class TodosListService extends ChopperService {
 
 }
 
-Response<T> convertResponse<T>(Response res) => 
+Response<T> convertResponse<T>(Response res) =>
     JsonConverter().convertResponse(res);
 ```
-

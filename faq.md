@@ -44,6 +44,23 @@ Request _addQuery(Request req) {
 }
 ```
 
+## GZip converter example
+You can use converters for modifying requests and responses.
+For example, to use GZip for post request you can write something like this:
+
+```dart
+Request compressRequest(Request request) {
+  request = applyHeader(request, 'Content-Encoding', 'gzip');
+  request = request.replace(body: gzip.encode(request.body));
+  return request;
+}
+...
+
+@FactoryConverter(request: compressRequest)
+@Post()
+Future<Response> postRequest(@Body() Map<String, String> data);
+```
+
 ## Mock ChopperClient for testing
 
 Chopper is built on top of `http` package.
