@@ -6,7 +6,7 @@ If you have this error, you probably forgot to run the `build` package. To do th
 
 `pub run build_runner build`
 
-It will generate the code that actually do the HTTP request \(YOUR\_FILE.chopper.dart\). If you wish to update the code automatically when you change your definition run the `watch` command.
+It will generate the code that actually do the HTTP request \(YOUR_FILE.chopper.dart\). If you wish to update the code automatically when you change your definition run the `watch` command.
 
 `pub run build_runner watch`
 
@@ -45,6 +45,7 @@ Request _addQuery(Request req) {
 ```
 
 ## GZip converter example
+
 You can use converters for modifying requests and responses.
 For example, to use GZip for post request you can write something like this:
 
@@ -61,6 +62,20 @@ Request compressRequest(Request request) {
 Future<Response> postRequest(@Body() Map<String, String> data);
 ```
 
+## Runtime baseUrl change
+
+You may need to change the base URL of your network calls during runtime, for example, if you have to use different servers or routes dynamically in your app in case of a "regular" or a "paid" user. You can store the current server base url in your SharedPreferences (encrypt/decrypt it if needed) and use it in an interceptor like this:
+
+```dart
+...
+(Request request) async =>
+              SharedPreferences.containsKey('baseUrl')
+                  ? request.copyWith(
+                      baseUrl: SharedPreferences.getString('baseUrl'))
+                  : request
+...
+```
+
 ## Mock ChopperClient for testing
 
 Chopper is built on top of `http` package.
@@ -69,6 +84,7 @@ So, one can just use the mocking API of the HTTP package.
 https://pub.dev/documentation/http/latest/testing/MockClient-class.html
 
 Also, you can follow this code by [ozburo](https://github.com/ozburo):
+
 ```dart
 import 'dart:convert';
 
@@ -130,10 +146,11 @@ final chopper = ChopperClient(
 Basically, the algorithm goes like this (credits to [stewemetal](https://github.com/stewemetal)):
 
 Add the authentication token to the request (by "Authorization" header, for example) -> try the request -> if it fails use the refresh token to get a new auth token ->
-  if that succeeds, save the auth token and retry the original request with it
-  if the refresh token is not valid anymore, drop the session (and navigate to the login screen, for example)
+if that succeeds, save the auth token and retry the original request with it
+if the refresh token is not valid anymore, drop the session (and navigate to the login screen, for example)
 
 Simple code example:
+
 ```dart
 interceptors: [
   // Auth Interceptor
