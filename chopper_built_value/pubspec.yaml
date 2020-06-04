@@ -6,22 +6,22 @@ repository: https://github.com/lejard-h/chopper
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  built_value: ^6.7.1
-  built_collection: ^4.2.2
+  built_value: ^7.1.0
+  built_collection: ^4.3.2
   chopper: ^3.0.2
-  http: ^0.12.0
+  http: ^0.12.1
 
 dev_dependencies:
-  test: ^1.12.0
-  build_runner: ^1.0.0
+  test: ^1.14.3
+  build_runner: ^1.10.0
   build_test:
-  coverage: ^0.13.0
-  test_coverage: ^0.4.0
-  built_value_generator: ^6.0.0
-  pedantic: ^1.0.0
+  coverage: ^0.13.9
+  test_coverage: ^0.4.1
+  built_value_generator: ^7.1.0
+  pedantic: ^1.9.0
 
 dependency_overrides:
   chopper:
