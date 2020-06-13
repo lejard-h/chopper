@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.3
+
+- Packages upgrade
+
 ## 0.0.2
 
 - Maintenance release
