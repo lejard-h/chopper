@@ -34,6 +34,7 @@ stages:
 branches:
   only:
     - master
+    - develop
 
 cache:
   directories:

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.3
+
+- Packages upgrade
+
 ## 3.0.2
 
 - Update analyzer

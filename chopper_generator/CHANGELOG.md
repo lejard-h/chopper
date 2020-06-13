@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.5
+
+- Packages upgrade
+
 ## 3.0.4
 
 - Analyzer update
