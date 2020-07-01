@@ -212,10 +212,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
             _generateList(parts, fileFields).assignFinal(_partsVar).statement);
       }
 
-      if (!methodOptionalBody &&
-          !hasBody &&
-          !hasParts &&
-          _methodWithBody(methodName)) {
+      if (!methodOptionalBody && !hasBody && !hasParts) {
         _logger.warning(
           '$methodName $methodUrl\n'
           'Body is null\n'
@@ -492,11 +489,6 @@ Builder chopperGeneratorFactoryBuilder({String header}) => PartBuilder(
       '.chopper.dart',
       header: header,
     );
-
-bool _methodWithBody(String method) =>
-    method == chopper.HttpMethod.Post ||
-    method == chopper.HttpMethod.Patch ||
-    method == chopper.HttpMethod.Put;
 
 bool getMethodOptionalBody(ConstantReader method) =>
     method.read('optionalBody').boolValue;
