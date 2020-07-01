@@ -217,7 +217,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           '$methodName $methodUrl\n'
           'Body is null\n'
           'Use @Body() annotation on your method parameter to provide a body to your request\n'
-          '   e.g.: Future<Response> postRequest(@Body() Map body);',
+          '   e.g.: Future<Response> postRequest(@Body() Map body);\n'
+          'Or explicitly suppress this warning by setting the optionalBody property\n'
+          '   e.g.: @Post(optionalBody: true)',
         );
       }
 
