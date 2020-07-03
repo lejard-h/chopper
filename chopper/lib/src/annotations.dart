@@ -170,7 +170,7 @@ class Method {
 @immutable
 class Get extends Method {
   const Get({
-    optionalBody = true,
+    bool optionalBody = true,
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
@@ -187,7 +187,7 @@ class Get extends Method {
 @immutable
 class Post extends Method {
   const Post({
-    optionalBody = false,
+    bool optionalBody = false,
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
@@ -202,7 +202,7 @@ class Post extends Method {
 @immutable
 class Delete extends Method {
   const Delete({
-    optionalBody = true,
+    bool optionalBody = true,
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
