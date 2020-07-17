@@ -155,14 +155,30 @@ class Method {
   /// Headers [Map] that should be apply to the request
   final Map<String, String> headers;
 
-  const Method(this.method, {this.path = '', this.headers = const {}});
+  /// Mark the body as optional to suppress warnings during code generation
+  final bool optionalBody;
+
+  const Method(
+    this.method, {
+    this.optionalBody,
+    this.path = '',
+    this.headers = const {},
+  });
 }
 
 /// Defines a method as an HTTP GET request.
 @immutable
 class Get extends Method {
-  const Get({String path = '', Map<String, String> headers = const {}})
-      : super(HttpMethod.Get, path: path, headers: headers);
+  const Get({
+    bool optionalBody = true,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Get,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
 }
 
 /// Defines a method as an HTTP POST request.
@@ -170,15 +186,31 @@ class Get extends Method {
 /// Use the [Body] annotation to pass data to send.
 @immutable
 class Post extends Method {
-  const Post({String path = '', Map<String, String> headers = const {}})
-      : super(HttpMethod.Post, path: path, headers: headers);
+  const Post({
+    bool optionalBody = false,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Post,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
 }
 
 /// Defines a method as an HTTP DELETE request.
 @immutable
 class Delete extends Method {
-  const Delete({String path = '', Map<String, String> headers = const {}})
-      : super(HttpMethod.Delete, path: path, headers: headers);
+  const Delete({
+    bool optionalBody = true,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Delete,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
 }
 
 /// Defines a method as an HTTP PUT request.
@@ -186,23 +218,47 @@ class Delete extends Method {
 /// Use the [Body] annotation to pass data to send.
 @immutable
 class Put extends Method {
-  const Put({String path = '', Map<String, String> headers = const {}})
-      : super(HttpMethod.Put, path: path, headers: headers);
+  const Put({
+    bool optionalBody = false,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Put,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
 }
 
 /// Defines a method as an HTTP PATCH request.
 /// Use the [Body] annotation to pass data to send.
 @immutable
 class Patch extends Method {
-  const Patch({String path = '', Map<String, String> headers = const {}})
-      : super(HttpMethod.Patch, path: path, headers: headers);
+  const Patch({
+    bool optionalBody = false,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Patch,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
 }
 
 /// Defined a method as an HTTP HEAD request.
 @immutable
 class Head extends Method {
-  const Head({String path = '', Map<String, String> headers = const {}})
-      : super(HttpMethod.Head, path: path, headers: headers);
+  const Head({
+    bool optionalBody = true,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Head,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
 }
 
 typedef ConvertRequest = Request Function(Request request);
