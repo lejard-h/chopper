@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:meta/meta.dart';
 import 'request.dart';
 import 'response.dart';
@@ -261,8 +262,8 @@ class Head extends Method {
         );
 }
 
-typedef ConvertRequest = Request Function(Request request);
-typedef ConvertResponse<T> = Response Function(Response response);
+typedef ConvertRequest = FutureOr<Request> Function(Request request);
+typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
 
 @immutable
 class FactoryConverter {
