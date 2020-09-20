@@ -130,6 +130,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       b.annotations.add(refer('override'));
       b.name = m.displayName;
       b.returns = Reference(m.returnType.getDisplayString());
+      b.types.addAll(m.typeParameters
+          .map((t) => Reference(t.getDisplayString(withNullability: false))));
       b.requiredParameters.addAll(m.parameters
           .where((p) => p.isNotOptional)
           .map((p) => Parameter((pb) => pb
