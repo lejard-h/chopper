@@ -129,21 +129,24 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     return Method((b) {
       b.annotations.add(refer('override'));
       b.name = m.displayName;
-      b.returns = Reference(m.returnType.getDisplayString());
+      b.returns =
+          Reference(m.returnType.getDisplayString(withNullability: false));
       b.types.addAll(m.typeParameters
           .map((t) => Reference(t.getDisplayString(withNullability: false))));
       b.requiredParameters.addAll(m.parameters
           .where((p) => p.isNotOptional)
           .map((p) => Parameter((pb) => pb
             ..name = p.name
-            ..type = Reference(p.type.getDisplayString()))));
+            ..type =
+                Reference(p.type.getDisplayString(withNullability: false)))));
 
       b.optionalParameters.addAll(m.parameters
           .where((p) => p.isOptionalPositional)
           .map((p) => Parameter((pb) {
                 pb
                   ..name = p.name
-                  ..type = Reference(p.type.getDisplayString());
+                  ..type = Reference(
+                      p.type.getDisplayString(withNullability: false));
 
                 if (p.defaultValueCode != null) {
                   pb.defaultTo = Code(p.defaultValueCode);
@@ -156,7 +159,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 pb
                   ..named = true
                   ..name = p.name
-                  ..type = Reference(p.type.getDisplayString());
+                  ..type = Reference(
+                      p.type.getDisplayString(withNullability: false));
 
                 if (p.defaultValueCode != null) {
                   pb.defaultTo = Code(p.defaultValueCode);
@@ -249,8 +253,10 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       final typeArguments = <Reference>[];
       if (responseType != null) {
-        typeArguments.add(refer(responseType.getDisplayString()));
-        typeArguments.add(refer(responseInnerType.getDisplayString()));
+        typeArguments
+            .add(refer(responseType.getDisplayString(withNullability: false)));
+        typeArguments.add(
+            refer(responseInnerType.getDisplayString(withNullability: false)));
       }
 
       blocks.add(refer('client.send')
@@ -445,7 +451,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       list.add(
-          refer('PartValue<${p.type.getDisplayString()}>').newInstance(params));
+          refer('PartValue<${p.type.getDisplayString(withNullability: false)}>')
+              .newInstance(params));
     });
     fileFields.forEach((p, ConstantReader r) {
       final name = r.peek('name')?.stringValue ?? p.displayName;
@@ -455,7 +462,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       list.add(
-        refer('PartValueFile<${p.type.getDisplayString()}>')
+        refer('PartValueFile<${p.type.getDisplayString(withNullability: false)}>')
             .newInstance(params),
       );
     });
