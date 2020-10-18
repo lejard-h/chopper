@@ -32,7 +32,7 @@ function run_analyze {
 
 function run_format {
   echo -e '\033[1mTASK: format\033[22m'
-  dart format -n --set-exit-if-changed .
+  dart format -o none --set-exit-if-changed .
 }
 
 function run_build {
