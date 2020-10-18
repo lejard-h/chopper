@@ -15,7 +15,7 @@ cat <<EOF > ~/.pub-cache/credentials.json
   "accessToken":"$accessToken",
   "refreshToken":"$refreshToken",
   "tokenEndpoint":"$tokenEndpoint",
-  "scopes":["$scopes"],
+  "scopes": ["https://www.googleapis.com/auth/userinfo.email","openid"],
   "expiration":$expiration
 }
 EOF
