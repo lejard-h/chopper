@@ -26,28 +26,27 @@ jobs:
       script: ./tool/travis.sh build dartanalyzer dartfmt
       env: PKG="example"
       dart: stable
+  allow_failures:
     - stage: deploy
       name: "SDK: stable - deploy chopper"
       script: ./tool/publish.sh
       env: PKG="chopper"
       dart: stable
-      if: branch = master
     - stage: deploy
       name: "SDK: stable - deploy chopper_generator"
       script: ./tool/publish.sh
       env: PKG="chopper_generator"
       dart: stable
-      if: branch = master
     - stage: deploy
       name: "SDK: stable - deploy example"
       script: ./tool/publish.sh
       env: PKG="example"
       dart: stable
-      if: branch = master
 
 stages:
   - analyze_format_test
   - deploy
+  if: branch = master
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
