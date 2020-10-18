@@ -10,8 +10,7 @@ targets:
           #
           # For usage information, reference the corresponding field in
           # `JsonSerializableGenerator`.
-          use_wrappers: false
           any_map: false
           checked: false
           explicit_to_json: true
-          generate_to_json_function: true
+          create_to_json: true
