@@ -4,7 +4,11 @@ description: Chopper is an http client generator using source_gen and inspired b
 
 # Chopper
 
+<<<<<<< HEAD
 [![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper) [![Build Status](https://travis-ci.com/lejard-h/chopper.svg?branch=master)](https://travis-ci.com/lejard-h/chopper.svg?branch=master) [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
+=======
+[![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper) [![Build Status](https://travis-ci.com/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper) [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
+>>>>>>> origin/master
 
 [Documentations](https://hadrien-lejard.gitbook.io/chopper)
 
