@@ -15,33 +15,34 @@ fi
 
 echo -e "\033[1mPKG: ${PKG}\033[22m"
 pushd "${PKG}"
-pub upgrade
+dart pub get
 
+## TODO use builtin coverage report from package:test
 function pkg_coverage {
   if [ "$CODECOV_TOKEN" ] ; then
-    pub run test_coverage
+    dart pub run test_coverage
     bash <(curl -s https://codecov.io/bash)
   fi
 }
 
 function run_analyze {
   echo -e '\033[1mTASK: dartanalyzer\033[22m'
-  dartanalyzer --fatal-warnings --fatal-infos .
+  dart analyze --fatal-warnings --fatal-infos .
 }
 
 function run_format {
   echo -e '\033[1mTASK: format\033[22m'
-  dartfmt -n --set-exit-if-changed .
+  dart format -n --set-exit-if-changed .
 }
 
 function run_build {
   echo -e '\033[1mTASK: build\033[22m'
-  pub run build_runner build --delete-conflicting-outputs
+  dart pub run build_runner build --delete-conflicting-outputs
 }
 
 function run_test {
   echo -e '\033[1mTASK: test\033[22m'
-  pub run test -p chrome -p vm --reporter expanded
+  dart pub run test -p chrome -p vm --reporter expanded
   pkg_coverage    
 }
 
