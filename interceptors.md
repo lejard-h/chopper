@@ -25,7 +25,7 @@ Called after successful or failed request
 ```dart
 final chopper = new ChopperClient(
    interceptors: [
-     (response) async => response.copyWith(body: {}),
+     (Response response) async => response.replace(body: {}),
    ]
 );
 ```

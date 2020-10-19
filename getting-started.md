@@ -39,7 +39,7 @@ part "YOUR_FILE.chopper.dart";
 @ChopperApi(baseUrl: "/todos")
 abstract class TodosListService extends ChopperService {
 
-  // helper methods that help you instanciate your service
+  // helper methods that help you instantiate your service
   static TodosListService create([ChopperClient client]) => 
       _$TodosListService(client);
 }

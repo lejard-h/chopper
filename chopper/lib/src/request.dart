@@ -162,8 +162,11 @@ Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
     }
   }
 
-  final query = mapToQuery(parameters);
+  var query = mapToQuery(parameters);
   if (query.isNotEmpty) {
+    if (uri.hasQuery) {
+      query += '&${uri.query}';
+    }
     return uri.replace(query: query);
   }
   return uri;
