@@ -1,11 +1,15 @@
 import 'package:chopper/chopper.dart';
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 
-/// Apply [value] to the header field [name] of the [request]
-/// if [override] is true, it will erase already present headers with the new value
+/// Creates a new [Request] by copying [request] and adding a header with the
+/// provided key [name] and value [value] to the result.
+///
+/// If [request] already has a header with the key [name] and [override] is true
+/// (default), the existing header value will be replaced with [value] in the resulting [Request].
 ///
 /// ```dart
-/// final newRequest = applyHeader(request, 'foo', 'bar');
+/// final newRequest = applyHeader(request, 'Authorization', 'Bearer <token>');
 /// ```
 Request applyHeader(
   Request request,
@@ -19,11 +23,17 @@ Request applyHeader(
       override: override,
     );
 
-/// Apply given [headers] to the [request]
-/// if [override] is true, it will erase already present headers with the new value
+/// Creates a new [Request] by copying [request] and adding the provided [headers]
+/// to the result.
+///
+/// If [request] already has headers with keys provided in [headers] and [override]
+/// is true (default), the conflicting headers will be replaced.
 ///
 /// ```dart
-/// final newRequest = applyHeaders(request, {'foo': 'bar'});
+/// final newRequest = applyHeaders(request, {
+/// 'Authorization': 'Bearer <token>',
+/// 'Content-Type': 'application/json',
+/// });
 /// ```
 Request applyHeaders(
   Request request,
@@ -42,8 +52,9 @@ Request applyHeaders(
 
 final chopperLogger = Logger('Chopper');
 
-/// transform {'foo': 'bar', 'ints': [ 1337, 42 ] }
-/// to 'foo=bar&ints=1337&ints=42'
+/// Creates a valid URI query string from [map].
+///
+/// E.g., `{'foo': 'bar', 'ints': [ 1337, 42 ] }` will become 'foo=bar&ints=1337&ints=42'.
 String mapToQuery(Map<String, dynamic> map) => _mapToQuery(map).join('&');
 
 Iterable<_Pair<String, String>> _mapToQuery(
