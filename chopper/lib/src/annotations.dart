@@ -262,9 +262,14 @@ class Head extends Method {
         );
 }
 
+/// A function that should convert the body of a [Request] to the HTTP representation.
 typedef ConvertRequest = FutureOr<Request> Function(Request request);
+/// A function that should convert the body of a [Response] from the HTTP
+/// representation to a Dart object.
 typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
 
+/// A helper class for wrapping a request and a response converter.
+/// See [ConvertRequest], [ConvertResponse].
 @immutable
 class FactoryConverter {
   final ConvertRequest request;
@@ -276,7 +281,7 @@ class FactoryConverter {
   });
 }
 
-/// Define a field for a `x-www-form-urlencoded` request.
+/// Defines a field for a `x-www-form-urlencoded` request.
 /// Automatically binds to the name of the method parameter.
 ///
 /// ```dart
