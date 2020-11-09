@@ -137,6 +137,7 @@ class PartValue<T> {
       copyWith<NewType>(name: name, value: value);
 
   /// Makes a copy of this PartValue, replacing original values with the given ones.
+  /// This method can also alter the type of the request body.
   PartValue<NewType> copyWith<NewType>({String name, NewType value}) =>
       PartValue<NewType>(
         name ?? this.name,
