@@ -247,7 +247,7 @@ class Patch extends Method {
         );
 }
 
-/// Defined a method as an HTTP HEAD request.
+/// Defines a method as an HTTP HEAD request.
 @immutable
 class Head extends Method {
   const Head({
@@ -316,9 +316,9 @@ class Multipart {
   const Multipart();
 }
 
-/// Use it to define a part of a [Multipart] request.
+/// Use [Part] to define a part of a [Multipart] request.
 ///
-/// All values will be converted to [String] using the [toString] method.
+/// All values will be converted to [String] using their [toString] method.
 ///
 /// Also accepts `MultipartFile` (from package:http).
 @immutable
@@ -327,7 +327,7 @@ class Part {
   const Part([this.name]);
 }
 
-/// Use it to define a file field for a [Multipart] request.
+/// Use [PartFile] to define a file field for a [Multipart] request.
 ///
 /// ```
 /// @Post(path: 'file')
@@ -359,7 +359,7 @@ class PartFile {
 ///   - [String] (path of your file)
 ///   - `MultipartFile` (from package:http)
 @immutable
-@Deprecated('use PartFile')
+@Deprecated('Use PartFile instead')
 class FileField extends PartFile {
   const FileField([String name]) : super(name);
 }
