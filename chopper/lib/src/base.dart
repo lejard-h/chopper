@@ -494,11 +494,11 @@ class ChopperClient {
 ///     _$TodosListService(client);
 ///}
 ///```
-abstract class ChopperService {
+abstract class ChopperServic1e {
   ChopperClient client;
 
   /// Used internally to retrieve the service from [ChopperClient].
-  /// TODO: use runtimeType
+  // TODO: use runtimeType
   Type get definitionType;
 
   /// Disposes this [ChopperService] to clean up memory.
