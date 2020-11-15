@@ -203,7 +203,7 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   Response decodeJson<BodyType, InnerType>(Response response) {
-    final supportedContentTypes = [jsonHeaders, 'application/vnd.api+json'];
+    final supportedContentTypes = [jsonHeaders, jsonApiHeaders];
 
     final contentType = response.headers[contentTypeKey];
     var body = response.body;
