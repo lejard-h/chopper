@@ -268,8 +268,34 @@ typedef ConvertRequest = FutureOr<Request> Function(Request request);
 /// representation to a Dart object.
 typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
 
-/// A helper class for wrapping a request and a response converter.
+/// Defines custom [Converter] methods for a single network API endpoint.
 /// See [ConvertRequest], [ConvertResponse].
+///
+/// ```dart
+/// @ChopperApi(baseUrl: '/todos')
+/// abstract class TodosListService extends ChopperService {
+///   static TodosListService create([ChopperClient client]) =>
+///       _$TodosListService(client);
+///
+///   static FutureOr<Request> customRequestConverter(Request request) {
+///     return request.copyWith(
+///         body: // Convert request.body the way your API needs it. See [JsonConverter.encodeJson] for an example.
+///     );
+///   }
+///
+///   static FutureOr<Response> customResponseConverter(Response response) {
+///     return response.copyWith(
+///       body: // Convert response.body the way your API needs it. See [JsonConverter.decodeJson] for an example.
+///     );
+///   }
+///
+///   @Get(path: "/{id}")
+///   @FactoryConverter(
+///     request: customRequestConverter,
+///     response: customResponseConverter
+///   )
+///   Future<Response<Todo>> getTodo(@Path("id"));
+/// }
 @immutable
 class FactoryConverter {
   final ConvertRequest request;
