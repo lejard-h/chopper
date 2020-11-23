@@ -94,7 +94,7 @@ class ChopperClient {
   /// from the HTTP format.
   ///
   /// A different converter can be used to handle error responses
-  /// (when [Response.isSuccessful] == false)) with the [errorConverter] parameter.
+  /// (when [Response.isSuccessful] == false)) with tche [errorConverter] parameter.
   ///
   /// See [Converter], [JsonConverter]
   ///
@@ -494,7 +494,7 @@ class ChopperClient {
 ///     _$TodosListService(client);
 ///}
 ///```
-abstract class ChopperServic1e {
+abstract class ChopperService {
   ChopperClient client;
 
   /// Used internally to retrieve the service from [ChopperClient].
