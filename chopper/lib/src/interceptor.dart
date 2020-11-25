@@ -203,9 +203,12 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   Response decodeJson<BodyType, InnerType>(Response response) {
-    var contentType = response.headers[contentTypeKey];
+    final supportedContentTypes = [jsonHeaders, jsonApiHeaders];
+
+    final contentType = response.headers[contentTypeKey];
     var body = response.body;
-    if (contentType != null && contentType.contains(jsonHeaders)) {
+
+    if (supportedContentTypes.contains(contentType)) {
       // If we're decoding JSON, there's some ambiguity in https://tools.ietf.org/html/rfc2616
       // about what encoding should be used if the content-type doesn't contain a 'charset'
       // parameter. See https://github.com/dart-lang/http/issues/186. In a nutshell, without
