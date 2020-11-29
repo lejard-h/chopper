@@ -247,7 +247,7 @@ class Patch extends Method {
         );
 }
 
-/// Defined a method as an HTTP HEAD request.
+/// Defines a method as an HTTP HEAD request.
 @immutable
 class Head extends Method {
   const Head({
@@ -262,9 +262,40 @@ class Head extends Method {
         );
 }
 
+/// A function that should convert the body of a [Request] to the HTTP representation.
 typedef ConvertRequest = FutureOr<Request> Function(Request request);
+/// A function that should convert the body of a [Response] from the HTTP
+/// representation to a Dart object.
 typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
 
+/// Defines custom [Converter] methods for a single network API endpoint.
+/// See [ConvertRequest], [ConvertResponse].
+///
+/// ```dart
+/// @ChopperApi(baseUrl: '/todos')
+/// abstract class TodosListService extends ChopperService {
+///   static TodosListService create([ChopperClient client]) =>
+///       _$TodosListService(client);
+///
+///   static FutureOr<Request> customRequestConverter(Request request) {
+///     return request.copyWith(
+///         body: // Convert request.body the way your API needs it. See [JsonConverter.encodeJson] for an example.
+///     );
+///   }
+///
+///   static FutureOr<Response> customResponseConverter(Response response) {
+///     return response.copyWith(
+///       body: // Convert response.body the way your API needs it. See [JsonConverter.decodeJson] for an example.
+///     );
+///   }
+///
+///   @Get(path: "/{id}")
+///   @FactoryConverter(
+///     request: customRequestConverter,
+///     response: customResponseConverter
+///   )
+///   Future<Response<Todo>> getTodo(@Path("id"));
+/// }
 @immutable
 class FactoryConverter {
   final ConvertRequest request;
@@ -276,7 +307,7 @@ class FactoryConverter {
   });
 }
 
-/// Define a field for a `x-www-form-urlencoded` request.
+/// Defines a field for a `x-www-form-urlencoded` request.
 /// Automatically binds to the name of the method parameter.
 ///
 /// ```dart
@@ -311,9 +342,9 @@ class Multipart {
   const Multipart();
 }
 
-/// Use it to define a part of a [Multipart] request.
+/// Use [Part] to define a part of a [Multipart] request.
 ///
-/// All values will be converted to [String] using the [toString] method.
+/// All values will be converted to [String] using their [toString] method.
 ///
 /// Also accepts `MultipartFile` (from package:http).
 @immutable
@@ -322,7 +353,7 @@ class Part {
   const Part([this.name]);
 }
 
-/// Use it to define a file field for a [Multipart] request.
+/// Use [PartFile] to define a file field for a [Multipart] request.
 ///
 /// ```
 /// @Post(path: 'file')
@@ -354,7 +385,7 @@ class PartFile {
 ///   - [String] (path of your file)
 ///   - `MultipartFile` (from package:http)
 @immutable
-@Deprecated('use PartFile')
+@Deprecated('Use PartFile instead')
 class FileField extends PartFile {
   const FileField([String name]) : super(name);
 }
