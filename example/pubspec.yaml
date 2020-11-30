@@ -1,7 +1,7 @@
 name: chopper_example
-description: Example of Chopper
+description: Example usage of the Chopper package
 version: 0.0.1
-#homepage: https://www.example.com
+documentation: https://hadrien-lejard.gitbook.io/chopper/
 author: Hadrien Lejard <hadrien.lejard@gmail.com>
 
 environment:
