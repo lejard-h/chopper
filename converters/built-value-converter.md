@@ -1,10 +1,10 @@
-# Built Value Converter
+# BuiltValueConverter
 
 {% hint style="warning" %}
 Experimental
 {% endhint %}
 
-Chopper converter for [built\_value](https://pub.dev/packages/built_value) serializer.
+A Chopper Converter for [built\_value](https://pub.dev/packages/built_value) based serialization.
 
 ## Installation
 
@@ -12,14 +12,14 @@ Chopper converter for [built\_value](https://pub.dev/packages/built_value) seria
 # pubspec.yaml
 
 dependencies:
-  chopper_build_value: ^0.0.1
+  chopper_build_value: ^0.0.6
 ```
 
 ## Getting started
 
 ### Built value
 
-Define your models.
+Define your models as you usually do with built_value.
 
 ```dart
 abstract class DataModel implements Built<DataModel, DataModelBuilder> {
@@ -32,7 +32,7 @@ abstract class DataModel implements Built<DataModel, DataModelBuilder> {
 }
 ```
 
-Aggregate all serializers
+Aggregate all serializers into a top level collection.
 
 ```dart
 /// Collection of generated serializers for the built_value
@@ -42,11 +42,13 @@ Aggregate all serializers
 final Serializers serializers = _$serializers;
 ```
 
-See built\_value [documentation](https://pub.dev/packages/built_value) for more informations.
+See [built\_value documentation](https://pub.dev/packages/built_value) for more information on how built_value works.
 
-### Chopper
+### Using BuiltValueConverter with Chopper
 
-Provide serializers to the converter and to the ChopperClient.
+Build a `BuiltValueConverter` by providing the `built_value` serializer collection.
+
+To use the crteated converter, pass it to `ChopperClient`'s `converter` constructor parameter. 
 
 ```dart
 final builder = serializers.toBuilder();
@@ -60,12 +62,14 @@ final client = ChopperClient(converter: converter);
 
 #### Error converter
 
-You can use `BuiltValueConverter` as an error converter. It will try to decode error using the `wireName` inside JSON `{"$":"ErrorModel"}` if available.
+`BuiltValueConverter` is also an error converter. It will try to decode error response bodies using the `wireName` inside JSON `{"$":"ErrorModel"}`, if available.
 
-If `wireName` is not available, you can specify the type of your error to the converter.
+If `wireName` is not available, `BuiltValueConverter` will try to convert error response bodies to `errorType`, if it was provided and is not `null`.
 
 ```dart
-BuiltValueConverter(jsonSerializers, errorType: ErrorModel);
+final jsonSerializers = ...
+
+final converter = BuiltValueConverter(jsonSerializers, errorType: ErrorModel);
 ```
 
 
