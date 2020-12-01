@@ -52,7 +52,7 @@ See [built\_value documentation](https://pub.dev/packages/built_value) for more 
 
 Build a `BuiltValueConverter` by providing the `built_value` serializer collection.
 
-To use the crteated converter, pass it to `ChopperClient`'s `converter` constructor parameter. 
+To use the created converter, pass it to `ChopperClient`'s `converter` constructor parameter. 
 
 ```dart
 final builder = serializers.toBuilder();
