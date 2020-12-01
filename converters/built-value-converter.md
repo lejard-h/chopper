@@ -8,12 +8,16 @@ A Chopper Converter for [built\_value](https://pub.dev/packages/built_value) bas
 
 ## Installation
 
+Add the chopper_built_value package to your project's dependencies in pubspec.yaml:
+
 ```yaml
 # pubspec.yaml
 
 dependencies:
-  chopper_build_value: ^0.0.6
+  chopper_build_value: ^<latest version>
 ```
+
+The latest version is [![pub package](https://img.shields.io/pub/v/chopper_built_value.svg)](https://pub.dartlang.org/packages/chopper_built_value).
 
 ## Getting started
 
