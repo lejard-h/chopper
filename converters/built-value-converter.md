@@ -14,7 +14,7 @@ Add the chopper_built_value package to your project's dependencies in pubspec.ya
 # pubspec.yaml
 
 dependencies:
-  chopper_build_value: ^<latest version>
+  chopper_built_value: ^<latest version>
 ```
 
 The latest version is [![pub package](https://img.shields.io/pub/v/chopper_built_value.svg)](https://pub.dartlang.org/packages/chopper_built_value).
