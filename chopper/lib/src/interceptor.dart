@@ -85,7 +85,7 @@ abstract class Converter {
   /// \(e.g., `String` or `CustomObject)`.
   ///
   /// If `BodyType` is a `List` or a `BuiltList`, `InnerType` is the type of the
-  /// generic parameter \(e.g., `convertResponse<List<CustomObject>, CustomObject>(response)` \).
+  /// generic parameter (e.g., `convertResponse<List<CustomObject>, CustomObject>(response)` ).
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
     Response response,
   );
@@ -94,7 +94,7 @@ abstract class Converter {
 /// An interface for implementing error response converters.
 ///
 /// An `ErrorConverter` is called only on error responses
-/// \(statusCode &lt; 200 || statusCode &gt;= 300\) and before any [ResponseInterceptor]s.
+/// (statusCode < 200 || statusCode >= 300) and before any [ResponseInterceptor]s.
 abstract class ErrorConverter {
 
   /// Converts the received [Response] to a [Response] which has a body with the
