@@ -12,7 +12,7 @@ final chopper = ChopperClient(
 ```
 
 {% hint style="info" %}
-The `errorConverter` is called only on error responses \(statusCode &lt; 200 \|\| statusCode &gt;= 300\).
+The `errorConverter` is called only on error responses (statusCode < 200 || statusCode >= 300).
 {% endhint %}
 
 ## The built-in JSON converter
@@ -33,14 +33,14 @@ You can implement custom converters by implementing the `Converter` class.
 class MyConverter implements Converter {
   @override
   Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
-    var body = response.body
+    var body = response.body;
     // Convert body to BodyType however you like
     response.copyWith<BodyType>(body: body);
   }
 
   @override
   Request convertRequest(Request request) {
-    var body = request.body
+    var body = request.body;
     // Convert body to String however you like    
     return request.copyWith(body: body);
   }

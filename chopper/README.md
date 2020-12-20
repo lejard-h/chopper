@@ -2,20 +2,34 @@
 
 [![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper) [![Build Status](https://travis-ci.com/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper) [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
 
-[Documentations](https://hadrien-lejard.gitbook.io/chopper)
+[**Documentation**](https://hadrien-lejard.gitbook.io/chopper)
 
-## Installation
+## Adding Chopper to your project
+
+In your project's `pubspec.yaml` file, 
+
+* Add *chopper*'s latest version to your *dependencies*.
+* Add `build_runner: ^1.10.3` to your *dev_dependencies*.
+  * *build_runner* may already be in your *dev_dependencies* depending on your project setup and other dependencies.
+* Add *chopper_generator*'s latest version to your *dev_dependencies*.
 
 ```yaml
 # pubspec.yaml
 
 dependencies:
-  chopper: ^2.0.0
+  chopper: ^<latest version>
 
 dev_dependencies:
-  build_runner: ^1.0.0
-  chopper_generator: ^2.0.0
+  build_runner: ^1.10.3
+  chopper_generator: ^<latest version>
 ```
+
+Latest versions:
+
+* *chopper* ![pub package](https://img.shields.io/pub/v/chopper.svg) 
+* *chopper_generator* ![pub package](https://img.shields.io/pub/v/chopper_generator.svg) 
+
+## Documentation
 
 * [Getting started](getting-started.md)
 * [Converters](converters/converters.md)
@@ -27,5 +41,5 @@ dev_dependencies:
 * [Built Value](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
 * [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
 
-## [Issue Tracker](https://github.com/lejard-h/chopper/issues)
+## If you encounter any issues, or need a feature implemented, please visit [Chopper's Issue Tracker](https://github.com/lejard-h/chopper/issues).
 

@@ -39,7 +39,7 @@ class ChopperClient {
 
   /// The [ErrorConverter] that handles response transformation before the
   /// response interceptors are called, but only on error responses
-  /// \(statusCode &lt; 200 || statusCode &gt;= 300\).
+  /// (statusCode < 200 || statusCode >= 300\).
   final ErrorConverter errorConverter;
 
   final Map<Type, ChopperService> _services = {};
