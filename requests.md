@@ -44,7 +44,7 @@ A `path` containing a full URL replaces the base URLs of both the `ChopperClient
 
 ## Path parameters
 
-Path parameters can be defined in the URL with replacement blocks. A replacement block is an alphanumeric substring of the path surrounded by `{` and `}`. In the following example `{id}` is a replacement block.
+Dynamic path parameters can be defined in the URL with replacement blocks. A replacement block is an alphanumeric substring of the path surrounded by `{` and `}`. In the following example `{id}` is a replacement block.
 
 ```dart
 @Get(path: "/{id}")
@@ -68,17 +68,18 @@ Future<Response> getItemById(@Path("id") int itemId);
 
 ## Query parameters
 
-Use the `Query` annotation to add query parameters to the url
+Dynamic query parameters can be added to the URL by adding parameters to a request method annotated with the `@Query` annotation. Default values are supported.
 
 ```dart
-Future<Response> search({
-    @Query() String name,
-    @Query("int") int number,
-    @Query("default_value") int def = 42,
+Future<Response> search(
+    @Query() String name, {
+    @Query("count") int numberOfResults = 42,
 });
 ```
 
-If you prefer to pass to pass a full `Map` you can use the `QueryMap` annotation
+If the parameter of the `@Query` annotation is not set, Chopper will use the actual name of the annotated parameter as the key for the query parameter in the URL.
+
+If you prefer to pass a `Map` of query parameters, you can do so with the `@QueryMap` annotation.
 
 ```dart
 Future<Response> search(@QueryMap() Map<String, dynamic> query);
@@ -104,11 +105,11 @@ A [Converter](converters/converters.md) is needed to do that, see [built\_value\
 Request headers can be set using [Interceptor](interceptors.md) or [Converter](converters/converters.md), but also on the Method definition.
 
 ```dart
-@Get(path: ""/"", headers: {"foo": "bar"})
+@Get(path: "/", headers: {"foo": "bar"})
 Future<Response> fetch();
 
 /// dynamic
-@Get(path: ""/"")
+@Get(path: "/")
 Future<Response> fetch(@Header("foo") String bar);
 ```
 
