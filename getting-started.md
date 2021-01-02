@@ -122,4 +122,4 @@ void main() async {
 
 ```
 
-Handling I/O and other exceptions should be done by using `try-catch` blocks around the requests.
+Handling I/O and other exceptions should be done by surrounding requests with `try-catch` blocks.
