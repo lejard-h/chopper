@@ -87,37 +87,46 @@ Future<Response> search(@QueryMap() Map<String, dynamic> query);
 
 ## Request body
 
-Use `Body` annotation to specify data to send.
+Use the `@Body` annotation on a request method parameter to specify data that will be sent as the request's body.
 
 ```dart
-@Post(path: "post")
+@Post(path: "todo/create")
 Future<Response> postData(@Body() String data);
 ```
 
 {% hint style="warning" %}
-Chopper does not automatically convert `Object` to `Map`then `JSON`.
+Chopper does not automatically convert `Object`s to `Map`then `JSON`.
 
-A [Converter](converters/converters.md) is needed to do that, see [built\_value\_converter](converters/built-value-converter.md#built-value) for more infos.
+You have to pass a [Converter](converters/converters.md) instance to a `ChopperClient` for JSON conversion to happen. See [built\_value\_converter](converters/built-value-converter.md#built-value) for an example Converter implementation.
 {% endhint %}
 
 ## Headers
 
-Request headers can be set using [Interceptor](interceptors.md) or [Converter](converters/converters.md), but also on the Method definition.
+Request headers can be set by providing a `Map<String, String>` object to the `headers` parameter each of the HTTP verb annotations have.
 
 ```dart
 @Get(path: "/", headers: {"foo": "bar"})
 Future<Response> fetch();
+```
 
-/// dynamic
+The `@Header` annotation can be used on method parameters to set headers dynamically for each request call. 
+
+```dart
 @Get(path: "/")
 Future<Response> fetch(@Header("foo") String bar);
 ```
 
-## Send application/x-www-form-urlencoded
+> Setting request headers dynamically is also supported by [Interceptors](interceptors.md) and [Converters](converters/converters.md).
+>
+> As Chopper invokes Interceptors and Converter(s) *after* creating a Request, Interceptors and Converters *can* override headers set with the `headers` parameter or `@Header` annotations.
 
-If no converter specified and if you are just using `Map<String, String>` as body. This is the default behavior of the http package.
+## Sending `application/x-www-form-urlencoded` data
 
-You can also use `FormUrlEncodedConverter` that will add the correct `content-type` and convert simple `Map` into `Map<String, String>` to all request.
+If no Converter is specified for a request (neither on a `ChopperClient` nor with the `@FactoryConverter` annotation) and the request body is of type `Map<String, String>`, the body will be sent as form URL encoded data.
+
+> This is the default behavior of the http package.
+
+You can also use `FormUrlEncodedConverter` that will add the correct `content-type` and convert a `Map` into `Map<String, String>` for requests.
 
 ```dart
 final chopper = ChopperClient(
@@ -125,22 +134,30 @@ final chopper = ChopperClient(
 );
 ```
 
-#### On single method
+### On a single method
 
-If you wish to do a form urlencoded request on a single request, you can use a factory converter.
+To do only a single method with form encoding in a service, use the provided `FormUrlEncodedConverter`'s `requestFactory` method with the `@FactoryConverter` annotation.
 
 ```dart
-@Post(path: "form", headers: {contentTypeKey: formEncodedHeaders})
+@Post(
+  path: "form", 
+  headers: {contentTypeKey: formEncodedHeaders},
+)
+@FactoryConverter(
+  request: FormUrlEncodedConverter.requestFactory,
+)
 Future<Response> postForm(@Body() Map<String, String> fields);
 ```
 
-#### Use Field annotation
+### Defining fields individually
 
-To specify each fields manually, use the `Field` annotation.
+To specify fields individually, use the `@Field` annotation on method parameters. If the field's name is not provided, the parameter's name is used as the field's name.
 
 ```dart
-  @FactoryConverter(request: FormUrlEncodedConverter.requestFactory)
-  @Post(path: "form")
-  Future<Response> post(@Field() String foo, @Field("b") int bar);
+@Post(path: "form")
+@FactoryConverter(
+  request: FormUrlEncodedConverter.requestFactory,
+)
+Future<Response> post(@Field() String foo, @Field("b") int bar);
 ```
 
