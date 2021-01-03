@@ -120,7 +120,6 @@ void main() async {
     final error = response.error;
   }
 }
-
 ```
 
 Handling I/O and other exceptions should be done by surrounding requests with `try-catch` blocks.
