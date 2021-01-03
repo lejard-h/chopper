@@ -25,7 +25,8 @@ Run `pub get` to start using Chopper in your project.
 
 ### ChopperApi
 
-To define a client, use the `ChopperApi` annotation on an abstract class that extends the `ChopperService` class.
+To define a client, use the `@
+ChopperApi` annotation on an abstract class that extends the `ChopperService` class.
 
 ```dart
 // YOUR_FILE.dart
@@ -45,7 +46,7 @@ abstract class TodosListService extends ChopperService {
 }
 ```
 
-The `ChopperApi` annotation takes one optional parameter - the `baseUrl` - that will prefix all the request's URLs defined in the class.
+The `@ChopperApi` annotation takes one optional parameter - the `baseUrl` - that will prefix all the request's URLs defined in the class.
 
 > There's an exception from this behavior described in the [Requests](requests.md) section of the documentation.
 
