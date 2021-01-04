@@ -136,7 +136,7 @@ final chopper = ChopperClient(
 
 ### On a single method
 
-To do only a single method with form encoding in a service, use the provided `FormUrlEncodedConverter`'s `requestFactory` method with the `@FactoryConverter` annotation.
+To do only a single type of request with form encoding in a service, use the provided `FormUrlEncodedConverter`'s `requestFactory` method with the `@FactoryConverter` annotation.
 
 ```dart
 @Post(
