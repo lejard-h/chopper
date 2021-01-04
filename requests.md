@@ -8,39 +8,39 @@ If the `path` value is a relative path, it will be concatenated to the URL compo
 
 Here are a few examples of the described behavior:
 
- * `ChopperClient` base URL: https://example.com/
-    Path: profile
+* `ChopperClient` base URL: https://example.com/  
+    Path: profile  
     Result: https://example.com/profile
 
-* `ChopperClient` base URL: https://example.com/
-  Service base URL: profile
-  Path: /image
+* `ChopperClient` base URL: https://example.com/  
+  Service base URL: profile  
+  Path: /image  
   Result: https://example.com/profile/image
 
-* `ChopperClient` base URL: https://example.com/
-  Service base URL: profile
-  Path: image
+* `ChopperClient` base URL: https://example.com/  
+  Service base URL: profile  
+  Path: image  
   Result: https://example.com/profile/image
 
 > Chopper detects and handles missing slash (`/`) characters on URL segment borders, but *does not* handle duplicate slashes.
 
 If the service's `baseUrl` concatenated with the request's `path` results in a full URL, the `ChopperClient`'s `baseUrl` is ignored.
 
-`ChopperClient` base URL: https://example.com/
-Service base URL: https://api.github.com/
-Path: user
-Result: https://api.github.com/user
+* `ChopperClient` base URL: https://example.com/  
+Service base URL: https://api.github.com/  
+Path: user  
+Result: https://api.github.com/user  
 
 A `path` containing a full URL replaces the base URLs of both the `ChopperClient` and the service class entirely for a request.
 
-* `ChopperClient` base URL: https://example.com/
-  Path: https://api.github.com/user
+* `ChopperClient` base URL: https://example.com/  
+  Path: https://api.github.com/user  
   Result: https://api.github.com/user
-* `ChopperClient` base URL: https://example.com/
-  Service base URL: profile
-  Path: https://api.github.com/user
+  
+* `ChopperClient` base URL: https://example.com/  
+  Service base URL: profile  
+  Path: https://api.github.com/user  
   Result: https://api.github.com/user
-
 
 ## Path parameters
 
@@ -160,4 +160,6 @@ To specify fields individually, use the `@Field` annotation on method parameters
 )
 Future<Response> post(@Field() String foo, @Field("b") int bar);
 ```
+
+## Sending files
 
