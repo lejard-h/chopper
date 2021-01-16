@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chopper/src/authenticator.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'constants.dart';
@@ -36,6 +37,10 @@ class ChopperClient {
   /// The [Converter] that handles request and response transformation before
   /// the request and response interceptors are called respectively.
   final Converter converter;
+
+  /// The [Authenticator] that handles provides reactive authentication for a
+  /// request.
+  final Authenticator authenticator;
 
   /// The [ErrorConverter] that handles response transformation before the
   /// response interceptors are called, but only on error responses
@@ -109,6 +114,7 @@ class ChopperClient {
     this.baseUrl = '',
     http.Client client,
     Iterable interceptors = const [],
+    this.authenticator,
     this.converter,
     this.errorConverter,
     Iterable<ChopperService> services = const [],
@@ -315,6 +321,15 @@ class ChopperClient {
 
     final response = await http.Response.fromStream(streamRes);
     dynamic res = Response(response, response.body);
+
+    if(authenticator != null) {
+
+      var updatedRequest = authenticator.authenticate(request, res);
+
+      if(updatedRequest != null) {
+        res = await send(updatedRequest);
+      }
+    }
 
     if (_responseIsSuccessful(response.statusCode)) {
       res = await _handleSuccessResponse<BodyType, InnerType>(
