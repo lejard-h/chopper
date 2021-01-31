@@ -1,1 +1,1 @@
-[Chopper](https://github.com/lejard-h/chopper) is an http client generator using source_gen, inspired by Retrofit.
+This package provides the code generator for the [Chopper](https://github.com/lejard-h/chopper) package.
