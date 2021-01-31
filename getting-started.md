@@ -15,7 +15,7 @@ dependencies:
   chopper: ^3.0.7
 
 dev_dependencies:
-  build_runner: ^1.0.0 # Use the latest version available
+  build_runner: ^1.0.0
   chopper_generator: ^3.0.7
 ```
 
