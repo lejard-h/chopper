@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:chopper/chopper.dart';
 
-/// Returns a request that includes a credential to satisfy an authentication challenge in
-/// [response]. Returns null if the challenge cannot be satisfied.
+/// This method should return a [Request] that includes credentials to satisfy an authentication challenge received in
+/// [response]. It should return `null` if the challenge cannot be satisfied.
 abstract class Authenticator {
   FutureOr<Request> authenticate(Request request, Response response);
 }

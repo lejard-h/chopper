@@ -38,7 +38,7 @@ class ChopperClient {
   /// the request and response interceptors are called respectively.
   final Converter converter;
 
-  /// The [Authenticator] that handles provides reactive authentication for a
+  /// The [Authenticator] that can provide reactive authentication for a
   /// request.
   final Authenticator authenticator;
 
@@ -322,11 +322,10 @@ class ChopperClient {
     final response = await http.Response.fromStream(streamRes);
     dynamic res = Response(response, response.body);
 
-    if(authenticator != null) {
-
+    if (authenticator != null) {
       var updatedRequest = authenticator.authenticate(request, res);
 
-      if(updatedRequest != null) {
+      if (updatedRequest != null) {
         res = await send(updatedRequest);
       }
     }
