@@ -349,6 +349,7 @@ class ChopperClient {
   /// Makes a HTTP GET request using the [send] function.
   Future<Response<BodyType>> get<BodyType, InnerType>(
     String url, {
+    dynamic body,
     Map<String, String> headers,
     Map<String, dynamic> parameters,
     String baseUrl,
@@ -358,6 +359,7 @@ class ChopperClient {
           HttpMethod.Get,
           url,
           baseUrl ?? this.baseUrl,
+          body: body,
           headers: headers,
           parameters: parameters,
         ),
