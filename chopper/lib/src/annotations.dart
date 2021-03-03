@@ -20,7 +20,8 @@ import 'constants.dart';
 /// See [Method] to define an HTTP request
 @immutable
 class ChopperApi {
-  /// A part of a URL that every request defined inside a class annotated with [ChopperApi] will be prefixed with.
+  /// A part of a URL that every request defined inside a class annotated with
+  /// [ChopperApi] will be prefixed with.
   final String baseUrl;
 
   const ChopperApi({

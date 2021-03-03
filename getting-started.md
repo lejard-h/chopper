@@ -4,29 +4,38 @@
 
 Due to limitations to Dart on Flutter and the Web browser, Chopper doesn't use reflection but code generation with the help of the [build](https://pub.dev/packages/build) and [source\_gen](https://pub.dev/packages/source_gen) packages from the Dart Team.
 
-## Installation
+## Adding Chopper to your project
 
-Add the `chopper` and the `chopper_generator` packages to your project dependencies.
+In your project's `pubspec.yaml` file, 
+
+* Add *chopper*'s latest version to your *dependencies*.
+* Add `build_runner: ^1.10.3` to your *dev_dependencies*.
+  * *build_runner* may already be in your *dev_dependencies* depending on your project setup and other dependencies.
+* Add *chopper_generator*'s latest version to your *dev_dependencies*.
 
 ```yaml
 # pubspec.yaml
 
 dependencies:
-  chopper: ^3.0.7
+  chopper: ^<latest version>
 
 dev_dependencies:
-  build_runner: ^1.0.0
-  chopper_generator: ^3.0.7
+  build_runner: ^1.10.3
+  chopper_generator: ^<latest version>
 ```
+
+Latest versions:
+
+* *chopper* ![pub package](https://img.shields.io/pub/v/chopper.svg) 
+* *chopper_generator* ![pub package](https://img.shields.io/pub/v/chopper_generator.svg)
 
 Run `pub get` to start using Chopper in your project.
 
-## Define your API
+## Defining a service class
 
 ### ChopperApi
 
-To define a client, use the `@
-ChopperApi` annotation on an abstract class that extends the `ChopperService` class.
+To define a client, use the `@ChopperApi` annotation on an abstract class that extends `ChopperService`.
 
 ```dart
 // YOUR_FILE.dart
@@ -50,7 +59,7 @@ The `@ChopperApi` annotation takes one optional parameter - the `baseUrl` - that
 
 > There's an exception from this behavior described in the [Requests](requests.md) section of the documentation.
 
-### Defining a request
+### Defining requests
 
 Use one of the following annotations on abstract methods of a service class to define requests:
 

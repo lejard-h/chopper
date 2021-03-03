@@ -232,8 +232,8 @@ Future<http.MultipartRequest> toMultipartRequest(
         throw ArgumentError(
           'Type ${part.value.runtimeType} is not a supported type for PartFile'
           'Please use one of the following types'
-          ' - List<int>'
-          ' - String (path of your file) '
+          ' - List<int> (the byte representation of a file)'
+          ' - String (absolute path of a file)'
           ' - MultipartFile (from package:http)',
         );
       }
