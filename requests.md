@@ -161,5 +161,58 @@ To specify fields individually, use the `@Field` annotation on method parameters
 Future<Response> post(@Field() String foo, @Field("b") int bar);
 ```
 
-## Sending files
+## Sending file(s)
+
+To send a file, or multiple files, annotate a request method with `@multpiart` and use `@PartFile` on parameters to define files to be sent.
+
+Chopper supports the following types with `@PartFile`:
+
+### String
+
+The value should be an absolute path to a file.
+
+```dart
+@Post(path: "profile/image")
+@multipart
+Future<Response> updateCurrentUserImage(
+  @PartFile("file") String imagePath,
+);
+```
+
+### List<int>
+
+The value should be a byte representation of a file.
+
+```dart
+@Post(path: "profile/image")
+@multipart
+Future<Response> updateCurrentUserImage(
+  @PartFile("file") List<int> bytes,
+);
+```
+
+### Pre-built http.MultipartFile
+
+Chopper can accept a pre-built `http.MultipartFile` object directly, though this approach is not recommended because it can introduce imports of the `http` package outside of the network layer.  
+    
+
+```dart
+import 'package:http/http.dart' as http;
+
+...
+
+  @Post(path: "profile/image")
+  @multipart
+  Future<Response> updateCurrentUserImage(
+    @PartFile("file") http.MultipartFile file,
+  );
+
+...
+
+// Usage
+updateCurrentUserImage(
+  
+);
+```
+
 
