@@ -23,10 +23,10 @@ class Request {
     this.url,
     this.baseUrl, {
     this.body,
-    Map<String, dynamic> parameters,
-    Map<String, String> headers,
-    bool multipart,
-    List<PartValue> parts,
+    Map<String, dynamic>? parameters,
+    Map<String, String>? headers,
+    bool? multipart,
+    List<PartValue>? parts,
   })  : parameters = parameters ?? const {},
         headers = headers ?? const {},
         multipart = multipart ?? false,
@@ -34,15 +34,15 @@ class Request {
 
   @Deprecated('Prefer copyWith method')
   Request replace({
-    HttpMethod method,
-    String url,
+    HttpMethod? method,
+    String? url,
     dynamic body,
-    Map<String, dynamic> parameters,
-    Map<String, String> headers,
-    Encoding encoding,
-    List<PartValue> parts,
-    bool multipart,
-    String baseUrl,
+    Map<String, dynamic>? parameters,
+    Map<String, String>? headers,
+    Encoding? encoding,
+    List<PartValue>? parts,
+    bool? multipart,
+    String? baseUrl,
   }) =>
       copyWith(
         method: method,
@@ -58,18 +58,18 @@ class Request {
 
   /// Makes a copy of this request, replacing original values with the given ones.
   Request copyWith({
-    HttpMethod method,
-    String url,
+    HttpMethod? method,
+    String? url,
     dynamic body,
-    Map<String, dynamic> parameters,
-    Map<String, String> headers,
-    Encoding encoding,
-    List<PartValue> parts,
-    bool multipart,
-    String baseUrl,
+    Map<String, dynamic>? parameters,
+    Map<String, String>? headers,
+    Encoding? encoding,
+    List<PartValue>? parts,
+    bool? multipart,
+    String? baseUrl,
   }) =>
       Request(
-        method ?? this.method,
+        (method ?? this.method) as String,
         url ?? this.url,
         baseUrl ?? this.baseUrl,
         body: body ?? this.body,
@@ -133,15 +133,15 @@ class PartValue<T> {
   );
 
   @Deprecated('Prefer copyWith method')
-  PartValue<NewType> replace<NewType>({String name, NewType value}) =>
+  PartValue<NewType> replace<NewType>({String? name, NewType? value}) =>
       copyWith<NewType>(name: name, value: value);
 
   /// Makes a copy of this PartValue, replacing original values with the given ones.
   /// This method can also alter the type of the request body.
-  PartValue<NewType> copyWith<NewType>({String name, NewType value}) =>
+  PartValue<NewType> copyWith<NewType>({String? name, NewType? value}) =>
       PartValue<NewType>(
         name ?? this.name,
-        value ?? this.value,
+        value ?? this.value as NewType,
       );
 }
 
@@ -204,7 +204,7 @@ Future<http.Request> toHttpRequest(
 
 @visibleForTesting
 Future<http.MultipartRequest> toMultipartRequest(
-  List<PartValue> parts,
+  List<PartValue?> parts,
   String method,
   Uri uri,
   Map<String, String> headers,
