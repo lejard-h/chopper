@@ -107,7 +107,7 @@ void main() {
 
       await chopper.getService<HttpTestService>().getTest('1234');
 
-      expect(intercepted, isA<_Intercepted<String>>());
+      expect(intercepted, isA<_Intercepted<String?>>());
     });
 
     test('TypedResponseInterceptorFunc2', () async {
@@ -124,7 +124,7 @@ void main() {
           <BodyType, InnerType>(Response<BodyType> response) {
             expect(isTypeOf<String, InnerType>(), isTrue);
             expect(isTypeOf<BodyType, List<String>>(), isTrue);
-            intercepted = _Intercepted<BodyType>(response.body);
+            intercepted = _Intercepted<BodyType>(response.body!);
             return response;
           },
         ],
@@ -168,7 +168,7 @@ void main() {
 
     test('Curl interceptors', () async {
       final curl = CurlInterceptor();
-      String log;
+      var log = '';
       chopperLogger.onRecord.listen((r) => log = r.message);
       await curl.onRequest(fakeRequest);
 

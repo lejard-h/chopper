@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 import 'package:build/build.dart';
@@ -90,7 +91,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         constructorBuilder.optionalParameters.add(
           Parameter((paramBuilder) {
             paramBuilder.name = _clientVar;
-            paramBuilder.type = refer('${chopper.ChopperClient}');
+            paramBuilder.type = refer('${chopper.ChopperClient}?');
           }),
         );
 
@@ -138,8 +139,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           .where((p) => p.isNotOptional)
           .map((p) => Parameter((pb) => pb
             ..name = p.name
-            ..type =
-                Reference(p.type.getDisplayString(withNullability: false)))));
+            ..type = Reference(
+                p.type.getDisplayString(withNullability: p.type.isNullable)))));
 
       b.optionalParameters.addAll(m.parameters
           .where((p) => p.isOptionalPositional)
@@ -159,8 +160,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 pb
                   ..named = true
                   ..name = p.name
-                  ..type = Reference(
-                      p.type.getDisplayString(withNullability: false));
+                  ..type = Reference(p.type
+                      .getDisplayString(withNullability: p.type.isNullable));
 
                 if (p.defaultValueCode != null) {
                   pb.defaultTo = Code(p.defaultValueCode);
@@ -258,7 +259,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
             refer(responseInnerType!.getDisplayString(withNullability: false)));
       }
 
-      blocks.add(refer('client.send')
+      blocks.add(refer('$_clientVar!.send')
           .call([refer(_requestVar)], namedArguments, typeArguments)
           .returned
           .statement);
@@ -402,7 +403,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final params = <Expression>[
       literal(getMethodName(method)),
       refer(_urlVar),
-      refer('$_clientVar.$_baseUrlVar'),
+      refer('$_clientVar!.$_baseUrlVar!'),
     ];
 
     final namedParams = <String, Expression>{};
@@ -449,9 +450,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         refer(p.displayName),
       ];
 
-      list.add(
-          refer('PartValue<${p.type.getDisplayString(withNullability: false)}>')
-              .newInstance(params));
+      list.add(refer(
+              'PartValue<${p.type.getDisplayString(withNullability: p.type.isNullable)}>')
+          .newInstance(params));
     });
     fileFields.forEach((p, ConstantReader r) {
       final name = r.peek('name')?.stringValue ?? p.displayName;
@@ -507,3 +508,7 @@ String getMethodPath(ConstantReader method) => method.read('path').stringValue;
 
 String getMethodName(ConstantReader method) =>
     method.read('method').stringValue;
+
+extension DartTypeExtension on DartType {
+  bool get isNullable => nullabilitySuffix != NullabilitySuffix.none;
+}

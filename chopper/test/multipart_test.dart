@@ -266,7 +266,7 @@ void main() {
     final req = await toMultipartRequest(
       [
         PartValue<http.MultipartFile>(
-          null,
+          '',
           http.MultipartFile.fromBytes(
             'first',
             [1, 2],
@@ -274,7 +274,7 @@ void main() {
           ),
         ),
         PartValueFile<http.MultipartFile>(
-          null,
+          '',
           http.MultipartFile.fromBytes(
             'second',
             [2, 1],
