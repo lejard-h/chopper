@@ -29,7 +29,7 @@ final allowedInterceptorsType = <Type>[
 class ChopperClient {
   /// Base URL of each request of the registered services.
   /// E.g., the hostname of your service.
-  final String? baseUrl;
+  final String baseUrl;
 
   /// The [http.Client] used to make network calls.
   final http.Client httpClient;
@@ -175,11 +175,7 @@ class ChopperClient {
   }
 
   Future<Request?> _encodeRequest(Request request) async {
-    if (converter != null) {
-      return converter?.convertRequest(request);
-    }
-
-    return request;
+    return converter?.convertRequest(request) ?? request;
   }
 
   Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
@@ -325,7 +321,7 @@ class ChopperClient {
     if (authenticator != null) {
       var updatedRequest = authenticator!.authenticate(request, res);
 
-        res = await send(await updatedRequest);
+      res = await send(await updatedRequest);
     }
 
     if (_responseIsSuccessful(response.statusCode)) {
@@ -355,7 +351,7 @@ class ChopperClient {
         Request(
           HttpMethod.Get,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
@@ -375,7 +371,7 @@ class ChopperClient {
         Request(
           HttpMethod.Post,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -398,7 +394,7 @@ class ChopperClient {
         Request(
           HttpMethod.Put,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -421,7 +417,7 @@ class ChopperClient {
         Request(
           HttpMethod.Patch,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -441,7 +437,7 @@ class ChopperClient {
         Request(
           HttpMethod.Delete,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
@@ -458,7 +454,7 @@ class ChopperClient {
         Request(
           HttpMethod.Head,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
