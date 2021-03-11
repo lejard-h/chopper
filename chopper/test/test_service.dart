@@ -21,6 +21,9 @@ abstract class HttpTestService extends ChopperService {
   @Head(path: 'head')
   Future<Response> headTest();
 
+  @Options(path: 'options')
+  Future<Response> optionsTest();
+
   @Get(path: 'get')
   Future<Response<Stream<List<int>>>> getStreamTest();
 

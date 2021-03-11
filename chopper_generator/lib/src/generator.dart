@@ -338,6 +338,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     chopper.Patch,
     chopper.Method,
     chopper.Head,
+    chopper.Options,
   ];
 
   DartType? _genericOf(DartType? type) {

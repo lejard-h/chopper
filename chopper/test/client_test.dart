@@ -151,5 +151,30 @@ void main() {
 
       httpClient.close();
     });
+    test('OPTIONS', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/get?key=val'),
+        );
+        expect(request.method, equals('OPTIONS'));
+        expect(request.headers['foo'], equals('bar'));
+        expect(request.headers['int'], equals('42'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final response = await chopper.options(
+        '/test/get',
+        headers: {'int': '42'},
+        parameters: {'key': 'val'},
+      );
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
   });
 }
