@@ -1,6 +1,9 @@
 # Chopper
 
-[![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper) [![Build Status](https://travis-ci.com/lejard-h/chopper.svg?branch=master)](https://travis-ci.org/lejard-h/chopper) [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
+[![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper)
+[![Dart CI](https://github.com/lejard-h/chopper/workflows/Dart%20CI/badge.svg)](https://github.com/lejard-h/chopper/actions?query=workflow%3A%22Dart+CI%22)
+[![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
+
 
 Chopper is an http client generator for Dart and Flutter using source_gen and inspired by Retrofit.
 
