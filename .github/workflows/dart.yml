@@ -8,9 +8,10 @@ on:
       - null-safety
       - github-action
   pull_request:
-    - master
-    - develop
-    - null-safety
+    branches:
+      - master
+      - develop
+      - null-safety
 defaults:
   run:
     shell: bash
