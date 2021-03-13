@@ -1,13 +1,18 @@
+self_validate: analyzer_and_format
+
 github:
-  cron: '0 0 * * 0' # “At 00:00 (UTC) on Sunday.”
-
-  workflows:
-    lint:
-      name: Dart Lint CI
-      stages:
-      - analyze
-
-self_validate: analyze
+  on:
+    push:
+      branches:
+      - master
+      - develop
+      - null-safety
+      - github-action
+    pull_request:
+      - master
+      - develop
+      - null-safety
 
 merge_stages:
-- analyze
+- analyzer_and_format
+- unit_test

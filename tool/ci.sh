@@ -59,16 +59,20 @@ for PKG in ${PKGS}; do
       echo -e "\033[1mPKG: ${PKG}; TASK: ${TASK}\033[22m"
       case ${TASK} in
       dartanalyzer)
-        echo 'dartanalyzer .'
-        dartanalyzer . || EXIT_CODE=$?
+        echo 'dartanalyzer --fatal-infos .'
+        dartanalyzer --fatal-infos . || EXIT_CODE=$?
         ;;
       dartfmt)
         echo 'dartfmt -n --set-exit-if-changed .'
         dartfmt -n --set-exit-if-changed . || EXIT_CODE=$?
         ;;
-      test)
+      test_0)
         echo 'pub run test'
         pub run test || EXIT_CODE=$?
+        ;;
+      test_1)
+        echo 'pub run test -p chrome'
+        pub run test -p chrome || EXIT_CODE=$?
         ;;
       *)
         echo -e "\033[31mUnknown TASK '${TASK}' - TERMINATING JOB\033[0m"

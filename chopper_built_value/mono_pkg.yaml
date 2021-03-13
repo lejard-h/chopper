@@ -1,14 +1,13 @@
 dart:
- - stable
+- stable
+- dev
 
 stages:
-  - analyze:
-    - dartanalyzer
+- analyzer_and_format:
+  - group:
     - dartfmt
-  - unit_test:
-    - test
-  - cron:
-    - test:
-      os:
-        - linux
-        - windows
+    - dartanalyzer: --fatal-infos .
+
+cache:
+  directories:
+  - .dart_tool/build
