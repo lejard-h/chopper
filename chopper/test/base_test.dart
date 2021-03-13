@@ -26,7 +26,7 @@ void main() {
       final chopper = buildClient();
       final service = chopper.getService<HttpTestService>();
 
-      expect(service is HttpTestService, isTrue);
+      expect(service is HttpTestService, isFalse);
     });
 
     test('get service errors', () async {
