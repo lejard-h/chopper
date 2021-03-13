@@ -20,8 +20,8 @@ void main() {
     test('base decode', () async {
       final converter = TestConverter();
 
-      final decoded = await converter
-          .convertResponse<_Converted<String>, _Converted<String>>(
+      final decoded =
+          converter.convertResponse<_Converted<String>, _Converted<String>>(
         Response<String>(http.Response('', 200), 'foo'),
       );
 
@@ -32,7 +32,7 @@ void main() {
     test('base encode', () async {
       final converter = TestConverter();
 
-      final encoded = await converter.convertRequest(
+      final encoded = converter.convertRequest(
         Request('GET', '/', baseUrl, body: _Converted<String>('foo')),
       );
 
