@@ -6,13 +6,11 @@ github:
       branches:
       - master
       - develop
-      - null-safety
       - github-action
     pull_request:
       branches:
       - master
       - develop
-      - null-safety
 
 merge_stages:
 - analyzer_and_format

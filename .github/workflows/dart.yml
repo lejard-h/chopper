@@ -5,13 +5,11 @@ on:
     branches:
       - master
       - develop
-      - null-safety
       - github-action
   pull_request:
     branches:
       - master
       - develop
-      - null-safety
 defaults:
   run:
     shell: bash
