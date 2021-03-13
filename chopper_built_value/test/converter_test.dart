@@ -33,29 +33,31 @@ void main() {
 
     test('convert response with wireName', () {
       final string = '{"\$":"DataModel","id":42,"name":"foo"}';
-      Response response = Response(http.Response(string, 200), string);
-      response = converter.convertResponse<DataModel, DataModel>(response);
+      final response = Response(http.Response(string, 200), string);
+      final convertedRes =
+          converter.convertResponse<DataModel, DataModel>(response);
 
-      expect(response.body.id, equals(42));
-      expect(response.body.name, equals('foo'));
+      expect(convertedRes.body.id, equals(42));
+      expect(convertedRes.body.name, equals('foo'));
     });
 
     test('convert response without wireName', () {
       final string = '{"id":42,"name":"foo"}';
-      Response response = Response(http.Response(string, 200), string);
-      response = converter.convertResponse<DataModel, DataModel>(response);
+      final response = Response(http.Response(string, 200), string);
+      final convertedRes =
+          converter.convertResponse<DataModel, DataModel>(response);
 
-      expect(response.body.id, equals(42));
-      expect(response.body.name, equals('foo'));
+      expect(convertedRes.body.id, equals(42));
+      expect(convertedRes.body.name, equals('foo'));
     });
 
     test('convert response List', () {
       final string = '[{"id":42,"name":"foo"},{"id":25,"name":"bar"}]';
-      Response response = Response(http.Response(string, 200), string);
-      response =
+      final response = Response(http.Response(string, 200), string);
+      final convertedRes =
           converter.convertResponse<BuiltList<DataModel>, DataModel>(response);
 
-      final list = response.body as BuiltList<DataModel>;
+      final list = convertedRes.body;
       expect(list.first.id, equals(42));
       expect(list.first.name, equals('foo'));
       expect(list.last.id, equals(25));
@@ -71,19 +73,19 @@ void main() {
 
     test('convert error with wire name', () {
       final string = '{"\$":"DataModel","id":42,"name":"foo"}';
-      Response response = Response(http.Response(string, 200), string);
-      response = converter.convertError(response);
+      final response = Response(http.Response(string, 200), string);
+      final convertedRes = converter.convertError(response);
 
-      expect(response.body.id, equals(42));
-      expect(response.body.name, equals('foo'));
+      expect(convertedRes.body.id, equals(42));
+      expect(convertedRes.body.name, equals('foo'));
     });
 
     test('convert error using provided type', () {
       final string = '{"message":"Error message"}';
-      Response response = Response(http.Response(string, 200), string);
-      response = converter.convertError(response);
+      final response = Response(http.Response(string, 200), string);
+      final convertedRes = converter.convertError(response);
 
-      expect(response.body.message, equals('Error message'));
+      expect(convertedRes.body.message, equals('Error message'));
     });
   });
 }
