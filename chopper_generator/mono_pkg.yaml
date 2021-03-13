@@ -1,0 +1,12 @@
+dart:
+ - stable
+
+stages:
+  - analyze:
+    - dartanalyzer
+    - dartfmt
+  - cron:
+    - test:
+      os:
+        - linux
+        - windows

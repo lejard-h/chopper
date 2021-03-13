@@ -1,4 +1,13 @@
-travis:
-  sudo: required
-  addons:
-    chrome: stable
+github:
+  cron: '0 0 * * 0' # “At 00:00 (UTC) on Sunday.”
+
+  workflows:
+    lint:
+      name: Dart Lint CI
+      stages:
+      - analyze
+
+self_validate: analyze
+
+merge_stages:
+- analyze
