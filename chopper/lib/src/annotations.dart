@@ -157,11 +157,11 @@ class Method {
   final Map<String, String> headers;
 
   /// Mark the body as optional to suppress warnings during code generation
-  final bool? optionalBody;
+  final bool optionalBody;
 
   const Method(
     this.method, {
-    this.optionalBody,
+    this.optionalBody = false,
     this.path = '',
     this.headers = const {},
   });
@@ -264,6 +264,7 @@ class Head extends Method {
 
 /// A function that should convert the body of a [Request] to the HTTP representation.
 typedef ConvertRequest = FutureOr<Request> Function(Request request);
+
 /// A function that should convert the body of a [Response] from the HTTP
 /// representation to a Dart object.
 typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);

@@ -29,7 +29,7 @@ final allowedInterceptorsType = <Type>[
 class ChopperClient {
   /// Base URL of each request of the registered services.
   /// E.g., the hostname of your service.
-  final String? baseUrl;
+  final String baseUrl;
 
   /// The [http.Client] used to make network calls.
   final http.Client httpClient;
@@ -174,24 +174,16 @@ class ChopperClient {
     return service as ServiceType;
   }
 
-  Future<Request?> _encodeRequest(Request request) async {
-    if (converter != null) {
-      return converter?.convertRequest(request);
-    }
-
-    return request;
+  Future<Request> _encodeRequest(Request request) async {
+    return converter?.convertRequest(request) ?? request;
   }
 
   Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
     Response response,
-    Converter? withConverter,
+    Converter withConverter,
   ) async {
     final converted =
-        await withConverter?.convertResponse<BodyType, InnerType>(response);
-
-    if (converted == null) {
-      throw Exception('No converter found for type $InnerType');
-    }
+        await withConverter.convertResponse<BodyType, InnerType>(response);
 
     return converted;
   }
@@ -205,8 +197,6 @@ class ChopperClient {
         req = await i(req);
       }
     }
-
-    assert(req != null, 'Interceptors should return modified request');
 
     assert(
       body == req.body,
@@ -231,8 +221,6 @@ class ChopperClient {
         res = await i(res) as Response<BodyType>;
       }
     }
-
-    assert(res != null, 'Interceptors should return modified response');
 
     assert(
       body == res.body,
@@ -269,7 +257,7 @@ class ChopperClient {
       response = await responseConverter(response);
     } else if (converter != null) {
       response =
-          await _decodeResponse<BodyType, InnerType>(response, converter);
+          await _decodeResponse<BodyType, InnerType>(response, converter!);
     }
 
     return Response<BodyType>(
@@ -286,7 +274,7 @@ class ChopperClient {
       if (requestConverter != null) {
         request = await requestConverter(request);
       } else {
-        request = (await _encodeRequest(request))!;
+        request = (await _encodeRequest(request));
       }
     }
 
@@ -325,7 +313,7 @@ class ChopperClient {
     if (authenticator != null) {
       var updatedRequest = authenticator!.authenticate(request, res);
 
-        res = await send(await updatedRequest);
+      res = await send(await updatedRequest);
     }
 
     if (_responseIsSuccessful(response.statusCode)) {
@@ -347,7 +335,7 @@ class ChopperClient {
   /// Makes a HTTP GET request using the [send] function.
   Future<Response<BodyType>> get<BodyType, InnerType>(
     String url, {
-    Map<String, String>? headers,
+    Map<String, String> headers = const {},
     Map<String, dynamic>? parameters,
     String? baseUrl,
   }) =>
@@ -355,7 +343,7 @@ class ChopperClient {
         Request(
           HttpMethod.Get,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
@@ -366,16 +354,16 @@ class ChopperClient {
     String url, {
     dynamic body,
     List<PartValue>? parts,
-    Map<String, String>? headers,
+    Map<String, String> headers = const {},
     Map<String, dynamic>? parameters,
-    bool? multipart,
+    bool multipart = false,
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Post,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -389,16 +377,16 @@ class ChopperClient {
     String url, {
     dynamic body,
     List<PartValue>? parts,
-    Map<String, String>? headers,
+    Map<String, String> headers = const {},
     Map<String, dynamic>? parameters,
-    bool? multipart,
+    bool multipart = false,
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Put,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -412,16 +400,16 @@ class ChopperClient {
     String url, {
     dynamic body,
     List<PartValue>? parts,
-    Map<String, String>? headers,
+    Map<String, String> headers = const {},
     Map<String, dynamic>? parameters,
-    bool? multipart,
+    bool multipart = false,
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Patch,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           body: body,
           parts: parts,
           headers: headers,
@@ -433,7 +421,7 @@ class ChopperClient {
   /// Makes a HTTP DELETE request using the [send] function.
   Future<Response<BodyType>> delete<BodyType, InnerType>(
     String url, {
-    Map<String, String>? headers,
+    Map<String, String> headers = const {},
     Map<String, dynamic>? parameters,
     String? baseUrl,
   }) =>
@@ -441,7 +429,7 @@ class ChopperClient {
         Request(
           HttpMethod.Delete,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
@@ -450,7 +438,7 @@ class ChopperClient {
   /// Makes a HTTP HEAD request using the [send] function.
   Future<Response<BodyType>> head<BodyType, InnerType>(
     String url, {
-    Map<String, String>? headers,
+    Map<String, String> headers = const {},
     Map<String, dynamic>? parameters,
     String? baseUrl,
   }) =>
@@ -458,7 +446,7 @@ class ChopperClient {
         Request(
           HttpMethod.Head,
           url,
-          baseUrl ?? this.baseUrl!,
+          baseUrl ?? this.baseUrl,
           headers: headers,
           parameters: parameters,
         ),
