@@ -46,6 +46,9 @@ abstract class HttpTestService extends ChopperService {
     @Query('test') bool test,
   });
 
+  @Get(path: 'get_body')
+  Future<Response> getBody(@Body() dynamic body);
+
   @Post(path: 'post')
   Future<Response> postTest(@Body() String data);
 
