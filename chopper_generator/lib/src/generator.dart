@@ -88,15 +88,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }
 
   Constructor _generateConstructor() => Constructor((constructorBuilder) {
-        constructorBuilder.optionalParameters.add(
+        constructorBuilder.requiredParameters.add(
           Parameter((paramBuilder) {
             paramBuilder.name = _clientVar;
-            paramBuilder.type = refer('${chopper.ChopperClient}?');
+            paramBuilder.type = refer('${chopper.ChopperClient}');
           }),
-        );
-
-        constructorBuilder.body = Code(
-          'if ($_clientVar == null) return;\nthis.$_clientVar = $_clientVar;',
         );
       });
 
@@ -259,7 +255,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
             refer(responseInnerType!.getDisplayString(withNullability: false)));
       }
 
-      blocks.add(refer('$_clientVar!.send')
+      blocks.add(refer('$_clientVar.send')
           .call([refer(_requestVar)], namedArguments, typeArguments)
           .returned
           .statement);
@@ -403,7 +399,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final params = <Expression>[
       literal(getMethodName(method)),
       refer(_urlVar),
-      refer('$_clientVar!.$_baseUrlVar!'),
+      refer('$_clientVar.$_baseUrlVar'),
     ];
 
     final namedParams = <String, Expression>{};

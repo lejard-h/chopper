@@ -8,10 +8,7 @@ part of 'test_service.dart';
 
 // ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations
 class _$HttpTestService extends HttpTestService {
-  _$HttpTestService([ChopperClient? client]) {
-    if (client == null) return;
-    this.client = client;
-  }
+  _$HttpTestService(ChopperClient client);
 
   @override
   final definitionType = HttpTestService;
@@ -20,36 +17,36 @@ class _$HttpTestService extends HttpTestService {
   Future<Response<String>> getTest(String id, {String dynamicHeader = ''}) {
     final $url = '/test/get/$id';
     final $headers = {'test': dynamicHeader};
-    final $request = Request('GET', $url, client!.baseUrl!, headers: $headers);
-    return client!.send<String, String>($request);
+    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    return client.send<String, String>($request);
   }
 
   @override
   Future<Response<dynamic>> headTest() {
     final $url = '/test/head';
-    final $request = Request('HEAD', $url, client!.baseUrl!);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('HEAD', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<Stream<List<int>>>> getStreamTest() {
     final $url = '/test/get';
-    final $request = Request('GET', $url, client!.baseUrl!);
-    return client!.send<Stream<List<int>>, int>($request);
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<Stream<List<int>>, int>($request);
   }
 
   @override
   Future<Response<dynamic>> getAll() {
     final $url = '/test';
-    final $request = Request('GET', $url, client!.baseUrl!);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> getAllWithTrailingSlash() {
     final $url = '/test/';
-    final $request = Request('GET', $url, client!.baseUrl!);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -61,18 +58,16 @@ class _$HttpTestService extends HttpTestService {
       'int': number,
       'default_value': def
     };
-    final $request =
-        Request('GET', $url, client!.baseUrl!, parameters: $params);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> getQueryMapTest(Map<String, dynamic> query) {
     final $url = '/test/query_map';
     final $params = query;
-    final $request =
-        Request('GET', $url, client!.baseUrl!, parameters: $params);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -81,67 +76,65 @@ class _$HttpTestService extends HttpTestService {
     final $url = '/test/query_map';
     final $params = <String, dynamic>{'test': test};
     $params.addAll(query);
-    final $request =
-        Request('GET', $url, client!.baseUrl!, parameters: $params);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> postTest(String data) {
     final $url = '/test/post';
     final $body = data;
-    final $request = Request('POST', $url, client!.baseUrl!, body: $body);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> postStreamTest(Stream<List<int>> byteStream) {
     final $url = '/test/post';
     final $body = byteStream;
-    final $request = Request('POST', $url, client!.baseUrl!, body: $body);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> putTest(String test, String data) {
     final $url = '/test/put/$test';
     final $body = data;
-    final $request = Request('PUT', $url, client!.baseUrl!, body: $body);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('PUT', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> deleteTest(String id) {
     final $url = '/test/delete/$id';
     final $headers = {'foo': 'bar'};
-    final $request =
-        Request('DELETE', $url, client!.baseUrl!, headers: $headers);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('DELETE', $url, client.baseUrl, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> patchTest(String id, String data) {
     final $url = '/test/patch/$id';
     final $body = data;
-    final $request = Request('PATCH', $url, client!.baseUrl!, body: $body);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('PATCH', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> mapTest(Map<String, String> map) {
     final $url = '/test/map';
     final $body = map;
-    final $request = Request('POST', $url, client!.baseUrl!, body: $body);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> postForm(Map<String, String> fields) {
     final $url = '/test/form/body';
     final $body = fields;
-    final $request = Request('POST', $url, client!.baseUrl!, body: $body);
-    return client!
-        .send<dynamic, dynamic>($request, requestConverter: convertForm);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request,
+        requestConverter: convertForm);
   }
 
   @override
@@ -150,25 +143,25 @@ class _$HttpTestService extends HttpTestService {
     final $headers = {'content-type': 'application/x-www-form-urlencoded'};
     final $body = fields;
     final $request =
-        Request('POST', $url, client!.baseUrl!, body: $body, headers: $headers);
-    return client!.send<dynamic, dynamic>($request);
+        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> postFormFields(String foo, int bar) {
     final $url = '/test/form/body/fields';
     final $body = <String, dynamic>{'foo': foo, 'bar': bar};
-    final $request = Request('POST', $url, client!.baseUrl!, body: $body);
-    return client!
-        .send<dynamic, dynamic>($request, requestConverter: convertForm);
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request,
+        requestConverter: convertForm);
   }
 
   @override
   Future<Response<dynamic>> forceJsonTest(Map<dynamic, dynamic> map) {
     final $url = '/test/map/json';
     final $body = map;
-    final $request = Request('POST', $url, client!.baseUrl!, body: $body);
-    return client!.send<dynamic, dynamic>($request,
+    final $request = Request('POST', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request,
         requestConverter: customConvertRequest,
         responseConverter: customConvertResponse);
   }
@@ -182,8 +175,8 @@ class _$HttpTestService extends HttpTestService {
       PartValue<Map<dynamic, dynamic>>('2', b)
     ];
     final $request =
-        Request('POST', $url, client!.baseUrl!, parts: $parts, multipart: true);
-    return client!.send<dynamic, dynamic>($request);
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -191,8 +184,8 @@ class _$HttpTestService extends HttpTestService {
     final $url = '/test/file';
     final $parts = <PartValue>[PartValueFile<List<int>>('file', bytes)];
     final $request =
-        Request('POST', $url, client!.baseUrl!, parts: $parts, multipart: true);
-    return client!.send<dynamic, dynamic>($request);
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -204,8 +197,8 @@ class _$HttpTestService extends HttpTestService {
       PartValueFile<MultipartFile>('file', file)
     ];
     final $request =
-        Request('POST', $url, client!.baseUrl!, parts: $parts, multipart: true);
-    return client!.send<dynamic, dynamic>($request);
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -215,28 +208,28 @@ class _$HttpTestService extends HttpTestService {
       PartValueFile<List<MultipartFile>>('files', files)
     ];
     final $request =
-        Request('POST', $url, client!.baseUrl!, parts: $parts, multipart: true);
-    return client!.send<dynamic, dynamic>($request);
+        Request('POST', $url, client.baseUrl, parts: $parts, multipart: true);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<dynamic> fullUrl() {
     final $url = 'https://test.com';
-    final $request = Request('GET', $url, client!.baseUrl!);
-    return client!.send($request);
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send($request);
   }
 
   @override
   Future<Response<List<String>>> listString() {
     final $url = '/test/list/string';
-    final $request = Request('GET', $url, client!.baseUrl!);
-    return client!.send<List<String>, String>($request);
+    final $request = Request('GET', $url, client.baseUrl);
+    return client.send<List<String>, String>($request);
   }
 
   @override
   Future<Response<dynamic>> noBody() {
     final $url = '/test/no-body';
-    final $request = Request('POST', $url, client!.baseUrl!);
-    return client!.send<dynamic, dynamic>($request);
+    final $request = Request('POST', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
   }
 }

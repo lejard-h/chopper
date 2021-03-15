@@ -495,7 +495,7 @@ class ChopperClient {
 ///}
 ///```
 abstract class ChopperService {
-  ChopperClient? client;
+  late ChopperClient client;
 
   /// Used internally to retrieve the service from [ChopperClient].
   // TODO: use runtimeType
@@ -504,7 +504,7 @@ abstract class ChopperService {
   /// Disposes this [ChopperService] to clean up memory.
   @mustCallSuper
   void dispose() {
-    client = null;
+    client.dispose();
   }
 }
 
