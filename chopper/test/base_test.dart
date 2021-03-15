@@ -104,6 +104,28 @@ void main() {
       httpClient.close();
     });
 
+    test('GET with query params, null value', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/query'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getQueryTest(number: null);
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('GET with query params, default value', () async {
       final httpClient = MockClient((request) async {
         expect(
