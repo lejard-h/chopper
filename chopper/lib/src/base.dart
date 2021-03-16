@@ -338,12 +338,14 @@ class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic>? parameters,
     String? baseUrl,
+    dynamic? body
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Get,
           url,
           baseUrl ?? this.baseUrl,
+          body: body,
           headers: headers,
           parameters: parameters,
         ),
