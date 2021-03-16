@@ -11,7 +11,7 @@ Chopper is an http client generator for Dart and Flutter using source_gen and in
 In your project's `pubspec.yaml` file, 
 
 * Add *chopper*'s latest version to your *dependencies*.
-* Add `build_runner: ^1.10.3` to your *dev_dependencies*.
+* Add `build_runner: ^1.12.1` to your *dev_dependencies*.
   * *build_runner* may already be in your *dev_dependencies* depending on your project setup and other dependencies.
 * Add *chopper_generator*'s latest version to your *dev_dependencies*.
 
@@ -22,7 +22,7 @@ dependencies:
   chopper: ^<latest version>
 
 dev_dependencies:
-  build_runner: ^1.10.3
+  build_runner: ^1.12.1
   chopper_generator: ^<latest version>
 ```
 
