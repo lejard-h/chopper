@@ -88,11 +88,15 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }
 
   Constructor _generateConstructor() => Constructor((constructorBuilder) {
-        constructorBuilder.requiredParameters.add(
+        constructorBuilder.optionalParameters.add(
           Parameter((paramBuilder) {
             paramBuilder.name = _clientVar;
-            paramBuilder.type = refer('${chopper.ChopperClient}');
+            paramBuilder.type = refer('${chopper.ChopperClient}?');
           }),
+        );
+
+        constructorBuilder.body = Code(
+          'if ($_clientVar == null) return;\nthis.$_clientVar = $_clientVar;',
         );
       });
 

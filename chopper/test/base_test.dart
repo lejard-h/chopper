@@ -118,7 +118,7 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response = await service.getQueryTest(number: null);
+      final response = await service.getQueryTest(number: null, def: null);
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));

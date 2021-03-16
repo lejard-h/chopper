@@ -461,8 +461,6 @@ class ChopperClient {
   void dispose() {
     _requestController.close();
     _responseController.close();
-
-    _services.forEach((_, s) => s.dispose());
     _services.clear();
 
     _requestInterceptors.clear();
@@ -500,12 +498,6 @@ abstract class ChopperService {
   /// Used internally to retrieve the service from [ChopperClient].
   // TODO: use runtimeType
   Type get definitionType;
-
-  /// Disposes this [ChopperService] to clean up memory.
-  @mustCallSuper
-  void dispose() {
-    client.dispose();
-  }
 }
 
 bool _responseIsSuccessful(int statusCode) =>

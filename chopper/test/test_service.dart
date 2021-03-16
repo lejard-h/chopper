@@ -10,7 +10,7 @@ part 'test_service.chopper.dart';
 @ChopperApi(baseUrl: '/test')
 abstract class HttpTestService extends ChopperService {
   static HttpTestService create([ChopperClient? client]) =>
-      _$HttpTestService(client ?? ChopperClient());
+      _$HttpTestService(client);
 
   @Get(path: 'get/{id}')
   Future<Response<String>> getTest(
@@ -34,7 +34,7 @@ abstract class HttpTestService extends ChopperService {
   Future<Response> getQueryTest({
     @Query('name') String name = '',
     @Query('int') int? number,
-    @Query('default_value') int def = 42,
+    @Query('default_value') int? def = 42,
   });
 
   @Get(path: 'query_map')

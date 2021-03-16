@@ -8,7 +8,10 @@ part of 'test_service.dart';
 
 // ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations
 class _$HttpTestService extends HttpTestService {
-  _$HttpTestService(ChopperClient client);
+  _$HttpTestService([ChopperClient? client]) {
+    if (client == null) return;
+    this.client = client;
+  }
 
   @override
   final definitionType = HttpTestService;
@@ -51,7 +54,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getQueryTest(
-      {String name = '', int? number, int def = 42}) {
+      {String name = '', int? number, int? def = 42}) {
     final $url = '/test/query';
     final $params = <String, dynamic>{
       'name': name,
