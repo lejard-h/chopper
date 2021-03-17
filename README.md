@@ -16,14 +16,14 @@ Chopper is an http client generator for Dart and Flutter using source_gen and in
 
 Please refer to the installation guide at [pub.dev](https://pub.dev/packages/chopper/install) or in the [Getting started](getting-started.md) document.
 
-- [Requests](requests.md)
-- [Converters](converters/converters.md)
-- [Interceptors](interceptors.md)
+* [Requests](requests.md)
+* [Converters](converters/converters.md)
+* [Interceptors](interceptors.md)
 
 ## Examples
 
-- [json serializable Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
-- [built value Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
-- [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
+* [json serializable Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
+* [built value Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
+* [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
 
 ## [Issue Tracker](https://github.com/lejard-h/chopper/issues)
