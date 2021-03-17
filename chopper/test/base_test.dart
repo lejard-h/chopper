@@ -186,8 +186,7 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response =
-          await service.getBody('get body');
+      final response = await service.getBody('get body');
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
