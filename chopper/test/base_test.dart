@@ -171,6 +171,30 @@ void main() {
       httpClient.close();
     });
 
+    test('GET with body', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/get_body'),
+        );
+        expect(request.method, equals('GET'));
+        expect(request.body, equals('get body'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response =
+          await service.getBody('get body');
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('POST', () async {
       final httpClient = MockClient((request) async {
         expect(

@@ -84,6 +84,14 @@ class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<dynamic>> getBody(dynamic body) {
+    final $url = '/test/get_body';
+    final $body = body;
+    final $request = Request('GET', $url, client.baseUrl, body: $body);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> postTest(String data) {
     final $url = '/test/post';
     final $body = data;
