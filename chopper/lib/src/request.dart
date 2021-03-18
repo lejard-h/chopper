@@ -204,7 +204,7 @@ Future<http.Request> toHttpRequest(
 
 @visibleForTesting
 Future<http.MultipartRequest> toMultipartRequest(
-  List<PartValue?> parts,
+  List<PartValue> parts,
   String method,
   Uri uri,
   Map<String, String> headers,
@@ -213,7 +213,7 @@ Future<http.MultipartRequest> toMultipartRequest(
   baseRequest.headers.addAll(headers);
 
   for (final part in parts) {
-    if (part == null || part.value == null) continue;
+    if (part.value == null) continue;
 
     if (part.value is http.MultipartFile) {
       baseRequest.files.add(part.value);

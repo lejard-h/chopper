@@ -246,7 +246,6 @@ void main() {
       [
         PartValue<int>('int', 42),
         PartValueFile<List<int>>('list int', [1, 2]),
-        null,
         PartValue('null value', null),
         PartValueFile('null file', null),
       ],
