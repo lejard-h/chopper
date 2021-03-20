@@ -22,7 +22,7 @@ dependencies:
   chopper: ^<latest version>
 
 dev_dependencies:
-  build_runner: ^1.12.1
+  build_runner: ^1.12.2
   chopper_generator: ^<latest version>
 ```
 
