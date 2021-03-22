@@ -43,8 +43,10 @@ Request applyHeaders(
   final h = Map<String, String>.from(request.headers);
 
   for (var k in headers.keys) {
+    var val = headers[k];
+    if (val == null) continue;
     if (!override && h.containsKey(k)) continue;
-    h[k] = headers[k]!;
+    h[k] = val;
   }
 
   return request.copyWith(headers: h);
