@@ -170,7 +170,6 @@ jobs:
       - id: upload_coverage
         name: chopper; tool/coverage.sh
         if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: chopper
         run: bash tool/coverage.sh
         env:
           CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
