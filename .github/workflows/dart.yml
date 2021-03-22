@@ -163,6 +163,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: bash tool/coverage.sh
+        env:
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
     needs:
       - job_001
       - job_002

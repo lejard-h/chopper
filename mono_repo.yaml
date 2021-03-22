@@ -16,6 +16,8 @@ github:
       runs-on: ubuntu-latest
       steps:
         - run: bash tool/coverage.sh
+          env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 merge_stages:
 - analyzer_and_format
