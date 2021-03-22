@@ -1,6 +1,5 @@
 import 'package:chopper/chopper.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 
 /// Creates a new [Request] by copying [request] and adding a header with the
 /// provided key [name] and value [value] to the result.

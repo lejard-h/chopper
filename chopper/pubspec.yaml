@@ -17,7 +17,7 @@ dev_dependencies:
   test: ^1.16.4
   build_runner: ^1.12.1
   build_test: ^2.0.0
-  coverage: ^1.0.1
+  coverage: ^1.0.2
 # wait https://github.com/pulyaevskiy/test-coverage/pull/39
 #  test_coverage:
 #    git:
