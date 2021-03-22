@@ -7,7 +7,7 @@ Future<void> main() async {
     baseUrl: 'http://localhost:8000',
     services: [
       // the generated service
-      MyService.create()
+      MyService.create(ChopperClient())
     ],
     converter: JsonConverter(),
   );

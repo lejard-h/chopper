@@ -21,7 +21,8 @@ void main() {
             HttpTestService.create(),
           ],
           client: httpClient,
-          converter: json ? JsonConverter() : FormUrlEncodedConverter(),
+          converter:
+              json ? JsonConverter() as Converter : FormUrlEncodedConverter(),
         );
 
     test('default json', () async {

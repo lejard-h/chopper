@@ -11,7 +11,7 @@ const baseUrl = 'http://localhost:8000';
 
 void main() {
   final buildClient = (
-          [http.Client httpClient, ErrorConverter errorConverter]) =>
+          [http.Client? httpClient, ErrorConverter? errorConverter]) =>
       ChopperClient(
         baseUrl: baseUrl,
         services: [
@@ -94,7 +94,7 @@ void main() {
       final response = await service.getStreamTest();
 
       final bytes = <int>[];
-      await response.body.forEach((d) {
+      await response.body!.forEach((d) {
         bytes.addAll(d);
       });
 
@@ -118,7 +118,7 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response = await service.getQueryTest(def: null);
+      final response = await service.getQueryTest(number: null, def: null);
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
