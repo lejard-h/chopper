@@ -175,7 +175,7 @@ void main() {
       expect(
         log,
         equals(
-          "curl -v -X POST -H 'foo: bar' -H 'content-type: text/plain; charset=utf-8' -d 'test' base/",
+          "curl -v -X POST -H 'foo: bar' -H 'content-type: text/plain; charset=utf-8' -d 'test' \"base/\"",
         ),
       );
     });
