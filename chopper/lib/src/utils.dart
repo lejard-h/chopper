@@ -1,6 +1,5 @@
 import 'package:chopper/chopper.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
 
 /// Creates a new [Request] by copying [request] and adding a header with the
 /// provided key [name] and value [value] to the result.
@@ -43,8 +42,10 @@ Request applyHeaders(
   final h = Map<String, String>.from(request.headers);
 
   for (var k in headers.keys) {
+    var val = headers[k];
+    if (val == null) continue;
     if (!override && h.containsKey(k)) continue;
-    h[k] = headers[k];
+    h[k] = val;
   }
 
   return request.copyWith(headers: h);
@@ -59,7 +60,7 @@ String mapToQuery(Map<String, dynamic> map) => _mapToQuery(map).join('&');
 
 Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
-  String prefix,
+  String? prefix,
 }) {
   /// ignore: prefer_collection_literals
   final pairs = Set<_Pair<String, String>>();
@@ -74,7 +75,7 @@ Iterable<_Pair<String, String>> _mapToQuery(
 
       if (value is Iterable) {
         pairs.addAll(_iterableToQuery(name, value));
-      } else if (value is Map) {
+      } else if (value is Map<String, dynamic>) {
         pairs.addAll(_mapToQuery(value, prefix: name));
       } else if (value.toString().isNotEmpty == true) {
         pairs.add(_Pair<String, String>(name, _normalizeValue(value)));

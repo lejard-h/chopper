@@ -9,13 +9,13 @@ part 'test_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/test')
 abstract class HttpTestService extends ChopperService {
-  static HttpTestService create([ChopperClient client]) =>
+  static HttpTestService create([ChopperClient? client]) =>
       _$HttpTestService(client);
 
   @Get(path: 'get/{id}')
   Future<Response<String>> getTest(
     @Path() String id, {
-    @Header('test') String dynamicHeader,
+    @Header('test') String dynamicHeader = '',
   });
 
   @Head(path: 'head')
@@ -32,9 +32,9 @@ abstract class HttpTestService extends ChopperService {
 
   @Get(path: 'query')
   Future<Response> getQueryTest({
-    @Query('name') String name,
-    @Query('int') int number,
-    @Query('default_value') int def = 42,
+    @Query('name') String name = '',
+    @Query('int') int? number,
+    @Query('default_value') int? def = 42,
   });
 
   @Get(path: 'query_map')
@@ -43,7 +43,7 @@ abstract class HttpTestService extends ChopperService {
   @Get(path: 'query_map')
   Future<Response> getQueryMapTest2(
     @QueryMap() Map<String, dynamic> query, {
-    @Query('test') bool test,
+    @Query('test') bool? test,
   });
 
   @Get(path: 'get_body')
@@ -100,7 +100,7 @@ abstract class HttpTestService extends ChopperService {
   @multipart
   Future<Response> postMultipartFile(
     @PartFile() MultipartFile file, {
-    @Part() String id,
+    @Part() String? id,
   });
 
   @Post(path: 'files')
