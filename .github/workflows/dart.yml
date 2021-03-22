@@ -97,7 +97,7 @@ jobs:
         working-directory: chopper_generator
         run: dartanalyzer --fatal-infos .
   job_003:
-    name: "unit_test; PKG: chopper; `pub run test --coverage=coverage`"
+    name: "unit_test; PKG: chopper; `pub run test`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
@@ -120,10 +120,10 @@ jobs:
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper
         run: pub upgrade --no-precompile
-      - name: "chopper; pub run test --coverage=coverage"
+      - name: chopper; pub run test
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
-        run: "pub run test --coverage=coverage"
+        run: pub run test
     needs:
       - job_001
       - job_002

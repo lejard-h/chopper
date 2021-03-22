@@ -1,6 +1,7 @@
 #!/bin/bash
 
 dart pub get
+dart run test --coverage=coverage
 dart run coverage:format_coverage --lcov \
                                   --in=coverage \
                                   --out=coverage/coverage.lcov \

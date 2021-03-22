@@ -7,10 +7,5 @@ stages:
     - dartfmt
     - dartanalyzer: --fatal-infos .
 - unit_test:
-  - test: --coverage=coverage
+  - test:
   - test: -p chrome
-
-cache:
-  directories:
-    - .dart_tool/build
-    - coverage/
