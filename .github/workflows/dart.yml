@@ -162,6 +162,9 @@ jobs:
     name: Coverage
     runs-on: ubuntu-latest
     steps:
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: stable
       - id: checkout
         uses: actions/checkout@v2
       - id: upload_coverage
