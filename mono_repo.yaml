@@ -15,7 +15,7 @@ github:
     - name: "Coverage"
       runs-on: ubuntu-latest
       steps:
-        - run: ./tool/coverage.sh
+        - run: bash tool/coverage.sh
 
 merge_stages:
 - analyzer_and_format
