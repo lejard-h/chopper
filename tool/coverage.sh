@@ -3,7 +3,6 @@
 pushd chopper
 
 dart pub get
-
 dart run coverage:format_coverage --lcov \
                                   --in=coverage \
                                   --out=coverage/coverage.lcov \
