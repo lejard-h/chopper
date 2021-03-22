@@ -7,7 +7,7 @@ stages:
     - dartfmt
     - dartanalyzer: --fatal-infos .
 - unit_test:
-  - test:
+  - test: --coverage=coverage
   - test: -p chrome
 
 cache:
