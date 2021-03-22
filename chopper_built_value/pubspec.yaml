@@ -24,5 +24,6 @@ dev_dependencies:
 
 dependency_overrides:
   analyzer: 1.1.0
+  #Comment before publish
   chopper:
     path: ../chopper

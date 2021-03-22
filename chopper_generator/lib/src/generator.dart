@@ -1,7 +1,6 @@
 ///@nodoc
 import 'dart:async';
 
-import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -12,6 +11,8 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dart_style/dart_style.dart';
 
 import 'package:source_gen/source_gen.dart';
+// TODO(lejard_h) Code builder not null safe yet
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:code_builder/code_builder.dart';
 import 'package:chopper/chopper.dart' as chopper;
 import 'package:logging/logging.dart';
@@ -308,7 +309,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
   ConstantReader? _getMethodAnnotation(MethodElement method) {
     for (final type in _methodsAnnotations) {
-      DartObject? annotation = _typeChecker(type)
+      final annotation = _typeChecker(type)
           .firstAnnotationOf(method, throwOnUnresolved: false);
       if (annotation != null) return ConstantReader(annotation);
     }
@@ -480,11 +481,16 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       headers[literal(name)] = refer(parameter.displayName);
     });
 
-    final methodAnnotations = method.peek('headers').mapValue;
+    final headersReader = method.peek('headers');
+    if (headersReader == null) return null;
+
+    final methodAnnotations = headersReader.mapValue;
 
     methodAnnotations.forEach((headerName, headerValue) {
-      headers[literal(headerName.toStringValue())] =
-          literal(headerValue.toStringValue());
+      if (headerName != null && headerValue != null) {
+        headers[literal(headerName.toStringValue())] =
+            literal(headerValue.toStringValue());
+      }
     });
 
     if (headers.isEmpty) {

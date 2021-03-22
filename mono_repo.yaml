@@ -1,4 +1,17 @@
-travis:
-  sudo: required
-  addons:
-    chrome: stable
+self_validate: analyzer_and_format
+
+github:
+  on:
+    push:
+      branches:
+      - master
+      - develop
+      - github-action
+    pull_request:
+      branches:
+      - master
+      - develop
+
+merge_stages:
+- analyzer_and_format
+- unit_test

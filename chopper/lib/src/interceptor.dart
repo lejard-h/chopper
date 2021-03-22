@@ -73,7 +73,6 @@ abstract class RequestInterceptor {
 /// See [JsonConverter] and [FormUrlEncodedConverter] for example implementations.
 @immutable
 abstract class Converter {
-
   /// Converts the received [Request] to a [Request] which has a body with the
   /// HTTP representation of the original body.
   FutureOr<Request> convertRequest(Request request);
@@ -96,7 +95,6 @@ abstract class Converter {
 /// An `ErrorConverter` is called only on error responses
 /// (statusCode < 200 || statusCode >= 300) and before any [ResponseInterceptor]s.
 abstract class ErrorConverter {
-
   /// Converts the received [Response] to a [Response] which has a body with the
   /// HTTP representation of the original body.
   FutureOr<Response> convertError<BodyType, InnerType>(Response response);
