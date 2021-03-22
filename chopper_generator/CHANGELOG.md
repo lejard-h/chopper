@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0-nullsafety.0
+
+- Null safety
+
 ## 3.0.5
 
 - Packages upgrade

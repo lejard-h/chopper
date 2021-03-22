@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.0-nullsafety.0
+
+- Null safety
+- Support OPTIONS request
+- Support passing body to GET request
+
 ## 3.0.3
 
 - Packages upgrade
