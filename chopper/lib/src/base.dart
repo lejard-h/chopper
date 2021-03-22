@@ -457,9 +457,9 @@ class ChopperClient {
   /// Makes a HTTP OPTIONS request using the [send] function.
   Future<Response<BodyType>> options<BodyType, InnerType>(
     String url, {
-    Map<String, String> headers,
-    Map<String, dynamic> parameters,
-    String baseUrl,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
