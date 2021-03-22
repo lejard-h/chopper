@@ -12,4 +12,5 @@ class HttpMethod {
   static const String Delete = 'DELETE';
   static const String Patch = 'PATCH';
   static const String Head = 'HEAD';
+  static const String Options = 'OPTIONS';
 }

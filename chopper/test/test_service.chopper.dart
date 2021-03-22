@@ -32,6 +32,13 @@ class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<dynamic>> optionsTest() {
+    final $url = '/test/options';
+    final $request = Request('OPTIONS', $url, client.baseUrl);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<Stream<List<int>>>> getStreamTest() {
     final $url = '/test/get';
     final $request = Request('GET', $url, client.baseUrl);

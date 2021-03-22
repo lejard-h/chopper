@@ -262,6 +262,20 @@ class Head extends Method {
         );
 }
 
+@immutable
+class Options extends Method {
+  const Options({
+    bool optionalBody = true,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Options,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
+}
+
 /// A function that should convert the body of a [Request] to the HTTP representation.
 typedef ConvertRequest = FutureOr<Request> Function(Request request);
 

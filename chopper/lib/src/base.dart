@@ -454,6 +454,23 @@ class ChopperClient {
         ),
       );
 
+  /// Makes a HTTP OPTIONS request using the [send] function.
+  Future<Response<BodyType>> options<BodyType, InnerType>(
+    String url, {
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    String? baseUrl,
+  }) =>
+      send<BodyType, InnerType>(
+        Request(
+          HttpMethod.Options,
+          url,
+          baseUrl ?? this.baseUrl,
+          headers: headers,
+          parameters: parameters,
+        ),
+      );
+
   /// Disposes this [ChopperClient] to clean up memory.
   ///
   /// **Warning**: If a custom [http.Client] was provided while creating this `ChopperClient`,
