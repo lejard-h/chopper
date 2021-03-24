@@ -1,0 +1,14 @@
+{
+  "projectName": "Choper",
+  "projectOwner": "lejard-h",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 50,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [],
+  "contributorsPerLine": 7
+}
