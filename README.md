@@ -5,7 +5,7 @@
 # Chopper
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper)
 [![Dart CI](https://github.com/lejard-h/chopper/workflows/Dart%20CI/badge.svg)](https://github.com/lejard-h/chopper/actions?query=workflow%3A%22Dart+CI%22)
@@ -44,6 +44,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/stewemetal"><img src="https://avatars.githubusercontent.com/u/5860632?v=4?s=100" width="100px;" alt=""/><br /><sub><b>István Juhos</b></sub></a><br /><a href="https://github.com/lejard-h/chopper/commits?author=stewemetal" title="Code">💻</a> <a href="https://github.com/lejard-h/chopper/pulls?q=is%3Apr+reviewed-by%3Astewemetal" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/lejard-h/chopper/commits?author=stewemetal" title="Tests">⚠️</a> <a href="https://github.com/lejard-h/chopper/commits?author=stewemetal" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.upwork.com/freelancers/~01192eefd8a1c267f7"><img src="https://avatars.githubusercontent.com/u/231950?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ivan Terekhin</b></sub></a><br /><a href="https://github.com/lejard-h/chopper/commits?author=JEuler" title="Code">💻</a> <a href="https://github.com/lejard-h/chopper/pulls?q=is%3Apr+reviewed-by%3AJEuler" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/lejard-h/chopper/commits?author=JEuler" title="Tests">⚠️</a> <a href="https://github.com/lejard-h/chopper/commits?author=JEuler" title="Documentation">📖</a></td>
     <td align="center"><a href="http://ysampir@gmail.com"><img src="https://avatars.githubusercontent.com/u/3999503?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Eugeny Sampir</b></sub></a><br /><a href="https://github.com/lejard-h/chopper/commits?author=fryette" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Vovanella95"><img src="https://avatars.githubusercontent.com/u/11267533?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Uladzimir_Paliukhovich</b></sub></a><br /><a href="https://github.com/lejard-h/chopper/commits?author=Vovanella95" title="Code">💻</a></td>
   </tr>
 </table>
 
