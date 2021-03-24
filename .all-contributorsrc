@@ -1,0 +1,27 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "JEuler",
+      "name": "Ivan Terekhin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/231950?v=4",
+      "profile": "https://www.upwork.com/freelancers/~01192eefd8a1c267f7",
+      "contributions": [
+        "code",
+        "review",
+        "test",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "chopper",
+  "projectOwner": "lejard-h",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
