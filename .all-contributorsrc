@@ -6,6 +6,18 @@
   "commit": false,
   "contributors": [
     {
+      "login": "stewemetal",
+      "name": "István Juhos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5860632?v=4",
+      "profile": "https://github.com/stewemetal",
+      "contributions": [
+        "code",
+        "review",
+        "test",
+        "doc"
+      ]
+},
+{
       "login": "lejard-h",
       "name": "Hadrien Lejard",
       "avatar_url": "https://avatars.githubusercontent.com/u/7336262?v=4",
