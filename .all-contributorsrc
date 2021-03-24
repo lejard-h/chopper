@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "Vovanella95",
+      "name": "Uladzimir_Paliukhovich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11267533?v=4",
+      "profile": "https://github.com/Vovanella95",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "chopper",
+  "projectOwner": "lejard-h",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
