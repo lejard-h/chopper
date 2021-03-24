@@ -16,6 +16,18 @@
         "test",
         "doc"
       ]
+},
+{
+      "login": "lejard-h",
+      "name": "Hadrien Lejard",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7336262?v=4",
+      "profile": "https://github.com/lejard-h",
+      "contributions": [
+        "code",
+        "review",
+        "test",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
