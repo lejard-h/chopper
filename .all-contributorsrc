@@ -1,0 +1,27 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "stewemetal",
+      "name": "István Juhos",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5860632?v=4",
+      "profile": "https://github.com/stewemetal",
+      "contributions": [
+        "code",
+        "review",
+        "test",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "chopper",
+  "projectOwner": "lejard-h",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
