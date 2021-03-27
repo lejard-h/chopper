@@ -32,30 +32,6 @@ class Request {
         multipart = multipart ?? false,
         parts = parts ?? const [];
 
-  @Deprecated('Prefer copyWith method')
-  Request replace({
-    HttpMethod? method,
-    String? url,
-    dynamic body,
-    Map<String, dynamic>? parameters,
-    Map<String, String>? headers,
-    Encoding? encoding,
-    List<PartValue>? parts,
-    bool? multipart,
-    String? baseUrl,
-  }) =>
-      copyWith(
-        method: method,
-        url: url,
-        body: body,
-        parameters: parameters,
-        headers: headers,
-        encoding: encoding,
-        parts: parts,
-        multipart: multipart,
-        baseUrl: baseUrl,
-      );
-
   /// Makes a copy of this request, replacing original values with the given ones.
   Request copyWith({
     HttpMethod? method,

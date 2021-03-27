@@ -2,7 +2,8 @@
 
 ## 4.0.0-nullsafety.1
 
-- Removed deprecated `FileField`, use `PartFile` instead
+- Remove deprecated `FileField`, use `PartFile` instead
+- Remove deprecated `Request.replace`, use `Request.copyWith` instead
 
 ## 4.0.0-nullsafety.0
 
