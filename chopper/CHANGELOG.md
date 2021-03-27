@@ -5,7 +5,7 @@
 - Remove deprecated `FileField`, use `PartFile` instead
 - Remove deprecated `Request.replace`, use `Request.copyWith` instead
 - Remove deprecated `PartValue.replace`, use `PartValue.copyWith` instead
-
+- Remove deprecated `Response.replace`, use `Response.copyWith` instead
 
 ## 4.0.0-nullsafety.0
 
