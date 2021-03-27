@@ -133,6 +133,7 @@ import 'dart:io';
 import 'package:http/io_client.dart' as http;
 
 final ioc = new HttpClient();
+ioc.findProxy = (url) => 'PROXY 192.168.0.102:9090';
 ioc.badCertificateCallback = (X509Certificate cert, String host, int port)
   => true;
 

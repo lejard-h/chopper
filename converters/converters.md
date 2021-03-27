@@ -1,55 +1,59 @@
 # Converters
 
-Converter are used to apply transformation to a request or response body, for example transforming a Dart object to a `Map<String, dynamic>`
+Converters are used to apply transformations on request and/or response bodies, for example, transforming a Dart object to a `Map<String, dynamic>` or vice versa.
 
 Both `converter` and `errorConverter` are called before request and response interceptors.
 
 ```dart
-final chopper = new ChopperClient(
+final chopper = ChopperClient(
    converter: JsonConverter(),
    errorConverter: JsonConverter()
 );
 ```
 
 {% hint style="info" %}
-`errorConverter` is called only on error response \(statusCode &lt; 200 \|\| statusCode &gt;= 300\)
+The `errorConverter` is called only on error responses (statusCode < 200 || statusCode >= 300).
 {% endhint %}
 
-## JSON
+## The built-in JSON converter
 
-Chopper integrate a `JsonConverter` that take care of encoding data to JSON and decoding JSON string. It will also apply the correct header to the request \(application/json\).
+Chopper provides a `JsonConverter` that is able to encode data to JSON and decode JSON strings. It will also apply the correct header to the request \(application/json\).
 
-However, if content type header is overrided using`@Post(headers: {'content-type': '...'})`The converter won't add json header and won't apply json.encode if content type is not JSON.
+However, if content type header is modified (for example by using `@Post(headers: {'content-type': '...'})`), `JsonConverter` won't add the header and it won't call json.encode if content type is not JSON.
 
 {% hint style="danger" %}
-`JsonConverter` won't convert a Dart object into a `Map<String, dynamic>` or a `List`, but it will convert the `Map<String, dynamic>` into a JSON string.
+`JsonConverter` itself won't convert a Dart object into a `Map<String, dynamic>` or a `List`, but it will convert a `Map<String, dynamic>` into a JSON string.
 {% endhint %}
 
-## Custom converter
+## Implementing custom converters
 
-You can implement a converter by implementing the `Converter` class.
+You can implement custom converters by implementing the `Converter` class.
 
 ```dart
 class MyConverter implements Converter {
   @override
-  Response<BodyType> convertResponse<BodyType, InnerType>(Response res) {
-   return res;
+  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
+    var body = response.body;
+    // Convert body to BodyType however you like
+    response.copyWith<BodyType>(body: body);
   }
 
   @override
-  Request convertRequest(Request req) {
-    return req;
+  Request convertRequest(Request request) {
+    var body = request.body;
+    // Convert body to String however you like    
+    return request.copyWith(body: body);
   }
 }
 ```
 
-`BodyType`is the expected type of your response \(ex: `String` or `CustomObject)`
+`BodyType`is the expected type of the response body \(e.g., `String` or `CustomObject)`.
 
- In the case of `BodyType` is a `List` or `BuildList`, `InnerType` will be the type of the generic \(ex: `convertResponse<List<CustomObject>, CustomObject>(response)` \)
+If `BodyType` is a `List` or a `BuiltList`, `InnerType` is the type of the generic parameter \(e.g., `convertResponse<List<CustomObject>, CustomObject>(response)`).
 
-## Factory Converter
+## Using different converters for specific endpoints
 
-In case you want to apply a converter to a single endpoint, you can use a `FactoryConverter`
+If you want to apply specific converters only to a single endpoint, you can do so by using the `@FactoryConverter` annotation:
 
 ```dart
 @ChopperApi(baseUrl: "/todos")

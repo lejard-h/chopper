@@ -8,20 +8,24 @@ import 'response.dart';
 import 'utils.dart';
 import 'constants.dart';
 
-/// Interface to implements a response interceptor.
-/// Not recommended to modify body inside interceptor, see [Converter] to decode body response.
+/// An interface for implementing response interceptors.
 ///
-/// [ResponseInterceptor] are call after [Converter.convertResponse].
+/// [ResponseInterceptor]s are called after [Converter.convertResponse].
 ///
-/// See builtin interceptor [HttpLoggingInterceptor]
+/// While [ResponseInterceptor]s *can* modify the body of responses,
+/// converting (decoding) the response body should be handled by [Converter]s.
+///
+/// See built-in [HttpLoggingInterceptor] for a fully functional example implementation.
+///
+/// A short example for extracting a header value from a response:
 ///
 /// ```dart
-/// class MyResponseInterceptor  implements ResponseInterceptor {
+/// class MyResponseInterceptor implements ResponseInterceptor {
 ///   String _token;
 ///
 ///   @override
 ///   FutureOr<Response> onResponse(Response response) {
-///     _token ??= response.headers['auth_token'];
+///     _token = response.headers['auth_token'];
 ///     return response;
 ///   }
 /// }
@@ -31,12 +35,17 @@ abstract class ResponseInterceptor {
   FutureOr<Response> onResponse(Response response);
 }
 
-/// Interface to implements a request interceptor.
-/// Not recommended to modify body inside interceptor, see [Converter] to encode body request.
+/// An interface for implementing request interceptors.
 ///
-/// [RequestInterceptor] are call after [Converter.convertRequest]
+/// [RequestInterceptor]s are called after [Converter.convertRequest].
 ///
-/// See builtin interceptor [CurlInterceptor], [HttpLoggingInterceptor]
+/// While [RequestInterceptor]s *can* modify the body of requests,
+/// converting (encoding) the request body should be handled by [Converter]s.
+///
+/// See built-in [CurlInterceptor] and [HttpLoggingInterceptor] for fully
+/// functional example implementations.
+///
+/// A short example for adding an authentication token to every request:
 ///
 /// ```dart
 /// class MyRequestInterceptor implements ResponseInterceptor {
@@ -46,36 +55,55 @@ abstract class ResponseInterceptor {
 ///   }
 /// }
 /// ```
+///
+/// (See [applyHeader(request, name, value)] and [applyHeaders(request, headers)].)
 @immutable
 abstract class RequestInterceptor {
   FutureOr<Request> onRequest(Request request);
 }
 
-/// [Converter] is is used to convert body of Request or Response
-/// [convertRequest] is call before [RequestInterceptor]
-/// and [convertResponse] just after the http response, before [ResponseInterceptor].
+/// An interface for implementing request and response converters.
 ///
-/// See [JsonConverter], [FormUrlEncodedConverter]
+/// [Converter]s convert objects to and from their representation in HTTP.
+///
+/// [convertRequest] is called before [RequestInterceptor]s
+/// and [convertResponse] is called just after the HTTP response,
+/// before [ResponseInterceptor]s.
+///
+/// See [JsonConverter] and [FormUrlEncodedConverter] for example implementations.
 @immutable
 abstract class Converter {
+  /// Converts the received [Request] to a [Request] which has a body with the
+  /// HTTP representation of the original body.
   FutureOr<Request> convertRequest(Request request);
 
-  /// [BodyType] is the expected type of your response
-  /// ex: `String` or `CustomObject`
+  /// Converts the received [Response] to a [Response] which has a body of the
+  /// type [BodyType].
   ///
-  /// In the case of [BodyType] is a `List` or `BuildList`
-  /// [InnerType] will be the type of the generic
-  /// ex: `convertResponse<List<CustomObject>, CustomObject>(response)`
+  /// `BodyType` is the expected type of the resulting `Response`'s body
+  /// \(e.g., `String` or `CustomObject)`.
+  ///
+  /// If `BodyType` is a `List` or a `BuiltList`, `InnerType` is the type of the
+  /// generic parameter (e.g., `convertResponse<List<CustomObject>, CustomObject>(response)` ).
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
     Response response,
   );
 }
 
+/// An interface for implementing error response converters.
+///
+/// An `ErrorConverter` is called only on error responses
+/// (statusCode < 200 || statusCode >= 300) and before any [ResponseInterceptor]s.
 abstract class ErrorConverter {
+  /// Converts the received [Response] to a [Response] which has a body with the
+  /// HTTP representation of the original body.
   FutureOr<Response> convertError<BodyType, InnerType>(Response response);
 }
 
-/// Add [headers] to each request
+/// A [RequestInterceptor] that adds [headers] to every request.
+///
+/// Note that this interceptor will overwrite existing headers having the same
+/// keys as [headers].
 @immutable
 class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
@@ -100,8 +128,10 @@ typedef DynamicResponseInterceptorFunc = FutureOr<Response> Function(
 );
 typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
 
-/// Interceptor that print a curl request
-/// thanks @edwardaux
+/// A [RequestInterceptor] implementation that prints a curl request equivalent
+/// to the network call channeled through it for debugging purposes.
+///
+/// Thanks, @edwardaux
 @immutable
 class CurlInterceptor implements RequestInterceptor {
   @override
@@ -120,16 +150,23 @@ class CurlInterceptor implements RequestInterceptor {
     // this is fairly naive, but it should cover most cases
     if (baseRequest is http.Request) {
       final body = baseRequest.body;
-      if (body != null && body.isNotEmpty) {
+      if (body.isNotEmpty) {
         curl += ' -d \'$body\'';
       }
     }
-    curl += ' $url';
+    curl += ' \"$url\"';
     chopperLogger.info(curl);
     return request;
   }
 }
 
+/// A [RequestInterceptor] and [ResponseInterceptor] implementation which logs
+/// HTTP request and response data.
+///
+/// **Warning:** Log messages written by this interceptor have the potential to
+/// leak sensitive information, such as `Authorization` headers and user data
+/// in response bodies. This interceptor should only be used in a controlled way
+/// or in a non-production environment.
 @immutable
 class HttpLoggingInterceptor
     implements RequestInterceptor, ResponseInterceptor {
@@ -142,7 +179,7 @@ class HttpLoggingInterceptor
     var bytes = '';
     if (base is http.Request) {
       final body = base.body;
-      if (body != null && body.isNotEmpty) {
+      if (body.isNotEmpty) {
         chopperLogger.info(body);
         bytes = ' (${base.bodyBytes.length}-byte body)';
       }
@@ -155,16 +192,16 @@ class HttpLoggingInterceptor
   @override
   FutureOr<Response> onResponse(Response response) {
     final base = response.base.request;
-    chopperLogger.info('<-- ${response.statusCode} ${base.url}');
+    chopperLogger.info('<-- ${response.statusCode} ${base!.url}');
 
     response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
     var bytes;
     if (response.base is http.Response) {
       final resp = response.base as http.Response;
-      if (resp.body != null && resp.body.isNotEmpty) {
+      if (resp.body.isNotEmpty) {
         chopperLogger.info(resp.body);
-        bytes = ' (${response.bodyBytes?.length}-byte body)';
+        bytes = ' (${response.bodyBytes.length}-byte body)';
       }
     }
 
@@ -173,11 +210,19 @@ class HttpLoggingInterceptor
   }
 }
 
-/// [json.encode] on [Request] and [json.decode] on [Response]
-/// Also add `application/json` header to each request
+/// A [Converter] implementation that calls [json.encode] on [Request]s and
+/// [json.decode] on [Response]s using the [dart:convert](https://api.dart.dev/stable/2.10.3/dart-convert/dart-convert-library.html)
+/// package's [utf8] and [json] utilities.
 ///
-/// If content type header overrided using @Post(headers: {'content-type': '...'})
-/// The converter won't add json header and won't apply json.encode if content type is not JSON
+/// See the official documentation on
+/// [Serializing JSON manually using dart:convert](https://flutter.dev/docs/development/data-and-backend/json#serializing-json-manually-using-dartconvert)
+/// to learn more about when and how this `Converter` works as intended.
+///
+/// This `Converter` also adds the `content-type: application/json` header to each request.
+///
+/// If content type header is modified (for example by using
+/// `@Post(headers: {'content-type': '...'})`), `JsonConverter` won't add the
+/// header and it won't call json.encode if content type is not JSON.
 @immutable
 class JsonConverter implements Converter, ErrorConverter {
   const JsonConverter();
@@ -203,9 +248,12 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   Response decodeJson<BodyType, InnerType>(Response response) {
-    var contentType = response.headers[contentTypeKey];
+    final supportedContentTypes = [jsonHeaders, jsonApiHeaders];
+
+    final contentType = response.headers[contentTypeKey];
     var body = response.body;
-    if (contentType != null && contentType.contains(jsonHeaders)) {
+
+    if (supportedContentTypes.contains(contentType)) {
       // If we're decoding JSON, there's some ambiguity in https://tools.ietf.org/html/rfc2616
       // about what encoding should be used if the content-type doesn't contain a 'charset'
       // parameter. See https://github.com/dart-lang/http/issues/186. In a nutshell, without
@@ -228,7 +276,7 @@ class JsonConverter implements Converter, ErrorConverter {
 
   @override
   Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
-    return decodeJson<BodyType, InnerType>(response);
+    return decodeJson<BodyType, InnerType>(response) as Response<BodyType>;
   }
 
   dynamic _tryDecodeJson(String data) {
@@ -255,6 +303,11 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 }
 
+/// A [Converter] implementation that converts only [Request]s having a [Map] as their body.
+///
+/// This `Converter` also adds the `content-type: application/x-www-form-urlencoded`
+/// header to each request, but only if the `content-type` header is not set in
+/// the original request.
 @immutable
 class FormUrlEncodedConverter implements Converter, ErrorConverter {
   const FormUrlEncodedConverter();
@@ -287,7 +340,7 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
 
   @override
   Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
-      response;
+      response as Response<BodyType>;
 
   @override
   FutureOr<Response> convertError<BodyType, InnerType>(Response response) =>

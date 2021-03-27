@@ -20,7 +20,7 @@ import 'constants.dart';
 /// See [Method] to define an HTTP request
 @immutable
 class ChopperApi {
-  /// Url that will prefix every request define inside that API.
+  /// A part of a URL that every request defined inside a class annotated with [ChopperApi] will be prefixed with.
   final String baseUrl;
 
   const ChopperApi({
@@ -43,12 +43,12 @@ class ChopperApi {
 @immutable
 class Path {
   /// Name is used to bind a method parameter to
-  /// the url parameter.
+  /// a URL path parameter.
   /// ```dart
   /// @Get(path: '/{param}')
   /// Future<Response> fetch(@Path('param') String hello);
   /// ```
-  final String name;
+  final String? name;
 
   const Path([this.name]);
 }
@@ -71,7 +71,7 @@ class Query {
   /// @Get(path: '/something')
   /// Future<Response> fetch({@Query('id') String mySuperId});
   /// ```
-  final String name;
+  final String? name;
 
   const Query([this.name]);
 }
@@ -123,7 +123,7 @@ class Header {
   /// @Get()
   /// Future<Response> fetch(@Header('foo') String headerFoo);
   /// ```
-  final String name;
+  final String? name;
 
   const Header([this.name]);
 }
@@ -161,7 +161,7 @@ class Method {
 
   const Method(
     this.method, {
-    this.optionalBody,
+    this.optionalBody = false,
     this.path = '',
     this.headers = const {},
   });
@@ -247,7 +247,7 @@ class Patch extends Method {
         );
 }
 
-/// Defined a method as an HTTP HEAD request.
+/// Defines a method as an HTTP HEAD request.
 @immutable
 class Head extends Method {
   const Head({
@@ -262,13 +262,59 @@ class Head extends Method {
         );
 }
 
+@immutable
+class Options extends Method {
+  const Options({
+    bool optionalBody = true,
+    String path = '',
+    Map<String, String> headers = const {},
+  }) : super(
+          HttpMethod.Options,
+          optionalBody: optionalBody,
+          path: path,
+          headers: headers,
+        );
+}
+
+/// A function that should convert the body of a [Request] to the HTTP representation.
 typedef ConvertRequest = FutureOr<Request> Function(Request request);
+
+/// A function that should convert the body of a [Response] from the HTTP
+/// representation to a Dart object.
 typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
 
+/// Defines custom [Converter] methods for a single network API endpoint.
+/// See [ConvertRequest], [ConvertResponse].
+///
+/// ```dart
+/// @ChopperApi(baseUrl: '/todos')
+/// abstract class TodosListService extends ChopperService {
+///   static TodosListService create([ChopperClient client]) =>
+///       _$TodosListService(client);
+///
+///   static FutureOr<Request> customRequestConverter(Request request) {
+///     return request.copyWith(
+///         body: // Convert request.body the way your API needs it. See [JsonConverter.encodeJson] for an example.
+///     );
+///   }
+///
+///   static FutureOr<Response> customResponseConverter(Response response) {
+///     return response.copyWith(
+///       body: // Convert response.body the way your API needs it. See [JsonConverter.decodeJson] for an example.
+///     );
+///   }
+///
+///   @Get(path: "/{id}")
+///   @FactoryConverter(
+///     request: customRequestConverter,
+///     response: customResponseConverter
+///   )
+///   Future<Response<Todo>> getTodo(@Path("id"));
+/// }
 @immutable
 class FactoryConverter {
-  final ConvertRequest request;
-  final ConvertResponse response;
+  final ConvertRequest? request;
+  final ConvertResponse? response;
 
   const FactoryConverter({
     this.request,
@@ -276,7 +322,7 @@ class FactoryConverter {
   });
 }
 
-/// Define a field for a `x-www-form-urlencoded` request.
+/// Defines a field for a `x-www-form-urlencoded` request.
 /// Automatically binds to the name of the method parameter.
 ///
 /// ```dart
@@ -291,7 +337,7 @@ class Field {
   /// @Post(path: '/')
   /// Future<Response> create(@Field('id') String myId);
   /// ```
-  final String name;
+  final String? name;
 
   const Field([this.name]);
 }
@@ -311,18 +357,18 @@ class Multipart {
   const Multipart();
 }
 
-/// Use it to define a part of a [Multipart] request.
+/// Use [Part] to define a part of a [Multipart] request.
 ///
-/// All values will be converted to [String] using the [toString] method.
+/// All values will be converted to [String] using their [toString] method.
 ///
 /// Also accepts `MultipartFile` (from package:http).
 @immutable
 class Part {
-  final String name;
+  final String? name;
   const Part([this.name]);
 }
 
-/// Use it to define a file field for a [Multipart] request.
+/// Use [PartFile] to define a file field for a [Multipart] request.
 ///
 /// ```
 /// @Post(path: 'file')
@@ -336,7 +382,7 @@ class Part {
 ///   - `MultipartFile` (from package:http)
 @immutable
 class PartFile {
-  final String name;
+  final String? name;
 
   const PartFile([this.name]);
 }
@@ -354,9 +400,9 @@ class PartFile {
 ///   - [String] (path of your file)
 ///   - `MultipartFile` (from package:http)
 @immutable
-@Deprecated('use PartFile')
+@Deprecated('Use PartFile instead')
 class FileField extends PartFile {
-  const FileField([String name]) : super(name);
+  const FileField([String? name]) : super(name);
 }
 
 const multipart = Multipart();

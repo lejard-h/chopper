@@ -8,7 +8,7 @@ abstract class DataModel implements Built<DataModel, DataModelBuilder> {
   String get name;
 
   static Serializer<DataModel> get serializer => _$dataModelSerializer;
-  factory DataModel([updates(DataModelBuilder b)]) = _$DataModel;
+  factory DataModel([Function(DataModelBuilder b) updates]) = _$DataModel;
   DataModel._();
 }
 
@@ -16,6 +16,6 @@ abstract class ErrorModel implements Built<ErrorModel, ErrorModelBuilder> {
   String get message;
 
   static Serializer<ErrorModel> get serializer => _$errorModelSerializer;
-  factory ErrorModel([updates(ErrorModelBuilder b)]) = _$ErrorModel;
+  factory ErrorModel([Function(ErrorModelBuilder b) updates]) = _$ErrorModel;
   ErrorModel._();
 }

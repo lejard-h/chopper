@@ -20,19 +20,19 @@ void main() {
     test('base decode', () async {
       final converter = TestConverter();
 
-      final decoded = await converter
-          .convertResponse<_Converted<String>, _Converted<String>>(
+      final decoded =
+          converter.convertResponse<_Converted<String>, _Converted<String>>(
         Response<String>(http.Response('', 200), 'foo'),
       );
 
       expect(decoded.body is _Converted<String>, isTrue);
-      expect(decoded.body.data, equals('foo'));
+      expect(decoded.body!.data, equals('foo'));
     });
 
     test('base encode', () async {
       final converter = TestConverter();
 
-      final encoded = await converter.convertRequest(
+      final encoded = converter.convertRequest(
         Request('GET', '/', baseUrl, body: _Converted<String>('foo')),
       );
 
@@ -55,10 +55,10 @@ void main() {
         expect(e is Response, isTrue);
         expect((e as Response).body is _ConvertedError, isTrue);
         final res = e as Response<_ConvertedError>;
-        expect(res.body.data is Map, isTrue);
-        expect(res.body.data['list'], equals([1, 2]));
-        expect(res.body.data['foo'], equals('bar'));
-        expect(res.body.data['int'], equals(42));
+        expect(res.body!.data is Map, isTrue);
+        expect(res.body!.data['list'], equals([1, 2]));
+        expect(res.body!.data['foo'], equals('bar'));
+        expect(res.body!.data['int'], equals(42));
       }
       httpClient.close();
     });
@@ -117,7 +117,7 @@ class TestConverter implements Converter {
       return res.copyWith<_Converted<String>>(
           body: _Converted<String>(res.body)) as Response<T>;
     }
-    return res;
+    return res as Response<T>;
   }
 
   @override

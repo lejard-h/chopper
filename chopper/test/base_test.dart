@@ -11,7 +11,7 @@ const baseUrl = 'http://localhost:8000';
 
 void main() {
   final buildClient = (
-          [http.Client httpClient, ErrorConverter errorConverter]) =>
+          [http.Client? httpClient, ErrorConverter? errorConverter]) =>
       ChopperClient(
         baseUrl: baseUrl,
         services: [
@@ -94,7 +94,7 @@ void main() {
       final response = await service.getStreamTest();
 
       final bytes = <int>[];
-      await response.body.forEach((d) {
+      await response.body!.forEach((d) {
         bytes.addAll(d);
       });
 
@@ -118,7 +118,7 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response = await service.getQueryTest(def: null);
+      final response = await service.getQueryTest(number: null, def: null);
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
@@ -164,6 +164,29 @@ void main() {
 
       final response =
           await service.getQueryTest(name: 'Foo', def: 40, number: 18);
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('GET with body', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/get_body'),
+        );
+        expect(request.method, equals('GET'));
+        expect(request.body, equals('get body'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getBody('get body');
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));

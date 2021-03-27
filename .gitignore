@@ -12,3 +12,4 @@ doc/api/
 .test_coverage.dart
 coverage
 chopper/doc/
+.vscode/

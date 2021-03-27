@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chopper/src/authenticator.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'constants.dart';
@@ -21,23 +22,30 @@ final allowedInterceptorsType = <Type>[
   DynamicResponseInterceptorFunc,
 ];
 
-/// ChopperClient is the main class of the Chopper API
-/// Used to manager services, encode data, intercept request, response and error.
+/// ChopperClient is the main class of the Chopper API.
+///
+/// It manages registered services, encodes and decodes data, and intercepts
+/// requests and responses.
 class ChopperClient {
-  /// Base url of each request to your api
-  /// hostname of your api for example
+  /// Base URL of each request of the registered services.
+  /// E.g., the hostname of your service.
   final String baseUrl;
 
-  /// Http client used to do request
-  /// from `package:http/http.dart`
+  /// The [http.Client] used to make network calls.
   final http.Client httpClient;
 
-  /// Converter call before request interceptor
-  /// and before interceptor of successful response
-  final Converter converter;
+  /// The [Converter] that handles request and response transformation before
+  /// the request and response interceptors are called respectively.
+  final Converter? converter;
 
-  /// Converter call on error request
-  final ErrorConverter errorConverter;
+  /// The [Authenticator] that can provide reactive authentication for a
+  /// request.
+  final Authenticator? authenticator;
+
+  /// The [ErrorConverter] that handles response transformation before the
+  /// response interceptors are called, but only on error responses
+  /// (statusCode < 200 || statusCode >= 300\).
+  final ErrorConverter? errorConverter;
 
   final Map<Type, ChopperService> _services = {};
   final _requestInterceptors = [];
@@ -47,37 +55,53 @@ class ChopperClient {
 
   final bool _clientIsInternal;
 
-  /// Inject any service using the [services] parameter.
-  /// See [ChopperApi] annotation to define a service.
+  /// Creates and configures a [ChopperClient].
+  ///
+  /// The base URL of each request of the registered services can be defined
+  /// with the [baseUrl] parameter.
+  ///  E.g., the hostname of your service.
+  ///
+  /// A custom HTTP client can be passed as the [client] parameter to be used
+  /// with the created [ChopperClient].
+  /// If not provided, a default [http.Client] will be used.
+  ///
+  /// [ChopperService]s can be added to the client with the [services] parameter.
+  /// See the [ChopperApi] annotation to learn more about creating services.
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///     baseUrl: 'localhost:8000',
-  ///     services: [
-  ///       // inject the generated service
-  ///       TodosListService.create()
-  ///     ],
-  ///   );
+  ///   baseUrl: 'localhost:8000',
+  ///   services: [
+  ///     // Add a generated service
+  ///     TodosListService.create()
+  ///   ],
+  /// );
   /// ```
   ///
-  /// Interceptors can be use to apply modification or log infos for each
-  /// requests and responsed happening in that client.
-  /// See [ResponseInterceptor] and [RequestInterceptor]
+  /// [RequestInterceptor]s and [ResponseInterceptor]s can be added to the client
+  /// with the [interceptors] parameter.
+  ///
+  /// See [RequestInterceptor], [ResponseInterceptor], [HttpLoggingInterceptor],
+  /// [HeadersInterceptor], [CurlInterceptor]
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///     ...
-  ///     interceptors: [
-  ///       HttpLoggingInterceptor(),
-  ///     ]
-  ///   );
+  ///   ...
+  ///   interceptors: [
+  ///     HttpLoggingInterceptor(),
+  ///   ]
+  /// );
   /// ```
   ///
-  /// [Converter] is used to apply modification on the body of a request/response
-  /// like converting an object to json (or json to object).
-  /// A different converter is used when an error is happening ([Response.isSuccessful] == false)
-  /// See [JsonConverter]
+  /// [Converter]s can be added to the client with the [converter]
+  /// parameter.
+  /// [Converter]s are used to convert the body of requests and responses to and
+  /// from the HTTP format.
   ///
+  /// A different converter can be used to handle error responses
+  /// (when [Response.isSuccessful] == false)) with tche [errorConverter] parameter.
+  ///
+  /// See [Converter], [JsonConverter]
   ///
   /// ```dart
   /// final chopper = ChopperClient(
@@ -88,8 +112,9 @@ class ChopperClient {
   /// ```
   ChopperClient({
     this.baseUrl = '',
-    http.Client client,
+    http.Client? client,
     Iterable interceptors = const [],
+    this.authenticator,
     this.converter,
     this.errorConverter,
     Iterable<ChopperService> services = const [],
@@ -123,16 +148,16 @@ class ChopperClient {
   bool _isAnInterceptor(value) =>
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
-  /// Retrieve any service injected into the [ChopperClient]
+  /// Retrieve any service included in the [ChopperClient]
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///     baseUrl: 'localhost:8000',
-  ///     services: [
-  ///       // inject the generated service
-  ///       TodosListService.create()
-  ///     ],
-  ///   );
+  ///   baseUrl: 'localhost:8000',
+  ///   services: [
+  ///     // Add a generated service
+  ///     TodosListService.create()
+  ///   ],
+  /// );
   ///
   /// final todoService = chopper.getService<TodosListService>();
   /// ```
@@ -146,15 +171,11 @@ class ChopperClient {
     if (service == null) {
       throw Exception('Service of type \'$serviceType\' not found.');
     }
-    return service;
+    return service as ServiceType;
   }
 
   Future<Request> _encodeRequest(Request request) async {
-    if (converter != null) {
-      return converter.convertRequest(request);
-    }
-
-    return request;
+    return converter?.convertRequest(request) ?? request;
   }
 
   Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
@@ -163,10 +184,6 @@ class ChopperClient {
   ) async {
     final converted =
         await withConverter.convertResponse<BodyType, InnerType>(response);
-
-    if (converted == null) {
-      throw Exception('No converter found for type $InnerType');
-    }
 
     return converted;
   }
@@ -180,8 +197,6 @@ class ChopperClient {
         req = await i(req);
       }
     }
-
-    assert(req != null, 'Interceptors should return modified request');
 
     assert(
       body == req.body,
@@ -197,17 +212,15 @@ class ChopperClient {
     final body = res.body;
     for (final i in _responseInterceptors) {
       if (i is ResponseInterceptor) {
-        res = await i.onResponse(res);
+        res = await i.onResponse(res) as Response<BodyType>;
       } else if (i is ResponseInterceptorFunc1) {
         res = await i<BodyType>(res);
       } else if (i is ResponseInterceptorFunc2) {
         res = await i<BodyType, InnerType>(res);
       } else if (i is DynamicResponseInterceptorFunc) {
-        res = await i(res);
+        res = await i(res) as Response<BodyType>;
       }
     }
-
-    assert(res != null, 'Interceptors should return modified response');
 
     assert(
       body == res.body,
@@ -223,10 +236,10 @@ class ChopperClient {
   ) async {
     var error = response.body;
     if (errorConverter != null) {
-      final errorRes = await errorConverter.convertError<BodyType, InnerType>(
+      final errorRes = await errorConverter?.convertError<BodyType, InnerType>(
         response,
       );
-      error = errorRes.error ?? errorRes.body;
+      error = errorRes?.error ?? errorRes?.body;
     }
 
     return Response<BodyType>(
@@ -238,13 +251,13 @@ class ChopperClient {
 
   Future<Response<BodyType>> _handleSuccessResponse<BodyType, InnerType>(
     Response response,
-    ConvertResponse responseConverter,
+    ConvertResponse? responseConverter,
   ) async {
     if (responseConverter != null) {
       response = await responseConverter(response);
     } else if (converter != null) {
       response =
-          await _decodeResponse<BodyType, InnerType>(response, converter);
+          await _decodeResponse<BodyType, InnerType>(response, converter!);
     }
 
     return Response<BodyType>(
@@ -255,34 +268,35 @@ class ChopperClient {
 
   Future<Request> _handleRequestConverter(
     Request request,
-    ConvertRequest requestConverter,
+    ConvertRequest? requestConverter,
   ) async {
     if (request.body != null || request.parts.isNotEmpty) {
       if (requestConverter != null) {
         request = await requestConverter(request);
       } else {
-        request = await _encodeRequest(request);
+        request = (await _encodeRequest(request));
       }
     }
 
     return request;
   }
 
-  /// Send request function that apply all interceptors and converters
+  /// Sends a pre-build [Request], applying all provided [Interceptor]s and
+  /// [Converter]s.
   ///
-  /// [BodyType] is the expected type of your response
-  /// ex: `String` or `CustomObject`
+  /// [BodyType] should be the expected type of the response body
+  /// (e.g., `String` or `CustomObject)`.
   ///
-  /// In the case of [BodyType] is a `List` or `BuildList`
-  /// [InnerType] will be the type of the generic
+  /// If `BodyType` is a `List` or a `BuiltList`, [InnerType] should be type of the
+  /// generic parameter (e.g., `convertResponse<List<CustomObject>, CustomObject>(response)`).
   ///
   /// ```dart
   /// Response<List<CustomObject>> res = await send<List<CustomObject>, CustomObject>(request);
   /// ````
   Future<Response<BodyType>> send<BodyType, InnerType>(
     Request request, {
-    ConvertRequest requestConverter,
-    ConvertResponse responseConverter,
+    ConvertRequest? requestConverter,
+    ConvertResponse? responseConverter,
   }) async {
     var req = await _handleRequestConverter(request, requestConverter);
     req = await _interceptRequest(req);
@@ -295,6 +309,12 @@ class ChopperClient {
 
     final response = await http.Response.fromStream(streamRes);
     dynamic res = Response(response, response.body);
+
+    if (authenticator != null) {
+      var updatedRequest = authenticator!.authenticate(request, res);
+
+      res = await send(await updatedRequest);
+    }
 
     if (_responseIsSuccessful(response.statusCode)) {
       res = await _handleSuccessResponse<BodyType, InnerType>(
@@ -312,32 +332,34 @@ class ChopperClient {
     return res;
   }
 
-  /// Http GET request using [send] function
+  /// Makes a HTTP GET request using the [send] function.
   Future<Response<BodyType>> get<BodyType, InnerType>(
     String url, {
-    Map<String, String> headers,
-    Map<String, dynamic> parameters,
-    String baseUrl,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    String? baseUrl,
+    dynamic? body,
   }) =>
       send<BodyType, InnerType>(
         Request(
           HttpMethod.Get,
           url,
           baseUrl ?? this.baseUrl,
+          body: body,
           headers: headers,
           parameters: parameters,
         ),
       );
 
-  /// Http POST request using [send] function
+  /// Makes a HTTP POST request using the [send] function
   Future<Response<BodyType>> post<BodyType, InnerType>(
     String url, {
     dynamic body,
-    List<PartValue> parts,
-    Map<String, String> headers,
-    Map<String, dynamic> parameters,
-    bool multipart,
-    String baseUrl,
+    List<PartValue>? parts,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    bool multipart = false,
+    String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -352,15 +374,15 @@ class ChopperClient {
         ),
       );
 
-  /// Http PUT request using [send] function
+  /// Makes a HTTP PUT request using the [send] function.
   Future<Response<BodyType>> put<BodyType, InnerType>(
     String url, {
     dynamic body,
-    List<PartValue> parts,
-    Map<String, String> headers,
-    Map<String, dynamic> parameters,
-    bool multipart,
-    String baseUrl,
+    List<PartValue>? parts,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    bool multipart = false,
+    String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -375,15 +397,15 @@ class ChopperClient {
         ),
       );
 
-  /// Http PATCH request using [send] function
+  /// Makes a HTTP PATCH request using the [send] function.
   Future<Response<BodyType>> patch<BodyType, InnerType>(
     String url, {
     dynamic body,
-    List<PartValue> parts,
-    Map<String, String> headers,
-    Map<String, dynamic> parameters,
-    bool multipart,
-    String baseUrl,
+    List<PartValue>? parts,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    bool multipart = false,
+    String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -398,12 +420,12 @@ class ChopperClient {
         ),
       );
 
-  /// Http DELETE request using [send] function
+  /// Makes a HTTP DELETE request using the [send] function.
   Future<Response<BodyType>> delete<BodyType, InnerType>(
     String url, {
-    Map<String, String> headers,
-    Map<String, dynamic> parameters,
-    String baseUrl,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -415,12 +437,12 @@ class ChopperClient {
         ),
       );
 
-  /// Http Head request using [send] function
+  /// Makes a HTTP HEAD request using the [send] function.
   Future<Response<BodyType>> head<BodyType, InnerType>(
     String url, {
-    Map<String, String> headers,
-    Map<String, dynamic> parameters,
-    String baseUrl,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -432,15 +454,32 @@ class ChopperClient {
         ),
       );
 
-  /// dispose [ChopperClient] to clean memory.
+  /// Makes a HTTP OPTIONS request using the [send] function.
+  Future<Response<BodyType>> options<BodyType, InnerType>(
+    String url, {
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
+    String? baseUrl,
+  }) =>
+      send<BodyType, InnerType>(
+        Request(
+          HttpMethod.Options,
+          url,
+          baseUrl ?? this.baseUrl,
+          headers: headers,
+          parameters: parameters,
+        ),
+      );
+
+  /// Disposes this [ChopperClient] to clean up memory.
   ///
-  /// It won't close the http client if you provided it in the [ChopperClient] constructor.
+  /// **Warning**: If a custom [http.Client] was provided while creating this `ChopperClient`,
+  /// this method ***will not*** close it. In that case, closing the client is
+  /// its creator's responsibility.
   @mustCallSuper
   void dispose() {
     _requestController.close();
     _responseController.close();
-
-    _services.forEach((_, s) => s.dispose());
     _services.clear();
 
     _requestInterceptors.clear();
@@ -451,29 +490,33 @@ class ChopperClient {
     }
   }
 
-  /// Event stream of request just before http call
-  /// all converters and interceptors have been run
+  /// A stream of processed [Request]s, as in after all [Converter]s, and
+  /// [RequestInterceptor]s have been run.
   Stream<Request> get onRequest => _requestController.stream;
 
-  /// Event stream of response
-  /// all converters and interceptors have been run
+  /// A stream of processed [Response]s, as in after all [Converter]s and
+  /// [ResponseInterceptor]s have been run.
   Stream<Response> get onResponse => _responseController.stream;
 }
 
-/// Used by generator to generate apis
+/// A marker and helper class used by `chopper_generator` to generate network
+/// call implementations.
+///
+///```dart
+///@ChopperApi(baseUrl: "/todos")
+///abstract class TodosListService extends ChopperService {
+///
+/// // A helper method that helps instantiating your service
+/// static TodosListService create([ChopperClient client]) =>
+///     _$TodosListService(client);
+///}
+///```
 abstract class ChopperService {
-  ChopperClient client;
+  late ChopperClient client;
 
-  /// Internally use to retrieve service from [ChopperClient]
-  /// FIXME: use runtimeType ?
+  /// Used internally to retrieve the service from [ChopperClient].
+  // TODO: use runtimeType
   Type get definitionType;
-
-  /// Cleanup memory
-  /// Should be call when the service is not used anymore
-  @mustCallSuper
-  void dispose() {
-    client = null;
-  }
 }
 
 bool _responseIsSuccessful(int statusCode) =>

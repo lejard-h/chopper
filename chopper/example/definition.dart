@@ -5,7 +5,7 @@ part 'definition.chopper.dart';
 
 @ChopperApi(baseUrl: '/resources')
 abstract class MyService extends ChopperService {
-  static MyService create([ChopperClient client]) => _$MyService(client);
+  static MyService create(ChopperClient client) => _$MyService(client);
 
   @Get(path: '/{id}')
   Future<Response> getResource(
