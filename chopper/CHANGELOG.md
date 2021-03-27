@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0-nullsafety.1
+
+- Removed deprecated `FileField`, use `PartFile` instead
+
 ## 4.0.0-nullsafety.0
 
 - Null safety support
