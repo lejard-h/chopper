@@ -2,7 +2,7 @@
 
 ## 4.0.0-nullsafety.0
 
-- Sound null safety support
+- Null safety support
 - Support for OPTIONS requests
 - Support for passing data in the body of GET requests (anti-pattern, but requested)
 - Support for OkHttp-like Authenticator implementation
