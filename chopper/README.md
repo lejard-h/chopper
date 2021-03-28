@@ -4,6 +4,7 @@
 [![Dart CI](https://github.com/lejard-h/chopper/workflows/Dart%20CI/badge.svg)](https://github.com/lejard-h/chopper/actions?query=workflow%3A%22Dart+CI%22)
 [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
 
+[<img src="https://raw.githubusercontent.com/lejard-h/chopper/develop/flutter_favorite.png" width="100" />](https://flutter.dev/docs/development/packages-and-plugins/favorites)
 
 Chopper is an http client generator for Dart and Flutter using source_gen and inspired by Retrofit.
 
