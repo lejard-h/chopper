@@ -8,7 +8,7 @@ import 'package:built_value/serializer.dart';
 class BuiltValueConverter implements Converter, ErrorConverter {
   final Serializers serializers;
   final JsonConverter jsonConverter = JsonConverter();
-  final Type errorType;
+  final Type? errorType;
 
   /// Builds a new BuiltValueConverter instance that uses built_value serializers defined
   /// in the provided [serializers] parameter.
@@ -18,7 +18,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   /// [errorType].
   BuiltValueConverter(this.serializers, {this.errorType});
 
-  T _deserialize<T>(dynamic value) {
+  T? _deserialize<T>(dynamic value) {
     var serializer;
     if (value is Map && value.containsKey('\$')) {
       serializer = serializers.serializerForWireName(value['\$']);
@@ -37,7 +37,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
     return BuiltList<InnerType>(deserialized.toList(growable: false));
   }
 
-  BodyType deserialize<BodyType, InnerType>(entity) {
+  BodyType? deserialize<BodyType, InnerType>(entity) {
     if (entity is BodyType) return entity;
     if (entity is Iterable) {
       return _deserializeListOf<InnerType>(entity) as BodyType;
@@ -68,11 +68,13 @@ class BuiltValueConverter implements Converter, ErrorConverter {
       // try to deserialize using wireName
       body ??= _deserialize(jsonResponse.body);
     } catch (_) {
+      final type = errorType;
       // or check provided error type
-      if (errorType != null) {
-        final serializer = serializers.serializerForType(errorType);
-        print(serializer);
-        body = serializers.deserializeWith(serializer, jsonResponse.body);
+      if (type != null) {
+        final serializer = serializers.serializerForType(type);
+        if (serializer != null) {
+          body = serializers.deserializeWith(serializer, jsonResponse.body);
+        }
       }
       body ??= jsonResponse.body;
     }
