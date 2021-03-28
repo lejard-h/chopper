@@ -1,12 +1,5 @@
 # Changelog
 
-## 4.0.0-nullsafety.1
-
-- Remove deprecated `FileField`, use `PartFile` instead
-- Remove deprecated `Request.replace`, use `Request.copyWith` instead
-- Remove deprecated `PartValue.replace`, use `PartValue.copyWith` instead
-- Remove deprecated `Response.replace`, use `Response.copyWith` instead
-
 ## 4.0.0-nullsafety.0
 
 - Null safety support
@@ -15,6 +8,10 @@
 - Support for OkHttp-like Authenticator implementation
 - Support for generic API methods
 - Updated public API documentation and how-tos
+- Remove deprecated `FileField`, use `PartFile` instead
+- Remove deprecated `Request.replace`, use `Request.copyWith` instead
+- Remove deprecated `PartValue.replace`, use `PartValue.copyWith` instead
+- Remove deprecated `Response.replace`, use `Response.copyWith` instead
 
 ## 3.0.3
 
