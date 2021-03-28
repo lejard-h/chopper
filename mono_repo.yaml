@@ -6,7 +6,6 @@ github:
       branches:
       - master
       - develop
-      - coverage
     pull_request:
       branches:
       - master

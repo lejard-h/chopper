@@ -9,3 +9,7 @@ stages:
 - unit_test:
   - test:
   - test: -p chrome
+
+cache:
+  directories:
+  - .dart_tool/build
