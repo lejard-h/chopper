@@ -2,7 +2,7 @@
 
 ## 4.0.0-nullsafety.0
 
-- Null safety
+- Null safety support
 
 ## 3.0.5
 
