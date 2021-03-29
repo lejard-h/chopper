@@ -47,7 +47,7 @@ class MyConverter implements Converter {
 }
 ```
 
-`BodyType`is the expected type of the response body \(e.g., `String` or `CustomObject)`.
+`BodyType`is the expected type of the response body \(e.g., `String` or `CustomObject`).
 
 If `BodyType` is a `List` or a `BuiltList`, `InnerType` is the type of the generic parameter \(e.g., `convertResponse<List<CustomObject>, CustomObject>(response)`).
 
