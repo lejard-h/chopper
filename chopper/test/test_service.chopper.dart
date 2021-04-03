@@ -19,7 +19,10 @@ class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getTest(String id, {String dynamicHeader = ''}) {
     final $url = '/test/get/$id';
-    final $headers = {'test': dynamicHeader};
+    final $headers = {
+      'test': dynamicHeader,
+    };
+
     final $request = Request('GET', $url, client.baseUrl, headers: $headers);
     return client.send<String, String>($request);
   }
@@ -125,7 +128,10 @@ class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<dynamic>> deleteTest(String id) {
     final $url = '/test/delete/$id';
-    final $headers = {'foo': 'bar'};
+    final $headers = {
+      'foo': 'bar',
+    };
+
     final $request = Request('DELETE', $url, client.baseUrl, headers: $headers);
     return client.send<dynamic, dynamic>($request);
   }
@@ -158,7 +164,10 @@ class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<dynamic>> postFormUsingHeaders(Map<String, String> fields) {
     final $url = '/test/form/body';
-    final $headers = {'content-type': 'application/x-www-form-urlencoded'};
+    final $headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+    };
+
     final $body = fields;
     final $request =
         Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
