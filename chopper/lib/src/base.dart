@@ -336,7 +336,7 @@ class ChopperClient {
   Future<Response<BodyType>> get<BodyType, InnerType>(
     String url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
+    Map<String, dynamic> parameters = const {},
     String? baseUrl,
     dynamic? body,
   }) =>
@@ -355,9 +355,9 @@ class ChopperClient {
   Future<Response<BodyType>> post<BodyType, InnerType>(
     String url, {
     dynamic body,
-    List<PartValue>? parts,
+    List<PartValue> parts = const [],
     Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
+    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
@@ -378,9 +378,9 @@ class ChopperClient {
   Future<Response<BodyType>> put<BodyType, InnerType>(
     String url, {
     dynamic body,
-    List<PartValue>? parts,
+    List<PartValue> parts = const [],
     Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
+    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
@@ -401,9 +401,9 @@ class ChopperClient {
   Future<Response<BodyType>> patch<BodyType, InnerType>(
     String url, {
     dynamic body,
-    List<PartValue>? parts,
+    List<PartValue> parts = const [],
     Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
+    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
@@ -424,7 +424,7 @@ class ChopperClient {
   Future<Response<BodyType>> delete<BodyType, InnerType>(
     String url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
+    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
@@ -441,7 +441,7 @@ class ChopperClient {
   Future<Response<BodyType>> head<BodyType, InnerType>(
     String url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
+    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
@@ -458,7 +458,7 @@ class ChopperClient {
   Future<Response<BodyType>> options<BodyType, InnerType>(
     String url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
+    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(

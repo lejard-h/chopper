@@ -6,6 +6,9 @@ stages:
   - group:
     - dartfmt
     - dartanalyzer: --fatal-infos .
+- unit_test:
+  - test:
+  - test: -p chrome
 
 cache:
   directories:

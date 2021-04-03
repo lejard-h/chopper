@@ -96,16 +96,16 @@ jobs:
         working-directory: chopper_generator
         run: dartanalyzer --fatal-infos .
   job_003:
-    name: "unit_test; PKG: chopper; `pub run test`"
+    name: "unit_test; PKGS: chopper, chopper_built_value; `pub run test`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
         uses: actions/cache@v2
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper;commands:test_0"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value;commands:test_0"
           restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper
+            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value
             os:ubuntu-latest;pub-cache-hosted;dart:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
@@ -123,20 +123,29 @@ jobs:
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
         run: pub run test
+      - id: chopper_built_value_pub_upgrade
+        name: "chopper_built_value; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: chopper_built_value
+        run: pub upgrade --no-precompile
+      - name: chopper_built_value; pub run test
+        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper_built_value
+        run: pub run test
     needs:
       - job_001
       - job_002
   job_004:
-    name: "unit_test; PKG: chopper; `pub run test -p chrome`"
+    name: "unit_test; PKGS: chopper, chopper_built_value; `pub run test -p chrome`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
         uses: actions/cache@v2
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper;commands:test_1"
+          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value;commands:test_1"
           restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper
+            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value
             os:ubuntu-latest;pub-cache-hosted;dart:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
@@ -153,6 +162,15 @@ jobs:
       - name: "chopper; pub run test -p chrome"
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
+        run: pub run test -p chrome
+      - id: chopper_built_value_pub_upgrade
+        name: "chopper_built_value; pub upgrade --no-precompile"
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: chopper_built_value
+        run: pub upgrade --no-precompile
+      - name: "chopper_built_value; pub run test -p chrome"
+        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper_built_value
         run: pub run test -p chrome
     needs:
       - job_001

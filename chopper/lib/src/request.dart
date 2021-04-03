@@ -23,38 +23,11 @@ class Request {
     this.url,
     this.baseUrl, {
     this.body,
-    Map<String, dynamic>? parameters,
-    Map<String, String>? headers,
-    bool? multipart,
-    List<PartValue>? parts,
-  })  : parameters = parameters ?? const {},
-        headers = headers ?? const {},
-        multipart = multipart ?? false,
-        parts = parts ?? const [];
-
-  @Deprecated('Prefer copyWith method')
-  Request replace({
-    HttpMethod? method,
-    String? url,
-    dynamic body,
-    Map<String, dynamic>? parameters,
-    Map<String, String>? headers,
-    Encoding? encoding,
-    List<PartValue>? parts,
-    bool? multipart,
-    String? baseUrl,
-  }) =>
-      copyWith(
-        method: method,
-        url: url,
-        body: body,
-        parameters: parameters,
-        headers: headers,
-        encoding: encoding,
-        parts: parts,
-        multipart: multipart,
-        baseUrl: baseUrl,
-      );
+    this.parameters = const {},
+    this.headers = const {},
+    this.multipart = false,
+    this.parts = const [],
+  });
 
   /// Makes a copy of this request, replacing original values with the given ones.
   Request copyWith({
@@ -131,10 +104,6 @@ class PartValue<T> {
     this.name,
     this.value,
   );
-
-  @Deprecated('Prefer copyWith method')
-  PartValue<NewType> replace<NewType>({String? name, NewType? value}) =>
-      copyWith<NewType>(name: name, value: value);
 
   /// Makes a copy of this PartValue, replacing original values with the given ones.
   /// This method can also alter the type of the request body.
