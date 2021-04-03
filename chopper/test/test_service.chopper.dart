@@ -17,7 +17,7 @@ class _$HttpTestService extends HttpTestService {
   final definitionType = HttpTestService;
 
   @override
-  Future<Response<String>> getTest(String id, {String dynamicHeader = ''}) {
+  Future<Response<String>> getTest(String id, {required String dynamicHeader}) {
     final $url = '/test/get/$id';
     final $headers = {
       'test': dynamicHeader,
