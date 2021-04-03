@@ -1,7 +1,3 @@
-<p align="right">
-<a href="https://flutter.dev/docs/development/packages-and-plugins/favorites"><img src="https://flutter.dev/assets/development/packages-and-plugins/FlutterFavoriteLogo-101d188ce8e3865ff354cbc0c6221726e4ebf1b840e123fd478d1a3b9621e08d.png" width="100" alt="build"></a>
-</p>
-
 # Chopper
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
@@ -10,6 +6,8 @@
 [![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper)
 [![Dart CI](https://github.com/lejard-h/chopper/workflows/Dart%20CI/badge.svg)](https://github.com/lejard-h/chopper/actions?query=workflow%3A%22Dart+CI%22)
 [![codecov](https://codecov.io/gh/lejard-h/chopper/branch/master/graph/badge.svg)](https://codecov.io/gh/lejard-h/chopper)
+
+[<img src="https://raw.githubusercontent.com/lejard-h/chopper/develop/flutter_favorite.png" width="100" />](https://flutter.dev/docs/development/packages-and-plugins/favorites)
 
 Chopper is an http client generator for Dart and Flutter using source_gen and inspired by Retrofit.
 

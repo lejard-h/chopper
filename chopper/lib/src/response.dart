@@ -31,18 +31,6 @@ class Response<BodyType> {
 
   Response(this.base, this.body, {this.error});
 
-  @Deprecated('Prefer copyWith method')
-  Response<NewBodyType> replace<NewBodyType>({
-    http.BaseResponse? base,
-    NewBodyType? body,
-    Object? bodyError,
-  }) =>
-      copyWith<NewBodyType>(
-        base: base,
-        body: body,
-        bodyError: bodyError,
-      );
-
   /// Makes a copy of this Response, replacing original values with the given ones.
   /// This method can also alter the type of the response body.
   Response<NewBodyType> copyWith<NewBodyType>({

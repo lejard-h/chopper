@@ -37,8 +37,8 @@ void main() {
       final convertedResponse =
           converter.convertResponse<DataModel, DataModel>(response);
 
-      expect(convertedResponse.body.id, equals(42));
-      expect(convertedResponse.body.name, equals('foo'));
+      expect(convertedResponse.body?.id, equals(42));
+      expect(convertedResponse.body?.name, equals('foo'));
     });
 
     test('convert response without wireName', () {
@@ -47,8 +47,8 @@ void main() {
       final convertedResponse =
           converter.convertResponse<DataModel, DataModel>(response);
 
-      expect(convertedResponse.body.id, equals(42));
-      expect(convertedResponse.body.name, equals('foo'));
+      expect(convertedResponse.body?.id, equals(42));
+      expect(convertedResponse.body?.name, equals('foo'));
     });
 
     test('convert response List', () {
@@ -58,10 +58,10 @@ void main() {
           converter.convertResponse<BuiltList<DataModel>, DataModel>(response);
 
       final list = convertedResponse.body;
-      expect(list.first.id, equals(42));
-      expect(list.first.name, equals('foo'));
-      expect(list.last.id, equals(25));
-      expect(list.last.name, equals('bar'));
+      expect(list?.first.id, equals(42));
+      expect(list?.first.name, equals('foo'));
+      expect(list?.last.id, equals(25));
+      expect(list?.last.name, equals('bar'));
     });
 
     test('has json headers', () {
