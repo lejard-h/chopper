@@ -23,14 +23,11 @@ class Request {
     this.url,
     this.baseUrl, {
     this.body,
-    Map<String, dynamic>? parameters,
-    Map<String, String>? headers,
-    bool? multipart,
-    List<PartValue>? parts,
-  })  : parameters = parameters ?? const {},
-        headers = headers ?? const {},
-        multipart = multipart ?? false,
-        parts = parts ?? const [];
+    this.parameters = const {},
+    this.headers = const {},
+    this.multipart = false,
+    this.parts = const [],
+  });
 
   /// Makes a copy of this request, replacing original values with the given ones.
   Request copyWith({
