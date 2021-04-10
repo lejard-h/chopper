@@ -17,7 +17,6 @@
 - Support for generic API methods
 - Updated public API documentation and how-tos
 
-
 ## 3.0.3
 
 - Packages upgrade
