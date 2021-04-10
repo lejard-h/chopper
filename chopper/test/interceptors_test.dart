@@ -36,7 +36,10 @@ void main() {
         client: requestClient,
       );
 
-      await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest(
+            '1234',
+            dynamicHeader: '',
+          );
     });
 
     test('RequestInterceptorFunc', () async {
@@ -51,7 +54,10 @@ void main() {
         client: requestClient,
       );
 
-      await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest(
+            '1234',
+            dynamicHeader: '',
+          );
     });
 
     test('ResponseInterceptor', () async {
@@ -63,7 +69,10 @@ void main() {
         client: responseClient,
       );
 
-      await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest(
+            '1234',
+            dynamicHeader: '',
+          );
 
       expect(ResponseIntercept.intercepted, isA<_Intercepted>());
     });
@@ -84,7 +93,10 @@ void main() {
         client: responseClient,
       );
 
-      await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest(
+            '1234',
+            dynamicHeader: '',
+          );
 
       expect(intercepted, isA<_Intercepted<dynamic>>());
     });
@@ -105,7 +117,10 @@ void main() {
         client: responseClient,
       );
 
-      await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest(
+            '1234',
+            dynamicHeader: '',
+          );
 
       expect(intercepted, isA<_Intercepted<String?>>());
     });
@@ -155,7 +170,10 @@ void main() {
         client: client,
       );
 
-      await chopper.getService<HttpTestService>().getTest('1234');
+      await chopper.getService<HttpTestService>().getTest(
+            '1234',
+            dynamicHeader: '',
+          );
     });
 
     final fakeRequest = Request(

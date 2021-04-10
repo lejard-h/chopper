@@ -15,7 +15,7 @@ abstract class HttpTestService extends ChopperService {
   @Get(path: 'get/{id}')
   Future<Response<String>> getTest(
     @Path() String id, {
-    @Header('test') String dynamicHeader = '',
+    @Header('test') required String dynamicHeader,
   });
 
   @Head(path: 'head')

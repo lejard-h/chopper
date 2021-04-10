@@ -132,42 +132,34 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     return Method((b) {
       b.annotations.add(refer('override'));
       b.name = m.displayName;
-      b.returns =
-          Reference(m.returnType.getDisplayString(withNullability: false));
-      b.types.addAll(m.typeParameters
-          .map((t) => Reference(t.getDisplayString(withNullability: false))));
-      b.requiredParameters.addAll(m.parameters
-          .where((p) => p.isNotOptional)
-          .map((p) => Parameter((pb) => pb
-            ..name = p.name
-            ..type = Reference(
-                p.type.getDisplayString(withNullability: p.type.isNullable)))));
 
-      b.optionalParameters.addAll(m.parameters
-          .where((p) => p.isOptionalPositional)
-          .map((p) => Parameter((pb) {
-                pb
-                  ..name = p.name
-                  ..type = Reference(
-                      p.type.getDisplayString(withNullability: false));
+      // We don't support returning null Type
+      b.returns = Reference(
+        m.returnType.getDisplayString(withNullability: false),
+      );
 
-                if (p.defaultValueCode != null) {
-                  pb.defaultTo = Code(p.defaultValueCode);
-                }
-              })));
+      // And null Typed parameters
+      b.types.addAll(
+        m.typeParameters.map(
+          (t) => Reference(t.getDisplayString(withNullability: false)),
+        ),
+      );
+
+      b.requiredParameters.addAll(
+        m.parameters
+            .where((p) => p.isRequiredPositional)
+            .map(buildRequiredPositionalParam),
+      );
 
       b.optionalParameters.addAll(
-          m.parameters.where((p) => p.isNamed).map((p) => Parameter((pb) {
-                pb
-                  ..named = true
-                  ..name = p.name
-                  ..type = Reference(p.type
-                      .getDisplayString(withNullability: p.type.isNullable));
+        m.parameters
+            .where((p) => p.isOptionalPositional)
+            .map(buildOptionalPositionalParam),
+      );
 
-                if (p.defaultValueCode != null) {
-                  pb.defaultTo = Code(p.defaultValueCode);
-                }
-              })));
+      b.optionalParameters.addAll(
+        m.parameters.where((p) => p.isNamed).map(buildNamedParam),
+      );
 
       final blocks = [
         url.assignFinal(_urlVar).statement,
@@ -472,14 +464,20 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }
 
   Code? _generateHeaders(MethodElement methodElement, ConstantReader method) {
-    final headers = {};
+    final codeBuffer = StringBuffer('')..writeln('{');
 
+    // Search for @Header anotation in method parameters
     final annotations = _getAnnotations(methodElement, chopper.Header);
 
     annotations.forEach((parameter, ConstantReader annotation) {
-      final name =
-          annotation.peek('name')?.stringValue ?? parameter.displayName;
-      headers[literal(name)] = refer(parameter.displayName);
+      final paramName = parameter.displayName;
+      final name = annotation.peek('name')?.stringValue ?? paramName;
+
+      if (parameter.type.isNullable) {
+        codeBuffer.writeln('if ($paramName != null) \'$name\': $paramName,');
+      } else {
+        codeBuffer.writeln('\'$name\': $paramName,');
+      }
     });
 
     final headersReader = method.peek('headers');
@@ -489,16 +487,19 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
     methodAnnotations.forEach((headerName, headerValue) {
       if (headerName != null && headerValue != null) {
-        headers[literal(headerName.toStringValue())] =
-            literal(headerValue.toStringValue());
+        codeBuffer.writeln(
+          '\'${headerName.toStringValue()}\': ${literal(headerValue.toStringValue())},',
+        );
       }
     });
 
-    if (headers.isEmpty) {
+    codeBuffer.writeln('};');
+    final code = codeBuffer.toString();
+    if (code == '{\n};\n') {
       return null;
     }
 
-    return literalMap(headers).assignFinal(_headersVar).statement;
+    return Code('final $_headersVar = $code');
   }
 }
 
@@ -518,4 +519,48 @@ String getMethodName(ConstantReader method) =>
 
 extension DartTypeExtension on DartType {
   bool get isNullable => nullabilitySuffix != NullabilitySuffix.none;
+}
+
+// All positional required params must support nullability
+Parameter buildRequiredPositionalParam(ParameterElement p) {
+  return Parameter(
+    (pb) => pb
+      ..name = p.name
+      ..type = Reference(
+        p.type.getDisplayString(withNullability: p.type.isNullable),
+      ),
+  );
+}
+
+// All optional positional params must support nullability
+Parameter buildOptionalPositionalParam(ParameterElement p) {
+  return Parameter((pb) {
+    pb
+      ..name = p.name
+      ..type = Reference(
+        p.type.getDisplayString(withNullability: p.type.isNullable),
+      );
+
+    if (p.defaultValueCode != null) {
+      pb.defaultTo = Code(p.defaultValueCode);
+    }
+  });
+}
+
+// Named params can be optional or required, they also need to support
+// nullability
+Parameter buildNamedParam(ParameterElement p) {
+  return Parameter((pb) {
+    pb
+      ..named = true
+      ..name = p.name
+      ..required = p.isRequiredNamed
+      ..type = Reference(
+        p.type.getDisplayString(withNullability: p.type.isNullable),
+      );
+
+    if (p.defaultValueCode != null) {
+      pb.defaultTo = Code(p.defaultValueCode);
+    }
+  });
 }

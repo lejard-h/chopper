@@ -64,7 +64,7 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response = await service.getTest('1234');
+      final response = await service.getTest('1234', dynamicHeader: '');
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
@@ -392,7 +392,7 @@ void main() {
 
       final service = HttpTestService.create(chopper);
 
-      await service.getTest('1234');
+      await service.getTest('1234', dynamicHeader: '');
 
       client.close();
     });
@@ -613,7 +613,7 @@ void main() {
     });
 
     final service = HttpTestService.create(chopper);
-    await service.getTest('1234');
+    await service.getTest('1234', dynamicHeader: '');
 
     client.close();
     chopper.dispose();
@@ -632,7 +632,7 @@ void main() {
     });
 
     final service = HttpTestService.create(chopper);
-    await service.getTest('1234');
+    await service.getTest('1234', dynamicHeader: '');
 
     client.close();
     chopper.dispose();
@@ -646,7 +646,7 @@ void main() {
     final chopper = buildClient(client);
 
     final service = HttpTestService.create(chopper);
-    final res = await service.getTest('1234');
+    final res = await service.getTest('1234', dynamicHeader: '');
 
     expect(res.isSuccessful, isFalse);
     expect(res.statusCode, equals(400));
@@ -665,7 +665,7 @@ void main() {
     final chopper = buildClient(client, JsonConverter());
 
     final service = HttpTestService.create(chopper);
-    final res = await service.getTest('1234');
+    final res = await service.getTest('1234', dynamicHeader: '');
 
     expect(res.isSuccessful, isFalse);
     expect(res.statusCode, equals(400));
@@ -719,7 +719,12 @@ void main() {
     final service = chopper.getService<HttpTestService>();
 
     try {
-      await service.getTest('1234').timeout(const Duration(seconds: 3));
+      await service
+          .getTest(
+            '1234',
+            dynamicHeader: '',
+          )
+          .timeout(const Duration(seconds: 3));
     } catch (e) {
       expect(e is TimeoutException, isTrue);
     }
