@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-      - github-action
   pull_request:
     branches:
       - master
@@ -176,3 +175,23 @@ jobs:
     needs:
       - job_001
       - job_002
+  job_005:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: upload_coverage
+        name: chopper; tool/coverage.sh
+        if: "always() && steps.checkout.conclusion == 'success'"
+        run: bash tool/coverage.sh
+        env:
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
+    needs:
+      - job_001
+      - job_002
+      - job_003
+      - job_004
