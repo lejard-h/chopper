@@ -50,7 +50,7 @@ void main() {
       final service = HttpTestService.create(chopper);
 
       try {
-        await service.getTest('1');
+        await service.getTest('1', dynamicHeader: '');
       } catch (e) {
         expect(e is Response, isTrue);
         expect((e as Response).body is _ConvertedError, isTrue);

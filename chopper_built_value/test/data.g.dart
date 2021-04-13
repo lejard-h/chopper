@@ -16,9 +16,9 @@ class _$DataModelSerializer implements StructuredSerializer<DataModel> {
   final String wireName = 'DataModel';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, DataModel object,
+  Iterable<Object?> serialize(Serializers serializers, DataModel object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'id',
       serializers.serialize(object.id, specifiedType: const FullType(int)),
       'name',
@@ -29,7 +29,7 @@ class _$DataModelSerializer implements StructuredSerializer<DataModel> {
   }
 
   @override
-  DataModel deserialize(Serializers serializers, Iterable<Object> serialized,
+  DataModel deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new DataModelBuilder();
 
@@ -37,7 +37,7 @@ class _$DataModelSerializer implements StructuredSerializer<DataModel> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
@@ -61,9 +61,9 @@ class _$ErrorModelSerializer implements StructuredSerializer<ErrorModel> {
   final String wireName = 'ErrorModel';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, ErrorModel object,
+  Iterable<Object?> serialize(Serializers serializers, ErrorModel object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'message',
       serializers.serialize(object.message,
           specifiedType: const FullType(String)),
@@ -73,7 +73,7 @@ class _$ErrorModelSerializer implements StructuredSerializer<ErrorModel> {
   }
 
   @override
-  ErrorModel deserialize(Serializers serializers, Iterable<Object> serialized,
+  ErrorModel deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new ErrorModelBuilder();
 
@@ -81,7 +81,7 @@ class _$ErrorModelSerializer implements StructuredSerializer<ErrorModel> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'message':
           result.message = serializers.deserialize(value,
@@ -100,16 +100,12 @@ class _$DataModel extends DataModel {
   @override
   final String name;
 
-  factory _$DataModel([void Function(DataModelBuilder) updates]) =>
+  factory _$DataModel([void Function(DataModelBuilder)? updates]) =>
       (new DataModelBuilder()..update(updates)).build();
 
-  _$DataModel._({this.id, this.name}) : super._() {
-    if (id == null) {
-      throw new BuiltValueNullFieldError('DataModel', 'id');
-    }
-    if (name == null) {
-      throw new BuiltValueNullFieldError('DataModel', 'name');
-    }
+  _$DataModel._({required this.id, required this.name}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'DataModel', 'id');
+    BuiltValueNullFieldError.checkNotNull(name, 'DataModel', 'name');
   }
 
   @override
@@ -140,22 +136,23 @@ class _$DataModel extends DataModel {
 }
 
 class DataModelBuilder implements Builder<DataModel, DataModelBuilder> {
-  _$DataModel _$v;
+  _$DataModel? _$v;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
-  String _name;
-  String get name => _$this._name;
-  set name(String name) => _$this._name = name;
+  String? _name;
+  String? get name => _$this._name;
+  set name(String? name) => _$this._name = name;
 
   DataModelBuilder();
 
   DataModelBuilder get _$this {
-    if (_$v != null) {
-      _id = _$v.id;
-      _name = _$v.name;
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
+      _name = $v.name;
       _$v = null;
     }
     return this;
@@ -163,20 +160,22 @@ class DataModelBuilder implements Builder<DataModel, DataModelBuilder> {
 
   @override
   void replace(DataModel other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$DataModel;
   }
 
   @override
-  void update(void Function(DataModelBuilder) updates) {
+  void update(void Function(DataModelBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$DataModel build() {
-    final _$result = _$v ?? new _$DataModel._(id: id, name: name);
+    final _$result = _$v ??
+        new _$DataModel._(
+            id: BuiltValueNullFieldError.checkNotNull(id, 'DataModel', 'id'),
+            name: BuiltValueNullFieldError.checkNotNull(
+                name, 'DataModel', 'name'));
     replace(_$result);
     return _$result;
   }
@@ -186,13 +185,11 @@ class _$ErrorModel extends ErrorModel {
   @override
   final String message;
 
-  factory _$ErrorModel([void Function(ErrorModelBuilder) updates]) =>
+  factory _$ErrorModel([void Function(ErrorModelBuilder)? updates]) =>
       (new ErrorModelBuilder()..update(updates)).build();
 
-  _$ErrorModel._({this.message}) : super._() {
-    if (message == null) {
-      throw new BuiltValueNullFieldError('ErrorModel', 'message');
-    }
+  _$ErrorModel._({required this.message}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(message, 'ErrorModel', 'message');
   }
 
   @override
@@ -221,17 +218,18 @@ class _$ErrorModel extends ErrorModel {
 }
 
 class ErrorModelBuilder implements Builder<ErrorModel, ErrorModelBuilder> {
-  _$ErrorModel _$v;
+  _$ErrorModel? _$v;
 
-  String _message;
-  String get message => _$this._message;
-  set message(String message) => _$this._message = message;
+  String? _message;
+  String? get message => _$this._message;
+  set message(String? message) => _$this._message = message;
 
   ErrorModelBuilder();
 
   ErrorModelBuilder get _$this {
-    if (_$v != null) {
-      _message = _$v.message;
+    final $v = _$v;
+    if ($v != null) {
+      _message = $v.message;
       _$v = null;
     }
     return this;
@@ -239,20 +237,21 @@ class ErrorModelBuilder implements Builder<ErrorModel, ErrorModelBuilder> {
 
   @override
   void replace(ErrorModel other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ErrorModel;
   }
 
   @override
-  void update(void Function(ErrorModelBuilder) updates) {
+  void update(void Function(ErrorModelBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$ErrorModel build() {
-    final _$result = _$v ?? new _$ErrorModel._(message: message);
+    final _$result = _$v ??
+        new _$ErrorModel._(
+            message: BuiltValueNullFieldError.checkNotNull(
+                message, 'ErrorModel', 'message'));
     replace(_$result);
     return _$result;
   }

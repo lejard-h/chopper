@@ -387,23 +387,5 @@ class PartFile {
   const PartFile([this.name]);
 }
 
-/// Use it to define a file field for a [Multipart] request.
-///
-/// ```dart
-/// @Post(path: 'file')
-/// @multipart
-/// Future<Response> postFile(@FileField('file') List<int> bytes);
-/// ```
-///
-/// Supports the following values:
-///   - `List<int>`
-///   - [String] (path of your file)
-///   - `MultipartFile` (from package:http)
-@immutable
-@Deprecated('Use PartFile instead')
-class FileField extends PartFile {
-  const FileField([String? name]) : super(name);
-}
-
 const multipart = Multipart();
 const body = Body();

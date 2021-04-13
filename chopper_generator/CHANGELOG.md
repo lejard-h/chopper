@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.0-nullsafety.1
+
+- Fix `@Header` annotation not generating null safe code
+- Respect `required` keyword in functions
+
 ## 4.0.0-nullsafety.0
 
 - Null safety support
