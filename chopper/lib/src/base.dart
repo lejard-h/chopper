@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:chopper/src/authenticator.dart';
 import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
 import 'constants.dart';
@@ -8,6 +7,7 @@ import 'interceptor.dart';
 import 'request.dart';
 import 'response.dart';
 import 'annotations.dart';
+import 'authenticator.dart';
 import 'utils.dart';
 
 Type _typeOf<T>() => T;
