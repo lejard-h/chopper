@@ -4,6 +4,7 @@
 library chopper;
 
 export 'src/annotations.dart';
+export 'src/authenticator.dart';
 export 'src/base.dart';
 export 'src/interceptor.dart';
 export 'src/request.dart';
