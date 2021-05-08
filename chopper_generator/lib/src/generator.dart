@@ -542,7 +542,7 @@ Parameter buildOptionalPositionalParam(ParameterElement p) {
       );
 
     if (p.defaultValueCode != null) {
-      pb.defaultTo = Code(p.defaultValueCode);
+      pb.defaultTo = Code(p.defaultValueCode!);
     }
   });
 }
@@ -560,7 +560,7 @@ Parameter buildNamedParam(ParameterElement p) {
       );
 
     if (p.defaultValueCode != null) {
-      pb.defaultTo = Code(p.defaultValueCode);
+      pb.defaultTo = Code(p.defaultValueCode!);
     }
   });
 }
