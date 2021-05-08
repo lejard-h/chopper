@@ -15,7 +15,7 @@ dependencies:
 
 dev_dependencies:
   test: ^1.16.4
-  build_runner: ^1.12.1
+  build_runner: ^2.0.0
   build_test: ^2.0.0
   coverage: ^1.0.2
   http_parser: ^4.0.0
