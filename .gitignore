@@ -13,3 +13,4 @@ doc/api/
 coverage
 chopper/doc/
 .vscode/
+pubspec.temp.yaml

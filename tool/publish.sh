@@ -8,5 +8,9 @@ mkdir -p .pub-cache
 
 echo $CREDENTIAL_JSON > ~/.pub-cache/credentials.json
 
+sed '/Comment before publish$/,+2 d' pubspec.yaml > pubspec.temp.yaml
+rm pubspec.yaml
+mv pubspec.temp.yaml pubspec.yaml
+
 dart pub publish -f --dry-run
 popd
