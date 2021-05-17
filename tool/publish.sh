@@ -12,5 +12,5 @@ sed '/Comment before publish$/,+2 d' pubspec.yaml > pubspec.temp.yaml
 rm pubspec.yaml
 mv pubspec.temp.yaml pubspec.yaml
 
-dart pub publish -f --dry-run
+dart pub publish --dry-run
 popd
