@@ -22,6 +22,6 @@ dev_dependencies:
   pedantic: ^1.10.0
 
 dependency_overrides:
-  #Comment before publish
+  # Comment before publish
   chopper:
     path: ../chopper
