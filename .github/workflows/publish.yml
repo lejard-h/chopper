@@ -1,0 +1,46 @@
+name: Publish a packages
+
+on:
+  push:
+    branches: ['master']
+
+jobs:
+  publish_chopper:
+      name: "Publish chopper"
+      runs-on: ubuntu-latest
+      steps:
+      - uses: dart-lang/setup-dart@v1.0
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2
+      - id: publish
+        run: bash tool/publish.sh chopper
+        env:
+          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+  publish_chopper_generator:
+    name: "Publish chopper_generator"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: dart-lang/setup-dart@v1.0
+      with:
+        sdk: stable
+    - id: checkout
+      uses: actions/checkout@v2
+    - id: publish
+      run: bash tool/publish.sh chopper_generator
+      env:
+        CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+  publish_chopper_built_value:
+    name: "Publish chopper_built_value"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: dart-lang/setup-dart@v1.0
+      with:
+        sdk: stable
+    - id: checkout
+      uses: actions/checkout@v2
+    - id: publish
+      run: bash tool/publish.sh chopper_built_value
+      env:
+        CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
