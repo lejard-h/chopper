@@ -340,7 +340,7 @@ class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     String? baseUrl,
-    dynamic? body,
+    dynamic body,
   }) =>
       send<BodyType, InnerType>(
         Request(
