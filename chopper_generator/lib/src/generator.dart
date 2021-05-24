@@ -506,7 +506,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 Builder chopperGeneratorFactoryBuilder({String? header}) => PartBuilder(
       [ChopperGenerator()],
       '.chopper.dart',
-      header: header ?? '',
+      header: header,
     );
 
 bool getMethodOptionalBody(ConstantReader method) =>
