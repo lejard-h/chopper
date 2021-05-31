@@ -314,11 +314,11 @@ class ChopperClient {
       var updatedRequest = await authenticator!.authenticate(request, res);
 
       if (updatedRequest != null) {
-        res = await send(updatedRequest);
+        res = await send<BodyType, InnerType>(updatedRequest);
       }
     }
 
-    if (_responseIsSuccessful(response.statusCode)) {
+    if (_responseIsSuccessful(res.statusCode)) {
       res = await _handleSuccessResponse<BodyType, InnerType>(
         res,
         responseConverter,
