@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.0.1
+
+- Fix for the null safety support
 ## 4.0.0
 
 - **Null safety support**
@@ -52,7 +55,7 @@ New way to handle errors
 
 ## 2.4.2
 
-- Fix on JsonConverter 
+- Fix on JsonConverter
     If content type header overrided using @Post(headers: {'content-type': '...'})
     The converter won't add json header and won't apply json.encode if content type is not JSON
 
@@ -101,10 +104,10 @@ New way to handle errors
 ## 2.2.0
 
 - Fix converter issue on List
-  - ***Breaking Change*** 
-  on `Converter.convertResponse<ResultType>(response)`, 
+  - ***Breaking Change***
+  on `Converter.convertResponse<ResultType>(response)`,
   it take a new generic type => `Converter.convertResponse<ResultType, ItemType>(response)`
-                 
+
 - deprecated `Chopper.service<Type>(Type)`, use `Chopper.getservice<Type>()` instead
 thanks to @MichaelDark
 
@@ -139,12 +142,12 @@ thanks to @MichaelDark
 - ***BreakingChange***
     Removed `name` parameter on `ChopperApi`
     New way to instanciate a service
-        
+
         @ChopperApi()
         abstract class MyService extends ChopperService {
             static MyService create([ChopperClient client]) => _$MyService(client);
         }
-        
+
 
 ## 1.0.0
 
