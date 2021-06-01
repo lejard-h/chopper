@@ -4,4 +4,4 @@ import 'package:build/build.dart';
 import 'src/generator.dart';
 
 Builder chopperGeneratorFactory(BuilderOptions options) =>
-    chopperGeneratorFactoryBuilder(header: options.config['header'] as String);
+    chopperGeneratorFactoryBuilder(header: options.config['header']);

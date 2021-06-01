@@ -503,7 +503,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }
 }
 
-Builder chopperGeneratorFactoryBuilder({String header = ''}) => PartBuilder(
+Builder chopperGeneratorFactoryBuilder({String? header}) => PartBuilder(
       [ChopperGenerator()],
       '.chopper.dart',
       header: header,
