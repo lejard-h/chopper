@@ -315,6 +315,13 @@ class ChopperClient {
 
       if (updatedRequest != null) {
         res = await send<BodyType, InnerType>(updatedRequest);
+        // To prevent double call with typed response
+        if (_responseIsSuccessful(res.statusCode)) {
+          return _processResponse(res);
+        } else {
+          res = await _handleErrorResponse<BodyType, InnerType>(res);
+          return _processResponse(res);
+        }
       }
     }
 
@@ -327,10 +334,14 @@ class ChopperClient {
       res = await _handleErrorResponse<BodyType, InnerType>(res);
     }
 
+    return _processResponse(res);
+  }
+
+  /// Utitlity method to shrink duplicated code (interceptors processing)
+  Future<Response<BodyType>> _processResponse<BodyType, InnerType>(
+      dynamic res) async {
     res = await _interceptResponse<BodyType, InnerType>(res);
-
     _responseController.add(res);
-
     return res;
   }
 
