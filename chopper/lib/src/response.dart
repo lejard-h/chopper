@@ -40,7 +40,7 @@ class Response<BodyType> {
   }) =>
       Response<NewBodyType>(
         base ?? this.base,
-        body ?? (this.body as NewBodyType),
+        body ?? (this.body as NewBodyType?),
         error: bodyError ?? error,
       );
 
