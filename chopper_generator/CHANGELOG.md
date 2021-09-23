@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.2
+
+- Analyzer dependency upgrade
+- PartValueFile nullability fix
+
 ## 4.0.1
 
 - Fix for the null safety support
