@@ -337,7 +337,6 @@ class ChopperClient {
     return _processResponse(res);
   }
 
-  /// Utitlity method to shrink duplicated code (interceptors processing)
   Future<Response<BodyType>> _processResponse<BodyType, InnerType>(
       dynamic res) async {
     res = await _interceptResponse<BodyType, InnerType>(res);
