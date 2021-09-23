@@ -456,7 +456,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       list.add(
-        refer('PartValueFile<${p.type.getDisplayString(withNullability: false)}>')
+        refer('PartValueFile<${p.type.getDisplayString(withNullability: p.type.isNullable)}>')
             .newInstance(params),
       );
     });
