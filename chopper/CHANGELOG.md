@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.2
+
+- Fix for authenticator usage
+- Null-safety fixes
+
 ## 4.0.1
 
 - Fix for the null safety support
