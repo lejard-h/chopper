@@ -91,7 +91,7 @@ Iterable<_Pair<String, String>> _iterableToQuery(
 ) =>
     values.map((v) => _Pair(name, _normalizeValue(v)));
 
-String _normalizeValue(value) => Uri.encodeQueryComponent(value.toString());
+String _normalizeValue(value) => Uri.encodeComponent(value.toString());
 
 class _Pair<A, B> {
   final A first;

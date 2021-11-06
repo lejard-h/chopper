@@ -366,7 +366,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     var path = getMethodPath(method);
     paths.forEach((p, ConstantReader r) {
       final name = r.peek('name')?.stringValue ?? p.displayName;
-      path = path.replaceFirst('{$name}', '\$${p.displayName}');
+      path = path.replaceFirst('{$name}', '\${${p.displayName}}');
     });
 
     if (path.startsWith('http://') || path.startsWith('https://')) {
