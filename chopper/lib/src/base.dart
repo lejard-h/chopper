@@ -311,10 +311,14 @@ class ChopperClient {
     dynamic res = Response(response, response.body);
 
     if (authenticator != null) {
-      var updatedRequest = await authenticator!.authenticate(request, res);
+      var updatedRequest = await authenticator!.authenticate(req, res);
 
       if (updatedRequest != null) {
-        res = await send<BodyType, InnerType>(updatedRequest);
+        res = await send<BodyType, InnerType>(
+          updatedRequest,
+          requestConverter: requestConverter,
+          responseConverter: responseConverter,
+        );
         // To prevent double call with typed response
         if (_responseIsSuccessful(res.statusCode)) {
           return _processResponse(res);
