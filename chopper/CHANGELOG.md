@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.4
+
+- Fix for authenticator usage
+
 ## 4.0.3
 
 - Fix for authenticator usage
