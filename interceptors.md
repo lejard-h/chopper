@@ -7,7 +7,7 @@ Implement `RequestInterceptor` class or define function with following signature
 Request interceptor are called just before sending request
 
 ```dart
-final chopper = new ChopperClient(
+final chopper = ChopperClient(
    interceptors: [
      (request) async => request.copyWith(body: {}),
    ]
@@ -23,7 +23,7 @@ Called after successful or failed request
 {% endhint %}
 
 ```dart
-final chopper = new ChopperClient(
+final chopper = ChopperClient(
    interceptors: [
      (Response response) async => response.replace(body: {}),
    ]
