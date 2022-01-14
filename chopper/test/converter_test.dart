@@ -72,7 +72,6 @@ void main() {
       final res = Response(http.Response('"$value"', 200), '"$value"');
       final converted = jsonConverter.convertResponse<String, String>(res);
 
-      expect(converted is Response<String>, isTrue);
       expect(converted.body, equals(value));
     });
 
@@ -84,7 +83,6 @@ void main() {
       final converted =
           jsonConverter.convertResponse<List<String>, String>(res);
 
-      expect(converted is Response<List<String>>, isTrue);
       expect(converted.body, equals(['foo', 'bar']));
     });
 
@@ -92,7 +90,6 @@ void main() {
       final res = Response(http.Response('[1,2]', 200), '[1,2]');
       final converted = jsonConverter.convertResponse<List<int>, int>(res);
 
-      expect(converted is Response<List<int>>, isTrue);
       expect(converted.body, equals([1, 2]));
     });
 
@@ -104,7 +101,6 @@ void main() {
       final converted =
           jsonConverter.convertResponse<Map<String, String>, String>(res);
 
-      expect(converted is Response<Map<String, String>>, isTrue);
       expect(converted.body, equals({'foo': 'bar'}));
     });
   });
