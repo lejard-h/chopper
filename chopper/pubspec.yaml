@@ -3,7 +3,6 @@ description: Chopper is an http client generator using source_gen, inspired by R
 version: 4.0.1
 documentation: https://hadrien-lejard.gitbook.io/chopper
 repository: https://github.com/lejard-h/chopper
-author: Hadrien Lejard <hadrien.lejard@gmail.com>
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
