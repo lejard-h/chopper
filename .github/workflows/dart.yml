@@ -1,4 +1,4 @@
-# Created with package:mono_repo v3.4.7
+# Created with package:mono_repo v6.0.0
 name: Dart CI
 on:
   push:
@@ -21,161 +21,185 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.7
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable"
           restore-keys: |
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.0
       - name: mono_repo self validate
-        run: pub global activate mono_repo 3.4.7
+        run: dart pub global activate mono_repo 6.0.0
       - name: mono_repo self validate
-        run: pub global run mono_repo generate --validate
+        run: dart pub global run mono_repo generate --validate
   job_002:
-    name: "analyzer_and_format; PKGS: chopper, chopper_built_value, chopper_generator; `dartfmt -n --set-exit-if-changed .`, `dartanalyzer --fatal-infos .`"
+    name: "analyzer_and_format; PKGS: chopper_built_value, chopper_generator; `dart format --output=none --set-exit-if-changed .`, `dart analyze --fatal-infos .`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.7
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value-chopper_generator;commands:dartfmt-dartanalyzer"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper_built_value-chopper_generator;commands:format-analyze"
           restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value-chopper_generator
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper_built_value-chopper_generator
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2
-      - id: chopper_pub_upgrade
-        name: "chopper; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: chopper
-        run: pub upgrade --no-precompile
-      - name: "chopper; dartfmt -n --set-exit-if-changed ."
-        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper
-        run: dartfmt -n --set-exit-if-changed .
-      - name: "chopper; dartanalyzer --fatal-infos ."
-        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper
-        run: dartanalyzer --fatal-infos .
+        uses: actions/checkout@v2.4.0
       - id: chopper_built_value_pub_upgrade
-        name: "chopper_built_value; pub upgrade --no-precompile"
+        name: chopper_built_value; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: pub upgrade --no-precompile
-      - name: "chopper_built_value; dartfmt -n --set-exit-if-changed ."
+        run: dart pub upgrade
+      - name: "chopper_built_value; dart format --output=none --set-exit-if-changed ."
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: dartfmt -n --set-exit-if-changed .
-      - name: "chopper_built_value; dartanalyzer --fatal-infos ."
+        run: "dart format --output=none --set-exit-if-changed ."
+      - name: "chopper_built_value; dart analyze --fatal-infos ."
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: dartanalyzer --fatal-infos .
+        run: dart analyze --fatal-infos .
       - id: chopper_generator_pub_upgrade
-        name: "chopper_generator; pub upgrade --no-precompile"
+        name: chopper_generator; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper_generator
-        run: pub upgrade --no-precompile
-      - name: "chopper_generator; dartfmt -n --set-exit-if-changed ."
+        run: dart pub upgrade
+      - name: "chopper_generator; dart format --output=none --set-exit-if-changed ."
         if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_generator
-        run: dartfmt -n --set-exit-if-changed .
-      - name: "chopper_generator; dartanalyzer --fatal-infos ."
+        run: "dart format --output=none --set-exit-if-changed ."
+      - name: "chopper_generator; dart analyze --fatal-infos ."
         if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_generator
-        run: dartanalyzer --fatal-infos .
+        run: dart analyze --fatal-infos .
   job_003:
-    name: "unit_test; PKGS: chopper, chopper_built_value; `pub run test`"
+    name: "analyze_and_format; PKG: chopper; `dart format --output=none --set-exit-if-changed .`, `dart analyze --fatal-infos .`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.7
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value;commands:test_0"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper;commands:format-analyze"
           restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.0
       - id: chopper_pub_upgrade
-        name: "chopper; pub upgrade --no-precompile"
+        name: chopper; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper
-        run: pub upgrade --no-precompile
-      - name: chopper; pub run test
+        run: dart pub upgrade
+      - name: "chopper; dart format --output=none --set-exit-if-changed ."
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
-        run: pub run test
-      - id: chopper_built_value_pub_upgrade
-        name: "chopper_built_value; pub upgrade --no-precompile"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: chopper_built_value
-        run: pub upgrade --no-precompile
-      - name: chopper_built_value; pub run test
-        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper_built_value
-        run: pub run test
+        run: "dart format --output=none --set-exit-if-changed ."
+      - name: "chopper; dart analyze --fatal-infos ."
+        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper
+        run: dart analyze --fatal-infos .
     needs:
       - job_001
       - job_002
   job_004:
-    name: "unit_test; PKGS: chopper, chopper_built_value; `pub run test -p chrome`"
+    name: "unit_test; PKGS: chopper, chopper_built_value; `dart test -p chrome`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v2.1.7
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value;commands:test_1"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_1"
           restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;dart:stable;packages:chopper-chopper_built_value
-            os:ubuntu-latest;pub-cache-hosted;dart:stable
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.0
       - id: chopper_pub_upgrade
-        name: "chopper; pub upgrade --no-precompile"
+        name: chopper; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper
-        run: pub upgrade --no-precompile
-      - name: "chopper; pub run test -p chrome"
+        run: dart pub upgrade
+      - name: "chopper; dart test -p chrome"
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
-        run: pub run test -p chrome
+        run: dart test -p chrome
       - id: chopper_built_value_pub_upgrade
-        name: "chopper_built_value; pub upgrade --no-precompile"
+        name: chopper_built_value; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: pub upgrade --no-precompile
-      - name: "chopper_built_value; pub run test -p chrome"
+        run: dart pub upgrade
+      - name: "chopper_built_value; dart test -p chrome"
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: pub run test -p chrome
+        run: dart test -p chrome
     needs:
       - job_001
       - job_002
+      - job_003
   job_005:
+    name: "unit_test; PKGS: chopper, chopper_built_value; `dart test`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v2.1.7
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_0"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - uses: dart-lang/setup-dart@v1.3
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v2.4.0
+      - id: chopper_pub_upgrade
+        name: chopper; dart pub upgrade
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: chopper
+        run: dart pub upgrade
+      - name: chopper; dart test
+        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper
+        run: dart test
+      - id: chopper_built_value_pub_upgrade
+        name: chopper_built_value; dart pub upgrade
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: chopper_built_value
+        run: dart pub upgrade
+      - name: chopper_built_value; dart test
+        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper_built_value
+        run: dart test
+    needs:
+      - job_001
+      - job_002
+      - job_003
+  job_006:
     name: Coverage
     runs-on: ubuntu-latest
     steps:
@@ -195,3 +219,4 @@ jobs:
       - job_002
       - job_003
       - job_004
+      - job_005
