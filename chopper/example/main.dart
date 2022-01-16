@@ -1,5 +1,4 @@
 import 'package:chopper/chopper.dart';
-import 'package:chopper/src/interceptor.dart';
 import 'definition.dart';
 
 Future<void> main() async {
