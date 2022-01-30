@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.5
+
+- Add additional param for the authenticator
+
 ## 4.0.4
 
 - Fix for authenticator usage
