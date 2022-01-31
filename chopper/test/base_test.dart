@@ -22,13 +22,6 @@ void main() {
         errorConverter: errorConverter,
       );
   group('Base', () {
-    test('get service', () async {
-      final chopper = buildClient();
-      final service = chopper.getService<HttpTestService>();
-
-      expect(service is HttpTestService, isTrue);
-    });
-
     test('get service errors', () async {
       final chopper = ChopperClient(
         baseUrl: baseUrl,

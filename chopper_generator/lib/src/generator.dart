@@ -6,7 +6,6 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 import 'package:build/build.dart';
-import 'package:build/src/builder/build_step.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:dart_style/dart_style.dart';
 
@@ -83,7 +82,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     });
 
     final ignore =
-        '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations';
+        '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations, unnecessary_brace_in_string_interps';
     final emitter = DartEmitter();
     return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
   }

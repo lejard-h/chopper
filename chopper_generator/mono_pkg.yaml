@@ -1,11 +1,11 @@
-dart:
-- stable
+sdk:
+ - stable
 
 stages:
 - analyzer_and_format:
   - group:
-    - dartfmt
-    - dartanalyzer: --fatal-infos .
+    - format
+    - analyze: --fatal-infos .
 
 cache:
   directories:
