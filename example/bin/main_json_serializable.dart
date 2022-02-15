@@ -60,14 +60,14 @@ Future<Request> authHeader(Request request) async => applyHeader(
       "42",
     );
 
-typedef T JsonFactory<T>(Map<String, dynamic> json);
+typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
 
 class JsonSerializableConverter extends JsonConverter {
   final Map<Type, JsonFactory> factories;
 
-  JsonSerializableConverter(this.factories);
+  const JsonSerializableConverter(this.factories);
 
-  T _decodeMap<T>(Map<String, dynamic> values) {
+  T? _decodeMap<T>(Map<String, dynamic> values) {
     /// Get jsonFactory using Type parameters
     /// if not found or invalid, throw error or return null
     final jsonFactory = factories[T];
@@ -83,9 +83,9 @@ class JsonSerializableConverter extends JsonConverter {
       values.where((v) => v != null).map<T>((v) => _decode<T>(v)).toList();
 
   dynamic _decode<T>(entity) {
-    if (entity is Iterable) return _decodeList<T>(entity);
+    if (entity is Iterable) return _decodeList<T>(entity as List);
 
-    if (entity is Map) return _decodeMap<T>(entity);
+    if (entity is Map) return _decodeMap<T>(entity as Map<String, dynamic>);
 
     return entity;
   }
