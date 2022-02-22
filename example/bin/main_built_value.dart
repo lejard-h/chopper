@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:built_value/serializer.dart';
 import 'package:chopper/chopper.dart';
 import 'package:chopper_example/built_value_resource.dart';
 import 'package:chopper_example/built_value_serializers.dart';
@@ -52,16 +53,22 @@ main() async {
 }
 
 class BuiltValueConverter extends JsonConverter {
-  T _deserialize<T>(dynamic value) => jsonSerializers.deserializeWith<T>(
-        jsonSerializers.serializerForType(T),
-        value,
-      );
+  T? _deserialize<T>(dynamic value) {
+    final serializer = jsonSerializers.serializerForType(T) as Serializer<T>?;
+    if (serializer == null) {
+      throw Exception('No serializer for type ${T}');
+    }
+    return jsonSerializers.deserializeWith<T>(
+      serializer,
+      value,
+    );
+  }
 
   BuiltList<T> _deserializeListOf<T>(Iterable value) => BuiltList(
         value.map((value) => _deserialize<T>(value)).toList(growable: false),
       );
 
-  dynamic _decode<T>(entity) {
+  dynamic _decode<T>(dynamic entity) {
     /// handle case when we want to access to Map<String, dynamic> directly
     /// getResource or getMapResource
     /// Avoid dynamic or unconverted value, this could lead to several issues

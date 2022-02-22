@@ -16,6 +16,9 @@ class Resource {
   static const fromJsonFactory = _$ResourceFromJson;
 
   Map<String, dynamic> toJson() => _$ResourceToJson(this);
+
+  @override
+  String toString() => 'Resource{id: $id, name: $name}';
 }
 
 @JsonSerializable()
@@ -32,7 +35,7 @@ class ResourceError {
 
 @ChopperApi(baseUrl: "/resources")
 abstract class MyService extends ChopperService {
-  static MyService create([ChopperClient client]) => _$MyService(client);
+  static MyService create([ChopperClient? client]) => _$MyService(client);
 
   @Get(path: "/{id}/")
   Future<Response> getResource(@Path() String id);
@@ -48,5 +51,5 @@ abstract class MyService extends ChopperService {
 
   @Post()
   Future<Response<Resource>> newResource(@Body() Resource resource,
-      {@Header() String name});
+      {@Header() String? name});
 }
