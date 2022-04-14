@@ -119,8 +119,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     final queries = _getAnnotations(m, chopper.Query);
     final queryMap = _getAnnotation(m, chopper.QueryMap);
     final fields = _getAnnotations(m, chopper.Field);
+    final fieldMap = _getAnnotation(m, chopper.FieldMap);
     final parts = _getAnnotations(m, chopper.Part);
+    final partMap = _getAnnotation(m, chopper.PartMap);
     final fileFields = _getAnnotations(m, chopper.PartFile);
+    final fileFieldMap = _getAnnotation(m, chopper.PartFileMap);
 
     final headers = _generateHeaders(m, method!);
     final url = _generateUrl(method, paths, baseUrl);
@@ -190,7 +193,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       final methodOptionalBody = getMethodOptionalBody(method);
       final methodName = getMethodName(method);
       final methodUrl = getMethodPath(method);
-      final hasBody = body.isNotEmpty || fields.isNotEmpty;
+      var hasBody = body.isNotEmpty || fields.isNotEmpty;
       if (hasBody) {
         if (body.isNotEmpty) {
           blocks.add(
@@ -203,12 +206,56 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         }
       }
 
-      final hasParts =
+      final hasFieldMap = fieldMap.isNotEmpty;
+      if (hasFieldMap) {
+        if (hasBody) {
+          blocks.add(refer('$_bodyVar.addAll').call(
+            [refer(fieldMap.keys.first)],
+          ).statement);
+        } else {
+          blocks.add(
+            refer(fieldMap.keys.first).assignFinal(_bodyVar).statement,
+          );
+        }
+      }
+
+      hasBody = hasBody || hasFieldMap;
+
+
+      var hasParts =
           multipart == true && (parts.isNotEmpty || fileFields.isNotEmpty);
       if (hasParts) {
         blocks.add(
             _generateList(parts, fileFields).assignFinal(_partsVar).statement);
       }
+
+      final hasPartMap = multipart == true && partMap.isNotEmpty;
+      if (hasPartMap) {
+        if (hasParts) {
+          blocks.add(refer('$_partsVar.addAll').call(
+            [refer(partMap.keys.first)],
+          ).statement);
+        } else {
+          blocks.add(
+            refer(partMap.keys.first).assignFinal(_partsVar).statement,
+          );
+        }
+      }
+
+      final hasFileFilesMap = multipart == true && fileFieldMap.isNotEmpty;
+      if (hasFileFilesMap) {
+        if (hasParts || hasPartMap) {
+          blocks.add(refer('$_partsVar.addAll').call(
+            [refer(fileFieldMap.keys.first)],
+          ).statement);
+        } else {
+          blocks.add(
+            refer(fileFieldMap.keys.first).assignFinal(_partsVar).statement,
+          );
+        }
+      }
+
+      hasParts = hasParts || hasPartMap || hasFileFilesMap;
 
       if (!methodOptionalBody && !hasBody && !hasParts) {
         _logger.warning(

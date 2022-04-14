@@ -160,11 +160,11 @@ class Method {
   final bool optionalBody;
 
   const Method(
-    this.method, {
-    this.optionalBody = false,
-    this.path = '',
-    this.headers = const {},
-  });
+      this.method, {
+        this.optionalBody = false,
+        this.path = '',
+        this.headers = const {},
+      });
 }
 
 /// Defines a method as an HTTP GET request.
@@ -175,11 +175,11 @@ class Get extends Method {
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
-          HttpMethod.Get,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    HttpMethod.Get,
+    optionalBody: optionalBody,
+    path: path,
+    headers: headers,
+  );
 }
 
 /// Defines a method as an HTTP POST request.
@@ -192,11 +192,11 @@ class Post extends Method {
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
-          HttpMethod.Post,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    HttpMethod.Post,
+    optionalBody: optionalBody,
+    path: path,
+    headers: headers,
+  );
 }
 
 /// Defines a method as an HTTP DELETE request.
@@ -207,11 +207,11 @@ class Delete extends Method {
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
-          HttpMethod.Delete,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    HttpMethod.Delete,
+    optionalBody: optionalBody,
+    path: path,
+    headers: headers,
+  );
 }
 
 /// Defines a method as an HTTP PUT request.
@@ -224,11 +224,11 @@ class Put extends Method {
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
-          HttpMethod.Put,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    HttpMethod.Put,
+    optionalBody: optionalBody,
+    path: path,
+    headers: headers,
+  );
 }
 
 /// Defines a method as an HTTP PATCH request.
@@ -240,11 +240,11 @@ class Patch extends Method {
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
-          HttpMethod.Patch,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    HttpMethod.Patch,
+    optionalBody: optionalBody,
+    path: path,
+    headers: headers,
+  );
 }
 
 /// Defines a method as an HTTP HEAD request.
@@ -255,11 +255,11 @@ class Head extends Method {
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
-          HttpMethod.Head,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    HttpMethod.Head,
+    optionalBody: optionalBody,
+    path: path,
+    headers: headers,
+  );
 }
 
 @immutable
@@ -269,11 +269,11 @@ class Options extends Method {
     String path = '',
     Map<String, String> headers = const {},
   }) : super(
-          HttpMethod.Options,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    HttpMethod.Options,
+    optionalBody: optionalBody,
+    path: path,
+    headers: headers,
+  );
 }
 
 /// A function that should convert the body of a [Request] to the HTTP representation.
@@ -342,6 +342,19 @@ class Field {
   const Field([this.name]);
 }
 
+
+/// Provides field parameters of a request as [Map<String, dynamic>].
+///
+/// ```dart
+/// @Post(path: '/something')
+/// Future<Response> fetch(@FieldMap List<Map<String, dynamic>> query);
+/// ```
+///
+@immutable
+class FieldMap {
+  const FieldMap();
+}
+
 /// Defines a multipart request.
 ///
 /// ```dart
@@ -368,6 +381,20 @@ class Part {
   const Part([this.name]);
 }
 
+
+/// Provides part parameters of a request as [PartValue].
+///
+/// ```dart
+/// @Post(path: '/something')
+/// @Multipart
+/// Future<Response> fetch(@PartMap() List<PartValue> query);
+/// ```
+///
+@immutable
+class PartMap {
+  const PartMap();
+}
+
 /// Use [PartFile] to define a file field for a [Multipart] request.
 ///
 /// ```
@@ -385,6 +412,20 @@ class PartFile {
   final String? name;
 
   const PartFile([this.name]);
+}
+
+
+/// Provides partFile parameters of a request as [PartValueFile].
+///
+/// ```dart
+/// @Post(path: '/something')
+/// @Multipart
+/// Future<Response> fetch(@PartFileMap() List<PartValueFile> query);
+/// ```
+///
+@immutable
+class PartFileMap {
+  const PartFileMap();
 }
 
 const multipart = Multipart();
