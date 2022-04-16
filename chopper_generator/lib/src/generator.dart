@@ -221,7 +221,6 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       hasBody = hasBody || hasFieldMap;
 
-
       var hasParts =
           multipart == true && (parts.isNotEmpty || fileFields.isNotEmpty);
       if (hasParts) {
