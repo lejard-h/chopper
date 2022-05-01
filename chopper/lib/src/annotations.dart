@@ -342,6 +342,18 @@ class Field {
   const Field([this.name]);
 }
 
+/// Provides field parameters of a request as [Map<String, dynamic>].
+///
+/// ```dart
+/// @Post(path: '/something')
+/// Future<Response> fetch(@FieldMap List<Map<String, dynamic>> query);
+/// ```
+///
+@immutable
+class FieldMap {
+  const FieldMap();
+}
+
 /// Defines a multipart request.
 ///
 /// ```dart
@@ -368,6 +380,19 @@ class Part {
   const Part([this.name]);
 }
 
+/// Provides part parameters of a request as [PartValue].
+///
+/// ```dart
+/// @Post(path: '/something')
+/// @Multipart
+/// Future<Response> fetch(@PartMap() List<PartValue> query);
+/// ```
+///
+@immutable
+class PartMap {
+  const PartMap();
+}
+
 /// Use [PartFile] to define a file field for a [Multipart] request.
 ///
 /// ```
@@ -385,6 +410,19 @@ class PartFile {
   final String? name;
 
   const PartFile([this.name]);
+}
+
+/// Provides partFile parameters of a request as [PartValueFile].
+///
+/// ```dart
+/// @Post(path: '/something')
+/// @Multipart
+/// Future<Response> fetch(@PartFileMap() List<PartValueFile> query);
+/// ```
+///
+@immutable
+class PartFileMap {
+  const PartFileMap();
 }
 
 const multipart = Multipart();
