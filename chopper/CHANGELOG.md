@@ -2,7 +2,7 @@
 
 ## 4.0.6
 
-- FilledMap added
+- FieldMap added
 - Example migrated to null safety / Angular removed
 
 ## 4.0.5
