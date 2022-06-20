@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.3
+
+- Analyzer dependency upgrade
+
 ## 4.0.2
 
 - Analyzer dependency upgrade
