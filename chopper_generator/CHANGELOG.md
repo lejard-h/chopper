@@ -1,8 +1,13 @@
 # Changelog
 
-## 4.0.3
+## 4.0.5
 
 - Analyzer dependency upgrade
+- Fix for warnings
+
+## 4.0.3
+
+- Interpolation fixes
 
 ## 4.0.2
 
