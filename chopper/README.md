@@ -45,6 +45,5 @@ Latest versions:
 
 * [json_serializable Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
 * [built_value Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
-* [Angular](https://github.com/lejard-h/chopper/blob/master/example/web/main.dart)
 
 ## If you encounter any issues, or need a feature implemented, please visit [Chopper's Issue Tracker on GitHub](https://github.com/lejard-h/chopper/issues).

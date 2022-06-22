@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.0.6
+
+- FieldMap added
+- Example migrated to null safety / Angular removed
+
 ## 4.0.5
 
 - Add additional param for the authenticator
