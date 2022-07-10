@@ -10,6 +10,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dart_style/dart_style.dart';
 
 import 'package:source_gen/source_gen.dart';
+
 // TODO(lejard_h) Code builder not null safe yet
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:code_builder/code_builder.dart';
@@ -82,7 +83,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     });
 
     final ignore =
-        '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations, unnecessary_brace_in_string_interps';
+        '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, dead_null_aware_expression, prefer_const_declarations, unnecessary_brace_in_string_interps';
     final emitter = DartEmitter();
     return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
   }
@@ -175,11 +176,14 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       if (hasQueryMap) {
         if (queries.isNotEmpty) {
           blocks.add(refer('$_parametersVar.addAll').call(
-            [refer(queryMap.keys.first)],
+            [refer(queryMap.keys.first).ifNullThen(refer('{}'))],
           ).statement);
         } else {
           blocks.add(
-            refer(queryMap.keys.first).assignFinal(_parametersVar).statement,
+            refer(queryMap.keys.first)
+                .ifNullThen(refer('{}'))
+                .assignFinal(_parametersVar)
+                .statement,
           );
         }
       }
