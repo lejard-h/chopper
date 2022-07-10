@@ -645,7 +645,8 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/query_map?name=foo&number=1234&filter_1=filter_value_1'),
+        equals(
+            '$baseUrl/test/query_map?name=foo&number=1234&filter_1=filter_value_1'),
       );
       expect(request.method, equals('GET'));
 
@@ -656,12 +657,7 @@ void main() {
     final service = chopper.getService<HttpTestService>();
 
     final response = await service.getQueryMapTest4(
-      name: 'foo',
-      number: 1234,
-      filters: {
-        'filter_1': 'filter_value_1'
-      }
-    );
+        name: 'foo', number: 1234, filters: {'filter_1': 'filter_value_1'});
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -669,7 +665,8 @@ void main() {
     httpClient.close();
   });
 
-  test('Query Map 4 with QueryMap that overwrites a previous value from Query', () async {
+  test('Query Map 4 with QueryMap that overwrites a previous value from Query',
+      () async {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
@@ -683,13 +680,8 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response = await service.getQueryMapTest4(
-        name: 'foo',
-        number: 1234,
-        filters: {
-          'name': 'bar'
-        }
-    );
+    final response = await service
+        .getQueryMapTest4(name: 'foo', number: 1234, filters: {'name': 'bar'});
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -733,11 +725,8 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response = await service.getQueryMapTest5(
-      filters: {
-        'filter_1': 'filter_value_1'
-      }
-    );
+    final response =
+        await service.getQueryMapTest5(filters: {'filter_1': 'filter_value_1'});
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
