@@ -6,7 +6,7 @@ part of 'test_service.dart';
 // ChopperGenerator
 // **************************************************************************
 
-// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, dead_null_aware_expression, prefer_const_declarations, unnecessary_brace_in_string_interps
+// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations, unnecessary_brace_in_string_interps
 class _$HttpTestService extends HttpTestService {
   _$HttpTestService([ChopperClient? client]) {
     if (client == null) return;
@@ -78,7 +78,7 @@ class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<dynamic>> getQueryMapTest(Map<String, dynamic> query) {
     final $url = '/test/query_map';
-    final $params = query ?? {};
+    final $params = query;
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<dynamic, dynamic>($request);
   }
@@ -88,7 +88,7 @@ class _$HttpTestService extends HttpTestService {
       {bool? test}) {
     final $url = '/test/query_map';
     final $params = <String, dynamic>{'test': test};
-    $params.addAll(query ?? {});
+    $params.addAll(query);
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<dynamic, dynamic>($request);
   }
@@ -100,7 +100,7 @@ class _$HttpTestService extends HttpTestService {
       Map<String, dynamic> filters = const {}}) {
     final $url = '/test/query_map';
     final $params = <String, dynamic>{'name': name, 'number': number};
-    $params.addAll(filters ?? {});
+    $params.addAll(filters);
     final $request = Request('GET', $url, client.baseUrl, parameters: $params);
     return client.send<dynamic, dynamic>($request);
   }

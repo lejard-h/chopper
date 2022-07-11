@@ -83,7 +83,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     });
 
     final ignore =
-        '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, dead_null_aware_expression, prefer_const_declarations, unnecessary_brace_in_string_interps';
+        '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations, unnecessary_brace_in_string_interps';
     final emitter = DartEmitter();
     return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
   }
@@ -172,18 +172,34 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         blocks.add(_generateMap(queries).assignFinal(_parametersVar).statement);
       }
 
+      // Build an iterable of all the parameters that are nullable
+      final Iterable<String> optionalNullableParameters = [
+        ...m.parameters.where((p) => p.isOptionalPositional),
+        ...m.parameters.where((p) => p.isNamed),
+      ].where((el) => el.type.isNullable).map((el) => el.name);
+
       final hasQueryMap = queryMap.isNotEmpty;
       if (hasQueryMap) {
         if (queries.isNotEmpty) {
           blocks.add(refer('$_parametersVar.addAll').call(
-            [refer(queryMap.keys.first).ifNullThen(refer('{}'))],
+            [
+              // Check if the parameter is nullable
+              optionalNullableParameters.contains(queryMap.keys.first)
+                  ? refer(queryMap.keys.first).ifNullThen(refer('{}'))
+                  : refer(queryMap.keys.first),
+            ],
           ).statement);
         } else {
           blocks.add(
-            refer(queryMap.keys.first)
-                .ifNullThen(refer('{}'))
-                .assignFinal(_parametersVar)
-                .statement,
+            // Check if the parameter is nullable
+            optionalNullableParameters.contains(queryMap.keys.first)
+                ? refer(queryMap.keys.first)
+                    .ifNullThen(refer('{}'))
+                    .assignFinal(_parametersVar)
+                    .statement
+                : refer(queryMap.keys.first)
+                    .assignFinal(_parametersVar)
+                    .statement,
           );
         }
       }
