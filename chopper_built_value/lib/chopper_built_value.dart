@@ -1,7 +1,8 @@
-import 'package:chopper/chopper.dart';
+import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
+import 'package:chopper/chopper.dart';
 
 /// A custom [Converter] and [ErrorConverter] that handles conversion for classes
 /// having a serializer implementation made with the built_value package.
@@ -52,15 +53,17 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   }
 
   @override
-  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
-    final jsonResponse = jsonConverter.convertResponse(response);
+  FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
+      Response response) async {
+    final jsonResponse = await jsonConverter.convertResponse(response);
     final body = deserialize<BodyType, InnerType>(jsonResponse.body);
     return jsonResponse.copyWith(body: body);
   }
 
   @override
-  Response convertError<BodyType, InnerType>(Response response) {
-    final jsonResponse = jsonConverter.convertResponse(response);
+  FutureOr<Response> convertError<BodyType, InnerType>(
+      Response response) async {
+    final jsonResponse = await jsonConverter.convertResponse(response);
 
     var body;
 
