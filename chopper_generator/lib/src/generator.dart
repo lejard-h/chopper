@@ -173,7 +173,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       }
 
       // Build an iterable of all the parameters that are nullable
-      final Iterable<String> optionalNullableParameters = [
+      final optionalNullableParameters = [
         ...m.parameters.where((p) => p.isOptionalPositional),
         ...m.parameters.where((p) => p.isNamed),
       ].where((el) => el.type.isNullable).map((el) => el.name);
