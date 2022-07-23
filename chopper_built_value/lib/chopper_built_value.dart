@@ -1,7 +1,6 @@
-import 'package:chopper/chopper.dart';
-
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
+import 'package:chopper/chopper.dart';
 
 /// A custom [Converter] and [ErrorConverter] that handles conversion for classes
 /// having a serializer implementation made with the built_value package.
@@ -33,7 +32,9 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   }
 
   BuiltList<InnerType> _deserializeListOf<InnerType>(Iterable value) {
-    final deserialized = value.map((value) => _deserialize<InnerType>(value));
+    final Iterable<InnerType?> deserialized =
+        value.map((value) => _deserialize<InnerType>(value));
+
     return BuiltList<InnerType>(deserialized.toList(growable: false));
   }
 
@@ -42,25 +43,27 @@ class BuiltValueConverter implements Converter, ErrorConverter {
     if (entity is Iterable) {
       return _deserializeListOf<InnerType>(entity) as BodyType;
     }
+
     return _deserialize<BodyType>(entity);
   }
 
   @override
-  Request convertRequest(Request request) {
-    request = request.copyWith(body: serializers.serialize(request.body));
-    return jsonConverter.convertRequest(request);
-  }
+  Request convertRequest(Request request) => jsonConverter.convertRequest(
+        request.copyWith(body: serializers.serialize(request.body)),
+      );
 
   @override
   Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
-    final jsonResponse = jsonConverter.convertResponse(response);
-    final body = deserialize<BodyType, InnerType>(jsonResponse.body);
-    return jsonResponse.copyWith(body: body);
+    final Response jsonResponse = jsonConverter.convertResponse(response);
+
+    return jsonResponse.copyWith(
+      body: deserialize<BodyType, InnerType>(jsonResponse.body),
+    );
   }
 
   @override
   Response convertError<BodyType, InnerType>(Response response) {
-    final jsonResponse = jsonConverter.convertResponse(response);
+    final Response jsonResponse = jsonConverter.convertResponse(response);
 
     var body;
 
