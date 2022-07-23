@@ -1,7 +1,7 @@
-import "dart:async";
+import 'dart:async';
+
 import 'package:chopper/chopper.dart';
 import 'package:chopper_example/json_serializable.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
@@ -11,6 +11,7 @@ final client = MockClient((req) async {
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
   if (req.method == 'GET' && req.headers['test'] == 'list')
     return http.Response('[{"id":"1","name":"Foo"}]', 200);
+
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
 
@@ -21,7 +22,7 @@ main() async {
 
   final chopper = ChopperClient(
     client: client,
-    baseUrl: "http://localhost:8000",
+    baseUrl: 'http://localhost:8000',
     // bind your object factories here
     converter: converter,
     errorConverter: converter,
@@ -35,7 +36,7 @@ main() async {
 
   final myService = chopper.getService<MyService>();
 
-  final response1 = await myService.getResource("1");
+  final response1 = await myService.getResource('1');
   print('response 1: ${response1.body}'); // undecoded String
 
   final response2 = await myService.getResources();
@@ -44,11 +45,11 @@ main() async {
   final response3 = await myService.getTypedResource();
   print('response 3: ${response3.body}'); // decoded Resource
 
-  final response4 = await myService.getMapResource("1");
+  final response4 = await myService.getMapResource('1');
   print('response 4: ${response4.body}'); // undecoded Resource
 
   try {
-    await myService.newResource(Resource("3", "Super Name"));
+    await myService.newResource(Resource('3', 'Super Name'));
   } on Response catch (error) {
     print(error.body);
   }
@@ -56,8 +57,8 @@ main() async {
 
 Future<Request> authHeader(Request request) async => applyHeader(
       request,
-      "Authorization",
-      "42",
+      'Authorization',
+      '42',
     );
 
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);

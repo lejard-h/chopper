@@ -5,7 +5,7 @@ documentation: https://hadrien-lejard.gitbook.io/chopper/
 #author: Hadrien Lejard <hadrien.lejard@gmail.com>
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
 
 dependencies:
   chopper:
@@ -18,6 +18,8 @@ dev_dependencies:
   chopper_generator:
   json_serializable:
   built_value_generator:
+  dart_code_metrics: ^4.8.1
+  lints: ^2.0.0
 
 dependency_overrides:
  chopper:

@@ -1,14 +1,14 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
+import 'package:built_value/standard_json_plugin.dart';
 import 'package:chopper/chopper.dart';
 import 'package:chopper_example/built_value_resource.dart';
 import 'package:chopper_example/built_value_serializers.dart';
-import 'package:built_value/standard_json_plugin.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
 final jsonSerializers =
-    (serializers.toBuilder()..addPlugin(new StandardJsonPlugin())).build();
+    (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
 
 /// Simple client to have working example without remote server
 final client = MockClient((req) async {
@@ -16,13 +16,14 @@ final client = MockClient((req) async {
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
   if (req.url.path == '/resources/list')
     return http.Response('[{"id":"1","name":"Foo"}]', 200);
+
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
 
 main() async {
-  final chopper = new ChopperClient(
+  final chopper = ChopperClient(
     client: client,
-    baseUrl: "http://localhost:8000",
+    baseUrl: 'http://localhost:8000',
     converter: BuiltValueConverter(),
     errorConverter: BuiltValueConverter(),
     services: [
@@ -33,7 +34,7 @@ main() async {
 
   final myService = chopper.getService<MyService>();
 
-  final response1 = await myService.getResource("1");
+  final response1 = await myService.getResource('1');
   print('response 1: ${response1.body}'); // undecoded String
 
   final response2 = await myService.getTypedResource();
@@ -44,8 +45,8 @@ main() async {
 
   try {
     final builder = ResourceBuilder()
-      ..id = "3"
-      ..name = "Super Name";
+      ..id = '3'
+      ..name = 'Super Name';
     await myService.newResource(builder.build());
   } on Response catch (error) {
     print(error.body);
@@ -58,10 +59,8 @@ class BuiltValueConverter extends JsonConverter {
     if (serializer == null) {
       throw Exception('No serializer for type ${T}');
     }
-    return jsonSerializers.deserializeWith<T>(
-      serializer,
-      value,
-    );
+
+    return jsonSerializers.deserializeWith<T>(serializer, value);
   }
 
   BuiltList<T> _deserializeListOf<T>(Iterable value) => BuiltList(
@@ -75,10 +74,12 @@ class BuiltValueConverter extends JsonConverter {
     if (entity is T) return entity;
 
     try {
-      if (entity is List) return _deserializeListOf<T>(entity);
-      return _deserialize<T>(entity);
+      return entity is List
+          ? _deserializeListOf<T>(entity)
+          : _deserialize<T>(entity);
     } catch (e) {
       print(e);
+
       return null;
     }
   }
@@ -86,8 +87,9 @@ class BuiltValueConverter extends JsonConverter {
   @override
   Response<ResultType> convertResponse<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse(response);
+    final Response jsonRes = super.convertResponse(response);
     final body = _decode<Item>(jsonRes.body);
+
     return jsonRes.copyWith<ResultType>(body: body);
   }
 

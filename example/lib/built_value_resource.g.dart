@@ -36,17 +36,17 @@ class _$ResourceSerializer implements StructuredSerializer<Resource> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'name':
           result.name = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
       }
     }
@@ -83,17 +83,17 @@ class _$ResourceErrorSerializer implements StructuredSerializer<ResourceError> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'type':
           result.type = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
         case 'message':
           result.message = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
       }
     }
@@ -109,11 +109,11 @@ class _$Resource extends Resource {
   final String name;
 
   factory _$Resource([void Function(ResourceBuilder)? updates]) =>
-      (new ResourceBuilder()..update(updates)).build();
+      (new ResourceBuilder()..update(updates))._build();
 
   _$Resource._({required this.id, required this.name}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'Resource', 'id');
-    BuiltValueNullFieldError.checkNotNull(name, 'Resource', 'name');
+    BuiltValueNullFieldError.checkNotNull(id, r'Resource', 'id');
+    BuiltValueNullFieldError.checkNotNull(name, r'Resource', 'name');
   }
 
   @override
@@ -136,7 +136,7 @@ class _$Resource extends Resource {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Resource')
+    return (newBuiltValueToStringHelper(r'Resource')
           ..add('id', id)
           ..add('name', name))
         .toString();
@@ -178,12 +178,14 @@ class ResourceBuilder implements Builder<Resource, ResourceBuilder> {
   }
 
   @override
-  _$Resource build() {
+  Resource build() => _build();
+
+  _$Resource _build() {
     final _$result = _$v ??
         new _$Resource._(
-            id: BuiltValueNullFieldError.checkNotNull(id, 'Resource', 'id'),
+            id: BuiltValueNullFieldError.checkNotNull(id, r'Resource', 'id'),
             name: BuiltValueNullFieldError.checkNotNull(
-                name, 'Resource', 'name'));
+                name, r'Resource', 'name'));
     replace(_$result);
     return _$result;
   }
@@ -196,11 +198,11 @@ class _$ResourceError extends ResourceError {
   final String message;
 
   factory _$ResourceError([void Function(ResourceErrorBuilder)? updates]) =>
-      (new ResourceErrorBuilder()..update(updates)).build();
+      (new ResourceErrorBuilder()..update(updates))._build();
 
   _$ResourceError._({required this.type, required this.message}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(type, 'ResourceError', 'type');
-    BuiltValueNullFieldError.checkNotNull(message, 'ResourceError', 'message');
+    BuiltValueNullFieldError.checkNotNull(type, r'ResourceError', 'type');
+    BuiltValueNullFieldError.checkNotNull(message, r'ResourceError', 'message');
   }
 
   @override
@@ -225,7 +227,7 @@ class _$ResourceError extends ResourceError {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ResourceError')
+    return (newBuiltValueToStringHelper(r'ResourceError')
           ..add('type', type)
           ..add('message', message))
         .toString();
@@ -268,16 +270,18 @@ class ResourceErrorBuilder
   }
 
   @override
-  _$ResourceError build() {
+  ResourceError build() => _build();
+
+  _$ResourceError _build() {
     final _$result = _$v ??
         new _$ResourceError._(
             type: BuiltValueNullFieldError.checkNotNull(
-                type, 'ResourceError', 'type'),
+                type, r'ResourceError', 'type'),
             message: BuiltValueNullFieldError.checkNotNull(
-                message, 'ResourceError', 'message'));
+                message, r'ResourceError', 'message'));
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,no_leading_underscores_for_local_identifiers,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new,unnecessary_lambdas

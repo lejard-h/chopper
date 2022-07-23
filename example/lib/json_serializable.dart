@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:chopper/chopper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'json_serializable.g.dart';
 part 'json_serializable.chopper.dart';
+
+part 'json_serializable.g.dart';
 
 @JsonSerializable()
 class Resource {
@@ -33,23 +34,25 @@ class ResourceError {
   Map<String, dynamic> toJson() => _$ResourceErrorToJson(this);
 }
 
-@ChopperApi(baseUrl: "/resources")
+@ChopperApi(baseUrl: '/resources')
 abstract class MyService extends ChopperService {
   static MyService create([ChopperClient? client]) => _$MyService(client);
 
-  @Get(path: "/{id}/")
+  @Get(path: '/{id}/')
   Future<Response> getResource(@Path() String id);
 
-  @Get(path: "/all", headers: const {"test": "list"})
+  @Get(path: '/all', headers: const {'test': 'list'})
   Future<Response<List<Resource>>> getResources();
 
-  @Get(path: "/")
+  @Get(path: '/')
   Future<Response<Map>> getMapResource(@Query() String id);
 
-  @Get(path: "/", headers: const {"foo": "bar"})
+  @Get(path: '/', headers: const {'foo': 'bar'})
   Future<Response<Resource>> getTypedResource();
 
   @Post()
-  Future<Response<Resource>> newResource(@Body() Resource resource,
-      {@Header() String? name});
+  Future<Response<Resource>> newResource(
+    @Body() Resource resource, {
+    @Header() String? name,
+  });
 }
