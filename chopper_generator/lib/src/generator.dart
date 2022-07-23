@@ -8,24 +8,21 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:chopper/chopper.dart' as chopper;
-
-// TODO(lejard_h) Code builder not null safe yet
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
 
-const _clientVar = 'client';
-const _baseUrlVar = 'baseUrl';
-const _parametersVar = '\$params';
-const _headersVar = '\$headers';
-const _requestVar = '\$request';
-const _bodyVar = '\$body';
-const _partsVar = '\$parts';
-const _urlVar = '\$url';
+const String _clientVar = 'client';
+const String _baseUrlVar = 'baseUrl';
+const String _parametersVar = r'$params';
+const String _headersVar = r'$headers';
+const String _requestVar = r'$request';
+const String _bodyVar = r'$body';
+const String _partsVar = r'$parts';
+const String _urlVar = r'$url';
 
-final _logger = Logger('Chopper Generator');
+final Logger _logger = Logger('Chopper Generator');
 
 class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   @override
@@ -503,7 +500,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
   Expression _generateMap(Map<ParameterElement, ConstantReader> queries) {
     final Map map = {};
-    queries.forEach((p, ConstantReader r) {
+    queries.forEach((ParameterElement p, ConstantReader r) {
       final String name = r.peek('name')?.stringValue ?? p.displayName;
       map[literal(name)] = refer(p.displayName);
     });
