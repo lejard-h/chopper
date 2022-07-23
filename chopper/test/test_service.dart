@@ -48,6 +48,25 @@ abstract class HttpTestService extends ChopperService {
     @Query('test') bool? test,
   });
 
+  @Get(path: 'query_map')
+  Future<Response> getQueryMapTest3({
+    @Query('name') String name = '',
+    @Query('number') int? number,
+    @QueryMap() Map<String, dynamic> filters = const {},
+  });
+
+  @Get(path: 'query_map')
+  Future<Response> getQueryMapTest4({
+    @Query('name') String name = '',
+    @Query('number') int? number,
+    @QueryMap() Map<String, dynamic>? filters,
+  });
+
+  @Get(path: 'query_map')
+  Future<Response> getQueryMapTest5({
+    @QueryMap() Map<String, dynamic>? filters,
+  });
+
   @Get(path: 'get_body')
   Future<Response> getBody(@Body() dynamic body);
 

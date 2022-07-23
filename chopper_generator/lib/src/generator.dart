@@ -10,6 +10,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dart_style/dart_style.dart';
 
 import 'package:source_gen/source_gen.dart';
+
 // TODO(lejard_h) Code builder not null safe yet
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:code_builder/code_builder.dart';
@@ -171,15 +172,34 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         blocks.add(_generateMap(queries).assignFinal(_parametersVar).statement);
       }
 
+      // Build an iterable of all the parameters that are nullable
+      final optionalNullableParameters = [
+        ...m.parameters.where((p) => p.isOptionalPositional),
+        ...m.parameters.where((p) => p.isNamed),
+      ].where((el) => el.type.isNullable).map((el) => el.name);
+
       final hasQueryMap = queryMap.isNotEmpty;
       if (hasQueryMap) {
         if (queries.isNotEmpty) {
           blocks.add(refer('$_parametersVar.addAll').call(
-            [refer(queryMap.keys.first)],
+            [
+              // Check if the parameter is nullable
+              optionalNullableParameters.contains(queryMap.keys.first)
+                  ? refer(queryMap.keys.first).ifNullThen(refer('{}'))
+                  : refer(queryMap.keys.first),
+            ],
           ).statement);
         } else {
           blocks.add(
-            refer(queryMap.keys.first).assignFinal(_parametersVar).statement,
+            // Check if the parameter is nullable
+            optionalNullableParameters.contains(queryMap.keys.first)
+                ? refer(queryMap.keys.first)
+                    .ifNullThen(refer('{}'))
+                    .assignFinal(_parametersVar)
+                    .statement
+                : refer(queryMap.keys.first)
+                    .assignFinal(_parametersVar)
+                    .statement,
           );
         }
       }

@@ -6,7 +6,7 @@ part of 'test_service.dart';
 // ChopperGenerator
 // **************************************************************************
 
-// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations
+// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations, unnecessary_brace_in_string_interps
 class _$HttpTestService extends HttpTestService {
   _$HttpTestService([ChopperClient? client]) {
     if (client == null) return;
@@ -18,7 +18,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getTest(String id, {required String dynamicHeader}) {
-    final $url = '/test/get/$id';
+    final $url = '/test/get/${id}';
     final $headers = {
       'test': dynamicHeader,
     };
@@ -94,6 +94,36 @@ class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<dynamic>> getQueryMapTest3(
+      {String name = '',
+      int? number,
+      Map<String, dynamic> filters = const {}}) {
+    final $url = '/test/query_map';
+    final $params = <String, dynamic>{'name': name, 'number': number};
+    $params.addAll(filters);
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> getQueryMapTest4(
+      {String name = '', int? number, Map<String, dynamic>? filters}) {
+    final $url = '/test/query_map';
+    final $params = <String, dynamic>{'name': name, 'number': number};
+    $params.addAll(filters ?? {});
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> getQueryMapTest5({Map<String, dynamic>? filters}) {
+    final $url = '/test/query_map';
+    final $params = filters ?? {};
+    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> getBody(dynamic body) {
     final $url = '/test/get_body';
     final $body = body;
@@ -119,7 +149,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> putTest(String test, String data) {
-    final $url = '/test/put/$test';
+    final $url = '/test/put/${test}';
     final $body = data;
     final $request = Request('PUT', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
@@ -127,7 +157,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> deleteTest(String id) {
-    final $url = '/test/delete/$id';
+    final $url = '/test/delete/${id}';
     final $headers = {
       'foo': 'bar',
     };
@@ -138,7 +168,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> patchTest(String id, String data) {
-    final $url = '/test/patch/$id';
+    final $url = '/test/patch/${id}';
     final $body = data;
     final $request = Request('PATCH', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
