@@ -1,8 +1,9 @@
 import 'package:chopper/chopper.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:test/test.dart';
-import 'package:http/testing.dart';
-import 'package:http/http.dart' as http;
+
 import 'test_service.dart';
 
 void main() {
@@ -26,6 +27,7 @@ void main() {
             '{bar: foo}\r\n',
           ),
         );
+
         return http.Response('ok', 200);
       });
 
@@ -46,14 +48,14 @@ void main() {
           contains('content-type: application/octet-stream'),
         );
         expect(
-            req.body,
-            contains(
-              'content-disposition: form-data; name="file"',
-            ));
+          req.body,
+          contains('content-disposition: form-data; name="file"'),
+        );
         expect(
           req.body,
           contains('${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}'),
         );
+
         return http.Response('ok', 200);
       });
 
@@ -79,14 +81,16 @@ void main() {
         isNot(contains('content-disposition: form-data; name="id"')),
       );
       expect(
-          req.body,
-          contains(
-            'content-disposition: form-data; name="file_field"; filename="file_name"',
-          ));
+        req.body,
+        contains(
+          'content-disposition: form-data; name="file_field"; filename="file_name"',
+        ),
+      );
       expect(
         req.body,
         contains('${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}'),
       );
+
       return http.Response('ok', 200);
     });
 
@@ -109,22 +113,28 @@ void main() {
     final httpClient = MockClient((http.Request req) async {
       expect(req.headers['Content-Type'], contains('multipart/form-data;'));
 
-      expect(req.body,
-          contains('content-disposition: form-data; name="id"\r\n\r\n42\r\n'));
+      expect(
+        req.body,
+        contains(
+          'content-disposition: form-data; name="id"\r\n\r\n42\r\n',
+        ),
+      );
 
       expect(
         req.body,
         contains('content-type: application/octet-stream'),
       );
       expect(
-          req.body,
-          contains(
-            'content-disposition: form-data; name="file_field"; filename="file_name"',
-          ));
+        req.body,
+        contains(
+          'content-disposition: form-data; name="file_field"; filename="file_name"',
+        ),
+      );
       expect(
         req.body,
         contains('${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}'),
       );
+
       return http.Response('ok', 200);
     });
 
@@ -166,6 +176,7 @@ void main() {
           'World',
         ),
       );
+
       return http.Response('ok', 200);
     });
 
@@ -206,23 +217,29 @@ void main() {
     expect(req.fields['int'], equals('42'));
   });
 
-  test('PartFile', () async {
-    final req = await toMultipartRequest(
-      [
-        PartValueFile<String>('foo', 'test/multipart_test.dart'),
-        PartValueFile<List<int>>('int', [1, 2]),
-      ],
-      HttpMethod.Post,
-      Uri.parse('/foo'),
-      {},
-    );
+  test(
+    'PartFile',
+    () async {
+      final req = await toMultipartRequest(
+        [
+          PartValueFile<String>('foo', 'test/multipart_test.dart'),
+          PartValueFile<List<int>>('int', [1, 2]),
+        ],
+        HttpMethod.Post,
+        Uri.parse('/foo'),
+        {},
+      );
 
-    expect(req.files.firstWhere((f) => f.field == 'foo').filename,
-        equals('multipart_test.dart'));
-    final bytes =
-        await req.files.firstWhere((f) => f.field == 'int').finalize().first;
-    expect(bytes, equals([1, 2]));
-  }, testOn: 'vm');
+      expect(
+        req.files.firstWhere((f) => f.field == 'foo').filename,
+        equals('multipart_test.dart'),
+      );
+      final bytes =
+          await req.files.firstWhere((f) => f.field == 'int').finalize().first;
+      expect(bytes, equals([1, 2]));
+    },
+    testOn: 'vm',
+  );
 
   test('PartValue.replace', () {
     dynamic part = PartValue<String>('foo', 'bar');

@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
 
+import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
+
+import 'constants.dart';
 import 'request.dart';
 import 'response.dart';
 import 'utils.dart';
-import 'constants.dart';
 
 /// An interface for implementing response interceptors.
 ///
@@ -140,7 +141,7 @@ class CurlInterceptor implements RequestInterceptor {
     final method = baseRequest.method;
     final url = baseRequest.url.toString();
     final headers = baseRequest.headers;
-    var curl = '';
+    String curl = '';
     curl += 'curl';
     curl += ' -v';
     curl += ' -X $method';
@@ -156,6 +157,7 @@ class CurlInterceptor implements RequestInterceptor {
     }
     curl += ' \"$url\"';
     chopperLogger.info(curl);
+
     return request;
   }
 }
@@ -176,7 +178,7 @@ class HttpLoggingInterceptor
     chopperLogger.info('--> ${base.method} ${base.url}');
     base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
-    var bytes = '';
+    String bytes = '';
     if (base is http.Request) {
       final body = base.body;
       if (body.isNotEmpty) {
@@ -186,6 +188,7 @@ class HttpLoggingInterceptor
     }
 
     chopperLogger.info('--> END ${base.method}$bytes');
+
     return request;
   }
 
@@ -196,7 +199,7 @@ class HttpLoggingInterceptor
 
     response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
-    var bytes;
+    String bytes = '';
     if (response.base is http.Response) {
       final resp = response.base as http.Response;
       if (resp.body.isNotEmpty) {
@@ -206,6 +209,7 @@ class HttpLoggingInterceptor
     }
 
     chopperLogger.info('--> END ${base.method}$bytes');
+
     return response;
   }
 }
@@ -240,10 +244,11 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   Request encodeJson(Request request) {
-    var contentType = request.headers[contentTypeKey];
+    String? contentType = request.headers[contentTypeKey];
     if (contentType != null && contentType.contains(jsonHeaders)) {
       return request.copyWith(body: json.encode(request.body));
     }
+
     return request;
   }
 
@@ -284,6 +289,7 @@ class JsonConverter implements Converter, ErrorConverter {
       return json.decode(data);
     } catch (e) {
       chopperLogger.warning(e);
+
       return data;
     }
   }
@@ -314,7 +320,7 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
 
   @override
   Request convertRequest(Request request) {
-    var req = applyHeader(
+    Request req = applyHeader(
       request,
       contentTypeKey,
       formEncodedHeaders,

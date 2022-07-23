@@ -1,8 +1,9 @@
-import 'package:test/test.dart';
 import 'package:chopper/chopper.dart';
-import 'test_service.dart';
-import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:test/test.dart';
+
+import 'test_service.dart';
 
 void main() {
   group('Form', () {
@@ -24,6 +25,7 @@ void main() {
           'application/x-www-form-urlencoded; charset=utf-8',
         );
         expect(req.body, 'foo=test&default=hello');
+
         return http.Response('ok', 200);
       });
 
@@ -46,6 +48,7 @@ void main() {
           'application/x-www-form-urlencoded; charset=utf-8',
         );
         expect(req.body, 'foo=test&factory=converter');
+
         return http.Response('ok', 200);
       });
 
@@ -68,6 +71,7 @@ void main() {
           'application/x-www-form-urlencoded; charset=utf-8',
         );
         expect(req.body, 'foo=test&factory=converter');
+
         return http.Response('ok', 200);
       });
 
@@ -91,6 +95,7 @@ void main() {
           'application/x-www-form-urlencoded; charset=utf-8',
         );
         expect(req.body, 'foo=test&bar=42');
+
         return http.Response('ok', 200);
       });
 

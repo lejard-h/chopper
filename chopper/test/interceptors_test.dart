@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:http/testing.dart';
-import 'package:http/http.dart' as http;
-import 'package:test/test.dart';
 import 'package:chopper/chopper.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:test/test.dart';
+
 import 'test_service.dart';
 
 void main() {
@@ -14,6 +15,7 @@ void main() {
           request.url.toString(),
           equals('/test/get/1234/intercept'),
         );
+
         return http.Response('', 200);
       },
     );
@@ -84,6 +86,7 @@ void main() {
         interceptors: [
           (Response response) {
             intercepted = _Intercepted(response.body);
+
             return response;
           },
         ],
@@ -108,6 +111,7 @@ void main() {
         interceptors: [
           <BodyType>(Response<BodyType> response) {
             intercepted = _Intercepted(response.body);
+
             return response;
           },
         ],
@@ -140,6 +144,7 @@ void main() {
             expect(isTypeOf<String, InnerType>(), isTrue);
             expect(isTypeOf<BodyType, List<String>>(), isTrue);
             intercepted = _Intercepted<BodyType>(response.body!);
+
             return response;
           },
         ],
@@ -157,12 +162,13 @@ void main() {
       final client = MockClient((http.Request req) async {
         expect(req.headers.containsKey('foo'), isTrue);
         expect(req.headers['foo'], equals('bar'));
+
         return http.Response('', 200);
       });
 
       final chopper = ChopperClient(
         interceptors: [
-          HeadersInterceptor({'foo': 'bar'})
+          HeadersInterceptor({'foo': 'bar'}),
         ],
         services: [
           HttpTestService.create(),
@@ -223,9 +229,12 @@ void main() {
       final logger = HttpLoggingInterceptor();
 
       final fakeResponse = Response<String>(
-        http.Response('responseBodyBase', 200,
-            headers: {'foo': 'bar'},
-            request: await fakeRequest.toBaseRequest()),
+        http.Response(
+          'responseBodyBase',
+          200,
+          headers: {'foo': 'bar'},
+          request: await fakeRequest.toBaseRequest(),
+        ),
         'responseBody',
       );
 
@@ -254,6 +263,7 @@ class ResponseIntercept implements ResponseInterceptor {
   @override
   FutureOr<Response> onResponse(Response response) {
     intercepted = _Intercepted(response.body);
+
     return response;
   }
 }
