@@ -32,7 +32,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     BuildStep buildStep,
   ) {
     if (element is! ClassElement) {
-      final friendlyName = element.displayName;
+      final String friendlyName = element.displayName;
       throw InvalidGenerationSourceError(
         'Generator cannot target `$friendlyName`.',
         todo: 'Remove the [ChopperApi] annotation from `$friendlyName`.',
@@ -58,7 +58,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     ClassElement element,
   ) {
     if (!element.allSupertypes.any(_extendsChopperService)) {
-      final friendlyName = element.displayName;
+      final String friendlyName = element.displayName;
       throw InvalidGenerationSourceError(
         'Generator cannot target `$friendlyName`.',
         todo: '`$friendlyName` need to extends the [ChopperService] class.',
@@ -80,23 +80,25 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
     final String ignore =
         '// ignore_for_file: always_put_control_body_on_new_line, always_specify_types, prefer_const_declarations, unnecessary_brace_in_string_interps';
-    final emitter = DartEmitter();
+    final DartEmitter emitter = DartEmitter();
 
     return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
   }
 
-  Constructor _generateConstructor() => Constructor((constructorBuilder) {
-        constructorBuilder.optionalParameters.add(
-          Parameter((paramBuilder) {
-            paramBuilder.name = _clientVar;
-            paramBuilder.type = refer('${chopper.ChopperClient}?');
-          }),
-        );
+  Constructor _generateConstructor() => Constructor(
+        (ConstructorBuilder constructorBuilder) {
+          constructorBuilder.optionalParameters.add(
+            Parameter((paramBuilder) {
+              paramBuilder.name = _clientVar;
+              paramBuilder.type = refer('${chopper.ChopperClient}?');
+            }),
+          );
 
-        constructorBuilder.body = Code(
-          'if ($_clientVar == null) return;\nthis.$_clientVar = $_clientVar;',
-        );
-      });
+          constructorBuilder.body = Code(
+            'if ($_clientVar == null) return;\nthis.$_clientVar = $_clientVar;',
+          );
+        },
+      );
 
   Iterable<Method> _parseMethods(ClassElement element, String baseUrl) =>
       element.methods
@@ -306,14 +308,16 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       final ConstantReader? requestFactory = factoryConverter?.peek('request');
       if (requestFactory != null) {
-        final func = requestFactory.objectValue.toFunctionValue();
+        final ExecutableElement? func =
+            requestFactory.objectValue.toFunctionValue();
         namedArguments['requestConverter'] = refer(_factoryForFunction(func!));
       }
 
       final ConstantReader? responseFactory =
           factoryConverter?.peek('response');
       if (responseFactory != null) {
-        final func = responseFactory.objectValue.toFunctionValue();
+        final ExecutableElement? func =
+            responseFactory.objectValue.toFunctionValue();
         namedArguments['responseConverter'] = refer(_factoryForFunction(func!));
       }
 
@@ -341,7 +345,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           : function.name!;
 
   Map<String, ConstantReader> _getAnnotation(MethodElement method, Type type) {
-    var annotation;
+    DartObject? annotation;
     String name = '';
 
     for (final ParameterElement p in method.parameters) {
@@ -356,11 +360,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       }
     }
 
-    if (annotation == null) return {};
-
-    return {
-      name: ConstantReader(annotation),
-    };
+    return annotation == null ? {} : {name: ConstantReader(annotation)};
   }
 
   Map<ParameterElement, ConstantReader> _getAnnotations(
@@ -382,9 +382,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
   ConstantReader? _getMethodAnnotation(MethodElement method) {
     for (final type in _methodsAnnotations) {
-      final annotation = _typeChecker(type)
+      final DartObject? annotation = _typeChecker(type)
           .firstAnnotationOf(method, throwOnUnresolved: false);
-      if (annotation != null) return ConstantReader(annotation);
+      if (annotation != null) {
+        return ConstantReader(annotation);
+      }
     }
 
     return null;
