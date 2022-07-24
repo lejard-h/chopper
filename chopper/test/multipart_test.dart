@@ -53,7 +53,7 @@ void main() {
         );
         expect(
           req.body,
-          contains('${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}'),
+          contains(String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])),
         );
 
         return http.Response('ok', 200);
@@ -88,7 +88,7 @@ void main() {
       );
       expect(
         req.body,
-        contains('${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}'),
+        contains(String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])),
       );
 
       return http.Response('ok', 200);
@@ -132,7 +132,7 @@ void main() {
       );
       expect(
         req.body,
-        contains('${String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}'),
+        contains(String.fromCharCodes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])),
       );
 
       return http.Response('ok', 200);

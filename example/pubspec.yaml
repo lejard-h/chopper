@@ -12,6 +12,8 @@ dependencies:
   json_annotation:
   built_value:
   analyzer:
+  http:
+  built_collection:
 
 dev_dependencies:
   build_runner:

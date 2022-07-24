@@ -18,7 +18,7 @@ abstract class Resource implements Built<Resource, ResourceBuilder> {
 
   static Serializer<Resource> get serializer => _$resourceSerializer;
 
-  factory Resource([updates(ResourceBuilder b)]) = _$Resource;
+  factory Resource([Function(ResourceBuilder b) updates]) = _$Resource;
 
   Resource._();
 }
@@ -31,7 +31,8 @@ abstract class ResourceError
 
   static Serializer<ResourceError> get serializer => _$resourceErrorSerializer;
 
-  factory ResourceError([updates(ResourceErrorBuilder b)]) = _$ResourceError;
+  factory ResourceError([Function(ResourceErrorBuilder b) updates]) =
+      _$ResourceError;
 
   ResourceError._();
 }
@@ -46,7 +47,7 @@ abstract class MyService extends ChopperService {
   @Get(path: '/list')
   Future<Response<BuiltList<Resource>>> getBuiltListResources();
 
-  @Get(path: '/', headers: const {'foo': 'bar'})
+  @Get(path: '/', headers: {'foo': 'bar'})
   Future<Response<Resource>> getTypedResource();
 
   @Post()

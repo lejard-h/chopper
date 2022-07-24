@@ -18,7 +18,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   const BuiltValueConverter(this.serializers, {this.errorType});
 
   T? _deserialize<T>(dynamic value) {
-    var serializer;
+    dynamic serializer;
     if (value is Map && value.containsKey('\$')) {
       serializer = serializers.serializerForWireName(value['\$']);
     }
@@ -65,7 +65,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   Response convertError<BodyType, InnerType>(Response response) {
     final Response jsonResponse = jsonConverter.convertResponse(response);
 
-    var body;
+    dynamic body;
 
     try {
       // try to deserialize using wireName

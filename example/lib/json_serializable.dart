@@ -41,13 +41,13 @@ abstract class MyService extends ChopperService {
   @Get(path: '/{id}/')
   Future<Response> getResource(@Path() String id);
 
-  @Get(path: '/all', headers: const {'test': 'list'})
+  @Get(path: '/all', headers: {'test': 'list'})
   Future<Response<List<Resource>>> getResources();
 
   @Get(path: '/')
   Future<Response<Map>> getMapResource(@Query() String id);
 
-  @Get(path: '/', headers: const {'foo': 'bar'})
+  @Get(path: '/', headers: {'foo': 'bar'})
   Future<Response<Resource>> getTypedResource();
 
   @Post()

@@ -152,7 +152,7 @@ class CurlInterceptor implements RequestInterceptor {
         curl += ' -d \'$body\'';
       }
     }
-    curl += ' \"$url\"';
+    curl += ' "$url"';
     chopperLogger.info(curl);
 
     return request;

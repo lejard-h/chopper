@@ -11,7 +11,7 @@ import 'test_service.dart';
 const baseUrl = 'http://localhost:8000';
 
 void main() {
-  final buildClient = ([
+  ChopperClient buildClient([
     http.Client? httpClient,
     ErrorConverter? errorConverter,
   ]) =>
@@ -24,6 +24,7 @@ void main() {
         client: httpClient,
         errorConverter: errorConverter,
       );
+
   group('Base', () {
     test('get service errors', () async {
       final chopper = ChopperClient(
@@ -847,7 +848,7 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final _ = await service.getAll();
+    await service.getAll();
   });
 
   test('Slash in path gives a trailing slash', () async {
@@ -864,7 +865,7 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final _ = await service.getAllWithTrailingSlash();
+    await service.getAllWithTrailingSlash();
   });
 
   test('timeout', () async {

@@ -12,10 +12,12 @@ final jsonSerializers =
 
 /// Simple client to have working example without remote server
 final client = MockClient((req) async {
-  if (req.method == 'POST')
+  if (req.method == 'POST') {
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
-  if (req.url.path == '/resources/list')
+  }
+  if (req.url.path == '/resources/list') {
     return http.Response('[{"id":"1","name":"Foo"}]', 200);
+  }
 
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
@@ -57,7 +59,7 @@ class BuiltValueConverter extends JsonConverter {
   T? _deserialize<T>(dynamic value) {
     final serializer = jsonSerializers.serializerForType(T) as Serializer<T>?;
     if (serializer == null) {
-      throw Exception('No serializer for type ${T}');
+      throw Exception('No serializer for type $T');
     }
 
     return jsonSerializers.deserializeWith<T>(serializer, value);

@@ -7,10 +7,12 @@ import 'package:http/testing.dart';
 
 /// Simple client to have working example without remote server
 final client = MockClient((req) async {
-  if (req.method == 'POST')
+  if (req.method == 'POST') {
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
-  if (req.method == 'GET' && req.headers['test'] == 'list')
+  }
+  if (req.method == 'GET' && req.headers['test'] == 'list') {
     return http.Response('[{"id":"1","name":"Foo"}]', 200);
+  }
 
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
@@ -101,8 +103,10 @@ class JsonSerializableConverter extends JsonConverter {
 
   @override
   // all objects should implements toJson method
+  // ignore: unnecessary_overrides
   Request convertRequest(Request request) => super.convertRequest(request);
 
+  @override
   Response convertError<ResultType, Item>(Response response) {
     // use [JsonConverter] to decode json
     final jsonRes = super.convertError(response);

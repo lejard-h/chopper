@@ -80,7 +80,7 @@ void main() {
     });
 
     test('ResponseInterceptorFunc', () async {
-      var intercepted;
+      dynamic intercepted;
 
       final chopper = ChopperClient(
         interceptors: [
@@ -105,7 +105,7 @@ void main() {
     });
 
     test('TypedResponseInterceptorFunc1', () async {
-      var intercepted;
+      dynamic intercepted;
 
       final chopper = ChopperClient(
         interceptors: [
@@ -134,7 +134,7 @@ void main() {
         return http.Response('["1","2"]', 200);
       });
 
-      var intercepted;
+      dynamic intercepted;
 
       final chopper = ChopperClient(
         client: client,
@@ -143,7 +143,7 @@ void main() {
           <BodyType, InnerType>(Response<BodyType> response) {
             expect(isTypeOf<String, InnerType>(), isTrue);
             expect(isTypeOf<BodyType, List<String>>(), isTrue);
-            intercepted = _Intercepted<BodyType>(response.body!);
+            intercepted = _Intercepted<BodyType>(response.body as BodyType);
 
             return response;
           },

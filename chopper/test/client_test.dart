@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 const baseUrl = 'http://localhost:8000';
 
 void main() {
-  final buildClient = ([http.Client? httpClient]) => ChopperClient(
+  ChopperClient buildClient([http.Client? httpClient]) => ChopperClient(
         baseUrl: baseUrl,
         client: httpClient,
         interceptors: [

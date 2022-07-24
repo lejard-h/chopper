@@ -7,15 +7,15 @@ import 'test_service.dart';
 
 void main() {
   group('Form', () {
-    final buildClient =
-        (http.Client httpClient, {bool isJson = false}) => ChopperClient(
-              services: [
-                // the generated service
-                HttpTestService.create(),
-              ],
-              client: httpClient,
-              converter: isJson ? JsonConverter() : null,
-            );
+    ChopperClient buildClient(http.Client httpClient, {bool isJson = false}) =>
+        ChopperClient(
+          services: [
+            // the generated service
+            HttpTestService.create(),
+          ],
+          client: httpClient,
+          converter: isJson ? JsonConverter() : null,
+        );
 
     test('form-urlencoded default if no converter', () async {
       final httpClient = MockClient((http.Request req) async {

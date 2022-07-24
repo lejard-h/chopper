@@ -11,7 +11,7 @@ const baseUrl = 'http://localhost:8000';
 
 void main() {
   group('Converter', () {
-    final buildClient = (http.BaseClient client) => ChopperClient(
+    ChopperClient buildClient(http.BaseClient client) => ChopperClient(
           baseUrl: baseUrl,
           client: client,
           converter: TestConverter(),
