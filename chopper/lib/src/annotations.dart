@@ -173,15 +173,10 @@ class Method {
 @immutable
 class Get extends Method {
   const Get({
-    bool optionalBody = true,
-    String path = '',
-    Map<String, String> headers = const {},
-  }) : super(
-          HttpMethod.Get,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+  }) : super(HttpMethod.Get);
 }
 
 /// Defines a method as an HTTP POST request.
@@ -190,30 +185,20 @@ class Get extends Method {
 @immutable
 class Post extends Method {
   const Post({
-    bool optionalBody = false,
-    String path = '',
-    Map<String, String> headers = const {},
-  }) : super(
-          HttpMethod.Post,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    super.optionalBody,
+    super.path,
+    super.headers,
+  }) : super(HttpMethod.Post);
 }
 
 /// Defines a method as an HTTP DELETE request.
 @immutable
 class Delete extends Method {
   const Delete({
-    bool optionalBody = true,
-    String path = '',
-    Map<String, String> headers = const {},
-  }) : super(
-          HttpMethod.Delete,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+  }) : super(HttpMethod.Delete);
 }
 
 /// Defines a method as an HTTP PUT request.
@@ -222,15 +207,10 @@ class Delete extends Method {
 @immutable
 class Put extends Method {
   const Put({
-    bool optionalBody = false,
-    String path = '',
-    Map<String, String> headers = const {},
-  }) : super(
-          HttpMethod.Put,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    super.optionalBody,
+    super.path,
+    super.headers,
+  }) : super(HttpMethod.Put);
 }
 
 /// Defines a method as an HTTP PATCH request.
@@ -238,44 +218,29 @@ class Put extends Method {
 @immutable
 class Patch extends Method {
   const Patch({
-    bool optionalBody = false,
-    String path = '',
-    Map<String, String> headers = const {},
-  }) : super(
-          HttpMethod.Patch,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    super.optionalBody,
+    super.path,
+    super.headers,
+  }) : super(HttpMethod.Patch);
 }
 
 /// Defines a method as an HTTP HEAD request.
 @immutable
 class Head extends Method {
   const Head({
-    bool optionalBody = true,
-    String path = '',
-    Map<String, String> headers = const {},
-  }) : super(
-          HttpMethod.Head,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+  }) : super(HttpMethod.Head);
 }
 
 @immutable
 class Options extends Method {
   const Options({
-    bool optionalBody = true,
-    String path = '',
-    Map<String, String> headers = const {},
-  }) : super(
-          HttpMethod.Options,
-          optionalBody: optionalBody,
-          path: path,
-          headers: headers,
-        );
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+  }) : super(HttpMethod.Options);
 }
 
 /// A function that should convert the body of a [Request] to the HTTP representation.
@@ -379,6 +344,7 @@ class Multipart {
 @immutable
 class Part {
   final String? name;
+
   const Part([this.name]);
 }
 
