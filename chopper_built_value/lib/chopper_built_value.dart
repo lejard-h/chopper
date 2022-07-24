@@ -6,7 +6,7 @@ import 'package:chopper/chopper.dart';
 /// having a serializer implementation made with the built_value package.
 class BuiltValueConverter implements Converter, ErrorConverter {
   final Serializers serializers;
-  final JsonConverter jsonConverter = JsonConverter();
+  final JsonConverter jsonConverter = const JsonConverter();
   final Type? errorType;
 
   /// Builds a new BuiltValueConverter instance that uses built_value serializers defined
@@ -15,7 +15,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   /// If the error body cannot be converted with serializers and [errorType] is provided
   /// and it's not `null`, BuiltValueConverter will try to deserialize the error body into
   /// [errorType].
-  BuiltValueConverter(this.serializers, {this.errorType});
+  const BuiltValueConverter(this.serializers, {this.errorType});
 
   T? _deserialize<T>(dynamic value) {
     var serializer;

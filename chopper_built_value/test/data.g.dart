@@ -35,17 +35,17 @@ class _$DataModelSerializer implements StructuredSerializer<DataModel> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
+              specifiedType: const FullType(int))! as int;
           break;
         case 'name':
           result.name = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
       }
     }
@@ -79,13 +79,13 @@ class _$ErrorModelSerializer implements StructuredSerializer<ErrorModel> {
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
-      final key = iterator.current as String;
+      final key = iterator.current! as String;
       iterator.moveNext();
       final Object? value = iterator.current;
       switch (key) {
         case 'message':
           result.message = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String))! as String;
           break;
       }
     }
@@ -101,11 +101,11 @@ class _$DataModel extends DataModel {
   final String name;
 
   factory _$DataModel([void Function(DataModelBuilder)? updates]) =>
-      (new DataModelBuilder()..update(updates)).build();
+      (new DataModelBuilder()..update(updates))._build();
 
   _$DataModel._({required this.id, required this.name}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, 'DataModel', 'id');
-    BuiltValueNullFieldError.checkNotNull(name, 'DataModel', 'name');
+    BuiltValueNullFieldError.checkNotNull(id, r'DataModel', 'id');
+    BuiltValueNullFieldError.checkNotNull(name, r'DataModel', 'name');
   }
 
   @override
@@ -128,7 +128,7 @@ class _$DataModel extends DataModel {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('DataModel')
+    return (newBuiltValueToStringHelper(r'DataModel')
           ..add('id', id)
           ..add('name', name))
         .toString();
@@ -170,12 +170,14 @@ class DataModelBuilder implements Builder<DataModel, DataModelBuilder> {
   }
 
   @override
-  _$DataModel build() {
+  DataModel build() => _build();
+
+  _$DataModel _build() {
     final _$result = _$v ??
         new _$DataModel._(
-            id: BuiltValueNullFieldError.checkNotNull(id, 'DataModel', 'id'),
+            id: BuiltValueNullFieldError.checkNotNull(id, r'DataModel', 'id'),
             name: BuiltValueNullFieldError.checkNotNull(
-                name, 'DataModel', 'name'));
+                name, r'DataModel', 'name'));
     replace(_$result);
     return _$result;
   }
@@ -186,10 +188,10 @@ class _$ErrorModel extends ErrorModel {
   final String message;
 
   factory _$ErrorModel([void Function(ErrorModelBuilder)? updates]) =>
-      (new ErrorModelBuilder()..update(updates)).build();
+      (new ErrorModelBuilder()..update(updates))._build();
 
   _$ErrorModel._({required this.message}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(message, 'ErrorModel', 'message');
+    BuiltValueNullFieldError.checkNotNull(message, r'ErrorModel', 'message');
   }
 
   @override
@@ -212,7 +214,7 @@ class _$ErrorModel extends ErrorModel {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ErrorModel')..add('message', message))
+    return (newBuiltValueToStringHelper(r'ErrorModel')..add('message', message))
         .toString();
   }
 }
@@ -247,14 +249,16 @@ class ErrorModelBuilder implements Builder<ErrorModel, ErrorModelBuilder> {
   }
 
   @override
-  _$ErrorModel build() {
+  ErrorModel build() => _build();
+
+  _$ErrorModel _build() {
     final _$result = _$v ??
         new _$ErrorModel._(
             message: BuiltValueNullFieldError.checkNotNull(
-                message, 'ErrorModel', 'message'));
+                message, r'ErrorModel', 'message'));
     replace(_$result);
     return _$result;
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,no_leading_underscores_for_local_identifiers,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new,unnecessary_lambdas
