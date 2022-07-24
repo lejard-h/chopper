@@ -138,8 +138,8 @@ Future<http.Request> toHttpRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final http.Request baseRequest = http.Request(method, uri);
-  baseRequest.headers.addAll(headers);
+  final http.Request baseRequest = http.Request(method, uri)
+    ..headers.addAll(headers);
 
   if (body != null) {
     if (body is String) {
@@ -163,8 +163,8 @@ Future<http.MultipartRequest> toMultipartRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final http.MultipartRequest baseRequest = http.MultipartRequest(method, uri);
-  baseRequest.headers.addAll(headers);
+  final http.MultipartRequest baseRequest = http.MultipartRequest(method, uri)
+    ..headers.addAll(headers);
 
   for (final PartValue part in parts) {
     if (part.value == null) continue;
@@ -206,8 +206,8 @@ Future<http.StreamedRequest> toStreamedRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final http.StreamedRequest req = http.StreamedRequest(method, uri);
-  req.headers.addAll(headers);
+  final http.StreamedRequest req = http.StreamedRequest(method, uri)
+    ..headers.addAll(headers);
 
   bodyStream.listen(
     req.sink.add,

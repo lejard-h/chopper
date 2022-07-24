@@ -141,10 +141,7 @@ class CurlInterceptor implements RequestInterceptor {
     final String method = baseRequest.method;
     final String url = baseRequest.url.toString();
     final Map<String, String> headers = baseRequest.headers;
-    String curl = '';
-    curl += 'curl';
-    curl += ' -v';
-    curl += ' -X $method';
+    String curl = 'curl -v -X $method';
     headers.forEach((k, v) {
       curl += ' -H \'$k: $v\'';
     });
@@ -174,7 +171,7 @@ class HttpLoggingInterceptor
     implements RequestInterceptor, ResponseInterceptor {
   @override
   FutureOr<Request> onRequest(Request request) async {
-    final base = await request.toBaseRequest();
+    final http.BaseRequest base = await request.toBaseRequest();
     chopperLogger.info('--> ${base.method} ${base.url}');
     base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
@@ -194,7 +191,7 @@ class HttpLoggingInterceptor
 
   @override
   FutureOr<Response> onResponse(Response response) {
-    final base = response.base.request;
+    final http.BaseRequest? base = response.base.request;
     chopperLogger.info('<-- ${response.statusCode} ${base!.url}');
 
     response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
