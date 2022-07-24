@@ -137,10 +137,10 @@ typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
 class CurlInterceptor implements RequestInterceptor {
   @override
   Future<Request> onRequest(Request request) async {
-    final baseRequest = await request.toBaseRequest();
-    final method = baseRequest.method;
-    final url = baseRequest.url.toString();
-    final headers = baseRequest.headers;
+    final http.BaseRequest baseRequest = await request.toBaseRequest();
+    final String method = baseRequest.method;
+    final String url = baseRequest.url.toString();
+    final Map<String, String> headers = baseRequest.headers;
     String curl = '';
     curl += 'curl';
     curl += ' -v';
@@ -232,30 +232,27 @@ class JsonConverter implements Converter, ErrorConverter {
   const JsonConverter();
 
   @override
-  Request convertRequest(Request request) {
-    final req = applyHeader(
-      request,
-      contentTypeKey,
-      jsonHeaders,
-      override: false,
-    );
-
-    return encodeJson(req);
-  }
+  Request convertRequest(Request request) => encodeJson(
+        applyHeader(
+          request,
+          contentTypeKey,
+          jsonHeaders,
+          override: false,
+        ),
+      );
 
   Request encodeJson(Request request) {
-    String? contentType = request.headers[contentTypeKey];
-    if (contentType != null && contentType.contains(jsonHeaders)) {
-      return request.copyWith(body: json.encode(request.body));
-    }
+    final String? contentType = request.headers[contentTypeKey];
 
-    return request;
+    return (contentType?.contains(jsonHeaders) ?? false)
+        ? request.copyWith(body: json.encode(request.body))
+        : request;
   }
 
   Response decodeJson<BodyType, InnerType>(Response response) {
-    final supportedContentTypes = [jsonHeaders, jsonApiHeaders];
+    final List<String> supportedContentTypes = [jsonHeaders, jsonApiHeaders];
 
-    final contentType = response.headers[contentTypeKey];
+    final String? contentType = response.headers[contentTypeKey];
     var body = response.body;
 
     if (supportedContentTypes.contains(contentType)) {
@@ -280,9 +277,8 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   @override
-  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
-    return decodeJson<BodyType, InnerType>(response) as Response<BodyType>;
-  }
+  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
+      decodeJson<BodyType, InnerType>(response) as Response<BodyType>;
 
   dynamic _tryDecodeJson(String data) {
     try {
@@ -300,13 +296,11 @@ class JsonConverter implements Converter, ErrorConverter {
 
   static Response<BodyType> responseFactory<BodyType, InnerType>(
     Response response,
-  ) {
-    return const JsonConverter().convertResponse<BodyType, InnerType>(response);
-  }
+  ) =>
+      const JsonConverter().convertResponse<BodyType, InnerType>(response);
 
-  static Request requestFactory(Request request) {
-    return const JsonConverter().convertRequest(request);
-  }
+  static Request requestFactory(Request request) =>
+      const JsonConverter().convertRequest(request);
 }
 
 /// A [Converter] implementation that converts only [Request]s having a [Map] as their body.
@@ -320,7 +314,7 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
 
   @override
   Request convertRequest(Request request) {
-    Request req = applyHeader(
+    final Request req = applyHeader(
       request,
       contentTypeKey,
       formEncodedHeaders,
@@ -330,15 +324,10 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
     if (req.body is Map<String, String>) return req;
 
     if (req.body is Map) {
-      final body = <String, String>{};
-
-      req.body.forEach((key, val) {
-        if (val != null) {
-          body[key.toString()] = val.toString();
-        }
+      return req.copyWith(body: <String, String>{
+        for (final MapEntry e in req.body.entries)
+          if (e.value != null) e.key.toString(): e.value.toString(),
       });
-
-      req = req.copyWith(body: body);
     }
 
     return req;

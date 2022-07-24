@@ -97,7 +97,7 @@ class _Pair<A, B> {
   final A first;
   final B second;
 
-  _Pair(this.first, this.second);
+  const _Pair(this.first, this.second);
 
   @override
   String toString() => '$first=$second';

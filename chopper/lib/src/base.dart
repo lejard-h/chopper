@@ -14,7 +14,7 @@ import 'utils.dart';
 Type _typeOf<T>() => T;
 
 @visibleForTesting
-final allowedInterceptorsType = <Type>[
+final List<Type> allowedInterceptorsType = [
   RequestInterceptor,
   RequestInterceptorFunc,
   ResponseInterceptor,
@@ -163,13 +163,13 @@ class ChopperClient {
   /// final todoService = chopper.getService<TodosListService>();
   /// ```
   ServiceType getService<ServiceType extends ChopperService>() {
-    final serviceType = _typeOf<ServiceType>();
+    final Type serviceType = _typeOf<ServiceType>();
     if (serviceType == dynamic || serviceType == ChopperService) {
       throw Exception(
         'Service type should be provided, `dynamic` is not allowed.',
       );
     }
-    final service = _services[serviceType];
+    final ChopperService? service = _services[serviceType];
     if (service == null) {
       throw Exception('Service of type \'$serviceType\' not found.');
     }

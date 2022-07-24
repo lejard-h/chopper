@@ -104,7 +104,7 @@ class PartValue<T> {
 /// Represents a file part in a multipart request.
 @immutable
 class PartValueFile<T> extends PartValue<T> {
-  PartValueFile(String name, T value) : super(name, value);
+  const PartValueFile(super.name, super.value);
 }
 
 /// Builds a valid URI from [baseUrl], [url] and [parameters].
@@ -138,7 +138,7 @@ Future<http.Request> toHttpRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final baseRequest = http.Request(method, uri);
+  final http.Request baseRequest = http.Request(method, uri);
   baseRequest.headers.addAll(headers);
 
   if (body != null) {
@@ -163,10 +163,10 @@ Future<http.MultipartRequest> toMultipartRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final baseRequest = http.MultipartRequest(method, uri);
+  final http.MultipartRequest baseRequest = http.MultipartRequest(method, uri);
   baseRequest.headers.addAll(headers);
 
-  for (final part in parts) {
+  for (final PartValue part in parts) {
     if (part.value == null) continue;
 
     if (part.value is http.MultipartFile) {
@@ -206,7 +206,7 @@ Future<http.StreamedRequest> toStreamedRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final req = http.StreamedRequest(method, uri);
+  final http.StreamedRequest req = http.StreamedRequest(method, uri);
   req.headers.addAll(headers);
 
   bodyStream.listen(
