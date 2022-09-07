@@ -246,7 +246,7 @@ class JsonConverter implements Converter, ErrorConverter {
         : request;
   }
 
-  Response decodeJson<BodyType, InnerType>(Response response) {
+  FutureOr<Response> decodeJson<BodyType, InnerType>(Response response) async {
     final List<String> supportedContentTypes = [jsonHeaders, jsonApiHeaders];
 
     final String? contentType = response.headers[contentTypeKey];
@@ -263,7 +263,7 @@ class JsonConverter implements Converter, ErrorConverter {
       body = utf8.decode(response.bodyBytes);
     }
 
-    body = _tryDecodeJson(body);
+    body = await tryDecodeJson(body);
     if (isTypeOf<BodyType, Iterable<InnerType>>()) {
       body = body.cast<InnerType>();
     } else if (isTypeOf<BodyType, Map<String, InnerType>>()) {
@@ -274,10 +274,13 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   @override
-  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
-      decodeJson<BodyType, InnerType>(response) as Response<BodyType>;
+  FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
+    Response response,
+  ) async =>
+      (await decodeJson<BodyType, InnerType>(response)) as Response<BodyType>;
 
-  dynamic _tryDecodeJson(String data) {
+  @protected
+  FutureOr<dynamic> tryDecodeJson(String data) {
     try {
       return json.decode(data);
     } catch (e) {
@@ -288,10 +291,12 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 
   @override
-  Response convertError<BodyType, InnerType>(Response response) =>
-      decodeJson(response);
+  FutureOr<Response> convertError<BodyType, InnerType>(
+    Response response,
+  ) async =>
+      await decodeJson(response);
 
-  static Response<BodyType> responseFactory<BodyType, InnerType>(
+  static FutureOr<Response<BodyType>> responseFactory<BodyType, InnerType>(
     Response response,
   ) =>
       const JsonConverter().convertResponse<BodyType, InnerType>(response);
@@ -331,7 +336,9 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
   }
 
   @override
-  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) =>
+  FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
+    Response response,
+  ) =>
       response as Response<BodyType>;
 
   @override

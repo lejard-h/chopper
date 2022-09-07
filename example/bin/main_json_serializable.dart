@@ -94,9 +94,11 @@ class JsonSerializableConverter extends JsonConverter {
   }
 
   @override
-  Response<ResultType> convertResponse<ResultType, Item>(Response response) {
+  FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(
+    Response response,
+  ) async {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse(response);
+    final jsonRes = await super.convertResponse(response);
 
     return jsonRes.copyWith<ResultType>(body: _decode<Item>(jsonRes.body));
   }
@@ -107,9 +109,9 @@ class JsonSerializableConverter extends JsonConverter {
   Request convertRequest(Request request) => super.convertRequest(request);
 
   @override
-  Response convertError<ResultType, Item>(Response response) {
+  FutureOr<Response> convertError<ResultType, Item>(Response response) async {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertError(response);
+    final jsonRes = await super.convertError(response);
 
     return jsonRes.copyWith<ResourceError>(
       body: ResourceError.fromJsonFactory(jsonRes.body),

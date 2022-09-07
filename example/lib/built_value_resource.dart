@@ -8,7 +8,6 @@ import 'package:built_value/serializer.dart';
 import 'package:chopper/chopper.dart';
 
 part 'built_value_resource.chopper.dart';
-
 part 'built_value_resource.g.dart';
 
 abstract class Resource implements Built<Resource, ResourceBuilder> {
