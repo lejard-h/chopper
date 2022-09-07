@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:chopper/chopper.dart';
@@ -84,9 +86,10 @@ class BuiltValueConverter extends JsonConverter {
   }
 
   @override
-  Response<ResultType> convertResponse<ResultType, Item>(Response response) {
+  FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(
+      Response response) async {
     // use [JsonConverter] to decode json
-    final jsonRes = super.convertResponse(response);
+    final jsonRes = await super.convertResponse(response);
     final body = _decode<Item>(jsonRes.body);
     return jsonRes.copyWith<ResultType>(body: body);
   }
