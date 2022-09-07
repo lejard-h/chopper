@@ -1,6 +1,7 @@
 library serializers;
 
 import 'package:built_value/serializer.dart';
+
 import 'data.dart';
 
 part 'serializers.g.dart';

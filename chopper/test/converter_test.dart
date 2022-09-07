@@ -1,16 +1,17 @@
 import 'dart:convert' as dart_convert;
 
 import 'package:chopper/chopper.dart';
-import 'package:test/test.dart';
-import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:test/test.dart';
+
 import 'test_service.dart';
 
 const baseUrl = 'http://localhost:8000';
 
 void main() {
   group('Converter', () {
-    final buildClient = (http.BaseClient client) => ChopperClient(
+    ChopperClient buildClient(http.BaseClient client) => ChopperClient(
           baseUrl: baseUrl,
           client: client,
           converter: TestConverter(),
@@ -113,16 +114,16 @@ class TestConverter implements Converter {
   Response<T> convertResponse<T, V>(Response res) {
     if (res.body is String) {
       return res.copyWith<_Converted<String>>(
-          body: _Converted<String>(res.body)) as Response<T>;
+        body: _Converted<String>(res.body),
+      ) as Response<T>;
     }
+
     return res as Response<T>;
   }
 
   @override
-  Request convertRequest(Request req) {
-    if (req.body is _Converted) return req.copyWith(body: req.body.data);
-    return req;
-  }
+  Request convertRequest(Request req) =>
+      req.body is _Converted ? req.copyWith(body: req.body.data) : req;
 }
 
 class TestErrorConverter implements ErrorConverter {
@@ -130,8 +131,10 @@ class TestErrorConverter implements ErrorConverter {
   Response convertError<T, V>(Response res) {
     if (res.body is String) {
       final error = dart_convert.jsonDecode(res.body);
+
       return res.copyWith<_ConvertedError>(body: _ConvertedError(error));
     }
+
     return res;
   }
 }

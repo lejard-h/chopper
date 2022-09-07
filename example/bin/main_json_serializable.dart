@@ -1,16 +1,19 @@
-import "dart:async";
+import 'dart:async';
+
 import 'package:chopper/chopper.dart';
 import 'package:chopper_example/json_serializable.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
 /// Simple client to have working example without remote server
 final client = MockClient((req) async {
-  if (req.method == 'POST')
+  if (req.method == 'POST') {
     return http.Response('{"type":"Fatal","message":"fatal erorr"}', 500);
-  if (req.method == 'GET' && req.headers['test'] == 'list')
+  }
+  if (req.method == 'GET' && req.headers['test'] == 'list') {
     return http.Response('[{"id":"1","name":"Foo"}]', 200);
+  }
+
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
 
@@ -21,7 +24,7 @@ main() async {
 
   final chopper = ChopperClient(
     client: client,
-    baseUrl: "http://localhost:8000",
+    baseUrl: 'http://localhost:8000',
     // bind your object factories here
     converter: converter,
     errorConverter: converter,
@@ -35,7 +38,7 @@ main() async {
 
   final myService = chopper.getService<MyService>();
 
-  final response1 = await myService.getResource("1");
+  final response1 = await myService.getResource('1');
   print('response 1: ${response1.body}'); // undecoded String
 
   final response2 = await myService.getResources();
@@ -44,11 +47,11 @@ main() async {
   final response3 = await myService.getTypedResource();
   print('response 3: ${response3.body}'); // decoded Resource
 
-  final response4 = await myService.getMapResource("1");
+  final response4 = await myService.getMapResource('1');
   print('response 4: ${response4.body}'); // undecoded Resource
 
   try {
-    await myService.newResource(Resource("3", "Super Name"));
+    await myService.newResource(Resource('3', 'Super Name'));
   } on Response catch (error) {
     print(error.body);
   }
@@ -56,8 +59,8 @@ main() async {
 
 Future<Request> authHeader(Request request) async => applyHeader(
       request,
-      "Authorization",
-      "42",
+      'Authorization',
+      '42',
     );
 
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
@@ -92,7 +95,8 @@ class JsonSerializableConverter extends JsonConverter {
 
   @override
   FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(
-      Response response) async {
+    Response response,
+  ) async {
     // use [JsonConverter] to decode json
     final jsonRes = await super.convertResponse(response);
 
@@ -101,8 +105,10 @@ class JsonSerializableConverter extends JsonConverter {
 
   @override
   // all objects should implements toJson method
+  // ignore: unnecessary_overrides
   Request convertRequest(Request request) => super.convertRequest(request);
 
+  @override
   FutureOr<Response> convertError<ResultType, Item>(Response response) async {
     // use [JsonConverter] to decode json
     final jsonRes = await super.convertError(response);

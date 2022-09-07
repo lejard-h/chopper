@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart';
+
 import 'definition.dart';
 
 Future<void> main() async {
@@ -6,7 +7,7 @@ Future<void> main() async {
     baseUrl: 'http://localhost:8000',
     services: [
       // the generated service
-      MyService.create(ChopperClient())
+      MyService.create(ChopperClient()),
     ],
     converter: JsonConverter(),
   );

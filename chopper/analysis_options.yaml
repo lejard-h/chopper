@@ -1,1 +1,34 @@
-include: package:pedantic/analysis_options.yaml
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - "**.g.dart"
+    - "**.chopper.dart"
+    - "**.mocks.dart"
+    - "example/**"
+  plugins:
+    - dart_code_metrics
+
+dart_code_metrics:
+  metrics:
+    cyclomatic-complexity: 20
+    number-of-arguments: 4
+    maximum-nesting-level: 5
+    number-of-parameters: 7
+  metrics-exclude:
+    - test/**
+  rules:
+    - newline-before-return
+    - no-boolean-literal-compare
+    - no-empty-block
+    - prefer-trailing-comma
+    - prefer-conditional-expressions
+    - no-equal-then-else
+  anti-patterns:
+    - long-method
+    - long-parameter-list
+
+linter:
+  rules:
+    avoid_print: true
+    prefer_single_quotes: true

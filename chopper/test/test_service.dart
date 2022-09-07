@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:chopper/chopper.dart';
 
+import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' show MultipartFile;
 
 part 'test_service.chopper.dart';
@@ -101,7 +101,9 @@ abstract class HttpTestService extends ChopperService {
 
   @Post(path: 'map/json')
   @FactoryConverter(
-      request: customConvertRequest, response: customConvertResponse)
+    request: customConvertRequest,
+    response: customConvertResponse,
+  )
   Future<Response> forceJsonTest(@Body() Map map);
 
   @Post(path: 'multi')
@@ -140,6 +142,7 @@ abstract class HttpTestService extends ChopperService {
 
 Request customConvertRequest(Request req) {
   final r = JsonConverter().convertRequest(req);
+
   return applyHeader(r, 'customConverter', 'true');
 }
 

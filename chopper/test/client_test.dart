@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:test/test.dart';
-import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:test/test.dart';
 
 const baseUrl = 'http://localhost:8000';
 
 void main() {
-  final buildClient = ([http.Client? httpClient]) => ChopperClient(
+  ChopperClient buildClient([http.Client? httpClient]) => ChopperClient(
         baseUrl: baseUrl,
         client: httpClient,
         interceptors: [
@@ -16,6 +16,7 @@ void main() {
         ],
         converter: JsonConverter(),
       );
+
   group('Client methods', () {
     test('GET', () async {
       final httpClient = MockClient((request) async {

@@ -29,7 +29,7 @@ class Response<BodyType> {
   /// The body of the response if [isSuccessful] is false.
   final Object? error;
 
-  Response(this.base, this.body, {this.error});
+  const Response(this.base, this.body, {this.error});
 
   /// Makes a copy of this Response, replacing original values with the given ones.
   /// This method can also alter the type of the response body.
