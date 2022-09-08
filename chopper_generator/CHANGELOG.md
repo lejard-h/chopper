@@ -1,8 +1,8 @@
 # Changelog
 
-## 4.1.0
+## 5.0.0
 
-- API breaking changes (FutureOr)
+- API breaking changes (FutureOr usage)
 
 ## 4.0.3
 
