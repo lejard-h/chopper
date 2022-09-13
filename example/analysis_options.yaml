@@ -5,7 +5,6 @@ analyzer:
     - "**.g.dart"
     - "**.chopper.dart"
     - "**.mocks.dart"
-    - "example/**"
   plugins:
     - dart_code_metrics
 
@@ -14,8 +13,6 @@ dart_code_metrics:
     cyclomatic-complexity: 20
     number-of-arguments: 4
     maximum-nesting-level: 5
-    number-of-parameters: 5
-    source-lines-of-code: 200
   metrics-exclude:
     - test/**
   rules:
@@ -31,5 +28,5 @@ dart_code_metrics:
 
 linter:
   rules:
-    avoid_print: true
+    avoid_print: false
     prefer_single_quotes: true

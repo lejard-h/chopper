@@ -39,16 +39,16 @@ Request applyHeaders(
   Map<String, String> headers, {
   bool override = true,
 }) {
-  final h = Map<String, String>.from(request.headers);
+  final Map<String, String> headersCopy = {...request.headers};
 
-  for (var k in headers.keys) {
-    var val = headers[k];
-    if (val == null) continue;
-    if (!override && h.containsKey(k)) continue;
-    h[k] = val;
+  for (String key in headers.keys) {
+    String? value = headers[key];
+    if (value == null) continue;
+    if (!override && headersCopy.containsKey(key)) continue;
+    headersCopy[key] = value;
   }
 
-  return request.copyWith(headers: h);
+  return request.copyWith(headers: headersCopy);
 }
 
 final chopperLogger = Logger('Chopper');
@@ -62,12 +62,11 @@ Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
   String? prefix,
 }) {
-  /// ignore: prefer_collection_literals
-  final pairs = Set<_Pair<String, String>>();
+  final Set<_Pair<String, String>> pairs = {};
 
   map.forEach((key, value) {
     if (value != null) {
-      var name = Uri.encodeQueryComponent(key);
+      String name = Uri.encodeQueryComponent(key);
 
       if (prefix != null) {
         name = '$prefix.$name';
@@ -77,11 +76,12 @@ Iterable<_Pair<String, String>> _mapToQuery(
         pairs.addAll(_iterableToQuery(name, value));
       } else if (value is Map<String, dynamic>) {
         pairs.addAll(_mapToQuery(value, prefix: name));
-      } else if (value.toString().isNotEmpty == true) {
+      } else if (value.toString().isNotEmpty) {
         pairs.add(_Pair<String, String>(name, _normalizeValue(value)));
       }
     }
   });
+
   return pairs;
 }
 
@@ -97,7 +97,7 @@ class _Pair<A, B> {
   final A first;
   final B second;
 
-  _Pair(this.first, this.second);
+  const _Pair(this.first, this.second);
 
   @override
   String toString() => '$first=$second';

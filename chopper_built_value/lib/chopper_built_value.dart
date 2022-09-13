@@ -1,13 +1,14 @@
-import 'package:chopper/chopper.dart';
+import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
+import 'package:chopper/chopper.dart';
 
 /// A custom [Converter] and [ErrorConverter] that handles conversion for classes
 /// having a serializer implementation made with the built_value package.
 class BuiltValueConverter implements Converter, ErrorConverter {
   final Serializers serializers;
-  final JsonConverter jsonConverter = JsonConverter();
+  static const JsonConverter jsonConverter = JsonConverter();
   final Type? errorType;
 
   /// Builds a new BuiltValueConverter instance that uses built_value serializers defined
@@ -16,10 +17,10 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   /// If the error body cannot be converted with serializers and [errorType] is provided
   /// and it's not `null`, BuiltValueConverter will try to deserialize the error body into
   /// [errorType].
-  BuiltValueConverter(this.serializers, {this.errorType});
+  const BuiltValueConverter(this.serializers, {this.errorType});
 
   T? _deserialize<T>(dynamic value) {
-    var serializer;
+    dynamic serializer;
     if (value is Map && value.containsKey('\$')) {
       serializer = serializers.serializerForWireName(value['\$']);
     }
@@ -33,7 +34,9 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   }
 
   BuiltList<InnerType> _deserializeListOf<InnerType>(Iterable value) {
-    final deserialized = value.map((value) => _deserialize<InnerType>(value));
+    final Iterable<InnerType?> deserialized =
+        value.map((value) => _deserialize<InnerType>(value));
+
     return BuiltList<InnerType>(deserialized.toList(growable: false));
   }
 
@@ -42,27 +45,33 @@ class BuiltValueConverter implements Converter, ErrorConverter {
     if (entity is Iterable) {
       return _deserializeListOf<InnerType>(entity) as BodyType;
     }
+
     return _deserialize<BodyType>(entity);
   }
 
   @override
-  Request convertRequest(Request request) {
-    request = request.copyWith(body: serializers.serialize(request.body));
-    return jsonConverter.convertRequest(request);
+  Request convertRequest(Request request) => jsonConverter.convertRequest(
+        request.copyWith(body: serializers.serialize(request.body)),
+      );
+
+  @override
+  FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
+    Response response,
+  ) async {
+    final Response jsonResponse = await jsonConverter.convertResponse(response);
+
+    return jsonResponse.copyWith(
+      body: deserialize<BodyType, InnerType>(jsonResponse.body),
+    );
   }
 
   @override
-  Response<BodyType> convertResponse<BodyType, InnerType>(Response response) {
-    final jsonResponse = jsonConverter.convertResponse(response);
-    final body = deserialize<BodyType, InnerType>(jsonResponse.body);
-    return jsonResponse.copyWith(body: body);
-  }
+  FutureOr<Response> convertError<BodyType, InnerType>(
+    Response response,
+  ) async {
+    final Response jsonResponse = await jsonConverter.convertResponse(response);
 
-  @override
-  Response convertError<BodyType, InnerType>(Response response) {
-    final jsonResponse = jsonConverter.convertResponse(response);
-
-    var body;
+    dynamic body;
 
     try {
       // try to deserialize using wireName

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+- Chopper upgraded
+
 ## 1.0.0
 
 - Null safety support

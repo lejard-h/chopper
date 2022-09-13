@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:chopper/chopper.dart';
 
+import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' show MultipartFile;
 
 part 'test_service.chopper.dart';
@@ -48,6 +48,25 @@ abstract class HttpTestService extends ChopperService {
     @Query('test') bool? test,
   });
 
+  @Get(path: 'query_map')
+  Future<Response> getQueryMapTest3({
+    @Query('name') String name = '',
+    @Query('number') int? number,
+    @QueryMap() Map<String, dynamic> filters = const {},
+  });
+
+  @Get(path: 'query_map')
+  Future<Response> getQueryMapTest4({
+    @Query('name') String name = '',
+    @Query('number') int? number,
+    @QueryMap() Map<String, dynamic>? filters,
+  });
+
+  @Get(path: 'query_map')
+  Future<Response> getQueryMapTest5({
+    @QueryMap() Map<String, dynamic>? filters,
+  });
+
   @Get(path: 'get_body')
   Future<Response> getBody(@Body() dynamic body);
 
@@ -82,7 +101,9 @@ abstract class HttpTestService extends ChopperService {
 
   @Post(path: 'map/json')
   @FactoryConverter(
-      request: customConvertRequest, response: customConvertResponse)
+    request: customConvertRequest,
+    response: customConvertResponse,
+  )
   Future<Response> forceJsonTest(@Body() Map map);
 
   @Post(path: 'multi')
@@ -121,6 +142,7 @@ abstract class HttpTestService extends ChopperService {
 
 Request customConvertRequest(Request req) {
   final r = JsonConverter().convertRequest(req);
+
   return applyHeader(r, 'customConverter', 'true');
 }
 

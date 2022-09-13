@@ -1,17 +1,12 @@
 # Changelog
 
-## 4.0.6
+## 5.0.0
 
-- Analyzer dependency upgrade
-
-## 4.0.5
-
-- Analyzer dependency upgrade
-- Fix for warnings
+- API breaking changes (FutureOr usage)
 
 ## 4.0.3
 
-- Interpolation fixes
+- Analyzer dependency upgrade
 
 ## 4.0.2
 

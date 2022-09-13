@@ -2,16 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:test/test.dart';
-import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:test/test.dart';
+
 import 'test_service.dart';
 
 const baseUrl = 'http://localhost:8000';
 
 void main() {
-  final buildClient = (
-          [http.Client? httpClient, ErrorConverter? errorConverter]) =>
+  ChopperClient buildClient([
+    http.Client? httpClient,
+    ErrorConverter? errorConverter,
+  ]) =>
       ChopperClient(
         baseUrl: baseUrl,
         services: [
@@ -21,6 +24,7 @@ void main() {
         client: httpClient,
         errorConverter: errorConverter,
       );
+
   group('Base', () {
     test('get service errors', () async {
       final chopper = ChopperClient(
@@ -39,8 +43,10 @@ void main() {
       try {
         chopper.getService();
       } on Exception catch (e) {
-        expect(e.toString(),
-            'Exception: Service type should be provided, `dynamic` is not allowed.');
+        expect(
+          e.toString(),
+          'Exception: Service type should be provided, `dynamic` is not allowed.',
+        );
       }
     });
     test('GET', () async {
@@ -332,6 +338,7 @@ void main() {
       final client = MockClient((http.Request req) async {
         expect(req.headers.containsKey('foo'), isTrue);
         expect(req.headers['foo'], equals('bar'));
+
         return http.Response('', 200);
       });
 
@@ -351,6 +358,7 @@ void main() {
       final client = MockClient((http.Request req) async {
         expect(req.headers.containsKey('test'), isTrue);
         expect(req.headers['test'], equals('42'));
+
         return http.Response('', 200);
       });
 
@@ -375,6 +383,7 @@ void main() {
           req.url.toString(),
           equals('$baseUrl/test/get/1234'),
         );
+
         return http.Response('', 200);
       });
 
@@ -392,13 +401,10 @@ void main() {
 
     test('applyHeader', () {
       final req1 = applyHeader(
-          Request(
-            'GET',
-            '/',
-            baseUrl,
-          ),
-          'foo',
-          'bar');
+        Request('GET', '/', baseUrl),
+        'foo',
+        'bar',
+      );
 
       expect(req1.headers, equals({'foo': 'bar'}));
 
@@ -565,7 +571,8 @@ void main() {
         expect(
           request.url.toString(),
           equals(
-              '$baseUrl/test/query_map?test=true&foo=bar&list=1&list=2&inner.test=42'),
+            '$baseUrl/test/query_map?test=true&foo=bar&list=1&list=2&inner.test=42',
+          ),
         );
         expect(request.method, equals('GET'));
 
@@ -589,6 +596,165 @@ void main() {
 
       httpClient.close();
     });
+  });
+
+  test('Query Map 3', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/query_map?name=foo&number=1234'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getQueryMapTest3(
+      name: 'foo',
+      number: 1234,
+    );
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Query Map 4 without QueryMap', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/query_map?name=foo&number=1234'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getQueryMapTest4(
+      name: 'foo',
+      number: 1234,
+    );
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Query Map 4 with QueryMap', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals(
+          '$baseUrl/test/query_map?name=foo&number=1234&filter_1=filter_value_1',
+        ),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getQueryMapTest4(
+      name: 'foo',
+      number: 1234,
+      filters: {
+        'filter_1': 'filter_value_1',
+      },
+    );
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test(
+    'Query Map 4 with QueryMap that overwrites a previous value from Query',
+    () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/query_map?name=bar&number=1234'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getQueryMapTest4(
+        name: 'foo',
+        number: 1234,
+        filters: {
+          'name': 'bar',
+        },
+      );
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    },
+  );
+
+  test('Query Map 5 without QueryMap', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/query_map'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getQueryMapTest5();
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Query Map 5 with QueryMap', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/query_map?filter_1=filter_value_1'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getQueryMapTest5(
+      filters: {
+        'filter_1': 'filter_value_1',
+      },
+    );
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
   });
 
   test('onRequest Stream', () async {
@@ -682,7 +848,7 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final _ = await service.getAll();
+    await service.getAll();
   });
 
   test('Slash in path gives a trailing slash', () async {
@@ -699,12 +865,13 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final _ = await service.getAllWithTrailingSlash();
+    await service.getAllWithTrailingSlash();
   });
 
   test('timeout', () async {
     final httpClient = MockClient((http.Request req) async {
       await Future.delayed(const Duration(minutes: 1));
+
       return http.Response('ok', 200);
     });
 
@@ -713,10 +880,7 @@ void main() {
 
     try {
       await service
-          .getTest(
-            '1234',
-            dynamicHeader: '',
-          )
+          .getTest('1234', dynamicHeader: '')
           .timeout(const Duration(seconds: 3));
     } catch (e) {
       expect(e is TimeoutException, isTrue);

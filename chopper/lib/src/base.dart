@@ -1,19 +1,20 @@
 import 'dart:async';
-import 'package:meta/meta.dart';
-import 'package:http/http.dart' as http;
-import 'constants.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
+
+import 'annotations.dart';
+import 'authenticator.dart';
+import 'constants.dart';
 import 'interceptor.dart';
 import 'request.dart';
 import 'response.dart';
-import 'annotations.dart';
-import 'authenticator.dart';
 import 'utils.dart';
 
 Type _typeOf<T>() => T;
 
 @visibleForTesting
-final allowedInterceptorsType = <Type>[
+final List<Type> allowedInterceptorsType = [
   RequestInterceptor,
   RequestInterceptorFunc,
   ResponseInterceptor,
@@ -120,7 +121,7 @@ class ChopperClient {
     Iterable<ChopperService> services = const [],
   })  : httpClient = client ?? http.Client(),
         _clientIsInternal = client == null {
-    if (interceptors.every(_isAnInterceptor) == false) {
+    if (!interceptors.every(_isAnInterceptor)) {
       throw ArgumentError(
         'Unsupported type for interceptors, it only support the following types:\n'
         '${allowedInterceptorsType.join('\n - ')}',
@@ -162,31 +163,28 @@ class ChopperClient {
   /// final todoService = chopper.getService<TodosListService>();
   /// ```
   ServiceType getService<ServiceType extends ChopperService>() {
-    final serviceType = _typeOf<ServiceType>();
+    final Type serviceType = _typeOf<ServiceType>();
     if (serviceType == dynamic || serviceType == ChopperService) {
       throw Exception(
-          'Service type should be provided, `dynamic` is not allowed.');
+        'Service type should be provided, `dynamic` is not allowed.',
+      );
     }
-    final service = _services[serviceType];
+    final ChopperService? service = _services[serviceType];
     if (service == null) {
       throw Exception('Service of type \'$serviceType\' not found.');
     }
+
     return service as ServiceType;
   }
 
-  Future<Request> _encodeRequest(Request request) async {
-    return converter?.convertRequest(request) ?? request;
-  }
+  Future<Request> _encodeRequest(Request request) async =>
+      converter?.convertRequest(request) ?? request;
 
   Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
     Response response,
     Converter withConverter,
-  ) async {
-    final converted =
-        await withConverter.convertResponse<BodyType, InnerType>(response);
-
-    return converted;
-  }
+  ) async =>
+      await withConverter.convertResponse<BodyType, InnerType>(response);
 
   Future<Request> _interceptRequest(Request req) async {
     final body = req.body;
@@ -203,6 +201,7 @@ class ChopperClient {
       'Interceptors should not transform the body of the request'
       'Use Request converter instead',
     );
+
     return req;
   }
 
@@ -242,11 +241,7 @@ class ChopperClient {
       error = errorRes?.error ?? errorRes?.body;
     }
 
-    return Response<BodyType>(
-      response.base,
-      null,
-      error: error,
-    );
+    return Response<BodyType>(response.base, null, error: error);
   }
 
   Future<Response<BodyType>> _handleSuccessResponse<BodyType, InnerType>(
@@ -269,17 +264,12 @@ class ChopperClient {
   Future<Request> _handleRequestConverter(
     Request request,
     ConvertRequest? requestConverter,
-  ) async {
-    if (request.body != null || request.parts.isNotEmpty) {
-      if (requestConverter != null) {
-        request = await requestConverter(request);
-      } else {
-        request = (await _encodeRequest(request));
-      }
-    }
-
-    return request;
-  }
+  ) async =>
+      request.body != null || request.parts.isNotEmpty
+          ? requestConverter != null
+              ? await requestConverter(request)
+              : await _encodeRequest(request)
+          : request;
 
   /// Sends a pre-build [Request], applying all provided [Interceptor]s and
   /// [Converter]s.
@@ -298,8 +288,9 @@ class ChopperClient {
     ConvertRequest? requestConverter,
     ConvertResponse? responseConverter,
   }) async {
-    var req = await _handleRequestConverter(request, requestConverter);
-    req = await _interceptRequest(req);
+    var req = await _interceptRequest(
+      await _handleRequestConverter(request, requestConverter),
+    );
     _requestController.add(req);
 
     final streamRes = await httpClient.send(await req.toBaseRequest());
@@ -324,27 +315,28 @@ class ChopperClient {
           return _processResponse(res);
         } else {
           res = await _handleErrorResponse<BodyType, InnerType>(res);
+
           return _processResponse(res);
         }
       }
     }
 
-    if (_responseIsSuccessful(res.statusCode)) {
-      res = await _handleSuccessResponse<BodyType, InnerType>(
-        res,
-        responseConverter,
-      );
-    } else {
-      res = await _handleErrorResponse<BodyType, InnerType>(res);
-    }
+    res = _responseIsSuccessful(res.statusCode)
+        ? await _handleSuccessResponse<BodyType, InnerType>(
+            res,
+            responseConverter,
+          )
+        : await _handleErrorResponse<BodyType, InnerType>(res);
 
     return _processResponse(res);
   }
 
   Future<Response<BodyType>> _processResponse<BodyType, InnerType>(
-      dynamic res) async {
+    dynamic res,
+  ) async {
     res = await _interceptResponse<BodyType, InnerType>(res);
     _responseController.add(res);
+
     return res;
   }
 

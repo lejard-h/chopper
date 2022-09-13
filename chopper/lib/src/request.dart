@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:meta/meta.dart';
 import 'package:http/http.dart' as http;
-import 'utils.dart';
+import 'package:meta/meta.dart';
+
 import 'constants.dart';
+import 'utils.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
 @immutable
@@ -54,7 +55,7 @@ class Request {
 
   Uri _buildUri() => buildUri(baseUrl, url, parameters);
 
-  Map<String, String> _buildHeaders() => Map<String, String>.from(headers);
+  Map<String, String> _buildHeaders() => {...headers};
 
   /// Converts this Chopper Request into a [http.BaseRequest].
   ///
@@ -65,32 +66,18 @@ class Request {
   ///   - [http.MultipartRequest] if [multipart] is true
   ///   - or a [http.Request]
   Future<http.BaseRequest> toBaseRequest() async {
-    final uri = _buildUri();
-    final heads = _buildHeaders();
+    final Uri uri = _buildUri();
+    final Map<String, String> heads = _buildHeaders();
 
     if (body is Stream<List<int>>) {
-      return toStreamedRequest(
-        body,
-        method,
-        uri,
-        heads,
-      );
+      return toStreamedRequest(body, method, uri, heads);
     }
 
     if (multipart) {
-      return toMultipartRequest(
-        parts,
-        method,
-        uri,
-        heads,
-      );
+      return toMultipartRequest(parts, method, uri, heads);
     }
-    return toHttpRequest(
-      body,
-      method,
-      uri,
-      heads,
-    );
+
+    return toHttpRequest(body, method, uri, heads);
   }
 }
 
@@ -117,33 +104,30 @@ class PartValue<T> {
 /// Represents a file part in a multipart request.
 @immutable
 class PartValueFile<T> extends PartValue<T> {
-  PartValueFile(String name, T value) : super(name, value);
+  const PartValueFile(super.name, super.value);
 }
 
 /// Builds a valid URI from [baseUrl], [url] and [parameters].
 ///
 /// If [url] starts with 'http://' or 'https://', baseUrl is ignored.
 Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
-  var uri;
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    // If the request's url is already a fully qualified URL, we can use it
-    // as-is and ignore the baseUrl.
-    uri = Uri.parse(url);
-  } else {
-    if (!baseUrl.endsWith('/') && !url.startsWith('/')) {
-      uri = Uri.parse('$baseUrl/$url');
-    } else {
-      uri = Uri.parse('$baseUrl$url');
-    }
-  }
+  // If the request's url is already a fully qualified URL, we can use it
+  // as-is and ignore the baseUrl.
+  Uri uri = url.startsWith('http://') || url.startsWith('https://')
+      ? Uri.parse(url)
+      : !baseUrl.endsWith('/') && !url.startsWith('/')
+          ? Uri.parse('$baseUrl/$url')
+          : Uri.parse('$baseUrl$url');
 
-  var query = mapToQuery(parameters);
+  String query = mapToQuery(parameters);
   if (query.isNotEmpty) {
     if (uri.hasQuery) {
       query += '&${uri.query}';
     }
+
     return uri.replace(query: query);
   }
+
   return uri;
 }
 
@@ -154,8 +138,8 @@ Future<http.Request> toHttpRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final baseRequest = http.Request(method, uri);
-  baseRequest.headers.addAll(headers);
+  final http.Request baseRequest = http.Request(method, uri)
+    ..headers.addAll(headers);
 
   if (body != null) {
     if (body is String) {
@@ -168,6 +152,7 @@ Future<http.Request> toHttpRequest(
       throw ArgumentError.value('$body', 'body');
     }
   }
+
   return baseRequest;
 }
 
@@ -178,10 +163,10 @@ Future<http.MultipartRequest> toMultipartRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final baseRequest = http.MultipartRequest(method, uri);
-  baseRequest.headers.addAll(headers);
+  final http.MultipartRequest baseRequest = http.MultipartRequest(method, uri)
+    ..headers.addAll(headers);
 
-  for (final part in parts) {
+  for (final PartValue part in parts) {
     if (part.value == null) continue;
 
     if (part.value is http.MultipartFile) {
@@ -210,6 +195,7 @@ Future<http.MultipartRequest> toMultipartRequest(
       baseRequest.fields[part.name] = part.value.toString();
     }
   }
+
   return baseRequest;
 }
 
@@ -220,11 +206,14 @@ Future<http.StreamedRequest> toStreamedRequest(
   Uri uri,
   Map<String, String> headers,
 ) async {
-  final req = http.StreamedRequest(method, uri);
-  req.headers.addAll(headers);
+  final http.StreamedRequest req = http.StreamedRequest(method, uri)
+    ..headers.addAll(headers);
 
-  bodyStream.listen(req.sink.add,
-      onDone: req.sink.close, onError: req.sink.addError);
+  bodyStream.listen(
+    req.sink.add,
+    onDone: req.sink.close,
+    onError: req.sink.addError,
+  );
 
   return req;
 }

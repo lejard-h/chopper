@@ -1,10 +1,11 @@
 import 'dart:convert';
 
-import 'package:test/test.dart';
 import 'package:chopper/chopper.dart';
-import 'test_service.dart';
-import 'package:http/testing.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:test/test.dart';
+
+import 'test_service.dart';
 
 void main() {
   final sample = {
@@ -15,7 +16,8 @@ void main() {
     'result': 'ok',
   };
   group('JSON', () {
-    final buildClient = (bool json, http.Client httpClient) => ChopperClient(
+    ChopperClient buildClient(bool json, http.Client httpClient) =>
+        ChopperClient(
           services: [
             // the generated service
             HttpTestService.create(),
@@ -30,6 +32,7 @@ void main() {
         expect(req.url.toString(), equals('/test/map'));
         expect(req.headers['content-type'], 'application/json; charset=utf-8');
         expect(req.body, equals(json.encode(sample)));
+
         return http.Response(
           json.encode(res),
           200,
@@ -56,6 +59,7 @@ void main() {
         expect(req.headers['content-type'], 'application/json; charset=utf-8');
         expect(req.headers['customConverter'], 'true');
         expect(req.body, equals(json.encode(sample)));
+
         return http.Response(
           json.encode(res),
           200,
