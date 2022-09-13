@@ -339,8 +339,12 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     });
   }
 
+  /// TODO: upgrade analyzer to ^4.4.0 to replace enclosingElement with enclosingElement3
+  /// https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/CHANGELOG.md#440
   String _factoryForFunction(FunctionTypedElement function) =>
+      // ignore: deprecated_member_use
       function.enclosingElement is ClassElement
+          // ignore: deprecated_member_use
           ? '${function.enclosingElement!.name}.${function.name}'
           : function.name!;
 
