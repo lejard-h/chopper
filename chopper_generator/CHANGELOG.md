@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.0
+
+- API breaking changes (FutureOr usage)
+
 ## 4.0.3
 
 - Analyzer dependency upgrade

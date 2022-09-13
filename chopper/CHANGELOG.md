@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.0
+
+- API breaking changes (FutureOr)
+
 ## 4.0.1
 
 - Fix for the null safety support
