@@ -19,14 +19,22 @@ class _$MyService extends MyService {
   @override
   Future<Response<dynamic>> getResource(String id) {
     final $url = '/resources/${id}/';
-    final $request = Request('GET', $url, client.baseUrl);
+    final $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<BuiltList<Resource>>> getBuiltListResources() {
     final $url = '/resources/list';
-    final $request = Request('GET', $url, client.baseUrl);
+    final $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
     return client.send<BuiltList<Resource>, Resource>($request);
   }
 
@@ -37,20 +45,33 @@ class _$MyService extends MyService {
       'foo': 'bar',
     };
 
-    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    final $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
     return client.send<Resource, Resource>($request);
   }
 
   @override
-  Future<Response<Resource>> newResource(Resource resource, {String? name}) {
+  Future<Response<Resource>> newResource(
+    Resource resource, {
+    String? name,
+  }) {
     final $url = '/resources';
     final $headers = {
       if (name != null) 'name': name,
     };
 
     final $body = resource;
-    final $request =
-        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    final $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
     return client.send<Resource, Resource>($request);
   }
 }
