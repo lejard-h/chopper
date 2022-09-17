@@ -3,7 +3,7 @@ name: Bug report
 about: The application is crashing or throws an exception or something else looks wrong.
 title: ''
 labels: bug
-assignees:
+assignees: ''
 
 ---
 
