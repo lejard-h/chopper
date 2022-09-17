@@ -174,11 +174,13 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       );
 
       final List<Code> blocks = [
-        url.assignFinal(_urlVar).statement,
+        declareFinal(_urlVar).assign(url).statement,
       ];
 
       if (queries.isNotEmpty) {
-        blocks.add(_generateMap(queries).assignFinal(_parametersVar).statement);
+        blocks.add(
+          declareFinal(_parametersVar).assign(_generateMap(queries)).statement,
+        );
       }
 
       // Build an iterable of all the parameters that are nullable
@@ -194,21 +196,20 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
             [
               // Check if the parameter is nullable
               optionalNullableParameters.contains(queryMap.keys.first)
-                  ? refer(queryMap.keys.first).ifNullThen(refer('{}'))
+                  ? refer(queryMap.keys.first).ifNullThen(refer('const {}'))
                   : refer(queryMap.keys.first),
             ],
           ).statement);
         } else {
           blocks.add(
-            // Check if the parameter is nullable
-            optionalNullableParameters.contains(queryMap.keys.first)
-                ? refer(queryMap.keys.first)
-                    .ifNullThen(refer('{}'))
-                    .assignFinal(_parametersVar)
-                    .statement
-                : refer(queryMap.keys.first)
-                    .assignFinal(_parametersVar)
-                    .statement,
+            declareFinal(_parametersVar)
+                .assign(
+                  // Check if the parameter is nullable
+                  optionalNullableParameters.contains(queryMap.keys.first)
+                      ? refer(queryMap.keys.first).ifNullThen(refer('const {}'))
+                      : refer(queryMap.keys.first),
+                )
+                .statement,
           );
         }
       }
@@ -226,11 +227,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       if (hasBody) {
         if (body.isNotEmpty) {
           blocks.add(
-            refer(body.keys.first).assignFinal(_bodyVar).statement,
+            declareFinal(_bodyVar).assign(refer(body.keys.first)).statement,
           );
         } else {
           blocks.add(
-            _generateMap(fields).assignFinal(_bodyVar).statement,
+            declareFinal(_bodyVar).assign(_generateMap(fields)).statement,
           );
         }
       }
@@ -243,7 +244,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           ).statement);
         } else {
           blocks.add(
-            refer(fieldMap.keys.first).assignFinal(_bodyVar).statement,
+            declareFinal(_bodyVar).assign(refer(fieldMap.keys.first)).statement,
           );
         }
       }
@@ -253,19 +254,23 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       bool hasParts = multipart && (parts.isNotEmpty || fileFields.isNotEmpty);
       if (hasParts) {
         blocks.add(
-          _generateList(parts, fileFields).assignFinal(_partsVar).statement,
+          declareFinal(_partsVar)
+              .assign(_generateList(parts, fileFields))
+              .statement,
         );
       }
 
       final bool hasPartMap = multipart && partMap.isNotEmpty;
       if (hasPartMap) {
         if (hasParts) {
-          blocks.add(refer('$_partsVar.addAll').call(
-            [refer(partMap.keys.first)],
-          ).statement);
+          blocks.add(
+            refer('$_partsVar.addAll').call(
+              [refer(partMap.keys.first)],
+            ).statement,
+          );
         } else {
           blocks.add(
-            refer(partMap.keys.first).assignFinal(_partsVar).statement,
+            declareFinal(_partsVar).assign(refer(partMap.keys.first)).statement,
           );
         }
       }
@@ -273,12 +278,16 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       final bool hasFileFilesMap = multipart && fileFieldMap.isNotEmpty;
       if (hasFileFilesMap) {
         if (hasParts || hasPartMap) {
-          blocks.add(refer('$_partsVar.addAll').call(
-            [refer(fileFieldMap.keys.first)],
-          ).statement);
+          blocks.add(
+            refer('$_partsVar.addAll').call(
+              [refer(fileFieldMap.keys.first)],
+            ).statement,
+          );
         } else {
           blocks.add(
-            refer(fileFieldMap.keys.first).assignFinal(_partsVar).statement,
+            declareFinal(_partsVar)
+                .assign(refer(fileFieldMap.keys.first))
+                .statement,
           );
         }
       }
@@ -296,13 +305,19 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         );
       }
 
-      blocks.add(_generateRequest(
-        method,
-        hasBody: hasBody,
-        useQueries: hasQuery,
-        useHeaders: headers != null,
-        hasParts: hasParts,
-      ).assignFinal(_requestVar).statement);
+      blocks.add(
+        declareFinal(_requestVar)
+            .assign(
+              _generateRequest(
+                method,
+                hasBody: hasBody,
+                useQueries: hasQuery,
+                useHeaders: headers != null,
+                hasParts: hasParts,
+              ),
+            )
+            .statement,
+      );
 
       final Map<String, Expression> namedArguments = {};
 
@@ -339,13 +354,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     });
   }
 
-  /// TODO: upgrade analyzer to ^4.4.0 to replace enclosingElement with enclosingElement3
-  /// https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/CHANGELOG.md#440
   String _factoryForFunction(FunctionTypedElement function) =>
-      // ignore: deprecated_member_use
-      function.enclosingElement is ClassElement
-          // ignore: deprecated_member_use
-          ? '${function.enclosingElement!.name}.${function.name}'
+      function.enclosingElement3 is ClassElement
+          ? '${function.enclosingElement3!.name}.${function.name}'
           : function.name!;
 
   Map<String, ConstantReader> _getAnnotation(MethodElement method, Type type) {
