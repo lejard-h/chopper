@@ -18,8 +18,8 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> getResource(String id) {
-    final $url = '/resources/${id}';
-    final $request = Request(
+    final String $url = '/resources/${id}';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -29,13 +29,12 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<Map<dynamic, dynamic>>> getMapResource(String id) {
-    final $url = '/resources/';
-    final $params = <String, dynamic>{'id': id};
-    final $headers = {
+    final String $url = '/resources/';
+    final Map<String, dynamic> $params = <String, dynamic>{'id': id};
+    final Map<String, String> $headers = {
       'foo': 'bar',
     };
-
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -47,8 +46,8 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<List<Map<dynamic, dynamic>>>> getListResources() {
-    final $url = '/resources/resources';
-    final $request = Request(
+    final String $url = '/resources/resources';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -62,12 +61,12 @@ class _$MyService extends MyService {
     String toto,
     String b,
   ) {
-    final $url = '/resources/';
+    final String $url = '/resources/';
     final $body = <String, dynamic>{
       'a': toto,
       'b': b,
     };
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -82,8 +81,8 @@ class _$MyService extends MyService {
     Map<dynamic, dynamic> b,
     String c,
   ) {
-    final $url = '/resources/multi';
-    final $parts = <PartValue>[
+    final String $url = '/resources/multi';
+    final List<PartValue> $parts = <PartValue>[
       PartValue<Map<dynamic, dynamic>>(
         '1',
         a,
@@ -97,7 +96,7 @@ class _$MyService extends MyService {
         c,
       ),
     ];
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -109,14 +108,14 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> postFile(List<int> bytes) {
-    final $url = '/resources/file';
-    final $parts = <PartValue>[
+    final String $url = '/resources/file';
+    final List<PartValue> $parts = <PartValue>[
       PartValue<List<int>>(
         'file',
         bytes,
       )
     ];
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,

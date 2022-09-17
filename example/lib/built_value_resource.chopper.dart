@@ -18,8 +18,8 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> getResource(String id) {
-    final $url = '/resources/${id}/';
-    final $request = Request(
+    final String $url = '/resources/${id}/';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -29,8 +29,8 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<BuiltList<Resource>>> getBuiltListResources() {
-    final $url = '/resources/list';
-    final $request = Request(
+    final String $url = '/resources/list';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -40,12 +40,11 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<Resource>> getTypedResource() {
-    final $url = '/resources/';
-    final $headers = {
+    final String $url = '/resources/';
+    final Map<String, String> $headers = {
       'foo': 'bar',
     };
-
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -59,13 +58,12 @@ class _$MyService extends MyService {
     Resource resource, {
     String? name,
   }) {
-    final $url = '/resources';
-    final $headers = {
+    final String $url = '/resources';
+    final Map<String, String> $headers = {
       if (name != null) 'name': name,
     };
-
     final $body = resource;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
