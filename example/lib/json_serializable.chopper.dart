@@ -19,7 +19,11 @@ class _$MyService extends MyService {
   @override
   Future<Response<dynamic>> getResource(String id) {
     final $url = '/resources/${id}/';
-    final $request = Request('GET', $url, client.baseUrl);
+    final $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -30,7 +34,12 @@ class _$MyService extends MyService {
       'test': 'list',
     };
 
-    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    final $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
     return client.send<List<Resource>, Resource>($request);
   }
 
@@ -38,7 +47,12 @@ class _$MyService extends MyService {
   Future<Response<Map<dynamic, dynamic>>> getMapResource(String id) {
     final $url = '/resources/';
     final $params = <String, dynamic>{'id': id};
-    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    final $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
     return client.send<Map<dynamic, dynamic>, Map<dynamic, dynamic>>($request);
   }
 
@@ -49,20 +63,33 @@ class _$MyService extends MyService {
       'foo': 'bar',
     };
 
-    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    final $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
     return client.send<Resource, Resource>($request);
   }
 
   @override
-  Future<Response<Resource>> newResource(Resource resource, {String? name}) {
+  Future<Response<Resource>> newResource(
+    Resource resource, {
+    String? name,
+  }) {
     final $url = '/resources';
     final $headers = {
       if (name != null) 'name': name,
     };
 
     final $body = resource;
-    final $request =
-        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    final $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
     return client.send<Resource, Resource>($request);
   }
 }
