@@ -174,12 +174,14 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       );
 
       final List<Code> blocks = [
-        declareFinal(_urlVar).assign(url).statement,
+        declareFinal(_urlVar, type: refer('String')).assign(url).statement,
       ];
 
       if (queries.isNotEmpty) {
         blocks.add(
-          declareFinal(_parametersVar).assign(_generateMap(queries)).statement,
+          declareFinal(_parametersVar, type: refer('Map<String, dynamic>'))
+              .assign(_generateMap(queries))
+              .statement,
         );
       }
 
@@ -202,7 +204,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           ).statement);
         } else {
           blocks.add(
-            declareFinal(_parametersVar)
+            declareFinal(_parametersVar, type: refer('Map<String, dynamic>'))
                 .assign(
                   // Check if the parameter is nullable
                   optionalNullableParameters.contains(queryMap.keys.first)
@@ -254,7 +256,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       bool hasParts = multipart && (parts.isNotEmpty || fileFields.isNotEmpty);
       if (hasParts) {
         blocks.add(
-          declareFinal(_partsVar)
+          declareFinal(_partsVar, type: refer('List<PartValue>'))
               .assign(_generateList(parts, fileFields))
               .statement,
         );
@@ -270,7 +272,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           );
         } else {
           blocks.add(
-            declareFinal(_partsVar).assign(refer(partMap.keys.first)).statement,
+            declareFinal(_partsVar, type: refer('List<PartValue>'))
+                .assign(refer(partMap.keys.first))
+                .statement,
           );
         }
       }
@@ -285,7 +289,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
           );
         } else {
           blocks.add(
-            declareFinal(_partsVar)
+            declareFinal(_partsVar, type: refer('List<PartValue>'))
                 .assign(refer(fileFieldMap.keys.first))
                 .statement,
           );
@@ -306,7 +310,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       }
 
       blocks.add(
-        declareFinal(_requestVar)
+        declareFinal(_requestVar, type: refer('Request'))
             .assign(
               _generateRequest(
                 method,
@@ -589,10 +593,14 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       }
     });
 
-    codeBuffer.writeln('};');
+    codeBuffer.writeln('}');
     final String code = codeBuffer.toString();
 
-    return code == '{\n};\n' ? null : Code('final $_headersVar = $code');
+    return code == '{\n}\n'
+        ? null
+        : declareFinal(_headersVar, type: refer('Map<String, String>'))
+            .assign(CodeExpression(Code(code)))
+            .statement;
   }
 }
 
