@@ -18,8 +18,8 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> getResource(String id) {
-    final $url = '/resources/${id}/';
-    final $request = Request(
+    final String $url = '/resources/${id}/';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -29,12 +29,11 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<List<Resource>>> getResources() {
-    final $url = '/resources/all';
-    final $headers = {
+    final String $url = '/resources/all';
+    final Map<String, String> $headers = {
       'test': 'list',
     };
-
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -45,9 +44,9 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<Map<dynamic, dynamic>>> getMapResource(String id) {
-    final $url = '/resources/';
-    final $params = <String, dynamic>{'id': id};
-    final $request = Request(
+    final String $url = '/resources/';
+    final Map<String, dynamic> $params = <String, dynamic>{'id': id};
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -58,12 +57,11 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<Resource>> getTypedResource() {
-    final $url = '/resources/';
-    final $headers = {
+    final String $url = '/resources/';
+    final Map<String, String> $headers = {
       'foo': 'bar',
     };
-
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -77,13 +75,12 @@ class _$MyService extends MyService {
     Resource resource, {
     String? name,
   }) {
-    final $url = '/resources';
-    final $headers = {
+    final String $url = '/resources';
+    final Map<String, String> $headers = {
       if (name != null) 'name': name,
     };
-
     final $body = resource;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,

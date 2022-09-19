@@ -21,12 +21,11 @@ class _$HttpTestService extends HttpTestService {
     String id, {
     required String dynamicHeader,
   }) {
-    final $url = '/test/get/${id}';
-    final $headers = {
+    final String $url = '/test/get/${id}';
+    final Map<String, String> $headers = {
       'test': dynamicHeader,
     };
-
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -37,8 +36,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> headTest() {
-    final $url = '/test/head';
-    final $request = Request(
+    final String $url = '/test/head';
+    final Request $request = Request(
       'HEAD',
       $url,
       client.baseUrl,
@@ -48,8 +47,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> optionsTest() {
-    final $url = '/test/options';
-    final $request = Request(
+    final String $url = '/test/options';
+    final Request $request = Request(
       'OPTIONS',
       $url,
       client.baseUrl,
@@ -59,8 +58,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<Stream<List<int>>>> getStreamTest() {
-    final $url = '/test/get';
-    final $request = Request(
+    final String $url = '/test/get';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -70,8 +69,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getAll() {
-    final $url = '/test';
-    final $request = Request(
+    final String $url = '/test';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -81,8 +80,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getAllWithTrailingSlash() {
-    final $url = '/test/';
-    final $request = Request(
+    final String $url = '/test/';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -96,13 +95,13 @@ class _$HttpTestService extends HttpTestService {
     int? number,
     int? def = 42,
   }) {
-    final $url = '/test/query';
-    final $params = <String, dynamic>{
+    final String $url = '/test/query';
+    final Map<String, dynamic> $params = <String, dynamic>{
       'name': name,
       'int': number,
       'default_value': def,
     };
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -113,9 +112,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getQueryMapTest(Map<String, dynamic> query) {
-    final $url = '/test/query_map';
-    final $params = query;
-    final $request = Request(
+    final String $url = '/test/query_map';
+    final Map<String, dynamic> $params = query;
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -129,10 +128,10 @@ class _$HttpTestService extends HttpTestService {
     Map<String, dynamic> query, {
     bool? test,
   }) {
-    final $url = '/test/query_map';
-    final $params = <String, dynamic>{'test': test};
+    final String $url = '/test/query_map';
+    final Map<String, dynamic> $params = <String, dynamic>{'test': test};
     $params.addAll(query);
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -147,13 +146,13 @@ class _$HttpTestService extends HttpTestService {
     int? number,
     Map<String, dynamic> filters = const {},
   }) {
-    final $url = '/test/query_map';
-    final $params = <String, dynamic>{
+    final String $url = '/test/query_map';
+    final Map<String, dynamic> $params = <String, dynamic>{
       'name': name,
       'number': number,
     };
     $params.addAll(filters);
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -168,13 +167,13 @@ class _$HttpTestService extends HttpTestService {
     int? number,
     Map<String, dynamic>? filters,
   }) {
-    final $url = '/test/query_map';
-    final $params = <String, dynamic>{
+    final String $url = '/test/query_map';
+    final Map<String, dynamic> $params = <String, dynamic>{
       'name': name,
       'number': number,
     };
     $params.addAll(filters ?? const {});
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -185,9 +184,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getQueryMapTest5({Map<String, dynamic>? filters}) {
-    final $url = '/test/query_map';
-    final $params = filters ?? const {};
-    final $request = Request(
+    final String $url = '/test/query_map';
+    final Map<String, dynamic> $params = filters ?? const {};
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -198,9 +197,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getBody(dynamic body) {
-    final $url = '/test/get_body';
+    final String $url = '/test/get_body';
     final $body = body;
-    final $request = Request(
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -211,9 +210,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postTest(String data) {
-    final $url = '/test/post';
+    final String $url = '/test/post';
     final $body = data;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -224,9 +223,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postStreamTest(Stream<List<int>> byteStream) {
-    final $url = '/test/post';
+    final String $url = '/test/post';
     final $body = byteStream;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -240,9 +239,9 @@ class _$HttpTestService extends HttpTestService {
     String test,
     String data,
   ) {
-    final $url = '/test/put/${test}';
+    final String $url = '/test/put/${test}';
     final $body = data;
-    final $request = Request(
+    final Request $request = Request(
       'PUT',
       $url,
       client.baseUrl,
@@ -253,12 +252,11 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> deleteTest(String id) {
-    final $url = '/test/delete/${id}';
-    final $headers = {
+    final String $url = '/test/delete/${id}';
+    final Map<String, String> $headers = {
       'foo': 'bar',
     };
-
-    final $request = Request(
+    final Request $request = Request(
       'DELETE',
       $url,
       client.baseUrl,
@@ -272,9 +270,9 @@ class _$HttpTestService extends HttpTestService {
     String id,
     String data,
   ) {
-    final $url = '/test/patch/${id}';
+    final String $url = '/test/patch/${id}';
     final $body = data;
-    final $request = Request(
+    final Request $request = Request(
       'PATCH',
       $url,
       client.baseUrl,
@@ -285,9 +283,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> mapTest(Map<String, String> map) {
-    final $url = '/test/map';
+    final String $url = '/test/map';
     final $body = map;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -298,9 +296,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postForm(Map<String, String> fields) {
-    final $url = '/test/form/body';
+    final String $url = '/test/form/body';
     final $body = fields;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -314,13 +312,12 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postFormUsingHeaders(Map<String, String> fields) {
-    final $url = '/test/form/body';
-    final $headers = {
+    final String $url = '/test/form/body';
+    final Map<String, String> $headers = {
       'content-type': 'application/x-www-form-urlencoded',
     };
-
     final $body = fields;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -335,12 +332,12 @@ class _$HttpTestService extends HttpTestService {
     String foo,
     int bar,
   ) {
-    final $url = '/test/form/body/fields';
+    final String $url = '/test/form/body/fields';
     final $body = <String, dynamic>{
       'foo': foo,
       'bar': bar,
     };
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -354,9 +351,9 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> forceJsonTest(Map<dynamic, dynamic> map) {
-    final $url = '/test/map/json';
+    final String $url = '/test/map/json';
     final $body = map;
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -374,8 +371,8 @@ class _$HttpTestService extends HttpTestService {
     Map<dynamic, dynamic> a,
     Map<dynamic, dynamic> b,
   ) {
-    final $url = '/test/multi';
-    final $parts = <PartValue>[
+    final String $url = '/test/multi';
+    final List<PartValue> $parts = <PartValue>[
       PartValue<Map<dynamic, dynamic>>(
         '1',
         a,
@@ -385,7 +382,7 @@ class _$HttpTestService extends HttpTestService {
         b,
       ),
     ];
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -397,14 +394,14 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postFile(List<int> bytes) {
-    final $url = '/test/file';
-    final $parts = <PartValue>[
+    final String $url = '/test/file';
+    final List<PartValue> $parts = <PartValue>[
       PartValueFile<List<int>>(
         'file',
         bytes,
       )
     ];
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -419,8 +416,8 @@ class _$HttpTestService extends HttpTestService {
     MultipartFile file, {
     String? id,
   }) {
-    final $url = '/test/file';
-    final $parts = <PartValue>[
+    final String $url = '/test/file';
+    final List<PartValue> $parts = <PartValue>[
       PartValue<String?>(
         'id',
         id,
@@ -430,7 +427,7 @@ class _$HttpTestService extends HttpTestService {
         file,
       ),
     ];
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -442,14 +439,14 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postListFiles(List<MultipartFile> files) {
-    final $url = '/test/files';
-    final $parts = <PartValue>[
+    final String $url = '/test/files';
+    final List<PartValue> $parts = <PartValue>[
       PartValueFile<List<MultipartFile>>(
         'files',
         files,
       )
     ];
-    final $request = Request(
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
@@ -461,8 +458,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<dynamic> fullUrl() {
-    final $url = 'https://test.com';
-    final $request = Request(
+    final String $url = 'https://test.com';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -472,8 +469,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<List<String>>> listString() {
-    final $url = '/test/list/string';
-    final $request = Request(
+    final String $url = '/test/list/string';
+    final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
@@ -483,8 +480,8 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> noBody() {
-    final $url = '/test/no-body';
-    final $request = Request(
+    final String $url = '/test/no-body';
+    final Request $request = Request(
       'POST',
       $url,
       client.baseUrl,
