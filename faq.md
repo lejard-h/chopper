@@ -169,3 +169,197 @@ interceptors: [
 ```
 
 The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and session handling - of your app looks like.
+
+## Decoding JSON using Isolates
+
+Sometimes you want to decode JSON outside the main thread in order to reduce janking. In this example we're going to go
+even further and implement a Worker Pool using [Squadron](https://pub.dev/packages/squadron/install) which can 
+dynamically spawn a maximum number of Workers as they become needed.
+
+#### Install the dependencies
+
+- [squadron](https://pub.dev/packages/squadron)
+- [squadron_builder](https://pub.dev/packages/squadron_builder)
+- [json_annotation](https://pub.dev/packages/json_annotation)
+- [json_serializable](https://pub.dev/packages/json_serializable)
+
+#### Write a JSON decode service
+
+We'll leverage [squadron_builder](https://pub.dev/packages/squadron_builder) and the power of code generation.
+
+```dart
+import 'dart:async';
+import 'dart:convert' show json;
+
+import 'package:squadron/squadron.dart';
+import 'package:squadron/squadron_annotations.dart';
+
+import 'json_decode_service.activator.g.dart';
+
+part 'json_decode_service.worker.g.dart';
+
+@SquadronService()
+class JsonDecodeService extends WorkerService with $JsonDecodeServiceOperations {
+  @SquadronMethod()
+  Future<dynamic> jsonDecode(String source) async => json.decode(source);
+}
+```
+
+Extracted from the [full example here](example/lib/json_decode_service.dart).
+
+#### Write a custom JsonConverter
+
+Using [json_serializable](https://pub.dev/packages/json_serializable) we'll create a [JsonConverter](https://github.com/lejard-h/chopper/blob/master/chopper/lib/src/interceptor.dart#L228) 
+which works with or without a [WorkerPool](https://github.com/d-markey/squadron#features).
+
+```dart
+import 'dart:async' show FutureOr;
+import 'dart:convert' show jsonDecode;
+
+import 'package:chopper/chopper.dart';
+import 'package:chopper_example/json_decode_service.dart';
+import 'package:chopper_example/json_serializable.dart';
+
+typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
+
+class JsonSerializableWorkerPoolConverter extends JsonConverter {
+  const JsonSerializableWorkerPoolConverter(this.factories, [this.workerPool]);
+
+  final Map<Type, JsonFactory> factories;
+  
+  /// Make the WorkerPool optional so that the JsonConverter still works without it
+  final JsonDecodeServiceWorkerPool? workerPool;
+
+  /// By overriding tryDecodeJson we give our JsonConverter 
+  /// the ability to decode JSON in an Isolate.
+  @override
+  FutureOr<dynamic> tryDecodeJson(String data) async {
+    try {
+      return workerPool != null
+          ? await workerPool!.jsonDecode(data)
+          : jsonDecode(data);
+    } catch (error) {
+      print(error);
+
+      chopperLogger.warning(error);
+
+      return data;
+    }
+  }
+  
+  T? _decodeMap<T>(Map<String, dynamic> values) {
+    final jsonFactory = factories[T];
+    if (jsonFactory == null || jsonFactory is! JsonFactory<T>) {
+      return null;
+    }
+
+    return jsonFactory(values);
+  }
+
+  List<T> _decodeList<T>(Iterable values) =>
+      values.where((v) => v != null).map<T>((v) => _decode<T>(v)).toList();
+
+  dynamic _decode<T>(entity) {
+    if (entity is Iterable) return _decodeList<T>(entity as List);
+
+    if (entity is Map) return _decodeMap<T>(entity as Map<String, dynamic>);
+
+    return entity;
+  }
+
+  @override
+  FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(
+    Response response,
+  ) async {
+    final jsonRes = await super.convertResponse(response);
+
+    return jsonRes.copyWith<ResultType>(body: _decode<Item>(jsonRes.body));
+  }
+
+  @override
+  FutureOr<Response> convertError<ResultType, Item>(Response response) async {
+    final jsonRes = await super.convertError(response);
+
+    return jsonRes.copyWith<ResourceError>(
+      body: ResourceError.fromJsonFactory(jsonRes.body),
+    );
+  }
+}
+```
+
+Extracted from the [full example here](example/bin/main_json_serializable_squadron_worker_pool.dart).
+
+#### Code generation
+
+It goes without saying that running the code generation is a pre-requisite at this stage
+
+```bash
+flutter pub run build_runner build
+```
+
+#### Configure a WorkerPool and run the example
+
+```dart
+/// inspired by https://github.com/d-markey/squadron_sample/blob/main/lib/main.dart
+void initSquadron(String id) {
+  Squadron.setId(id);
+  Squadron.setLogger(ConsoleSquadronLogger());
+  Squadron.logLevel = SquadronLogLevel.all;
+  Squadron.debugMode = true;
+}
+
+Future<void> main() async {
+  /// initialize Squadron before using it
+  initSquadron('worker_pool_example');
+
+  final jsonDecodeServiceWorkerPool = JsonDecodeServiceWorkerPool(
+    // Set whatever you want here
+    concurrencySettings: ConcurrencySettings.oneCpuThread,
+  );
+
+  /// start the Worker Pool
+  await jsonDecodeServiceWorkerPool.start();
+
+  /// Instantiate the JsonConverter from above
+  final converter = JsonSerializableWorkerPoolConverter(
+    {
+      Resource: Resource.fromJsonFactory,
+    },
+    /// make sure to provide the WorkerPool to the JsonConverter
+    jsonDecodeServiceWorkerPool,
+  );
+
+  /// Instantiate a ChopperClient
+  final chopper = ChopperClient(
+    client: client,
+    baseUrl: 'http://localhost:8000',
+    // bind your object factories here
+    converter: converter,
+    errorConverter: converter,
+    services: [
+      // the generated service
+      MyService.create(),
+    ],
+    /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
+    interceptors: [authHeader],
+  );
+
+  /// Do stuff with myService
+  final myService = chopper.getService<MyService>();
+  
+  /// ...stuff...
+
+  /// stop the Worker Pool once done
+  jsonDecodeServiceWorkerPool.stop();
+}
+```
+
+[The full example can be found here](example/bin/main_json_serializable_squadron_worker_pool.dart).
+
+#### Further reading
+
+This barely scratches the surface. If you want to know more about [squadron](https://github.com/d-markey/squadron) and
+[squadron_builder](https://github.com/d-markey/squadron_builder) make sure to head over to their respective repositories.
+
+[David Markey](https://github.com/d-markey]), the author of squadron, was kind enough as to provide us with an [excellent Flutter example](https://github.com/d-markey/squadron_builder) using
+both packages.
