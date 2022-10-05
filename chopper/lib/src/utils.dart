@@ -92,10 +92,10 @@ Iterable<_Pair<String, String>> _iterableToQuery(
   Iterable values,
 ) =>
     values
-        .where((value) => value != null && value.toString().isNotEmpty)
+        .where((value) => value?.toString().isNotEmpty ?? false)
         .map((value) => _Pair(name, _normalizeValue(value)));
 
-String _normalizeValue(value) => Uri.encodeComponent(value.toString());
+String _normalizeValue(value) => Uri.encodeComponent(value?.toString() ?? '');
 
 class _Pair<A, B> {
   final A first;
