@@ -149,11 +149,10 @@ void main() {
           '&foo=baz'
           '&foo=etc',
       {
-        'foo': <dynamic>['bar', 123, 456.789, 0, -0, -123, -456.789],
+        'foo': <dynamic>['bar', 123, 456.789, 0, -123, -456.789],
       }: 'foo=bar'
           '&foo=123'
           '&foo=456.789'
-          '&foo=0'
           '&foo=0'
           '&foo=-123'
           '&foo=-456.789',
@@ -226,7 +225,6 @@ void main() {
           'int': 123,
           'double': 456.789,
           'zero': 0,
-          'negZero': -0,
           'negInt': -123,
           'negDouble': -456.789,
           'emptyString': '',
@@ -236,7 +234,6 @@ void main() {
           '&foo.int=123'
           '&foo.double=456.789'
           '&foo.zero=0'
-          '&foo.negZero=0'
           '&foo.negInt=-123'
           '&foo.negDouble=-456.789'
           '&foo.emptyString='
@@ -301,7 +298,6 @@ void main() {
           'int': 123,
           'double': 456.789,
           'zero': 0,
-          'negZero': -0,
           'negInt': -123,
           'negDouble': -456.789,
           'emptyString': '',
@@ -311,7 +307,6 @@ void main() {
           '&foo%5Bint%5D=123'
           '&foo%5Bdouble%5D=456.789'
           '&foo%5Bzero%5D=0'
-          '&foo%5BnegZero%5D=0'
           '&foo%5BnegInt%5D=-123'
           '&foo%5BnegDouble%5D=-456.789'
           '&foo%5BemptyString%5D='
