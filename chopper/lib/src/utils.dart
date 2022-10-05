@@ -92,7 +92,7 @@ enum QueryMapSeparator {
   ///   },
   /// };
   ///
-  /// print(mapToQuery(queryMap)); // prints: 'foo[bar]=baz&foo[zap]=abc&foo[etc][abc]=def&foo[etc][ghi]=jkl&foo[etc][mno][opq]=rst&foo[etc][mno][uvw]=xyz'
+  /// print(mapToQuery(queryMap)); // prints: 'foo%5Bbar%5D%3Dbaz%26foo%5Bzap%5D%3Dabc%26foo%5Betc%5D%5Babc%5D%3Ddef%26foo%5Betc%5D%5Bghi%5D%3Djkl%26foo%5Betc%5D%5Bmno%5D%5Bopq%5D%3Drst%26foo%5Betc%5D%5Bmno%5D%5Buvw%5D%3Dxyz'
   /// ```
   brackets,
 }
