@@ -6,49 +6,49 @@ void main() {
     <Map<String, dynamic>, String>{
       {
         'foo': null,
-      }: r'foo=',
+      }: 'foo=',
       {
         'foo': '',
-      }: r'foo=',
+      }: 'foo=',
       {
         'foo': 'null',
-      }: r'foo=null',
+      }: 'foo=null',
       {
         'foo': 'bar',
-      }: r'foo=bar',
+      }: 'foo=bar',
       {
         'foo': 123,
-      }: r'foo=123',
+      }: 'foo=123',
       {
         'foo': 0,
-      }: r'foo=0',
+      }: 'foo=0',
       {
         'foo': 0.00,
-      }: r'foo=0.0',
+      }: 'foo=0.0',
       {
         'foo': -0,
-      }: r'foo=0',
+      }: 'foo=0',
       {
         'foo': -0.01,
-      }: r'foo=-0.01',
+      }: 'foo=-0.01',
       {
         'foo': '0.00',
-      }: r'foo=0.00',
+      }: 'foo=0.00',
       {
         'foo': 123.456,
-      }: r'foo=123.456',
+      }: 'foo=123.456',
       {
         'foo': 123.450,
-      }: r'foo=123.45',
+      }: 'foo=123.45',
       {
         'foo': -123.456,
-      }: r'foo=-123.456',
+      }: 'foo=-123.456',
       {
         'foo': true,
-      }: r'foo=true',
+      }: 'foo=true',
       {
         'foo': false,
-      }: r'foo=false',
+      }: 'foo=false',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
@@ -58,75 +58,93 @@ void main() {
       {
         'foo': null,
         'baz': null,
-      }: r'foo=&baz=',
+      }: 'foo='
+          '&baz=',
       {
         'foo': '',
         'baz': '',
-      }: r'foo=&baz=',
+      }: 'foo='
+          '&baz=',
       {
         'foo': null,
         'baz': '',
-      }: r'foo=&baz=',
+      }: 'foo='
+          '&baz=',
       {
         'foo': '',
         'baz': null,
-      }: r'foo=&baz=',
+      }: 'foo='
+          '&baz=',
       {
         'foo': 'bar',
         'baz': '',
-      }: r'foo=bar&baz=',
+      }: 'foo=bar'
+          '&baz=',
       {
         'foo': null,
         'baz': 'etc',
-      }: r'foo=&baz=etc',
+      }: 'foo='
+          '&baz=etc',
       {
         'foo': '',
         'baz': 'etc',
-      }: r'foo=&baz=etc',
+      }: 'foo='
+          '&baz=etc',
       {
         'foo': 'bar',
         'baz': 'etc',
-      }: r'foo=bar&baz=etc',
+      }: 'foo=bar'
+          '&baz=etc',
       {
         'foo': 'null',
         'baz': 'null',
-      }: r'foo=null&baz=null',
+      }: 'foo=null'
+          '&baz=null',
       {
         'foo': 123,
         'baz': 456,
-      }: r'foo=123&baz=456',
+      }: 'foo=123'
+          '&baz=456',
       {
         'foo': 0,
         'baz': 0,
-      }: r'foo=0&baz=0',
+      }: 'foo=0'
+          '&baz=0',
       {
         'foo': 0.00,
         'baz': 0.00,
-      }: r'foo=0.0&baz=0.0',
+      }: 'foo=0.0'
+          '&baz=0.0',
       {
         'foo': '0.00',
         'baz': '0.00',
-      }: r'foo=0.00&baz=0.00',
+      }: 'foo=0.00'
+          '&baz=0.00',
       {
         'foo': 123.456,
         'baz': 789.012,
-      }: r'foo=123.456&baz=789.012',
+      }: 'foo=123.456'
+          '&baz=789.012',
       {
         'foo': 123.450,
         'baz': 789.010,
-      }: r'foo=123.45&baz=789.01',
+      }: 'foo=123.45'
+          '&baz=789.01',
       {
         'foo': -123.456,
         'baz': -789.012,
-      }: r'foo=-123.456&baz=-789.012',
+      }: 'foo=-123.456'
+          '&baz=-789.012',
       {
         'foo': true,
         'baz': true,
-      }: r'foo=true&baz=true',
+      }: 'foo=true'
+          '&baz=true',
       {
         'foo': false,
         'baz': false,
-      }: r'foo=false&baz=false',
+      }: 'foo=false'
+          '&baz=false',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
@@ -134,29 +152,113 @@ void main() {
   group('mapToQuery lists', () {
     <Map<String, dynamic>, String>{
       {
-        'foo': ['bar', 'baz', 'etc'],
-      }: r'foo=bar&foo=baz&foo=etc',
+        'foo': <dynamic>['bar', 'baz', 'etc'],
+      }: 'foo=bar'
+          '&foo=baz'
+          '&foo=etc',
       {
-        'foo': ['bar', 123, 456.789, 0, 0.00, -0, -123, -456.789],
-      }: r'foo=bar&foo=123&foo=456.789&foo=0&foo=0.0&foo=0&foo=-123&foo=-456.789',
+        'foo': <dynamic>['bar', 123, 456.789, 0, 0.00, -0, -123, -456.789],
+      }: 'foo=bar'
+          '&foo=123'
+          '&foo=456.789'
+          '&foo=0'
+          '&foo=0.0'
+          '&foo=0'
+          '&foo=-123'
+          '&foo=-456.789',
       {
-        'foo': ['', 'baz', 'etc'],
-      }: r'foo=baz&foo=etc',
+        'foo': <dynamic>['', 'baz', 'etc'],
+      }: 'foo=baz'
+          '&foo=etc',
       {
-        'foo': ['bar', '', 'etc'],
-      }: r'foo=bar&foo=etc',
+        'foo': <dynamic>['bar', '', 'etc'],
+      }: 'foo=bar'
+          '&foo=etc',
       {
-        'foo': ['bar', 'baz', ''],
-      }: r'foo=bar&foo=baz',
+        'foo': <dynamic>['bar', 'baz', ''],
+      }: 'foo=bar'
+          '&foo=baz',
       {
-        'foo': [null, 'baz', 'etc'],
-      }: r'foo=baz&foo=etc',
+        'foo': <dynamic>[null, 'baz', 'etc'],
+      }: 'foo=baz'
+          '&foo=etc',
       {
-        'foo': ['bar', null, 'etc'],
-      }: r'foo=bar&foo=etc',
+        'foo': <dynamic>['bar', null, 'etc'],
+      }: 'foo=bar'
+          '&foo=etc',
       {
-        'foo': ['bar', 'baz', null],
-      }: r'foo=bar&foo=baz',
+        'foo': <dynamic>['bar', 'baz', null],
+      }: 'foo=bar'
+          '&foo=baz',
+      {
+        'foo': <dynamic>['bar', 'baz', 'etc'],
+        'bar': 'baz',
+        'etc': '',
+        'xyz': null,
+      }: 'foo=bar'
+          '&foo=baz'
+          '&foo=etc'
+          '&bar=baz'
+          '&etc='
+          '&xyz=',
+    }.forEach((map, query) =>
+        test('$map -> $query', () => expect(mapToQuery(map), query)));
+  });
+
+  group('mapToQuery maps', () {
+    <Map<String, dynamic>, String>{
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+        },
+      }: 'foo.bar=baz',
+      {
+        'foo': <String, dynamic>{
+          'bar': '',
+        },
+      }: 'foo.bar=',
+      {
+        'foo': <String, dynamic>{
+          'bar': null,
+        },
+      }: 'foo.bar=',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+          'etc': 'xyz',
+        },
+      }: 'foo.bar=baz'
+          '&foo.etc=xyz',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+          'int': 123,
+          'double': 456.789,
+          'zero': 0,
+          'doubleZero': 0.00,
+          'negZero': -0,
+          'negInt': -123,
+          'negDouble': -456.789,
+          'emptyString': '',
+          'nullValue': null,
+        },
+      }: 'foo.bar=baz'
+          '&foo.int=123'
+          '&foo.double=456.789'
+          '&foo.zero=0'
+          '&foo.doubleZero=0.0'
+          '&foo.negZero=0'
+          '&foo.negInt=-123'
+          '&foo.negDouble=-456.789'
+          '&foo.emptyString='
+          '&foo.nullValue=',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+        },
+        'etc': 'xyz',
+      }: 'foo.bar=baz'
+          '&etc=xyz',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
