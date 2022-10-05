@@ -89,7 +89,9 @@ Iterable<_Pair<String, String>> _iterableToQuery(
   String name,
   Iterable values,
 ) =>
-    values.map((v) => _Pair(name, _normalizeValue(v)));
+    values
+        .where((value) => value != null && value.toString().isNotEmpty)
+        .map((value) => _Pair(name, _normalizeValue(value)));
 
 String _normalizeValue(value) => Uri.encodeComponent(value.toString());
 
