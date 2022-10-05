@@ -6,10 +6,10 @@ void main() {
     <Map<String, dynamic>, String>{
       {
         'foo': null,
-      }: r'',
+      }: r'foo=',
       {
         'foo': '',
-      }: r'',
+      }: r'foo=',
       {
         'foo': 'null',
       }: r'foo=null',
@@ -53,36 +53,36 @@ void main() {
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
 
-  group('mapToQuery double', () {
+  group('mapToQuery multiple', () {
     <Map<String, dynamic>, String>{
       {
         'foo': null,
         'baz': null,
-      }: r'',
+      }: r'foo=&baz=',
       {
         'foo': '',
         'baz': '',
-      }: r'',
+      }: r'foo=&baz=',
       {
         'foo': null,
         'baz': '',
-      }: r'',
+      }: r'foo=&baz=',
       {
         'foo': '',
         'baz': null,
-      }: r'',
+      }: r'foo=&baz=',
       {
         'foo': 'bar',
         'baz': '',
-      }: r'foo=bar',
+      }: r'foo=bar&baz=',
       {
         'foo': null,
         'baz': 'etc',
-      }: r'baz=etc',
+      }: r'foo=&baz=etc',
       {
         'foo': '',
         'baz': 'etc',
-      }: r'baz=etc',
+      }: r'foo=&baz=etc',
       {
         'foo': 'bar',
         'baz': 'etc',

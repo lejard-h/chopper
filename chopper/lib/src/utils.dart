@@ -65,20 +65,22 @@ Iterable<_Pair<String, String>> _mapToQuery(
   final Set<_Pair<String, String>> pairs = {};
 
   map.forEach((key, value) {
+    String name = Uri.encodeQueryComponent(key);
+
+    if (prefix != null) {
+      name = '$prefix.$name';
+    }
+
     if (value != null) {
-      String name = Uri.encodeQueryComponent(key);
-
-      if (prefix != null) {
-        name = '$prefix.$name';
-      }
-
       if (value is Iterable) {
         pairs.addAll(_iterableToQuery(name, value));
       } else if (value is Map<String, dynamic>) {
         pairs.addAll(_mapToQuery(value, prefix: name));
-      } else if (value.toString().isNotEmpty) {
+      } else {
         pairs.add(_Pair<String, String>(name, _normalizeValue(value)));
       }
+    } else {
+      pairs.add(_Pair<String, String>(name, ''));
     }
   });
 
