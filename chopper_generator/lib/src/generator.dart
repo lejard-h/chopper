@@ -309,6 +309,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         );
       }
 
+      final String? queryMapSeparator = getQueryMapSeparator(method);
+
       blocks.add(
         declareFinal(_requestVar, type: refer('Request'))
             .assign(
@@ -318,6 +320,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 useQueries: hasQuery,
                 useHeaders: headers != null,
                 hasParts: hasParts,
+                queryMapSeparator: queryMapSeparator,
               ),
             )
             .statement,
@@ -490,6 +493,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     bool hasParts = false,
     bool useQueries = false,
     bool useHeaders = false,
+    String? queryMapSeparator,
   }) {
     final List<Expression> params = [
       literal(getMethodName(method)),
@@ -514,6 +518,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
     if (useHeaders) {
       namedParams['headers'] = refer(_headersVar);
+    }
+
+    if (queryMapSeparator != null) {
+      namedParams['queryMapSeparator'] =
+          refer('QueryMapSeparator.$queryMapSeparator');
     }
 
     return refer('Request').newInstance(params, namedParams);
@@ -542,7 +551,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       list.add(refer(
-        'PartValue<${p.type.getDisplayString(withNullability: p.type.isNullable)}>',
+        'PartValue<${p.type.getDisplayString(
+          withNullability: p.type.isNullable,
+        )}>',
       ).newInstance(params));
     });
     fileFields.forEach((p, ConstantReader r) {
@@ -617,6 +628,26 @@ String getMethodPath(ConstantReader method) => method.read('path').stringValue;
 
 String getMethodName(ConstantReader method) =>
     method.read('method').stringValue;
+
+String? getQueryMapSeparator(ConstantReader method) {
+  final String? queryMapSeparator =
+      method.peek('queryMapSeparator')?.stringValue;
+
+  if (queryMapSeparator != null) {
+    if (chopper.QueryMapSeparator.values
+        .asNameMap()
+        .containsKey(queryMapSeparator)) {
+      return queryMapSeparator;
+    } else {
+      _logger.warning(
+        'QueryMapSeparator has no value \'$queryMapSeparator\'.\n'
+        'Defaulting to QueryMapSeparator.dot',
+      );
+    }
+  }
+
+  return null;
+}
 
 extension DartTypeExtension on DartType {
   bool get isNullable => nullabilitySuffix != NullabilitySuffix.none;

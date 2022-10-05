@@ -107,7 +107,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query'),
+          equals('$baseUrl/test/query?name=&int=&default_value='),
         );
         expect(request.method, equals('GET'));
 
@@ -129,7 +129,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?default_value=42'),
+          equals('$baseUrl/test/query?name=&int=&default_value=42'),
         );
         expect(request.method, equals('GET'));
 
@@ -885,6 +885,114 @@ void main() {
     } catch (e) {
       expect(e is TimeoutException, isTrue);
     }
+
+    httpClient.close();
+  });
+
+  test('List query param', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/list_query_param'
+            '?value=foo'
+            '&value=bar'
+            '&value=baz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingListQueryParam([
+      'foo',
+      'bar',
+      'baz',
+    ]);
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param using default dot QueryMapSeparator', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param'
+            '?value.bar=baz'
+            '&value.zap=abc'
+            '&value.etc.abc=def'
+            '&value.etc.ghi=jkl'
+            '&value.etc.mno.opq=rst'
+            '&value.etc.mno.uvw=xyz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingMapQueryParam(<String, dynamic>{
+      'bar': 'baz',
+      'zap': 'abc',
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': 'jkl',
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': 'xyz',
+        },
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param with brackets QueryMapSeparator', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param_with_brackets'
+            '?value%5Bbar%5D=baz'
+            '&value%5Bzap%5D=abc'
+            '&value%5Betc%5D%5Babc%5D=def'
+            '&value%5Betc%5D%5Bghi%5D=jkl'
+            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response =
+        await service.getUsingMapQueryParamWithBrackets(<String, dynamic>{
+      'bar': 'baz',
+      'zap': 'abc',
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': 'jkl',
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': 'xyz',
+        },
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
 
     httpClient.close();
   });

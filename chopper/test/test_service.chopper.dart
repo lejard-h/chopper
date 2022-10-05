@@ -488,4 +488,45 @@ class _$HttpTestService extends HttpTestService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<String>> getUsingListQueryParam(List<String> value) {
+    final String $url = '/test/list_query_param';
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingMapQueryParam(Map<String, dynamic> value) {
+    final String $url = '/test/map_query_param';
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingMapQueryParamWithBrackets(
+      Map<String, dynamic> value) {
+    final String $url = '/test/map_query_param_with_brackets';
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      queryMapSeparator: QueryMapSeparator.brackets,
+    );
+    return client.send<String, String>($request);
+  }
 }

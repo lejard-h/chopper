@@ -259,7 +259,110 @@ void main() {
         'etc': 'xyz',
       }: 'foo.bar=baz'
           '&etc=xyz',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+          'zap': 'abc',
+          'etc': <String, dynamic>{
+            'abc': 'def',
+            'ghi': 'jkl',
+            'mno': <String, dynamic>{
+              'opq': 'rst',
+              'uvw': 'xyz',
+            },
+          },
+        },
+      }: 'foo.bar=baz'
+          '&foo.zap=abc'
+          '&foo.etc.abc=def'
+          '&foo.etc.ghi=jkl'
+          '&foo.etc.mno.opq=rst'
+          '&foo.etc.mno.uvw=xyz',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
+  });
+
+  group('mapToQuery maps with brackets', () {
+    <Map<String, dynamic>, String>{
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+        },
+      }: 'foo%5Bbar%5D=baz',
+      {
+        'foo': <String, dynamic>{
+          'bar': '',
+        },
+      }: 'foo%5Bbar%5D=',
+      {
+        'foo': <String, dynamic>{
+          'bar': null,
+        },
+      }: 'foo%5Bbar%5D=',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+          'etc': 'xyz',
+        },
+      }: 'foo%5Bbar%5D=baz'
+          '&foo%5Betc%5D=xyz',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+          'int': 123,
+          'double': 456.789,
+          'zero': 0,
+          'doubleZero': 0.00,
+          'negZero': -0,
+          'negInt': -123,
+          'negDouble': -456.789,
+          'emptyString': '',
+          'nullValue': null,
+        },
+      }: 'foo%5Bbar%5D=baz'
+          '&foo%5Bint%5D=123'
+          '&foo%5Bdouble%5D=456.789'
+          '&foo%5Bzero%5D=0'
+          '&foo%5BdoubleZero%5D=0.0'
+          '&foo%5BnegZero%5D=0'
+          '&foo%5BnegInt%5D=-123'
+          '&foo%5BnegDouble%5D=-456.789'
+          '&foo%5BemptyString%5D='
+          '&foo%5BnullValue%5D=',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+        },
+        'etc': 'xyz',
+      }: 'foo%5Bbar%5D=baz'
+          '&etc=xyz',
+      {
+        'foo': <String, dynamic>{
+          'bar': 'baz',
+          'zap': 'abc',
+          'etc': <String, dynamic>{
+            'abc': 'def',
+            'ghi': 'jkl',
+            'mno': <String, dynamic>{
+              'opq': 'rst',
+              'uvw': 'xyz',
+            },
+          },
+        },
+      }: 'foo%5Bbar%5D=baz'
+          '&foo%5Bzap%5D=abc'
+          '&foo%5Betc%5D%5Babc%5D=def'
+          '&foo%5Betc%5D%5Bghi%5D=jkl'
+          '&foo%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+          '&foo%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz',
+    }.forEach(
+      (map, query) => test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, separator: QueryMapSeparator.brackets),
+          query,
+        ),
+      ),
+    );
   });
 }

@@ -161,11 +161,19 @@ class Method {
   /// Mark the body as optional to suppress warnings during code generation
   final bool optionalBody;
 
+  /// The separator used when encoding maps to query strings
+  ///
+  /// Possible values are:
+  /// - dot
+  /// - brackets
+  final String? queryMapSeparator;
+
   const Method(
     this.method, {
     this.optionalBody = false,
     this.path = '',
     this.headers = const {},
+    this.queryMapSeparator,
   });
 }
 
@@ -176,6 +184,7 @@ class Get extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.queryMapSeparator,
   }) : super(HttpMethod.Get);
 }
 
@@ -188,6 +197,7 @@ class Post extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.queryMapSeparator,
   }) : super(HttpMethod.Post);
 }
 
@@ -198,6 +208,7 @@ class Delete extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.queryMapSeparator,
   }) : super(HttpMethod.Delete);
 }
 
@@ -210,6 +221,7 @@ class Put extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.queryMapSeparator,
   }) : super(HttpMethod.Put);
 }
 
@@ -221,6 +233,7 @@ class Patch extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.queryMapSeparator,
   }) : super(HttpMethod.Patch);
 }
 
@@ -231,6 +244,7 @@ class Head extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.queryMapSeparator,
   }) : super(HttpMethod.Head);
 }
 
@@ -240,6 +254,7 @@ class Options extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.queryMapSeparator,
   }) : super(HttpMethod.Options);
 }
 
