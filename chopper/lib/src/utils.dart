@@ -56,29 +56,39 @@ final chopperLogger = Logger('Chopper');
 /// Creates a valid URI query string from [map].
 ///
 /// E.g., `{'foo': 'bar', 'ints': [ 1337, 42 ] }` will become 'foo=bar&ints=1337&ints=42'.
-String mapToQuery(Map<String, dynamic> map) => _mapToQuery(map).join('&');
+String mapToQuery(Map<String, dynamic> map, {bool useBrackets = false}) =>
+    _mapToQuery(map, useBrackets: useBrackets).join('&');
 
 Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
   String? prefix,
+  bool useBrackets = false,
 }) {
   final Set<_Pair<String, String>> pairs = {};
 
   map.forEach((key, value) {
+    String name = Uri.encodeQueryComponent(key);
+
+    if (prefix != null) {
+      name = useBrackets
+          ? '$prefix${Uri.encodeQueryComponent('[')}$name${Uri.encodeQueryComponent(']')}'
+          : '$prefix.$name';
+    }
+
     if (value != null) {
-      String name = Uri.encodeQueryComponent(key);
-
-      if (prefix != null) {
-        name = '$prefix.$name';
-      }
-
       if (value is Iterable) {
-        pairs.addAll(_iterableToQuery(name, value));
+        pairs.addAll(_iterableToQuery(name, value, useBrackets: useBrackets));
       } else if (value is Map<String, dynamic>) {
-        pairs.addAll(_mapToQuery(value, prefix: name));
-      } else if (value.toString().isNotEmpty) {
-        pairs.add(_Pair<String, String>(name, _normalizeValue(value)));
+        pairs.addAll(
+          _mapToQuery(value, prefix: name, useBrackets: useBrackets),
+        );
+      } else {
+        pairs.add(
+          _Pair<String, String>(name, _normalizeValue(value)),
+        );
       }
+    } else {
+      pairs.add(_Pair<String, String>(name, ''));
     }
   });
 
@@ -87,20 +97,34 @@ Iterable<_Pair<String, String>> _mapToQuery(
 
 Iterable<_Pair<String, String>> _iterableToQuery(
   String name,
-  Iterable values,
-) =>
-    values.map((v) => _Pair(name, _normalizeValue(v)));
+  Iterable values, {
+  bool useBrackets = false,
+}) =>
+    values.where((value) => value?.toString().isNotEmpty ?? false).map(
+          (value) => _Pair(
+            name,
+            _normalizeValue(value),
+            useBrackets: useBrackets,
+          ),
+        );
 
-String _normalizeValue(value) => Uri.encodeComponent(value.toString());
+String _normalizeValue(value) => Uri.encodeComponent(value?.toString() ?? '');
 
 class _Pair<A, B> {
   final A first;
   final B second;
+  final bool useBrackets;
 
-  const _Pair(this.first, this.second);
+  const _Pair(
+    this.first,
+    this.second, {
+    this.useBrackets = false,
+  });
 
   @override
-  String toString() => '$first=$second';
+  String toString() => useBrackets
+      ? '$first${Uri.encodeQueryComponent('[]')}=$second'
+      : '$first=$second';
 }
 
 bool isTypeOf<ThisType, OfType>() => _Instance<ThisType>() is _Instance<OfType>;
