@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+- Types added
+
 ## 5.0.0
 
 - API breaking changes (FutureOr usage)
