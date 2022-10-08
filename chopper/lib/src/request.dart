@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -18,6 +17,7 @@ class Request {
   final Map<String, dynamic> parameters;
   final Map<String, String> headers;
   final bool multipart;
+  final bool useBrackets;
 
   const Request(
     this.method,
@@ -28,6 +28,7 @@ class Request {
     this.headers = const {},
     this.multipart = false,
     this.parts = const [],
+    this.useBrackets = false,
   });
 
   /// Makes a copy of this request, replacing original values with the given ones.
@@ -37,23 +38,25 @@ class Request {
     dynamic body,
     Map<String, dynamic>? parameters,
     Map<String, String>? headers,
-    Encoding? encoding,
     List<PartValue>? parts,
     bool? multipart,
     String? baseUrl,
+    bool? useBrackets,
   }) =>
       Request(
         (method ?? this.method) as String,
         url ?? this.url,
-        baseUrl ?? this.baseUrl,
         body: body ?? this.body,
         parameters: parameters ?? this.parameters,
         headers: headers ?? this.headers,
         parts: parts ?? this.parts,
         multipart: multipart ?? this.multipart,
+        baseUrl ?? this.baseUrl,
+        useBrackets: useBrackets ?? this.useBrackets,
       );
 
-  Uri _buildUri() => buildUri(baseUrl, url, parameters);
+  Uri _buildUri() =>
+      buildUri(baseUrl, url, parameters, useBrackets: useBrackets);
 
   Map<String, String> _buildHeaders() => {...headers};
 
@@ -110,7 +113,12 @@ class PartValueFile<T> extends PartValue<T> {
 /// Builds a valid URI from [baseUrl], [url] and [parameters].
 ///
 /// If [url] starts with 'http://' or 'https://', baseUrl is ignored.
-Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
+Uri buildUri(
+  String baseUrl,
+  String url,
+  Map<String, dynamic> parameters, {
+  bool useBrackets = false,
+}) {
   // If the request's url is already a fully qualified URL, we can use it
   // as-is and ignore the baseUrl.
   Uri uri = url.startsWith('http://') || url.startsWith('https://')
@@ -119,7 +127,7 @@ Uri buildUri(String baseUrl, String url, Map<String, dynamic> parameters) {
           ? Uri.parse('$baseUrl/$url')
           : Uri.parse('$baseUrl$url');
 
-  String query = mapToQuery(parameters);
+  String query = mapToQuery(parameters, useBrackets: useBrackets);
   if (query.isNotEmpty) {
     if (uri.hasQuery) {
       query += '&${uri.query}';

@@ -18,51 +18,75 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> getResource(String id) {
-    final $url = '/resources/${id}/';
-    final $request = Request('GET', $url, client.baseUrl);
+    final String $url = '/resources/${id}/';
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<List<Resource>>> getResources() {
-    final $url = '/resources/all';
-    final $headers = {
+    final String $url = '/resources/all';
+    final Map<String, String> $headers = {
       'test': 'list',
     };
-
-    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
     return client.send<List<Resource>, Resource>($request);
   }
 
   @override
   Future<Response<Map<dynamic, dynamic>>> getMapResource(String id) {
-    final $url = '/resources/';
-    final $params = <String, dynamic>{'id': id};
-    final $request = Request('GET', $url, client.baseUrl, parameters: $params);
+    final String $url = '/resources/';
+    final Map<String, dynamic> $params = <String, dynamic>{'id': id};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
     return client.send<Map<dynamic, dynamic>, Map<dynamic, dynamic>>($request);
   }
 
   @override
   Future<Response<Resource>> getTypedResource() {
-    final $url = '/resources/';
-    final $headers = {
+    final String $url = '/resources/';
+    final Map<String, String> $headers = {
       'foo': 'bar',
     };
-
-    final $request = Request('GET', $url, client.baseUrl, headers: $headers);
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
     return client.send<Resource, Resource>($request);
   }
 
   @override
-  Future<Response<Resource>> newResource(Resource resource, {String? name}) {
-    final $url = '/resources';
-    final $headers = {
+  Future<Response<Resource>> newResource(
+    Resource resource, {
+    String? name,
+  }) {
+    final String $url = '/resources';
+    final Map<String, String> $headers = {
       if (name != null) 'name': name,
     };
-
     final $body = resource;
-    final $request =
-        Request('POST', $url, client.baseUrl, body: $body, headers: $headers);
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
     return client.send<Resource, Resource>($request);
   }
 }
