@@ -309,6 +309,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         );
       }
 
+      final bool useBrackets = getUseBrackets(method);
+
       blocks.add(
         declareFinal(_requestVar, type: refer('Request'))
             .assign(
@@ -318,6 +320,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 useQueries: hasQuery,
                 useHeaders: headers != null,
                 hasParts: hasParts,
+                useBrackets: useBrackets,
               ),
             )
             .statement,
@@ -490,6 +493,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     bool hasParts = false,
     bool useQueries = false,
     bool useHeaders = false,
+    bool useBrackets = false,
   }) {
     final List<Expression> params = [
       literal(getMethodName(method)),
@@ -514,6 +518,10 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
     if (useHeaders) {
       namedParams['headers'] = refer(_headersVar);
+    }
+
+    if (useBrackets) {
+      namedParams['useBrackets'] = literalBool(useBrackets);
     }
 
     return refer('Request').newInstance(params, namedParams);
@@ -542,7 +550,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       list.add(refer(
-        'PartValue<${p.type.getDisplayString(withNullability: p.type.isNullable)}>',
+        'PartValue<${p.type.getDisplayString(
+          withNullability: p.type.isNullable,
+        )}>',
       ).newInstance(params));
     });
     fileFields.forEach((p, ConstantReader r) {
@@ -617,6 +627,9 @@ String getMethodPath(ConstantReader method) => method.read('path').stringValue;
 
 String getMethodName(ConstantReader method) =>
     method.read('method').stringValue;
+
+bool getUseBrackets(ConstantReader method) =>
+    method.peek('useBrackets')?.boolValue ?? false;
 
 extension DartTypeExtension on DartType {
   bool get isNullable => nullabilitySuffix != NullabilitySuffix.none;

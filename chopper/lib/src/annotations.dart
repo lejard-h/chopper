@@ -161,11 +161,21 @@ class Method {
   /// Mark the body as optional to suppress warnings during code generation
   final bool optionalBody;
 
+  /// Use brackets [ ] to when encoding
+  ///
+  /// - lists
+  /// hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789
+  ///
+  /// - maps
+  /// hxxp://path/to/script?user[name]=john&user[surname]=doe&user[age]=21
+  final bool useBrackets;
+
   const Method(
     this.method, {
     this.optionalBody = false,
     this.path = '',
     this.headers = const {},
+    this.useBrackets = false,
   });
 }
 
@@ -176,6 +186,7 @@ class Get extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.useBrackets,
   }) : super(HttpMethod.Get);
 }
 
@@ -188,6 +199,7 @@ class Post extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.useBrackets,
   }) : super(HttpMethod.Post);
 }
 
@@ -198,6 +210,7 @@ class Delete extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.useBrackets,
   }) : super(HttpMethod.Delete);
 }
 
@@ -210,6 +223,7 @@ class Put extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.useBrackets,
   }) : super(HttpMethod.Put);
 }
 
@@ -221,6 +235,7 @@ class Patch extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.useBrackets,
   }) : super(HttpMethod.Patch);
 }
 
@@ -231,6 +246,7 @@ class Head extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.useBrackets,
   }) : super(HttpMethod.Head);
 }
 
@@ -240,6 +256,7 @@ class Options extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.useBrackets,
   }) : super(HttpMethod.Options);
 }
 
