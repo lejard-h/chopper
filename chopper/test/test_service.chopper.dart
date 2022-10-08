@@ -512,7 +512,7 @@ class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
       parameters: $params,
-      queryMapSeparator: QueryMapSeparator.brackets,
+      useBrackets: true,
     );
     return client.send<String, String>($request);
   }
@@ -540,7 +540,7 @@ class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
       parameters: $params,
-      queryMapSeparator: QueryMapSeparator.brackets,
+      useBrackets: true,
     );
     return client.send<String, String>($request);
   }

@@ -53,60 +53,16 @@ Request applyHeaders(
 
 final chopperLogger = Logger('Chopper');
 
-enum QueryMapSeparator {
-  /// Map parameters will be encoded using dots like this
-  ///
-  /// ```dart
-  /// final Map<String, dynamic> queryMap = {
-  /// 'foo': <String, dynamic>{
-  ///   'bar': 'baz',
-  ///   'zap': 'abc',
-  ///   'etc': <String, dynamic>{
-  ///     'abc': 'def',
-  ///     'ghi': 'jkl',
-  ///     'mno': <String, dynamic>{
-  ///       'opq': 'rst',
-  ///       'uvw': 'xyz',
-  ///     },
-  ///   },
-  /// };
-  ///
-  /// print(mapToQuery(queryMap)); // prints: 'foo.bar=baz&foo.zap=abc&foo.etc.abc=def&foo.etc.ghi=jkl&foo.etc.mno.opq=rst&foo.etc.mno.uvw=xyz'
-  /// ```
-  dot,
-
-  /// Map parameters will be encoded using dots like this
-  ///
-  /// ```dart
-  /// final Map<String, dynamic> queryMap = {
-  /// 'foo': <String, dynamic>{
-  ///   'bar': 'baz',
-  ///   'zap': 'abc',
-  ///   'etc': <String, dynamic>{
-  ///     'abc': 'def',
-  ///     'ghi': 'jkl',
-  ///     'mno': <String, dynamic>{
-  ///       'opq': 'rst',
-  ///       'uvw': 'xyz',
-  ///     },
-  ///   },
-  /// };
-  ///
-  /// print(mapToQuery(queryMap)); // prints: 'foo%5Bbar%5D%3Dbaz%26foo%5Bzap%5D%3Dabc%26foo%5Betc%5D%5Babc%5D%3Ddef%26foo%5Betc%5D%5Bghi%5D%3Djkl%26foo%5Betc%5D%5Bmno%5D%5Bopq%5D%3Drst%26foo%5Betc%5D%5Bmno%5D%5Buvw%5D%3Dxyz'
-  /// ```
-  brackets,
-}
-
 /// Creates a valid URI query string from [map].
 ///
 /// E.g., `{'foo': 'bar', 'ints': [ 1337, 42 ] }` will become 'foo=bar&ints=1337&ints=42'.
-String mapToQuery(Map<String, dynamic> map, {QueryMapSeparator? separator}) =>
-    _mapToQuery(map, separator: separator).join('&');
+String mapToQuery(Map<String, dynamic> map, {bool useBrackets = false}) =>
+    _mapToQuery(map, useBrackets: useBrackets).join('&');
 
 Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
   String? prefix,
-  QueryMapSeparator? separator = QueryMapSeparator.dot,
+  bool useBrackets = false,
 }) {
   final Set<_Pair<String, String>> pairs = {};
 
@@ -114,23 +70,17 @@ Iterable<_Pair<String, String>> _mapToQuery(
     String name = Uri.encodeQueryComponent(key);
 
     if (prefix != null) {
-      name = separator == QueryMapSeparator.brackets
+      name = useBrackets
           ? '$prefix${Uri.encodeQueryComponent('[')}$name${Uri.encodeQueryComponent(']')}'
           : '$prefix.$name';
     }
 
     if (value != null) {
       if (value is Iterable) {
-        pairs.addAll(
-          _iterableToQuery(
-            name,
-            value,
-            useBrackets: separator == QueryMapSeparator.brackets,
-          ),
-        );
+        pairs.addAll(_iterableToQuery(name, value, useBrackets: useBrackets));
       } else if (value is Map<String, dynamic>) {
         pairs.addAll(
-          _mapToQuery(value, prefix: name, separator: separator),
+          _mapToQuery(value, prefix: name, useBrackets: useBrackets),
         );
       } else {
         pairs.add(

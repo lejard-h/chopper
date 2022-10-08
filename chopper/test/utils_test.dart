@@ -137,7 +137,7 @@ void main() {
       (map, query) => test(
         '$map -> $query',
         () => expect(
-          mapToQuery(map, separator: QueryMapSeparator.brackets),
+          mapToQuery(map, useBrackets: true),
           query,
         ),
       ),
@@ -194,7 +194,9 @@ void main() {
               'opq': 'rst',
               'uvw': 'xyz',
               'aab': [
-                'bbc', 'ccd', 'eef',
+                'bbc',
+                'ccd',
+                'eef',
               ],
             },
           },
@@ -254,7 +256,9 @@ void main() {
               'opq': 'rst',
               'uvw': 'xyz',
               'aab': [
-                'bbc', 'ccd', 'eef',
+                'bbc',
+                'ccd',
+                'eef',
               ],
             },
           },
@@ -264,7 +268,7 @@ void main() {
       (map, query) => test(
         '$map -> $query',
         () => expect(
-          mapToQuery(map, separator: QueryMapSeparator.brackets),
+          mapToQuery(map, useBrackets: true),
           query,
         ),
       ),

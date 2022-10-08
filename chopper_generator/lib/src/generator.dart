@@ -309,7 +309,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         );
       }
 
-      final String? queryMapSeparator = getQueryMapSeparator(method);
+      final bool useBrackets = getUseBrackets(method);
 
       blocks.add(
         declareFinal(_requestVar, type: refer('Request'))
@@ -320,7 +320,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 useQueries: hasQuery,
                 useHeaders: headers != null,
                 hasParts: hasParts,
-                queryMapSeparator: queryMapSeparator,
+                useBrackets: useBrackets,
               ),
             )
             .statement,
@@ -493,7 +493,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     bool hasParts = false,
     bool useQueries = false,
     bool useHeaders = false,
-    String? queryMapSeparator,
+    bool useBrackets = false,
   }) {
     final List<Expression> params = [
       literal(getMethodName(method)),
@@ -520,9 +520,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       namedParams['headers'] = refer(_headersVar);
     }
 
-    if (queryMapSeparator != null) {
-      namedParams['queryMapSeparator'] =
-          refer('QueryMapSeparator.$queryMapSeparator');
+    if (useBrackets) {
+      namedParams['useBrackets'] = literalBool(useBrackets);
     }
 
     return refer('Request').newInstance(params, namedParams);
@@ -629,25 +628,8 @@ String getMethodPath(ConstantReader method) => method.read('path').stringValue;
 String getMethodName(ConstantReader method) =>
     method.read('method').stringValue;
 
-String? getQueryMapSeparator(ConstantReader method) {
-  final String? queryMapSeparator =
-      method.peek('queryMapSeparator')?.stringValue;
-
-  if (queryMapSeparator != null) {
-    if (chopper.QueryMapSeparator.values
-        .asNameMap()
-        .containsKey(queryMapSeparator)) {
-      return queryMapSeparator;
-    } else {
-      _logger.warning(
-        'QueryMapSeparator has no value \'$queryMapSeparator\'.\n'
-        'Defaulting to QueryMapSeparator.dot',
-      );
-    }
-  }
-
-  return null;
-}
+bool getUseBrackets(ConstantReader method) =>
+    method.peek('useBrackets')?.boolValue ?? false;
 
 extension DartTypeExtension on DartType {
   bool get isNullable => nullabilitySuffix != NullabilitySuffix.none;

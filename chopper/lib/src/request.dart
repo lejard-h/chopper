@@ -17,7 +17,7 @@ class Request {
   final Map<String, dynamic> parameters;
   final Map<String, String> headers;
   final bool multipart;
-  final QueryMapSeparator queryMapSeparator;
+  final bool useBrackets;
 
   const Request(
     this.method,
@@ -28,7 +28,7 @@ class Request {
     this.headers = const {},
     this.multipart = false,
     this.parts = const [],
-    this.queryMapSeparator = QueryMapSeparator.dot,
+    this.useBrackets = false,
   });
 
   /// Makes a copy of this request, replacing original values with the given ones.
@@ -41,7 +41,7 @@ class Request {
     List<PartValue>? parts,
     bool? multipart,
     String? baseUrl,
-    QueryMapSeparator? queryMapSeparator,
+    bool? useBrackets,
   }) =>
       Request(
         (method ?? this.method) as String,
@@ -52,11 +52,11 @@ class Request {
         parts: parts ?? this.parts,
         multipart: multipart ?? this.multipart,
         baseUrl ?? this.baseUrl,
-        queryMapSeparator: queryMapSeparator ?? this.queryMapSeparator,
+        useBrackets: useBrackets ?? this.useBrackets,
       );
 
   Uri _buildUri() =>
-      buildUri(baseUrl, url, parameters, separator: queryMapSeparator);
+      buildUri(baseUrl, url, parameters, useBrackets: useBrackets);
 
   Map<String, String> _buildHeaders() => {...headers};
 
@@ -117,7 +117,7 @@ Uri buildUri(
   String baseUrl,
   String url,
   Map<String, dynamic> parameters, {
-  QueryMapSeparator? separator,
+  bool useBrackets = false,
 }) {
   // If the request's url is already a fully qualified URL, we can use it
   // as-is and ignore the baseUrl.
@@ -127,7 +127,7 @@ Uri buildUri(
           ? Uri.parse('$baseUrl/$url')
           : Uri.parse('$baseUrl$url');
 
-  String query = mapToQuery(parameters, separator: separator);
+  String query = mapToQuery(parameters, useBrackets: useBrackets);
   if (query.isNotEmpty) {
     if (uri.hasQuery) {
       query += '&${uri.query}';
