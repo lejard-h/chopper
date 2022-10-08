@@ -144,6 +144,11 @@ abstract class HttpTestService extends ChopperService {
     @Query('value') List<String> value,
   );
 
+  @Get(path: '/list_query_param_with_brackets', queryMapSeparator: 'brackets')
+  Future<Response<String>> getUsingListQueryParamWithBrackets(
+    @Query('value') List<String> value,
+  );
+
   @Get(path: '/map_query_param')
   Future<Response<String>> getUsingMapQueryParam(
     @Query('value') Map<String, dynamic> value,

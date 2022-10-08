@@ -95,6 +95,55 @@ void main() {
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
 
+  group('mapToQuery lists with brackets', () {
+    <Map<String, dynamic>, String>{
+      {
+        'foo': ['bar', 'baz', 'etc'],
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc',
+      {
+        'foo': ['bar', 123, 456.789, 0, -123, -456.789],
+      }: 'foo%5B%5D=bar&foo%5B%5D=123&foo%5B%5D=456.789&foo%5B%5D=0&foo%5B%5D=-123&foo%5B%5D=-456.789',
+      {
+        'foo': ['', 'baz', 'etc'],
+      }: 'foo%5B%5D=baz&foo%5B%5D=etc',
+      {
+        'foo': ['bar', '', 'etc'],
+      }: 'foo%5B%5D=bar&foo%5B%5D=etc',
+      {
+        'foo': ['bar', 'baz', ''],
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz',
+      {
+        'foo': [null, 'baz', 'etc'],
+      }: 'foo%5B%5D=baz&foo%5B%5D=etc',
+      {
+        'foo': ['bar', null, 'etc'],
+      }: 'foo%5B%5D=bar&foo%5B%5D=etc',
+      {
+        'foo': ['bar', 'baz', null],
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz',
+      {
+        'foo': ['bar', 'baz', ' '],
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=%20',
+      {
+        'foo': ['bar', 'baz', '\t'],
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=%09',
+      {
+        'foo': ['bar', 'baz', 'etc'],
+        'bar': 'baz',
+        'etc': '',
+        'xyz': null,
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc&bar=baz&etc=&xyz=',
+    }.forEach(
+      (map, query) => test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, separator: QueryMapSeparator.brackets),
+          query,
+        ),
+      ),
+    );
+  });
+
   group('mapToQuery maps', () {
     <Map<String, dynamic>, String>{
       {
@@ -127,8 +176,9 @@ void main() {
           'nullValue': null,
           'space': ' ',
           'tab': '\t',
+          'list': ['a', 123, false],
         },
-      }: 'foo.bar=baz&foo.int=123&foo.double=456.789&foo.zero=0&foo.negInt=-123&foo.negDouble=-456.789&foo.emptyString=&foo.nullValue=&foo.space=%20&foo.tab=%09',
+      }: 'foo.bar=baz&foo.int=123&foo.double=456.789&foo.zero=0&foo.negInt=-123&foo.negDouble=-456.789&foo.emptyString=&foo.nullValue=&foo.space=%20&foo.tab=%09&foo.list=a&foo.list=123&foo.list=false',
       {
         'foo': {'bar': 'baz'},
         'etc': 'xyz',
@@ -143,10 +193,13 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
+              'aab': [
+                'bbc', 'ccd', 'eef',
+              ],
             },
           },
         },
-      }: 'foo.bar=baz&foo.zap=abc&foo.etc.abc=def&foo.etc.ghi=jkl&foo.etc.mno.opq=rst&foo.etc.mno.uvw=xyz',
+      }: 'foo.bar=baz&foo.zap=abc&foo.etc.abc=def&foo.etc.ghi=jkl&foo.etc.mno.opq=rst&foo.etc.mno.uvw=xyz&foo.etc.mno.aab=bbc&foo.etc.mno.aab=ccd&foo.etc.mno.aab=eef',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
@@ -183,8 +236,9 @@ void main() {
           'nullValue': null,
           'space': ' ',
           'tab': '\t',
+          'list': ['a', 123, false],
         },
-      }: 'foo%5Bbar%5D=baz&foo%5Bint%5D=123&foo%5Bdouble%5D=456.789&foo%5Bzero%5D=0&foo%5BnegInt%5D=-123&foo%5BnegDouble%5D=-456.789&foo%5BemptyString%5D=&foo%5BnullValue%5D=&foo%5Bspace%5D=%20&foo%5Btab%5D=%09',
+      }: 'foo%5Bbar%5D=baz&foo%5Bint%5D=123&foo%5Bdouble%5D=456.789&foo%5Bzero%5D=0&foo%5BnegInt%5D=-123&foo%5BnegDouble%5D=-456.789&foo%5BemptyString%5D=&foo%5BnullValue%5D=&foo%5Bspace%5D=%20&foo%5Btab%5D=%09&foo%5Blist%5D%5B%5D=a&foo%5Blist%5D%5B%5D=123&foo%5Blist%5D%5B%5D=false',
       {
         'foo': {'bar': 'baz'},
         'etc': 'xyz',
@@ -199,10 +253,13 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
+              'aab': [
+                'bbc', 'ccd', 'eef',
+              ],
             },
           },
         },
-      }: 'foo%5Bbar%5D=baz&foo%5Bzap%5D=abc&foo%5Betc%5D%5Babc%5D=def&foo%5Betc%5D%5Bghi%5D=jkl&foo%5Betc%5D%5Bmno%5D%5Bopq%5D=rst&foo%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz',
+      }: 'foo%5Bbar%5D=baz&foo%5Bzap%5D=abc&foo%5Betc%5D%5Babc%5D=def&foo%5Betc%5D%5Bghi%5D=jkl&foo%5Betc%5D%5Bmno%5D%5Bopq%5D=rst&foo%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=bbc&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=ccd&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=eef',
     }.forEach(
       (map, query) => test(
         '$map -> $query',

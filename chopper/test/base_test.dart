@@ -918,6 +918,35 @@ void main() {
     httpClient.close();
   });
 
+  test('List query param with brackets', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/list_query_param_with_brackets'
+            '?value%5B%5D=foo'
+            '&value%5B%5D=bar'
+            '&value%5B%5D=baz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingListQueryParamWithBrackets([
+      'foo',
+      'bar',
+      'baz',
+    ]);
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
   test('Map query param using default dot QueryMapSeparator', () async {
     final httpClient = MockClient((request) async {
       expect(
@@ -928,7 +957,10 @@ void main() {
             '&value.etc.abc=def'
             '&value.etc.ghi=jkl'
             '&value.etc.mno.opq=rst'
-            '&value.etc.mno.uvw=xyz'),
+            '&value.etc.mno.uvw=xyz'
+            '&value.etc.mno.list=a'
+            '&value.etc.mno.list=123'
+            '&value.etc.mno.list=false'),
       );
       expect(request.method, equals('GET'));
 
@@ -947,6 +979,7 @@ void main() {
         'mno': <String, dynamic>{
           'opq': 'rst',
           'uvw': 'xyz',
+          'list': ['a', 123, false],
         },
       },
     });
@@ -967,7 +1000,10 @@ void main() {
             '&value%5Betc%5D%5Babc%5D=def'
             '&value%5Betc%5D%5Bghi%5D=jkl'
             '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
-            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'),
+            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=a'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=123'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'),
       );
       expect(request.method, equals('GET'));
 
@@ -987,6 +1023,7 @@ void main() {
         'mno': <String, dynamic>{
           'opq': 'rst',
           'uvw': 'xyz',
+          'list': ['a', 123, false],
         },
       },
     });

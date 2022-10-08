@@ -121,11 +121,21 @@ Iterable<_Pair<String, String>> _mapToQuery(
 
     if (value != null) {
       if (value is Iterable) {
-        pairs.addAll(_iterableToQuery(name, value));
+        pairs.addAll(
+          _iterableToQuery(
+            name,
+            value,
+            useBrackets: separator == QueryMapSeparator.brackets,
+          ),
+        );
       } else if (value is Map<String, dynamic>) {
-        pairs.addAll(_mapToQuery(value, prefix: name, separator: separator));
+        pairs.addAll(
+          _mapToQuery(value, prefix: name, separator: separator),
+        );
       } else {
-        pairs.add(_Pair<String, String>(name, _normalizeValue(value)));
+        pairs.add(
+          _Pair<String, String>(name, _normalizeValue(value)),
+        );
       }
     } else {
       pairs.add(_Pair<String, String>(name, ''));
@@ -137,22 +147,34 @@ Iterable<_Pair<String, String>> _mapToQuery(
 
 Iterable<_Pair<String, String>> _iterableToQuery(
   String name,
-  Iterable values,
-) =>
-    values
-        .where((value) => value?.toString().isNotEmpty ?? false)
-        .map((value) => _Pair(name, _normalizeValue(value)));
+  Iterable values, {
+  bool useBrackets = false,
+}) =>
+    values.where((value) => value?.toString().isNotEmpty ?? false).map(
+          (value) => _Pair(
+            name,
+            _normalizeValue(value),
+            useBrackets: useBrackets,
+          ),
+        );
 
 String _normalizeValue(value) => Uri.encodeComponent(value?.toString() ?? '');
 
 class _Pair<A, B> {
   final A first;
   final B second;
+  final bool useBrackets;
 
-  const _Pair(this.first, this.second);
+  const _Pair(
+    this.first,
+    this.second, {
+    this.useBrackets = false,
+  });
 
   @override
-  String toString() => '$first=$second';
+  String toString() => useBrackets
+      ? '$first${Uri.encodeQueryComponent('[]')}=$second'
+      : '$first=$second';
 }
 
 bool isTypeOf<ThisType, OfType>() => _Instance<ThisType>() is _Instance<OfType>;
