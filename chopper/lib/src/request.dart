@@ -27,7 +27,7 @@ class Request extends http.BaseRequest {
     this.parts = const [],
     this.useBrackets = false,
   }) : super(
-          method,
+          method.isNotEmpty ? method : HttpMethod.Get,
           buildUri(origin, path, parameters, useBrackets: useBrackets),
         ) {
     this.headers
