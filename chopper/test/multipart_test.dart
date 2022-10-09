@@ -203,15 +203,14 @@ void main() {
   });
 
   test('PartValue', () async {
-    final req = await Request.toMultipartRequest(
-      [
+    final req = await Request.uri(
+      HttpMethod.Post,
+      Uri.parse('https://foo/'),
+      parts: [
         PartValue<String>('foo', 'bar'),
         PartValue<int>('int', 42),
       ],
-      HttpMethod.Post,
-      Uri.parse('/foo'),
-      {},
-    );
+    ).toMultipartRequest();
 
     expect(req.fields['foo'], equals('bar'));
     expect(req.fields['int'], equals('42'));
@@ -220,15 +219,14 @@ void main() {
   test(
     'PartFile',
     () async {
-      final req = await Request.toMultipartRequest(
-        [
+      final req = await Request.uri(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        parts: [
           PartValueFile<String>('foo', 'test/multipart_test.dart'),
           PartValueFile<List<int>>('int', [1, 2]),
         ],
-        HttpMethod.Post,
-        Uri.parse('/foo'),
-        {},
-      );
+      ).toMultipartRequest();
 
       expect(
         req.files.firstWhere((f) => f.field == 'foo').filename,
@@ -259,17 +257,16 @@ void main() {
   });
 
   test('Multipart request non nullable', () async {
-    final req = await Request.toMultipartRequest(
-      [
+    final req = await Request.uri(
+      HttpMethod.Post,
+      Uri.parse('https://foo/'),
+      parts: [
         PartValue<int>('int', 42),
         PartValueFile<List<int>>('list int', [1, 2]),
         PartValue('null value', null),
         PartValueFile('null file', null),
       ],
-      HttpMethod.Post,
-      Uri.parse('/foo'),
-      {},
-    );
+    ).toMultipartRequest();
 
     expect(req.fields.length, equals(1));
     expect(req.fields['int'], equals('42'));
@@ -279,8 +276,10 @@ void main() {
   });
 
   test('PartValue with MultipartFile directly', () async {
-    final req = await Request.toMultipartRequest(
-      [
+    final req = await Request.uri(
+      HttpMethod.Post,
+      Uri.parse('https://foo/'),
+      parts: [
         PartValue<http.MultipartFile>(
           '',
           http.MultipartFile.fromBytes(
@@ -298,10 +297,7 @@ void main() {
           ),
         ),
       ],
-      HttpMethod.Post,
-      Uri.parse('/foo'),
-      {},
-    );
+    ).toMultipartRequest();
 
     final first = req.files[0];
     final second = req.files[1];

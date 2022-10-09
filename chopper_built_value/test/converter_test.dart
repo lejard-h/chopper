@@ -26,7 +26,11 @@ void main() {
 
   group('BuiltValueConverter', () {
     test('convert request', () {
-      var request = Request('', '', '', body: data);
+      var request = Request.uri(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        body: data,
+      );
       request = converter.convertRequest(request);
       expect(request.body, '{"\$":"DataModel","id":42,"name":"foo"}');
     });
@@ -65,7 +69,11 @@ void main() {
     });
 
     test('has json headers', () {
-      var request = Request('', '', '', body: data);
+      var request = Request.uri(
+        HttpMethod.Get,
+        Uri.parse('https://foo/'),
+        body: data,
+      );
       request = converter.convertRequest(request);
 
       expect(request.headers['content-type'], equals('application/json'));

@@ -490,35 +490,32 @@ void main() {
     });
 
     test('BodyBytes', () {
-      final request = Request.toHttpRequest(
-        [1, 2, 3],
+      final request = Request.uri(
         HttpMethod.Post,
-        Uri.parse('/foo'),
-        {},
-      );
+        Uri.parse('https://foo/'),
+        body: [1, 2, 3],
+      ).toHttpRequest();
 
       expect(request.bodyBytes, equals([1, 2, 3]));
     });
 
     test('BodyFields', () {
-      final request = Request.toHttpRequest(
-        {'foo': 'bar'},
+      final request = Request.uri(
         HttpMethod.Post,
-        Uri.parse('/foo'),
-        {},
-      );
+        Uri.parse('https://foo/'),
+        body: {'foo': 'bar'},
+      ).toHttpRequest();
 
       expect(request.bodyFields, equals({'foo': 'bar'}));
     });
 
     test('Wrong body', () {
       try {
-        Request.toHttpRequest(
-          {'foo': 42},
+        Request.uri(
           HttpMethod.Post,
-          Uri.parse('/foo'),
-          {},
-        );
+          Uri.parse('https://foo/'),
+          body: {'foo': 42},
+        ).toHttpRequest();
       } on ArgumentError catch (e) {
         expect(e.toString(), equals('Invalid argument (body): "{foo: 42}"'));
       }

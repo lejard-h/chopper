@@ -27,15 +27,28 @@ class Request extends http.BaseRequest {
     this.parts = const [],
     this.useBrackets = false,
   }) : super(
-          method.isNotEmpty ? method : HttpMethod.Get,
+          method,
           buildUri(origin, path, parameters, useBrackets: useBrackets),
         ) {
-    this.headers
-      ..clear()
-      ..addAll(headers);
+    this.headers.addAll(headers);
   }
 
-  /// Makes a copy of this request, replacing original values with the given ones.
+  /// Build the Chopper [Request] using a [Uri] instead of a path and origin String
+  Request.uri(
+    super.method,
+    super.url, {
+    this.body,
+    this.parameters = const {},
+    Map<String, String> headers = const {},
+    this.multipart = false,
+    this.parts = const [],
+    this.useBrackets = false,
+  })  : origin = url.origin,
+        path = url.path {
+    this.headers.addAll(headers);
+  }
+
+  /// Makes a copy of this [Request], replacing original values with the given ones.
   Request copyWith({
     HttpMethod? method,
     String? path,
@@ -58,26 +71,6 @@ class Request extends http.BaseRequest {
         origin ?? this.origin,
         useBrackets: useBrackets ?? this.useBrackets,
       );
-
-  /// Converts this Chopper Request into a [http.BaseRequest].
-  ///
-  /// All [parameters] and [headers] are conserved.
-  ///
-  /// Depending on the request type the returning object will be:
-  ///   - [http.StreamedRequest] if body is a [Stream<List<int>>]
-  ///   - [http.MultipartRequest] if [multipart] is true
-  ///   - or a [http.Request]
-  FutureOr<http.BaseRequest> toBaseRequest() async {
-    if (body is Stream<List<int>>) {
-      return toStreamedRequest(body, method, url, {...headers});
-    }
-
-    if (multipart) {
-      return toMultipartRequest(parts, method, url, {...headers});
-    }
-
-    return toHttpRequest(body, method, url, {...headers});
-  }
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
   ///
@@ -110,55 +103,63 @@ class Request extends http.BaseRequest {
     return uri;
   }
 
+  /// Converts this Chopper Request into a [http.BaseRequest].
+  ///
+  /// All [parameters] and [headers] are conserved.
+  ///
+  /// Depending on the request type the returning object will be:
+  ///   - [http.StreamedRequest] if body is a [Stream<List<int>>]
+  ///   - [http.MultipartRequest] if [multipart] is true
+  ///   - or a [http.Request]
+  Future<http.BaseRequest> toBaseRequest() async {
+    if (body is Stream<List<int>>) return toStreamedRequest(body);
+
+    if (multipart) return toMultipartRequest();
+
+    return toHttpRequest();
+  }
+
+  /// Convert this [Request] to a [http.Request]
   @visibleForTesting
-  static http.Request toHttpRequest(
-    body,
-    String method,
-    Uri uri,
-    Map<String, String> headers,
-  ) {
-    final http.Request baseRequest = http.Request(method, uri)
+  http.Request toHttpRequest() {
+    final http.Request request = http.Request(method, url)
       ..headers.addAll(headers);
 
     if (body != null) {
       if (body is String) {
-        baseRequest.body = body;
+        request.body = body;
       } else if (body is List<int>) {
-        baseRequest.bodyBytes = body;
+        request.bodyBytes = body;
       } else if (body is Map<String, String>) {
-        baseRequest.bodyFields = body;
+        request.bodyFields = body;
       } else {
         throw ArgumentError.value('$body', 'body');
       }
     }
 
-    return baseRequest;
+    return request;
   }
 
+  /// Convert this [Request] to a [http.MultipartRequest]
   @visibleForTesting
-  static Future<http.MultipartRequest> toMultipartRequest(
-    List<PartValue> parts,
-    String method,
-    Uri uri,
-    Map<String, String> headers,
-  ) async {
-    final http.MultipartRequest baseRequest = http.MultipartRequest(method, uri)
+  Future<http.MultipartRequest> toMultipartRequest() async {
+    final http.MultipartRequest request = http.MultipartRequest(method, url)
       ..headers.addAll(headers);
 
     for (final PartValue part in parts) {
       if (part.value == null) continue;
 
       if (part.value is http.MultipartFile) {
-        baseRequest.files.add(part.value);
+        request.files.add(part.value);
       } else if (part.value is Iterable<http.MultipartFile>) {
-        baseRequest.files.addAll(part.value);
+        request.files.addAll(part.value);
       } else if (part is PartValueFile) {
         if (part.value is List<int>) {
-          baseRequest.files.add(
+          request.files.add(
             http.MultipartFile.fromBytes(part.name, part.value),
           );
         } else if (part.value is String) {
-          baseRequest.files.add(
+          request.files.add(
             await http.MultipartFile.fromPath(part.name, part.value),
           );
         } else {
@@ -171,30 +172,26 @@ class Request extends http.BaseRequest {
           );
         }
       } else {
-        baseRequest.fields[part.name] = part.value.toString();
+        request.fields[part.name] = part.value.toString();
       }
     }
 
-    return baseRequest;
+    return request;
   }
 
+  /// Convert this [Request] to a [http.StreamedRequest]
   @visibleForTesting
-  static http.StreamedRequest toStreamedRequest(
-    Stream<List<int>> bodyStream,
-    String method,
-    Uri uri,
-    Map<String, String> headers,
-  ) {
-    final http.StreamedRequest req = http.StreamedRequest(method, uri)
+  http.StreamedRequest toStreamedRequest(Stream<List<int>> bodyStream) {
+    final http.StreamedRequest request = http.StreamedRequest(method, url)
       ..headers.addAll(headers);
 
     bodyStream.listen(
-      req.sink.add,
-      onDone: req.sink.close,
-      onError: req.sink.addError,
+      request.sink.add,
+      onDone: request.sink.close,
+      onError: request.sink.addError,
     );
 
-    return req;
+    return request;
   }
 }
 
