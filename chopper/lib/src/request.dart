@@ -33,18 +33,20 @@ class Request extends http.BaseRequest {
     this.headers.addAll(headers);
   }
 
-  /// Build the Chopper [Request] using a [Uri] instead of a [path] and [origin] String
+  /// Build the Chopper [Request] using a [Uri] instead of a [path] and [origin].
+  /// If the [parameters] aren't provided they are taken from the [Uri]
   Request.uri(
     super.method,
     super.url, {
     this.body,
-    this.parameters = const {},
+    Map<String, dynamic>? parameters,
     Map<String, String> headers = const {},
     this.multipart = false,
     this.parts = const [],
     this.useBrackets = false,
   })  : origin = url.origin,
-        path = url.path {
+        path = url.path,
+        parameters = parameters ?? url.queryParametersAll {
     this.headers.addAll(headers);
   }
 
