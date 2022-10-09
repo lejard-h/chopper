@@ -477,7 +477,7 @@ void main() {
       expect(url3.toString(), equals('foo/bar'));
 
       final url4 = Request.buildUri('foo/', '/bar', {});
-      expect(url4.toString(), equals('foo//bar'));
+      expect(url4.toString(), equals('foo/bar'));
 
       final url5 = Request.buildUri('http://foo', '/bar', {});
       expect(url5.toString(), equals('http://foo/bar'));
@@ -486,7 +486,23 @@ void main() {
       expect(url6.toString(), equals('https://foo/bar'));
 
       final url7 = Request.buildUri('https://foo/', '/bar', {});
-      expect(url7.toString(), equals('https://foo//bar'));
+      expect(url7.toString(), equals('https://foo/bar'));
+
+      final url8 = Request.buildUri('https://foo/', '/bar', {'abc': 'xyz'});
+      expect(url8.toString(), equals('https://foo/bar?abc=xyz'));
+
+      final url9 = Request.buildUri(
+        'https://foo/',
+        '/bar?first=123&second=456',
+        {
+          'third': '789',
+          'fourth': '012',
+        },
+      );
+      expect(
+        url9.toString(),
+        equals('https://foo/bar?first=123&second=456&third=789&fourth=012'),
+      );
     });
 
     test('BodyBytes', () {

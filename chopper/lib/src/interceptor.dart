@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
+import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-
-import 'constants.dart';
-import 'request.dart';
-import 'response.dart';
-import 'utils.dart';
 
 /// An interface for implementing response interceptors.
 ///

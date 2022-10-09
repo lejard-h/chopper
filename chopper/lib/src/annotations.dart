@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
-
-import 'constants.dart';
-import 'request.dart';
-import 'response.dart';
 
 /// Defines a Chopper API.
 ///

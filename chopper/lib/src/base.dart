@@ -1,15 +1,14 @@
 import 'dart:async';
 
+import 'package:chopper/src/annotations.dart';
+import 'package:chopper/src/authenticator.dart';
+import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/interceptor.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
+import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-
-import 'annotations.dart';
-import 'authenticator.dart';
-import 'constants.dart';
-import 'interceptor.dart';
-import 'request.dart';
-import 'response.dart';
-import 'utils.dart';
 
 Type _typeOf<T>() => T;
 

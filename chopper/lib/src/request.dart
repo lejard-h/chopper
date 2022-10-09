@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/extensions.dart';
+import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-
-import 'constants.dart';
-import 'utils.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
 class Request extends http.BaseRequest {
@@ -88,21 +88,13 @@ class Request extends http.BaseRequest {
     // as-is and ignore the baseUrl.
     final Uri uri = url.startsWith('http://') || url.startsWith('https://')
         ? Uri.parse(url)
-        : !baseUrl.endsWith('/') && !url.startsWith('/')
-            ? Uri.parse('$baseUrl/$url')
-            : Uri.parse('$baseUrl$url');
+        : Uri.parse('${baseUrl.strip('/')}/${url.leftStrip('/')}');
 
-    String query = mapToQuery(parameters, useBrackets: useBrackets);
+    final String query = mapToQuery(parameters, useBrackets: useBrackets);
 
-    if (query.isNotEmpty) {
-      if (uri.hasQuery) {
-        query += '&${uri.query}';
-      }
-
-      return uri.replace(query: query);
-    }
-
-    return uri;
+    return query.isNotEmpty
+        ? uri.replace(query: uri.hasQuery ? '${uri.query}&$query' : query)
+        : uri;
   }
 
   /// Converts this Chopper Request into a [http.BaseRequest].
