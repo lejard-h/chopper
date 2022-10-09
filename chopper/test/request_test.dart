@@ -1,7 +1,6 @@
 // ignore_for_file: long-method
 
 import 'package:chopper/chopper.dart';
-import 'package:chopper/src/request.dart';
 import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:collection/collection.dart';
@@ -132,7 +131,9 @@ void main() {
       expect(
         Request.uri(
           'GET',
-          Uri.parse('https://foo/bar?first=sit&second=amet&first_list=a&first_list=b'),
+          Uri.parse(
+            'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b',
+          ),
           parameters: {
             'lorem': 'ipsum',
             'dolor': 123,
