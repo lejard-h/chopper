@@ -22,7 +22,9 @@ class Request extends http.BaseRequest {
           method,
           buildUri(origin, path, parameters, useBrackets: useBrackets),
         ) {
-    this.headers.addAll(headers);
+    this.headers
+      ..clear()
+      ..addAll(headers);
   }
 
   final String origin;
