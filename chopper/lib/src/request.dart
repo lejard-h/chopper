@@ -33,7 +33,8 @@ class Request extends http.BaseRequest {
   }
 
   /// Build the Chopper [Request] using a [Uri] instead of a [path] and [origin].
-  /// If the [parameters] aren't provided they are taken from the [Uri]
+  /// Both the query parameters in the [Uri] and those provided explicitly in
+  /// the [parameters] are merged together.
   Request.uri(
     String method,
     Uri url, {
@@ -45,7 +46,7 @@ class Request extends http.BaseRequest {
     this.useBrackets = false,
   })  : origin = url.origin,
         path = url.path,
-        parameters = parameters ?? url.queryParametersAll,
+        parameters = {...url.queryParametersAll, ...?parameters},
         super(
           method,
           buildUri(
