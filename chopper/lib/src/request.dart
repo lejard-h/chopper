@@ -8,12 +8,12 @@ import 'utils.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
 class Request extends http.BaseRequest {
-  final String origin;
   final String path;
+  final String origin;
   final dynamic body;
-  final List<PartValue> parts;
   final Map<String, dynamic> parameters;
   final bool multipart;
+  final List<PartValue> parts;
   final bool useBrackets;
 
   Request(
@@ -52,23 +52,23 @@ class Request extends http.BaseRequest {
   Request copyWith({
     HttpMethod? method,
     String? path,
+    String? origin,
     dynamic body,
     Map<String, dynamic>? parameters,
     Map<String, String>? headers,
-    List<PartValue>? parts,
     bool? multipart,
-    String? origin,
+    List<PartValue>? parts,
     bool? useBrackets,
   }) =>
       Request(
         (method ?? this.method) as String,
         path ?? this.path,
+        origin ?? this.origin,
         body: body ?? this.body,
         parameters: parameters ?? this.parameters,
         headers: headers ?? this.headers,
-        parts: parts ?? this.parts,
         multipart: multipart ?? this.multipart,
-        origin ?? this.origin,
+        parts: parts ?? this.parts,
         useBrackets: useBrackets ?? this.useBrackets,
       );
 
