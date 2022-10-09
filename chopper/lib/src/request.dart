@@ -7,58 +7,31 @@ import 'constants.dart';
 import 'utils.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
-@immutable
-class Request {
-  final String method;
-  final String baseUrl;
-  final String url;
-  final dynamic body;
-  final List<PartValue> parts;
-  final Map<String, dynamic> parameters;
-  final Map<String, String> headers;
-  final bool multipart;
-  final bool useBrackets;
-
-  const Request(
-    this.method,
-    this.url,
-    this.baseUrl, {
+class Request extends http.BaseRequest {
+  Request(
+    String method,
+    this.path,
+    this.origin, {
     this.body,
     this.parameters = const {},
-    this.headers = const {},
+    Map<String, String> headers = const {},
     this.multipart = false,
     this.parts = const [],
     this.useBrackets = false,
-  });
+  }) : super(
+          method,
+          buildUri(origin, path, parameters, useBrackets: useBrackets),
+        ) {
+    this.headers.addAll(headers);
+  }
 
-  /// Makes a copy of this request, replacing original values with the given ones.
-  Request copyWith({
-    HttpMethod? method,
-    String? url,
-    dynamic body,
-    Map<String, dynamic>? parameters,
-    Map<String, String>? headers,
-    List<PartValue>? parts,
-    bool? multipart,
-    String? baseUrl,
-    bool? useBrackets,
-  }) =>
-      Request(
-        (method ?? this.method) as String,
-        url ?? this.url,
-        body: body ?? this.body,
-        parameters: parameters ?? this.parameters,
-        headers: headers ?? this.headers,
-        parts: parts ?? this.parts,
-        multipart: multipart ?? this.multipart,
-        baseUrl ?? this.baseUrl,
-        useBrackets: useBrackets ?? this.useBrackets,
-      );
-
-  Uri _buildUri() =>
-      buildUri(baseUrl, url, parameters, useBrackets: useBrackets);
-
-  Map<String, String> _buildHeaders() => {...headers};
+  final String origin;
+  final String path;
+  final dynamic body;
+  final List<PartValue> parts;
+  final Map<String, dynamic> parameters;
+  final bool multipart;
+  final bool useBrackets;
 
   /// Converts this Chopper Request into a [http.BaseRequest].
   ///
@@ -68,20 +41,41 @@ class Request {
   ///   - [http.StreamedRequest] if body is a [Stream<List<int>>]
   ///   - [http.MultipartRequest] if [multipart] is true
   ///   - or a [http.Request]
-  Future<http.BaseRequest> toBaseRequest() async {
-    final Uri uri = _buildUri();
-    final Map<String, String> heads = _buildHeaders();
-
+  FutureOr<http.BaseRequest> toBaseRequest() async {
     if (body is Stream<List<int>>) {
-      return toStreamedRequest(body, method, uri, heads);
+      return toStreamedRequest(body, method, url, {...headers});
     }
 
     if (multipart) {
-      return toMultipartRequest(parts, method, uri, heads);
+      return toMultipartRequest(parts, method, url, {...headers});
     }
 
-    return toHttpRequest(body, method, uri, heads);
+    return toHttpRequest(body, method, url, {...headers});
   }
+
+  /// Makes a copy of this request, replacing original values with the given ones.
+  Request copyWith({
+    HttpMethod? method,
+    String? path,
+    dynamic body,
+    Map<String, dynamic>? parameters,
+    Map<String, String>? headers,
+    List<PartValue>? parts,
+    bool? multipart,
+    String? origin,
+    bool? useBrackets,
+  }) =>
+      Request(
+        (method ?? this.method) as String,
+        path ?? this.path,
+        body: body ?? this.body,
+        parameters: parameters ?? this.parameters,
+        headers: headers ?? this.headers,
+        parts: parts ?? this.parts,
+        multipart: multipart ?? this.multipart,
+        origin ?? this.origin,
+        useBrackets: useBrackets ?? this.useBrackets,
+      );
 }
 
 /// Represents a part in a multipart request.
@@ -140,12 +134,12 @@ Uri buildUri(
 }
 
 @visibleForTesting
-Future<http.Request> toHttpRequest(
+http.Request toHttpRequest(
   body,
   String method,
   Uri uri,
   Map<String, String> headers,
-) async {
+) {
   final http.Request baseRequest = http.Request(method, uri)
     ..headers.addAll(headers);
 
@@ -208,12 +202,12 @@ Future<http.MultipartRequest> toMultipartRequest(
 }
 
 @visibleForTesting
-Future<http.StreamedRequest> toStreamedRequest(
+http.StreamedRequest toStreamedRequest(
   Stream<List<int>> bodyStream,
   String method,
   Uri uri,
   Map<String, String> headers,
-) async {
+) {
   final http.StreamedRequest req = http.StreamedRequest(method, uri)
     ..headers.addAll(headers);
 

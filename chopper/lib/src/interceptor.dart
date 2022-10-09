@@ -172,7 +172,7 @@ class HttpLoggingInterceptor
   @override
   FutureOr<Request> onRequest(Request request) async {
     final http.BaseRequest base = await request.toBaseRequest();
-    chopperLogger.info('--> ${base.method} ${base.url}');
+    chopperLogger.info('--> ${base.method} ${base.url.toString()}');
     base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
     String bytes = '';
@@ -192,7 +192,7 @@ class HttpLoggingInterceptor
   @override
   FutureOr<Response> onResponse(Response response) {
     final http.BaseRequest? base = response.base.request;
-    chopperLogger.info('<-- ${response.statusCode} ${base!.url}');
+    chopperLogger.info('<-- ${response.statusCode} ${base!.url.toString()}');
 
     response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 

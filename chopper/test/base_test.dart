@@ -767,7 +767,7 @@ void main() {
     chopper.onRequest.listen((request) {
       expect(
         request.url.toString(),
-        equals('/test/get/1234'),
+        equals('$baseUrl/test/get/1234'),
       );
     });
 
