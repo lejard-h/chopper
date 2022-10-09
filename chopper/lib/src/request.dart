@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
@@ -52,7 +51,7 @@ class Request extends http.BaseRequest {
 
   /// Makes a copy of this [Request], replacing original values with the given ones.
   Request copyWith({
-    HttpMethod? method,
+    String? method,
     String? path,
     String? origin,
     dynamic body,
@@ -63,7 +62,7 @@ class Request extends http.BaseRequest {
     bool? useBrackets,
   }) =>
       Request(
-        (method ?? this.method) as String,
+        method ?? this.method,
         path ?? this.path,
         origin ?? this.origin,
         body: body ?? this.body,

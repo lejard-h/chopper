@@ -8,6 +8,9 @@ const String formEncodedHeaders = 'application/x-www-form-urlencoded';
 const String jsonApiHeaders = 'application/vnd.api+json';
 
 class HttpMethod {
+  // prevent instantiating this class by accident
+  HttpMethod._();
+
   static const String Get = 'GET';
   static const String Post = 'POST';
   static const String Put = 'PUT';
