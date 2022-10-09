@@ -203,7 +203,7 @@ void main() {
   });
 
   test('PartValue', () async {
-    final req = await toMultipartRequest(
+    final req = await Request.toMultipartRequest(
       [
         PartValue<String>('foo', 'bar'),
         PartValue<int>('int', 42),
@@ -220,7 +220,7 @@ void main() {
   test(
     'PartFile',
     () async {
-      final req = await toMultipartRequest(
+      final req = await Request.toMultipartRequest(
         [
           PartValueFile<String>('foo', 'test/multipart_test.dart'),
           PartValueFile<List<int>>('int', [1, 2]),
@@ -259,7 +259,7 @@ void main() {
   });
 
   test('Multipart request non nullable', () async {
-    final req = await toMultipartRequest(
+    final req = await Request.toMultipartRequest(
       [
         PartValue<int>('int', 42),
         PartValueFile<List<int>>('list int', [1, 2]),
@@ -279,7 +279,7 @@ void main() {
   });
 
   test('PartValue with MultipartFile directly', () async {
-    final req = await toMultipartRequest(
+    final req = await Request.toMultipartRequest(
       [
         PartValue<http.MultipartFile>(
           '',

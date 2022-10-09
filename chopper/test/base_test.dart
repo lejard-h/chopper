@@ -467,30 +467,30 @@ void main() {
     });
 
     test('url concatenation', () async {
-      final url1 = buildUri('foo', 'bar', {});
+      final url1 = Request.buildUri('foo', 'bar', {});
       expect(url1.toString(), equals('foo/bar'));
 
-      final url2 = buildUri('foo/', 'bar', {});
+      final url2 = Request.buildUri('foo/', 'bar', {});
       expect(url2.toString(), equals('foo/bar'));
 
-      final url3 = buildUri('foo', '/bar', {});
+      final url3 = Request.buildUri('foo', '/bar', {});
       expect(url3.toString(), equals('foo/bar'));
 
-      final url4 = buildUri('foo/', '/bar', {});
+      final url4 = Request.buildUri('foo/', '/bar', {});
       expect(url4.toString(), equals('foo//bar'));
 
-      final url5 = buildUri('http://foo', '/bar', {});
+      final url5 = Request.buildUri('http://foo', '/bar', {});
       expect(url5.toString(), equals('http://foo/bar'));
 
-      final url6 = buildUri('https://foo', '/bar', {});
+      final url6 = Request.buildUri('https://foo', '/bar', {});
       expect(url6.toString(), equals('https://foo/bar'));
 
-      final url7 = buildUri('https://foo/', '/bar', {});
+      final url7 = Request.buildUri('https://foo/', '/bar', {});
       expect(url7.toString(), equals('https://foo//bar'));
     });
 
-    test('BodyBytes', () async {
-      final request = await toHttpRequest(
+    test('BodyBytes', () {
+      final request = Request.toHttpRequest(
         [1, 2, 3],
         HttpMethod.Post,
         Uri.parse('/foo'),
@@ -500,8 +500,8 @@ void main() {
       expect(request.bodyBytes, equals([1, 2, 3]));
     });
 
-    test('BodyFields', () async {
-      final request = await toHttpRequest(
+    test('BodyFields', () {
+      final request = Request.toHttpRequest(
         {'foo': 'bar'},
         HttpMethod.Post,
         Uri.parse('/foo'),
@@ -511,9 +511,9 @@ void main() {
       expect(request.bodyFields, equals({'foo': 'bar'}));
     });
 
-    test('Wrong body', () async {
+    test('Wrong body', () {
       try {
-        await toHttpRequest(
+        Request.toHttpRequest(
           {'foo': 42},
           HttpMethod.Post,
           Uri.parse('/foo'),
