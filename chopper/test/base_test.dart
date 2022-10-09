@@ -891,15 +891,18 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    try {
-      await service
-          .getTest('1234', dynamicHeader: '')
-          .timeout(const Duration(seconds: 3));
-    } catch (e) {
-      expect(e is TimeoutException, isTrue);
-    }
-
-    httpClient.close();
+    expect(
+      () async {
+        try {
+          await service
+              .getTest('1234', dynamicHeader: '')
+              .timeout(const Duration(seconds: 3));
+        } finally {
+          httpClient.close();
+        }
+      },
+      throwsA(isA<TimeoutException>()),
+    );
   });
 
   test('List query param', () async {

@@ -311,4 +311,17 @@ void main() {
     bytes = await second.finalize().first;
     expect(bytes, equals([2, 1]));
   });
+
+  test('Throw exception', () async {
+    expect(
+      () async => await Request.uri(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        parts: [
+          PartValueFile('', 123),
+        ],
+      ).toMultipartRequest(),
+      throwsA(isA<ArgumentError>()),
+    );
+  });
 }
