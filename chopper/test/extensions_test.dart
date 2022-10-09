@@ -34,7 +34,7 @@ void main() {
 
     test(
       'rightStrip with character removes single trailing character and any trailing whitespace',
-          () {
+      () {
         expect('foo/'.rightStrip('/'), 'foo');
         expect('foo//'.rightStrip('/'), 'foo/');
         expect('     foo/'.rightStrip('/'), '     foo');
@@ -54,7 +54,7 @@ void main() {
 
     test(
       'strip with character removes single leading and trailing character and any leading and trailing whitespace',
-          () {
+      () {
         expect('/foo/'.strip('/'), 'foo');
         expect('//foo//'.strip('/'), '/foo/');
         expect('     /foo/'.strip('/'), 'foo');
