@@ -109,6 +109,7 @@ class PartValueFile<T> extends PartValue<T> {
 /// Builds a valid URI from [baseUrl], [url] and [parameters].
 ///
 /// If [url] starts with 'http://' or 'https://', baseUrl is ignored.
+@visibleForTesting
 Uri buildUri(
   String baseUrl,
   String url,
