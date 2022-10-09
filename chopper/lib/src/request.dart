@@ -33,7 +33,7 @@ class Request extends http.BaseRequest {
     this.headers.addAll(headers);
   }
 
-  /// Build the Chopper [Request] using a [Uri] instead of a path and origin String
+  /// Build the Chopper [Request] using a [Uri] instead of a [path] and [origin] String
   Request.uri(
     super.method,
     super.url, {
