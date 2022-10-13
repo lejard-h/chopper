@@ -169,12 +169,16 @@ class Method {
   /// hxxp://path/to/script?user[name]=john&user[surname]=doe&user[age]=21
   final bool useBrackets;
 
+  /// Set to true to truncate all null query variables
+  final bool ignoreNullQueryVars;
+
   const Method(
     this.method, {
     this.optionalBody = false,
     this.path = '',
     this.headers = const {},
     this.useBrackets = false,
+    this.ignoreNullQueryVars = false,
   });
 }
 
@@ -186,6 +190,7 @@ class Get extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.ignoreNullQueryVars,
   }) : super(HttpMethod.Get);
 }
 
@@ -199,6 +204,7 @@ class Post extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.ignoreNullQueryVars,
   }) : super(HttpMethod.Post);
 }
 
@@ -210,6 +216,7 @@ class Delete extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.ignoreNullQueryVars,
   }) : super(HttpMethod.Delete);
 }
 
@@ -223,6 +230,7 @@ class Put extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.ignoreNullQueryVars,
   }) : super(HttpMethod.Put);
 }
 
@@ -235,6 +243,7 @@ class Patch extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.ignoreNullQueryVars,
   }) : super(HttpMethod.Patch);
 }
 
@@ -246,6 +255,7 @@ class Head extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.ignoreNullQueryVars,
   }) : super(HttpMethod.Head);
 }
 
@@ -256,6 +266,7 @@ class Options extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.ignoreNullQueryVars,
   }) : super(HttpMethod.Options);
 }
 

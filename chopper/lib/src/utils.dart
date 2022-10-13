@@ -56,13 +56,22 @@ final chopperLogger = Logger('Chopper');
 /// Creates a valid URI query string from [map].
 ///
 /// E.g., `{'foo': 'bar', 'ints': [ 1337, 42 ] }` will become 'foo=bar&ints=1337&ints=42'.
-String mapToQuery(Map<String, dynamic> map, {bool useBrackets = false}) =>
-    _mapToQuery(map, useBrackets: useBrackets).join('&');
+String mapToQuery(
+  Map<String, dynamic> map, {
+  bool useBrackets = false,
+  bool ignoreNullQueryVars = false,
+}) =>
+    _mapToQuery(
+      map,
+      useBrackets: useBrackets,
+      ignoreNullQueryVars: ignoreNullQueryVars,
+    ).join('&');
 
 Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
   String? prefix,
   bool useBrackets = false,
+  bool ignoreNullQueryVars = false,
 }) {
   final Set<_Pair<String, String>> pairs = {};
 
@@ -88,7 +97,9 @@ Iterable<_Pair<String, String>> _mapToQuery(
         );
       }
     } else {
-      pairs.add(_Pair<String, String>(name, ''));
+      if (!ignoreNullQueryVars) {
+        pairs.add(_Pair<String, String>(name, ''));
+      }
     }
   });
 

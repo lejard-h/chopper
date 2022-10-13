@@ -139,6 +139,13 @@ abstract class HttpTestService extends ChopperService {
   @Post(path: 'no-body')
   Future<Response> noBody();
 
+  @Get(path: '/query_param_ignore_query_vars', ignoreNullQueryVars: true)
+  Future<Response<String>> getUsingQueryParamIgnoreQueryVars({
+    @Query('foo') String? foo,
+    @Query('bar') String? bar,
+    @Query('baz') String? baz,
+  });
+
   @Get(path: '/list_query_param')
   Future<Response<String>> getUsingListQueryParam(
     @Query('value') List<String> value,

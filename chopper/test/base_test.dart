@@ -923,6 +923,33 @@ void main() {
     );
   });
 
+  test('Ignore null query vars', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/query_param_ignore_query_vars'
+            '?foo=foo_val'
+            '&baz=baz_val'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingQueryParamIgnoreQueryVars(
+      foo: 'foo_val',
+      baz: 'baz_val',
+    );
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
   test('List query param', () async {
     final httpClient = MockClient((request) async {
       expect(

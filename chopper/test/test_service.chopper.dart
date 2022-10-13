@@ -490,6 +490,28 @@ class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<String>> getUsingQueryParamIgnoreQueryVars({
+    String? foo,
+    String? bar,
+    String? baz,
+  }) {
+    final String $url = '/test/query_param_ignore_query_vars';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'foo': foo,
+      'bar': bar,
+      'baz': baz,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      ignoreNullQueryVars: true,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
   Future<Response<String>> getUsingListQueryParam(List<String> value) {
     final String $url = '/test/list_query_param';
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
