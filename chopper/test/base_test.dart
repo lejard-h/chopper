@@ -1,3 +1,5 @@
+// ignore_for_file: long-method
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -49,6 +51,7 @@ void main() {
         );
       }
     });
+
     test('GET', () async {
       final httpClient = MockClient((request) async {
         expect(
@@ -467,58 +470,86 @@ void main() {
     });
 
     test('url concatenation', () async {
-      final url1 = buildUri('foo', 'bar', {});
-      expect(url1.toString(), equals('foo/bar'));
+      expect(
+        Request.buildUri('foo', 'bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url2 = buildUri('foo/', 'bar', {});
-      expect(url2.toString(), equals('foo/bar'));
+      expect(
+        Request.buildUri('foo/', 'bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url3 = buildUri('foo', '/bar', {});
-      expect(url3.toString(), equals('foo/bar'));
+      expect(
+        Request.buildUri('foo', '/bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url4 = buildUri('foo/', '/bar', {});
-      expect(url4.toString(), equals('foo//bar'));
+      expect(
+        Request.buildUri('foo/', '/bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url5 = buildUri('http://foo', '/bar', {});
-      expect(url5.toString(), equals('http://foo/bar'));
+      expect(
+        Request.buildUri('http://foo', '/bar', {}).toString(),
+        equals('http://foo/bar'),
+      );
 
-      final url6 = buildUri('https://foo', '/bar', {});
-      expect(url6.toString(), equals('https://foo/bar'));
+      expect(
+        Request.buildUri('https://foo', '/bar', {}).toString(),
+        equals('https://foo/bar'),
+      );
 
-      final url7 = buildUri('https://foo/', '/bar', {});
-      expect(url7.toString(), equals('https://foo//bar'));
+      expect(
+        Request.buildUri('https://foo/', '/bar', {}).toString(),
+        equals('https://foo/bar'),
+      );
+
+      expect(
+        Request.buildUri('https://foo/', '/bar', {'abc': 'xyz'}).toString(),
+        equals('https://foo/bar?abc=xyz'),
+      );
+
+      expect(
+        Request.buildUri(
+          'https://foo/',
+          '/bar?first=123&second=456',
+          {
+            'third': '789',
+            'fourth': '012',
+          },
+        ).toString(),
+        equals('https://foo/bar?first=123&second=456&third=789&fourth=012'),
+      );
     });
 
-    test('BodyBytes', () async {
-      final request = await toHttpRequest(
-        [1, 2, 3],
+    test('BodyBytes', () {
+      final request = Request.uri(
         HttpMethod.Post,
-        Uri.parse('/foo'),
-        {},
-      );
+        Uri.parse('https://foo/'),
+        body: [1, 2, 3],
+      ).toHttpRequest();
 
       expect(request.bodyBytes, equals([1, 2, 3]));
     });
 
-    test('BodyFields', () async {
-      final request = await toHttpRequest(
-        {'foo': 'bar'},
+    test('BodyFields', () {
+      final request = Request.uri(
         HttpMethod.Post,
-        Uri.parse('/foo'),
-        {},
-      );
+        Uri.parse('https://foo/'),
+        body: {'foo': 'bar'},
+      ).toHttpRequest();
 
       expect(request.bodyFields, equals({'foo': 'bar'}));
     });
 
-    test('Wrong body', () async {
+    test('Wrong body', () {
       try {
-        await toHttpRequest(
-          {'foo': 42},
+        Request.uri(
           HttpMethod.Post,
-          Uri.parse('/foo'),
-          {},
-        );
+          Uri.parse('https://foo/'),
+          body: {'foo': 42},
+        ).toHttpRequest();
       } on ArgumentError catch (e) {
         expect(e.toString(), equals('Invalid argument (body): "{foo: 42}"'));
       }
@@ -767,7 +798,7 @@ void main() {
     chopper.onRequest.listen((request) {
       expect(
         request.url.toString(),
-        equals('/test/get/1234'),
+        equals('$baseUrl/test/get/1234'),
       );
     });
 
@@ -878,15 +909,18 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    try {
-      await service
-          .getTest('1234', dynamicHeader: '')
-          .timeout(const Duration(seconds: 3));
-    } catch (e) {
-      expect(e is TimeoutException, isTrue);
-    }
-
-    httpClient.close();
+    expect(
+      () async {
+        try {
+          await service
+              .getTest('1234', dynamicHeader: '')
+              .timeout(const Duration(seconds: 3));
+        } finally {
+          httpClient.close();
+        }
+      },
+      throwsA(isA<TimeoutException>()),
+    );
   });
 
   test('List query param', () async {
