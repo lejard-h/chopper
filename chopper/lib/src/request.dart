@@ -14,6 +14,7 @@ class Request extends http.BaseRequest {
   final bool multipart;
   final List<PartValue> parts;
   final bool useBrackets;
+  final bool includeNullQueryVars;
 
   Request(
     String method,
@@ -25,9 +26,16 @@ class Request extends http.BaseRequest {
     this.multipart = false,
     this.parts = const [],
     this.useBrackets = false,
+    this.includeNullQueryVars = false,
   }) : super(
           method,
-          buildUri(origin, path, parameters, useBrackets: useBrackets),
+          buildUri(
+            origin,
+            path,
+            parameters,
+            useBrackets: useBrackets,
+            includeNullQueryVars: includeNullQueryVars,
+          ),
         ) {
     this.headers.addAll(headers);
   }
@@ -44,6 +52,7 @@ class Request extends http.BaseRequest {
     this.multipart = false,
     this.parts = const [],
     this.useBrackets = false,
+    this.includeNullQueryVars = false,
   })  : origin = url.origin,
         path = url.path,
         parameters = {...url.queryParametersAll, ...?parameters},
@@ -54,6 +63,7 @@ class Request extends http.BaseRequest {
             url.path,
             {...url.queryParametersAll, ...?parameters},
             useBrackets: useBrackets,
+            includeNullQueryVars: includeNullQueryVars,
           ),
         ) {
     this.headers.addAll(headers);
@@ -70,6 +80,7 @@ class Request extends http.BaseRequest {
     bool? multipart,
     List<PartValue>? parts,
     bool? useBrackets,
+    bool? includeNullQueryVars,
   }) =>
       Request(
         method ?? this.method,
@@ -81,6 +92,7 @@ class Request extends http.BaseRequest {
         multipart: multipart ?? this.multipart,
         parts: parts ?? this.parts,
         useBrackets: useBrackets ?? this.useBrackets,
+        includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
       );
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
@@ -92,6 +104,7 @@ class Request extends http.BaseRequest {
     String url,
     Map<String, dynamic> parameters, {
     bool useBrackets = false,
+    bool includeNullQueryVars = false,
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
@@ -99,7 +112,11 @@ class Request extends http.BaseRequest {
         ? Uri.parse(url)
         : Uri.parse('${baseUrl.strip('/')}/${url.leftStrip('/')}');
 
-    final String query = mapToQuery(parameters, useBrackets: useBrackets);
+    final String query = mapToQuery(
+      parameters,
+      useBrackets: useBrackets,
+      includeNullQueryVars: includeNullQueryVars,
+    );
 
     return query.isNotEmpty
         ? uri.replace(query: uri.hasQuery ? '${uri.query}&$query' : query)

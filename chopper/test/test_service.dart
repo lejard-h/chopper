@@ -139,6 +139,13 @@ abstract class HttpTestService extends ChopperService {
   @Post(path: 'no-body')
   Future<Response> noBody();
 
+  @Get(path: '/query_param_include_null_query_vars', includeNullQueryVars: true)
+  Future<Response<String>> getUsingQueryParamIncludeNullQueryVars({
+    @Query('foo') String? foo,
+    @Query('bar') String? bar,
+    @Query('baz') String? baz,
+  });
+
   @Get(path: '/list_query_param')
   Future<Response<String>> getUsingListQueryParam(
     @Query('value') List<String> value,
@@ -151,6 +158,14 @@ abstract class HttpTestService extends ChopperService {
 
   @Get(path: '/map_query_param')
   Future<Response<String>> getUsingMapQueryParam(
+    @Query('value') Map<String, dynamic> value,
+  );
+
+  @Get(
+    path: '/map_query_param_include_null_query_vars',
+    includeNullQueryVars: true,
+  )
+  Future<Response<String>> getUsingMapQueryParamIncludeNullQueryVars(
     @Query('value') Map<String, dynamic> value,
   );
 

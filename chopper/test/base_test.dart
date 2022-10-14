@@ -110,7 +110,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name=&int=&default_value='),
+          equals('$baseUrl/test/query?name='),
         );
         expect(request.method, equals('GET'));
 
@@ -132,7 +132,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name=&int=&default_value=42'),
+          equals('$baseUrl/test/query?name=&default_value=42'),
         );
         expect(request.method, equals('GET'));
 
@@ -923,6 +923,34 @@ void main() {
     );
   });
 
+  test('Include null query vars', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/query_param_include_null_query_vars'
+            '?foo=foo_val'
+            '&bar='
+            '&baz=baz_val'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingQueryParamIncludeNullQueryVars(
+      foo: 'foo_val',
+      baz: 'baz_val',
+    );
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
   test('List query param', () async {
     final httpClient = MockClient((request) async {
       expect(
@@ -1057,6 +1085,90 @@ void main() {
         'mno': <String, dynamic>{
           'opq': 'rst',
           'uvw': 'xyz',
+          'list': ['a', 123, false],
+        },
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param without including null query vars', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param'
+            '?value.bar=baz'
+            '&value.etc.abc=def'
+            '&value.etc.mno.opq=rst'
+            '&value.etc.mno.list=a'
+            '&value.etc.mno.list=123'
+            '&value.etc.mno.list=false'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingMapQueryParam(<String, dynamic>{
+      'bar': 'baz',
+      'zap': null,
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': null,
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': null,
+          'list': ['a', 123, false],
+        },
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param including null query vars', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param_include_null_query_vars'
+            '?value.bar=baz'
+            '&value.zap='
+            '&value.etc.abc=def'
+            '&value.etc.ghi='
+            '&value.etc.mno.opq=rst'
+            '&value.etc.mno.uvw='
+            '&value.etc.mno.list=a'
+            '&value.etc.mno.list=123'
+            '&value.etc.mno.list=false'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service
+        .getUsingMapQueryParamIncludeNullQueryVars(<String, dynamic>{
+      'bar': 'baz',
+      'zap': null,
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': null,
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': null,
           'list': ['a', 123, false],
         },
       },

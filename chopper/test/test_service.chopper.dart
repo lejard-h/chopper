@@ -490,6 +490,28 @@ class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<String>> getUsingQueryParamIncludeNullQueryVars({
+    String? foo,
+    String? bar,
+    String? baz,
+  }) {
+    final String $url = '/test/query_param_include_null_query_vars';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'foo': foo,
+      'bar': bar,
+      'baz': baz,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      includeNullQueryVars: true,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
   Future<Response<String>> getUsingListQueryParam(List<String> value) {
     final String $url = '/test/list_query_param';
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
@@ -526,6 +548,21 @@ class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
       parameters: $params,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingMapQueryParamIncludeNullQueryVars(
+      Map<String, dynamic> value) {
+    final String $url = '/test/map_query_param_include_null_query_vars';
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      includeNullQueryVars: true,
     );
     return client.send<String, String>($request);
   }

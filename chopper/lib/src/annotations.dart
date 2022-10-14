@@ -169,12 +169,39 @@ class Method {
   /// hxxp://path/to/script?user[name]=john&user[surname]=doe&user[age]=21
   final bool useBrackets;
 
+  /// Set to [true] to include query variables with null values. This includes nested maps.
+  /// The default is to exclude them.
+  ///
+  /// NOTE: Empty strings are always included.
+  ///
+  /// ```dart
+  /// @Get(
+  ///   path: '/script',
+  ///   includeNullQueryVars: true,
+  /// )
+  /// Future<Response<String>> getData({
+  ///   @Query('foo') String? foo,
+  ///   @Query('bar') String? bar,
+  ///   @Query('baz') String? baz,
+  /// });
+  ///
+  /// final response = await service.getData(
+  ///   foo: 'foo_val',
+  ///   bar: null, // omitting it would have the same effect
+  ///   baz: 'baz_val',
+  /// );
+  /// ```
+  ///
+  /// The above code produces hxxp://path/to/script&foo=foo_var&bar=&baz=baz_var
+  final bool includeNullQueryVars;
+
   const Method(
     this.method, {
     this.optionalBody = false,
     this.path = '',
     this.headers = const {},
     this.useBrackets = false,
+    this.includeNullQueryVars = false,
   });
 }
 
@@ -186,6 +213,7 @@ class Get extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.includeNullQueryVars,
   }) : super(HttpMethod.Get);
 }
 
@@ -199,6 +227,7 @@ class Post extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.includeNullQueryVars,
   }) : super(HttpMethod.Post);
 }
 
@@ -210,6 +239,7 @@ class Delete extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.includeNullQueryVars,
   }) : super(HttpMethod.Delete);
 }
 
@@ -223,6 +253,7 @@ class Put extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.includeNullQueryVars,
   }) : super(HttpMethod.Put);
 }
 
@@ -235,6 +266,7 @@ class Patch extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.includeNullQueryVars,
   }) : super(HttpMethod.Patch);
 }
 
@@ -246,6 +278,7 @@ class Head extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.includeNullQueryVars,
   }) : super(HttpMethod.Head);
 }
 
@@ -256,6 +289,7 @@ class Options extends Method {
     super.path,
     super.headers,
     super.useBrackets,
+    super.includeNullQueryVars,
   }) : super(HttpMethod.Options);
 }
 

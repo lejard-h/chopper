@@ -311,6 +311,8 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
       final bool useBrackets = getUseBrackets(method);
 
+      final bool includeNullQueryVars = getIncludeNullQueryVars(method);
+
       blocks.add(
         declareFinal(_requestVar, type: refer('Request'))
             .assign(
@@ -321,6 +323,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
                 useHeaders: headers != null,
                 hasParts: hasParts,
                 useBrackets: useBrackets,
+                includeNullQueryVars: includeNullQueryVars,
               ),
             )
             .statement,
@@ -494,6 +497,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     bool useQueries = false,
     bool useHeaders = false,
     bool useBrackets = false,
+    bool includeNullQueryVars = false,
   }) {
     final List<Expression> params = [
       literal(getMethodName(method)),
@@ -522,6 +526,10 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
 
     if (useBrackets) {
       namedParams['useBrackets'] = literalBool(useBrackets);
+    }
+
+    if (includeNullQueryVars) {
+      namedParams['includeNullQueryVars'] = literalBool(includeNullQueryVars);
     }
 
     return refer('Request').newInstance(params, namedParams);
@@ -630,6 +638,9 @@ String getMethodName(ConstantReader method) =>
 
 bool getUseBrackets(ConstantReader method) =>
     method.peek('useBrackets')?.boolValue ?? false;
+
+bool getIncludeNullQueryVars(ConstantReader method) =>
+    method.peek('includeNullQueryVars')?.boolValue ?? false;
 
 extension DartTypeExtension on DartType {
   bool get isNullable => nullabilitySuffix != NullabilitySuffix.none;
