@@ -59,19 +59,19 @@ final chopperLogger = Logger('Chopper');
 String mapToQuery(
   Map<String, dynamic> map, {
   bool useBrackets = false,
-  bool ignoreNullQueryVars = false,
+  bool includeNullQueryVars = false,
 }) =>
     _mapToQuery(
       map,
       useBrackets: useBrackets,
-      ignoreNullQueryVars: ignoreNullQueryVars,
+      includeNullQueryVars: includeNullQueryVars,
     ).join('&');
 
 Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
   String? prefix,
   bool useBrackets = false,
-  bool ignoreNullQueryVars = false,
+  bool includeNullQueryVars = false,
 }) {
   final Set<_Pair<String, String>> pairs = {};
 
@@ -89,7 +89,12 @@ Iterable<_Pair<String, String>> _mapToQuery(
         pairs.addAll(_iterableToQuery(name, value, useBrackets: useBrackets));
       } else if (value is Map<String, dynamic>) {
         pairs.addAll(
-          _mapToQuery(value, prefix: name, useBrackets: useBrackets),
+          _mapToQuery(
+            value,
+            prefix: name,
+            useBrackets: useBrackets,
+            includeNullQueryVars: includeNullQueryVars,
+          ),
         );
       } else {
         pairs.add(
@@ -97,7 +102,7 @@ Iterable<_Pair<String, String>> _mapToQuery(
         );
       }
     } else {
-      if (!ignoreNullQueryVars) {
+      if (includeNullQueryVars) {
         pairs.add(_Pair<String, String>(name, ''));
       }
     }
