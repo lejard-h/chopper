@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
+import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-
-import 'constants.dart';
-import 'request.dart';
-import 'response.dart';
-import 'utils.dart';
 
 /// An interface for implementing response interceptors.
 ///
@@ -172,7 +171,7 @@ class HttpLoggingInterceptor
   @override
   FutureOr<Request> onRequest(Request request) async {
     final http.BaseRequest base = await request.toBaseRequest();
-    chopperLogger.info('--> ${base.method} ${base.url}');
+    chopperLogger.info('--> ${base.method} ${base.url.toString()}');
     base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
     String bytes = '';
@@ -192,7 +191,7 @@ class HttpLoggingInterceptor
   @override
   FutureOr<Response> onResponse(Response response) {
     final http.BaseRequest? base = response.base.request;
-    chopperLogger.info('<-- ${response.statusCode} ${base!.url}');
+    chopperLogger.info('<-- ${response.statusCode} ${base!.url.toString()}');
 
     response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 

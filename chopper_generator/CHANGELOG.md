@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.0
+
+- Annotation to include null vars in query
+
 ## 5.0.1
 
 - Types added

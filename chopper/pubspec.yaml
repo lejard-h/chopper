@@ -1,6 +1,6 @@
 name: chopper
 description: Chopper is an http client generator using source_gen, inspired by Retrofit
-version: 5.0.1
+version: 5.1.0
 documentation: https://hadrien-lejard.gitbook.io/chopper
 repository: https://github.com/lejard-h/chopper
 
@@ -9,16 +9,17 @@ environment:
 
 dependencies:
   http: ">=0.13.0 <1.0.0"
-  meta: ^1.3.0
   logging: ^1.0.0
+  meta: ^1.3.0
 
 dev_dependencies:
-  test: ^1.16.4
   build_runner: ^2.0.0
   build_test: ^2.0.0
+  collection: ^1.16.0
   coverage: ^1.0.2
-  http_parser: ^4.0.0
   dart_code_metrics: ^4.8.1
+  http_parser: ^4.0.0
   lints: ^2.0.0
+  test: ^1.16.4
   chopper_generator:
     path: ../chopper_generator

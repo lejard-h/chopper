@@ -1,3 +1,5 @@
+// ignore_for_file: long-method
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -49,6 +51,7 @@ void main() {
         );
       }
     });
+
     test('GET', () async {
       final httpClient = MockClient((request) async {
         expect(
@@ -107,7 +110,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name=&int=&default_value='),
+          equals('$baseUrl/test/query?name='),
         );
         expect(request.method, equals('GET'));
 
@@ -129,7 +132,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name=&int=&default_value=42'),
+          equals('$baseUrl/test/query?name=&default_value=42'),
         );
         expect(request.method, equals('GET'));
 
@@ -467,58 +470,86 @@ void main() {
     });
 
     test('url concatenation', () async {
-      final url1 = buildUri('foo', 'bar', {});
-      expect(url1.toString(), equals('foo/bar'));
+      expect(
+        Request.buildUri('foo', 'bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url2 = buildUri('foo/', 'bar', {});
-      expect(url2.toString(), equals('foo/bar'));
+      expect(
+        Request.buildUri('foo/', 'bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url3 = buildUri('foo', '/bar', {});
-      expect(url3.toString(), equals('foo/bar'));
+      expect(
+        Request.buildUri('foo', '/bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url4 = buildUri('foo/', '/bar', {});
-      expect(url4.toString(), equals('foo//bar'));
+      expect(
+        Request.buildUri('foo/', '/bar', {}).toString(),
+        equals('foo/bar'),
+      );
 
-      final url5 = buildUri('http://foo', '/bar', {});
-      expect(url5.toString(), equals('http://foo/bar'));
+      expect(
+        Request.buildUri('http://foo', '/bar', {}).toString(),
+        equals('http://foo/bar'),
+      );
 
-      final url6 = buildUri('https://foo', '/bar', {});
-      expect(url6.toString(), equals('https://foo/bar'));
+      expect(
+        Request.buildUri('https://foo', '/bar', {}).toString(),
+        equals('https://foo/bar'),
+      );
 
-      final url7 = buildUri('https://foo/', '/bar', {});
-      expect(url7.toString(), equals('https://foo//bar'));
+      expect(
+        Request.buildUri('https://foo/', '/bar', {}).toString(),
+        equals('https://foo/bar'),
+      );
+
+      expect(
+        Request.buildUri('https://foo/', '/bar', {'abc': 'xyz'}).toString(),
+        equals('https://foo/bar?abc=xyz'),
+      );
+
+      expect(
+        Request.buildUri(
+          'https://foo/',
+          '/bar?first=123&second=456',
+          {
+            'third': '789',
+            'fourth': '012',
+          },
+        ).toString(),
+        equals('https://foo/bar?first=123&second=456&third=789&fourth=012'),
+      );
     });
 
-    test('BodyBytes', () async {
-      final request = await toHttpRequest(
-        [1, 2, 3],
+    test('BodyBytes', () {
+      final request = Request.uri(
         HttpMethod.Post,
-        Uri.parse('/foo'),
-        {},
-      );
+        Uri.parse('https://foo/'),
+        body: [1, 2, 3],
+      ).toHttpRequest();
 
       expect(request.bodyBytes, equals([1, 2, 3]));
     });
 
-    test('BodyFields', () async {
-      final request = await toHttpRequest(
-        {'foo': 'bar'},
+    test('BodyFields', () {
+      final request = Request.uri(
         HttpMethod.Post,
-        Uri.parse('/foo'),
-        {},
-      );
+        Uri.parse('https://foo/'),
+        body: {'foo': 'bar'},
+      ).toHttpRequest();
 
       expect(request.bodyFields, equals({'foo': 'bar'}));
     });
 
-    test('Wrong body', () async {
+    test('Wrong body', () {
       try {
-        await toHttpRequest(
-          {'foo': 42},
+        Request.uri(
           HttpMethod.Post,
-          Uri.parse('/foo'),
-          {},
-        );
+          Uri.parse('https://foo/'),
+          body: {'foo': 42},
+        ).toHttpRequest();
       } on ArgumentError catch (e) {
         expect(e.toString(), equals('Invalid argument (body): "{foo: 42}"'));
       }
@@ -767,7 +798,7 @@ void main() {
     chopper.onRequest.listen((request) {
       expect(
         request.url.toString(),
-        equals('/test/get/1234'),
+        equals('$baseUrl/test/get/1234'),
       );
     });
 
@@ -878,13 +909,44 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    try {
-      await service
-          .getTest('1234', dynamicHeader: '')
-          .timeout(const Duration(seconds: 3));
-    } catch (e) {
-      expect(e is TimeoutException, isTrue);
-    }
+    expect(
+      () async {
+        try {
+          await service
+              .getTest('1234', dynamicHeader: '')
+              .timeout(const Duration(seconds: 3));
+        } finally {
+          httpClient.close();
+        }
+      },
+      throwsA(isA<TimeoutException>()),
+    );
+  });
+
+  test('Include null query vars', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/query_param_include_null_query_vars'
+            '?foo=foo_val'
+            '&bar='
+            '&baz=baz_val'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingQueryParamIncludeNullQueryVars(
+      foo: 'foo_val',
+      baz: 'baz_val',
+    );
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
 
     httpClient.close();
   });
@@ -1023,6 +1085,90 @@ void main() {
         'mno': <String, dynamic>{
           'opq': 'rst',
           'uvw': 'xyz',
+          'list': ['a', 123, false],
+        },
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param without including null query vars', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param'
+            '?value.bar=baz'
+            '&value.etc.abc=def'
+            '&value.etc.mno.opq=rst'
+            '&value.etc.mno.list=a'
+            '&value.etc.mno.list=123'
+            '&value.etc.mno.list=false'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingMapQueryParam(<String, dynamic>{
+      'bar': 'baz',
+      'zap': null,
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': null,
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': null,
+          'list': ['a', 123, false],
+        },
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param including null query vars', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param_include_null_query_vars'
+            '?value.bar=baz'
+            '&value.zap='
+            '&value.etc.abc=def'
+            '&value.etc.ghi='
+            '&value.etc.mno.opq=rst'
+            '&value.etc.mno.uvw='
+            '&value.etc.mno.list=a'
+            '&value.etc.mno.list=123'
+            '&value.etc.mno.list=false'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service
+        .getUsingMapQueryParamIncludeNullQueryVars(<String, dynamic>{
+      'bar': 'baz',
+      'zap': null,
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': null,
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': null,
           'list': ['a', 123, false],
         },
       },

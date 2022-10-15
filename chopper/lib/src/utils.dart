@@ -56,13 +56,22 @@ final chopperLogger = Logger('Chopper');
 /// Creates a valid URI query string from [map].
 ///
 /// E.g., `{'foo': 'bar', 'ints': [ 1337, 42 ] }` will become 'foo=bar&ints=1337&ints=42'.
-String mapToQuery(Map<String, dynamic> map, {bool useBrackets = false}) =>
-    _mapToQuery(map, useBrackets: useBrackets).join('&');
+String mapToQuery(
+  Map<String, dynamic> map, {
+  bool useBrackets = false,
+  bool includeNullQueryVars = false,
+}) =>
+    _mapToQuery(
+      map,
+      useBrackets: useBrackets,
+      includeNullQueryVars: includeNullQueryVars,
+    ).join('&');
 
 Iterable<_Pair<String, String>> _mapToQuery(
   Map<String, dynamic> map, {
   String? prefix,
   bool useBrackets = false,
+  bool includeNullQueryVars = false,
 }) {
   final Set<_Pair<String, String>> pairs = {};
 
@@ -80,7 +89,12 @@ Iterable<_Pair<String, String>> _mapToQuery(
         pairs.addAll(_iterableToQuery(name, value, useBrackets: useBrackets));
       } else if (value is Map<String, dynamic>) {
         pairs.addAll(
-          _mapToQuery(value, prefix: name, useBrackets: useBrackets),
+          _mapToQuery(
+            value,
+            prefix: name,
+            useBrackets: useBrackets,
+            includeNullQueryVars: includeNullQueryVars,
+          ),
         );
       } else {
         pairs.add(
@@ -88,7 +102,9 @@ Iterable<_Pair<String, String>> _mapToQuery(
         );
       }
     } else {
-      pairs.add(_Pair<String, String>(name, ''));
+      if (includeNullQueryVars) {
+        pairs.add(_Pair<String, String>(name, ''));
+      }
     }
   });
 
