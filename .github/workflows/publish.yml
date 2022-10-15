@@ -9,11 +9,11 @@ jobs:
       name: "Publish chopper"
       runs-on: ubuntu-latest
       steps:
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: publish
         run: bash tool/publish.sh chopper
         env:
@@ -22,11 +22,11 @@ jobs:
     name: "Publish chopper_generator"
     runs-on: ubuntu-latest
     steps:
-    - uses: dart-lang/setup-dart@v1.0
+    - uses: dart-lang/setup-dart@v1.3
       with:
         sdk: stable
     - id: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - id: publish
       run: bash tool/publish.sh chopper_generator
       env:
@@ -35,11 +35,11 @@ jobs:
     name: "Publish chopper_built_value"
     runs-on: ubuntu-latest
     steps:
-    - uses: dart-lang/setup-dart@v1.0
+    - uses: dart-lang/setup-dart@v1.3
       with:
         sdk: stable
     - id: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - id: publish
       run: bash tool/publish.sh chopper_built_value
       env:

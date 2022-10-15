@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable"
@@ -32,7 +32,7 @@ jobs:
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - name: mono_repo self validate
         run: dart pub global activate mono_repo 6.0.0
       - name: mono_repo self validate
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper_built_value-chopper_generator;commands:format-analyze"
@@ -55,7 +55,7 @@ jobs:
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - id: chopper_built_value_pub_upgrade
         name: chopper_built_value; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper;commands:format-analyze"
@@ -100,7 +100,7 @@ jobs:
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
@@ -122,7 +122,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_1"
@@ -135,7 +135,7 @@ jobs:
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
@@ -163,7 +163,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v2.1.7
+        uses: actions/cache@v3
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_0"
@@ -176,7 +176,7 @@ jobs:
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
@@ -203,11 +203,11 @@ jobs:
     name: Coverage
     runs-on: ubuntu-latest
     steps:
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: upload_coverage
         name: chopper; tool/coverage.sh
         if: "always() && steps.checkout.conclusion == 'success'"
