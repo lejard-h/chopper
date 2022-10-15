@@ -14,11 +14,11 @@ github:
     - name: "Coverage"
       runs-on: ubuntu-latest
       steps:
-      - uses: dart-lang/setup-dart@v1.0
+      - uses: dart-lang/setup-dart@v1.3
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: upload_coverage
         name: "chopper; tool/coverage.sh"
         if: "always() && steps.checkout.conclusion == 'success'"

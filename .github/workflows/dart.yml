@@ -1,4 +1,4 @@
-# Created with package:mono_repo v6.0.0
+# Created with package:mono_repo v6.4.1
 name: Dart CI
 on:
   push:
@@ -14,6 +14,7 @@ defaults:
     shell: bash
 env:
   PUB_ENVIRONMENT: bot.github
+permissions: read-all
 
 jobs:
   job_001:
@@ -21,18 +22,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable"
           restore-keys: |
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.3
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@6a218f2413a3e78e9087f638a238f6b40893203d
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v3
+        name: Checkout repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - name: mono_repo self validate
         run: dart pub global activate mono_repo 6.4.1
       - name: mono_repo self validate
@@ -42,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper_built_value-chopper_generator;commands:format-analyze"
@@ -51,43 +54,45 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;sdk:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.3
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@6a218f2413a3e78e9087f638a238f6b40893203d
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v3
+        name: Checkout repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - id: chopper_built_value_pub_upgrade
         name: chopper_built_value; dart pub upgrade
+        run: dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: dart pub upgrade
       - name: "chopper_built_value; dart format --output=none --set-exit-if-changed ."
-        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper_built_value
         run: "dart format --output=none --set-exit-if-changed ."
-      - name: "chopper_built_value; dart analyze --fatal-infos ."
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
+      - name: "chopper_built_value; dart analyze --fatal-infos ."
         run: dart analyze --fatal-infos .
+        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper_built_value
       - id: chopper_generator_pub_upgrade
         name: chopper_generator; dart pub upgrade
+        run: dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper_generator
-        run: dart pub upgrade
       - name: "chopper_generator; dart format --output=none --set-exit-if-changed ."
-        if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper_generator
         run: "dart format --output=none --set-exit-if-changed ."
-      - name: "chopper_generator; dart analyze --fatal-infos ."
         if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_generator
+      - name: "chopper_generator; dart analyze --fatal-infos ."
         run: dart analyze --fatal-infos .
+        if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper_generator
   job_003:
     name: "analyze_and_format; PKG: chopper; `dart format --output=none --set-exit-if-changed .`, `dart analyze --fatal-infos .`"
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper;commands:format-analyze"
@@ -96,24 +101,26 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;sdk:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.3
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@6a218f2413a3e78e9087f638a238f6b40893203d
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v3
+        name: Checkout repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
+        run: dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper
-        run: dart pub upgrade
       - name: "chopper; dart format --output=none --set-exit-if-changed ."
-        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper
         run: "dart format --output=none --set-exit-if-changed ."
-      - name: "chopper; dart analyze --fatal-infos ."
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
+      - name: "chopper; dart analyze --fatal-infos ."
         run: dart analyze --fatal-infos .
+        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper
     needs:
       - job_001
       - job_002
@@ -122,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_1"
@@ -131,29 +138,31 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;sdk:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.3
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@6a218f2413a3e78e9087f638a238f6b40893203d
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v3
+        name: Checkout repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
+        run: dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper
-        run: dart pub upgrade
       - name: "chopper; dart test -p chrome"
+        run: dart test -p chrome
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
-        run: dart test -p chrome
       - id: chopper_built_value_pub_upgrade
         name: chopper_built_value; dart pub upgrade
+        run: dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: dart pub upgrade
       - name: "chopper_built_value; dart test -p chrome"
+        run: dart test -p chrome
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: dart test -p chrome
     needs:
       - job_001
       - job_002
@@ -163,7 +172,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
         with:
           path: "~/.pub-cache/hosted"
           key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_0"
@@ -172,29 +181,31 @@ jobs:
             os:ubuntu-latest;pub-cache-hosted;sdk:stable
             os:ubuntu-latest;pub-cache-hosted
             os:ubuntu-latest
-      - uses: dart-lang/setup-dart@v1.3
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@6a218f2413a3e78e9087f638a238f6b40893203d
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v3
+        name: Checkout repository
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
+        run: dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper
-        run: dart pub upgrade
       - name: chopper; dart test
+        run: dart test
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
-        run: dart test
       - id: chopper_built_value_pub_upgrade
         name: chopper_built_value; dart pub upgrade
+        run: dart pub upgrade
         if: "always() && steps.checkout.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: dart pub upgrade
       - name: chopper_built_value; dart test
+        run: dart test
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
-        run: dart test
     needs:
       - job_001
       - job_002
@@ -210,8 +221,8 @@ jobs:
         uses: actions/checkout@v3
       - id: upload_coverage
         name: chopper; tool/coverage.sh
-        if: "always() && steps.checkout.conclusion == 'success'"
         run: bash tool/coverage.sh
+        if: "always() && steps.checkout.conclusion == 'success'"
         env:
           CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
     needs:
