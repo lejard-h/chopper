@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.1.0
+
+- Base class changed for http.BaseRequest
+- Annotation to include null vars in query
+
 ## 5.0.1
 
 - mapToQuery changes
