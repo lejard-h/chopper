@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.0+1
+
+- Analyzer upgrade
+
 ## 5.1.0
 
 - Annotation to include null vars in query
