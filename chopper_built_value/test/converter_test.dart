@@ -29,6 +29,7 @@ void main() {
       var request = Request.uri(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
+        '',
         body: data,
       );
       request = converter.convertRequest(request);
@@ -72,6 +73,7 @@ void main() {
       var request = Request.uri(
         HttpMethod.Get,
         Uri.parse('https://foo/'),
+        '',
         body: data,
       );
       request = converter.convertRequest(request);

@@ -164,8 +164,7 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response =
-          await service.getQueryTest(name: 'Foo', def: 40, number: 18);
+      final response = await service.getQueryTest(name: 'Foo', def: 40, number: 18);
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
@@ -521,12 +520,33 @@ void main() {
         ).toString(),
         equals('https://foo/bar?first=123&second=456&third=789&fourth=012'),
       );
+
+      expect(
+        Request.uri('GET', Uri(path: '/bar'), 'foo').url.toString(),
+        equals('foo/bar'),
+      );
+
+      expect(
+        Request.uri('GET', Uri(host: 'bar'), 'foo').url.toString(),
+        equals('foo/'),
+      );
+
+      expect(
+        Request.uri('GET', Uri(scheme: 'https', host: 'bar'), 'foo').url.toString(),
+        equals('https://bar/'),
+      );
+
+      expect(
+        Request.uri('GET', Uri(scheme: 'https', host: 'bar', port: 666), 'foo').url.toString(),
+        equals('https://bar:666/'),
+      );
     });
 
     test('BodyBytes', () {
       final request = Request.uri(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
+        '',
         body: [1, 2, 3],
       ).toHttpRequest();
 
@@ -537,6 +557,7 @@ void main() {
       final request = Request.uri(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
+        '',
         body: {'foo': 'bar'},
       ).toHttpRequest();
 
@@ -548,6 +569,7 @@ void main() {
         Request.uri(
           HttpMethod.Post,
           Uri.parse('https://foo/'),
+          '',
           body: {'foo': 42},
         ).toHttpRequest();
       } on ArgumentError catch (e) {
@@ -912,9 +934,7 @@ void main() {
     expect(
       () async {
         try {
-          await service
-              .getTest('1234', dynamicHeader: '')
-              .timeout(const Duration(seconds: 3));
+          await service.getTest('1234', dynamicHeader: '').timeout(const Duration(seconds: 3));
         } finally {
           httpClient.close();
         }
@@ -1075,8 +1095,7 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response =
-        await service.getUsingMapQueryParamWithBrackets(<String, dynamic>{
+    final response = await service.getUsingMapQueryParamWithBrackets(<String, dynamic>{
       'bar': 'baz',
       'zap': 'abc',
       'etc': <String, dynamic>{
@@ -1159,8 +1178,7 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response = await service
-        .getUsingMapQueryParamIncludeNullQueryVars(<String, dynamic>{
+    final response = await service.getUsingMapQueryParamIncludeNullQueryVars(<String, dynamic>{
       'bar': 'baz',
       'zap': null,
       'etc': <String, dynamic>{

@@ -33,9 +33,11 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.get(
-        '/test/get',
+        Uri(
+          path: '/test/get',
+          queryParameters: {'key': 'val'},
+        ),
         headers: {'int': '42'},
-        parameters: {'key': 'val'},
       );
 
       expect(response.body, equals('get response'));
@@ -59,10 +61,12 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.post(
-        '/test/post',
+        Uri(
+          path: '/test/post',
+          queryParameters: {'key': 'val'},
+        ),
         headers: {'int': '42'},
         body: {'content': 'body'},
-        parameters: {'key': 'val'},
       );
 
       expect(response.body, equals('post response'));
@@ -87,10 +91,12 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.put(
-        '/test/put',
+        Uri(
+          path: '/test/put',
+          queryParameters: {'key': 'val'},
+        ),
         headers: {'int': '42'},
         body: {'content': 'body'},
-        parameters: {'key': 'val'},
       );
 
       expect(response.body, equals('put response'));
@@ -115,10 +121,12 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.patch(
-        '/test/patch',
+        Uri(
+          path: '/test/patch',
+          queryParameters: {'key': 'val'},
+        ),
         headers: {'int': '42'},
         body: {'content': 'body'},
-        parameters: {'key': 'val'},
       );
 
       expect(response.body, equals('patch response'));
@@ -142,9 +150,11 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.delete(
-        '/test/delete',
+        Uri(
+          path: '/test/delete',
+          queryParameters: {'key': 'val'},
+        ),
         headers: {'int': '42'},
-        parameters: {'key': 'val'},
       );
 
       expect(response.body, equals('delete response'));
@@ -167,9 +177,11 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.options(
-        '/test/get',
+        Uri(
+          path: '/test/get',
+          queryParameters: {'key': 'val'},
+        ),
         headers: {'int': '42'},
-        parameters: {'key': 'val'},
       );
 
       expect(response.body, equals('get response'));

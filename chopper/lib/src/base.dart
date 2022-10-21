@@ -341,35 +341,32 @@ class ChopperClient {
 
   /// Makes a HTTP GET request using the [send] function.
   Future<Response<BodyType>> get<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic> parameters = const {},
     String? baseUrl,
     dynamic body,
   }) =>
       send<BodyType, InnerType>(
-        Request(
+        Request.uri(
           HttpMethod.Get,
           url,
           baseUrl ?? this.baseUrl,
           body: body,
           headers: headers,
-          parameters: parameters,
         ),
       );
 
   /// Makes a HTTP POST request using the [send] function
   Future<Response<BodyType>> post<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
-    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request(
+        Request.uri(
           HttpMethod.Post,
           url,
           baseUrl ?? this.baseUrl,
@@ -377,22 +374,20 @@ class ChopperClient {
           parts: parts,
           headers: headers,
           multipart: multipart,
-          parameters: parameters,
         ),
       );
 
   /// Makes a HTTP PUT request using the [send] function.
   Future<Response<BodyType>> put<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
-    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request(
+        Request.uri(
           HttpMethod.Put,
           url,
           baseUrl ?? this.baseUrl,
@@ -400,22 +395,20 @@ class ChopperClient {
           parts: parts,
           headers: headers,
           multipart: multipart,
-          parameters: parameters,
         ),
       );
 
   /// Makes a HTTP PATCH request using the [send] function.
   Future<Response<BodyType>> patch<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
-    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request(
+        Request.uri(
           HttpMethod.Patch,
           url,
           baseUrl ?? this.baseUrl,
@@ -423,58 +416,51 @@ class ChopperClient {
           parts: parts,
           headers: headers,
           multipart: multipart,
-          parameters: parameters,
         ),
       );
 
   /// Makes a HTTP DELETE request using the [send] function.
   Future<Response<BodyType>> delete<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request(
+        Request.uri(
           HttpMethod.Delete,
           url,
           baseUrl ?? this.baseUrl,
           headers: headers,
-          parameters: parameters,
         ),
       );
 
   /// Makes a HTTP HEAD request using the [send] function.
   Future<Response<BodyType>> head<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request(
+        Request.uri(
           HttpMethod.Head,
           url,
           baseUrl ?? this.baseUrl,
           headers: headers,
-          parameters: parameters,
         ),
       );
 
   /// Makes a HTTP OPTIONS request using the [send] function.
   Future<Response<BodyType>> options<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
-    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request(
+        Request.uri(
           HttpMethod.Options,
           url,
           baseUrl ?? this.baseUrl,
           headers: headers,
-          parameters: parameters,
         ),
       );
 

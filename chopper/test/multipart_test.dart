@@ -206,6 +206,7 @@ void main() {
     final req = await Request.uri(
       HttpMethod.Post,
       Uri.parse('https://foo/'),
+      '',
       parts: [
         PartValue<String>('foo', 'bar'),
         PartValue<int>('int', 42),
@@ -222,6 +223,7 @@ void main() {
       final req = await Request.uri(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
+        '',
         parts: [
           PartValueFile<String>('foo', 'test/multipart_test.dart'),
           PartValueFile<List<int>>('int', [1, 2]),
@@ -260,6 +262,7 @@ void main() {
     final req = await Request.uri(
       HttpMethod.Post,
       Uri.parse('https://foo/'),
+      '',
       parts: [
         PartValue<int>('int', 42),
         PartValueFile<List<int>>('list int', [1, 2]),
@@ -279,6 +282,7 @@ void main() {
     final req = await Request.uri(
       HttpMethod.Post,
       Uri.parse('https://foo/'),
+      '',
       parts: [
         PartValue<http.MultipartFile>(
           '',
@@ -317,6 +321,7 @@ void main() {
       () async => await Request.uri(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
+        '',
         parts: [
           PartValueFile('', 123),
         ],

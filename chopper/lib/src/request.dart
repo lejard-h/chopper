@@ -45,23 +45,23 @@ class Request extends http.BaseRequest {
   /// the [parameters] are merged together.
   Request.uri(
     String method,
-    Uri url, {
+    Uri url,
+    String baseUrl, {
     this.body,
-    Map<String, dynamic>? parameters,
     Map<String, String> headers = const {},
     this.multipart = false,
     this.parts = const [],
     this.useBrackets = false,
     this.includeNullQueryVars = false,
-  })  : origin = url.origin,
+  })  : origin = url.isScheme('HTTP') || url.isScheme('HTTPS') ? url.origin : baseUrl,
         path = url.path,
-        parameters = {...url.queryParametersAll, ...?parameters},
+        parameters = url.queryParametersAll,
         super(
           method,
           buildUri(
-            url.origin,
+            url.isScheme('HTTP') || url.isScheme('HTTPS') ? url.origin : baseUrl,
             url.path,
-            {...url.queryParametersAll, ...?parameters},
+            url.queryParametersAll,
             useBrackets: useBrackets,
             includeNullQueryVars: includeNullQueryVars,
           ),
@@ -118,9 +118,7 @@ class Request extends http.BaseRequest {
       includeNullQueryVars: includeNullQueryVars,
     );
 
-    return query.isNotEmpty
-        ? uri.replace(query: uri.hasQuery ? '${uri.query}&$query' : query)
-        : uri;
+    return query.isNotEmpty ? uri.replace(query: uri.hasQuery ? '${uri.query}&$query' : query) : uri;
   }
 
   /// Converts this Chopper Request into a [http.BaseRequest].
@@ -142,8 +140,7 @@ class Request extends http.BaseRequest {
   /// Convert this [Request] to a [http.Request]
   @visibleForTesting
   http.Request toHttpRequest() {
-    final http.Request request = http.Request(method, url)
-      ..headers.addAll(headers);
+    final http.Request request = http.Request(method, url)..headers.addAll(headers);
 
     if (body != null) {
       if (body is String) {
@@ -163,8 +160,7 @@ class Request extends http.BaseRequest {
   /// Convert this [Request] to a [http.MultipartRequest]
   @visibleForTesting
   Future<http.MultipartRequest> toMultipartRequest() async {
-    final http.MultipartRequest request = http.MultipartRequest(method, url)
-      ..headers.addAll(headers);
+    final http.MultipartRequest request = http.MultipartRequest(method, url)..headers.addAll(headers);
 
     for (final PartValue part in parts) {
       if (part.value == null) continue;
@@ -202,8 +198,7 @@ class Request extends http.BaseRequest {
   /// Convert this [Request] to a [http.StreamedRequest]
   @visibleForTesting
   http.StreamedRequest toStreamedRequest(Stream<List<int>> bodyStream) {
-    final http.StreamedRequest request = http.StreamedRequest(method, url)
-      ..headers.addAll(headers);
+    final http.StreamedRequest request = http.StreamedRequest(method, url)..headers.addAll(headers);
 
     bodyStream.listen(
       request.sink.add,
@@ -228,8 +223,7 @@ class PartValue<T> {
 
   /// Makes a copy of this PartValue, replacing original values with the given ones.
   /// This method can also alter the type of the request body.
-  PartValue<NewType> copyWith<NewType>({String? name, NewType? value}) =>
-      PartValue<NewType>(
+  PartValue<NewType> copyWith<NewType>({String? name, NewType? value}) => PartValue<NewType>(
         name ?? this.name,
         value ?? this.value as NewType,
       );
