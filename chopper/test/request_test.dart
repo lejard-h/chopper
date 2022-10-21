@@ -111,7 +111,9 @@ void main() {
       );
 
       expect(
-        Request.uri('GET', Uri.parse('https://foo/bar?lorem=ipsum&dolor=123'), '').url,
+        Request.uri(
+                'GET', Uri.parse('https://foo/bar?lorem=ipsum&dolor=123'), '')
+            .url,
         equals(Uri.parse('https://foo/bar?lorem=ipsum&dolor=123')),
       );
 
@@ -167,7 +169,8 @@ void main() {
 
     test('copyWith creates a BaseRequest', () {
       expect(
-        Request.uri('GET', Uri.parse('https://foo/bar'), '').copyWith(method: HttpMethod.Put),
+        Request.uri('GET', Uri.parse('https://foo/bar'), '')
+            .copyWith(method: HttpMethod.Put),
         isA<http.BaseRequest>(),
       );
     });
