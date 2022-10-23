@@ -429,7 +429,8 @@ void main() {
     });
 
     test('applyHeaders', () {
-      final req1 = applyHeaders(Request('GET', Uri.parse('/'), baseUrl), {'foo': 'bar'});
+      final req1 =
+          applyHeaders(Request('GET', Uri.parse('/'), baseUrl), {'foo': 'bar'});
 
       expect(req1.headers, equals({'foo': 'bar'}));
 
@@ -491,22 +492,27 @@ void main() {
       );
 
       expect(
-        Request.buildUri(Uri.parse('http://foo'), Uri.parse('/bar'), {}).toString(),
+        Request.buildUri(Uri.parse('http://foo'), Uri.parse('/bar'), {})
+            .toString(),
         equals('http://foo/bar'),
       );
 
       expect(
-        Request.buildUri(Uri.parse('https://foo'), Uri.parse('/bar'), {}).toString(),
+        Request.buildUri(Uri.parse('https://foo'), Uri.parse('/bar'), {})
+            .toString(),
         equals('https://foo/bar'),
       );
 
       expect(
-        Request.buildUri(Uri.parse('https://foo/'), Uri.parse('/bar'), {}).toString(),
+        Request.buildUri(Uri.parse('https://foo/'), Uri.parse('/bar'), {})
+            .toString(),
         equals('https://foo/bar'),
       );
 
       expect(
-        Request.buildUri(Uri.parse('https://foo/'), Uri.parse('/bar'), {'abc': 'xyz'}).toString(),
+        Request.buildUri(
+                Uri.parse('https://foo/'), Uri.parse('/bar'), {'abc': 'xyz'})
+            .toString(),
         equals('https://foo/bar?abc=xyz'),
       );
 
@@ -533,14 +539,13 @@ void main() {
       );
 
       expect(
-        Request('GET', Uri.https('bar'), Uri.parse('foo'))
-            .url
-            .toString(),
+        Request('GET', Uri.https('bar'), Uri.parse('foo')).url.toString(),
         equals('https://bar'),
       );
 
       expect(
-        Request('GET', Uri(scheme: 'https', host: 'bar', port: 666), Uri.parse('foo'))
+        Request('GET', Uri(scheme: 'https', host: 'bar', port: 666),
+                Uri.parse('foo'))
             .url
             .toString(),
         equals('https://bar:666'),

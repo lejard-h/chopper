@@ -34,7 +34,8 @@ void main() {
       final converter = TestConverter();
 
       final encoded = converter.convertRequest(
-        Request('GET', Uri.parse('/'), baseUrl, body: _Converted<String>('foo')),
+        Request('GET', Uri.parse('/'), baseUrl,
+            body: _Converted<String>('foo')),
       );
 
       expect(encoded.body is String, isTrue);

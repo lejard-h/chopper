@@ -109,7 +109,7 @@ abstract class ApiService extends ChopperService {
         }
         return http.Response(json.encode(result), 200);
       }),
-      baseUrl: 'https://mysite.com/api',
+      baseUrl: Uri.parse('https://mysite.com/api'),
       services: [
         _$ApiService(),
       ],
@@ -332,7 +332,7 @@ Future<void> main() async {
   /// Instantiate a ChopperClient
   final chopper = ChopperClient(
     client: client,
-    baseUrl: 'http://localhost:8000',
+    baseUrl: Uri.parse('http://localhost:8000'),
     // bind your object factories here
     converter: converter,
     errorConverter: converter,

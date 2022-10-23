@@ -28,9 +28,11 @@ void main() {
       );
 
       expect(
-        Request('GET', Uri.parse('/bar?lorem=ipsum&dolor=123'),
-                Uri.parse('https://foo/'),)
-            .url,
+        Request(
+          'GET',
+          Uri.parse('/bar?lorem=ipsum&dolor=123'),
+          Uri.parse('https://foo/'),
+        ).url,
         equals(Uri.parse('https://foo/bar?lorem=ipsum&dolor=123')),
       );
 

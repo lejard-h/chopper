@@ -48,8 +48,7 @@ void main() {
       final chopper = ChopperClient(
         interceptors: [
           (Request request) => request.copyWith(
-                url: request.url
-                    .replace(path: '${request.url.path}/intercept'),
+                url: request.url.replace(path: '${request.url.path}/intercept'),
               ),
         ],
         services: [
