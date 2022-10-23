@@ -27,7 +27,7 @@ final client = MockClient((req) async {
 main() async {
   final chopper = ChopperClient(
     client: client,
-    baseUrl: 'http://localhost:8000',
+    baseUrl: Uri.parse('http://localhost:8000'),
     converter: BuiltValueConverter(),
     errorConverter: BuiltValueConverter(),
     services: [

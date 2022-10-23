@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
 
-const baseUrl = 'http://localhost:8000';
+final baseUrl = Uri.parse('http://localhost:8000');
 
 void main() {
   ChopperClient buildClient([http.Client? httpClient]) => ChopperClient(

@@ -203,10 +203,10 @@ void main() {
   });
 
   test('PartValue', () async {
-    final req = await Request.uri(
+    final req = await Request(
       HttpMethod.Post,
       Uri.parse('https://foo/'),
-      '',
+      Uri.parse(''),
       parts: [
         PartValue<String>('foo', 'bar'),
         PartValue<int>('int', 42),
@@ -220,10 +220,10 @@ void main() {
   test(
     'PartFile',
     () async {
-      final req = await Request.uri(
+      final req = await Request(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
-        '',
+        Uri.parse(''),
         parts: [
           PartValueFile<String>('foo', 'test/multipart_test.dart'),
           PartValueFile<List<int>>('int', [1, 2]),
@@ -259,10 +259,10 @@ void main() {
   });
 
   test('Multipart request non nullable', () async {
-    final req = await Request.uri(
+    final req = await Request(
       HttpMethod.Post,
       Uri.parse('https://foo/'),
-      '',
+      Uri.parse(''),
       parts: [
         PartValue<int>('int', 42),
         PartValueFile<List<int>>('list int', [1, 2]),
@@ -279,10 +279,10 @@ void main() {
   });
 
   test('PartValue with MultipartFile directly', () async {
-    final req = await Request.uri(
+    final req = await Request(
       HttpMethod.Post,
       Uri.parse('https://foo/'),
-      '',
+      Uri.parse(''),
       parts: [
         PartValue<http.MultipartFile>(
           '',
@@ -318,10 +318,10 @@ void main() {
 
   test('Throw exception', () async {
     expect(
-      () async => await Request.uri(
+      () async => await Request(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
-        '',
+        Uri.parse(''),
         parts: [
           PartValueFile('', 123),
         ],

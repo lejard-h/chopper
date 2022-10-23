@@ -29,7 +29,7 @@ final List<Type> allowedInterceptorsType = [
 class ChopperClient {
   /// Base URL of each request of the registered services.
   /// E.g., the hostname of your service.
-  final String baseUrl;
+  final Uri baseUrl;
 
   /// The [http.Client] used to make network calls.
   final http.Client httpClient;
@@ -60,6 +60,7 @@ class ChopperClient {
   /// The base URL of each request of the registered services can be defined
   /// with the [baseUrl] parameter.
   ///  E.g., the hostname of your service.
+  ///  If not provided, a empty default [Uri] will be used.
   ///
   /// A custom HTTP client can be passed as the [client] parameter to be used
   /// with the created [ChopperClient].
@@ -70,7 +71,7 @@ class ChopperClient {
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///   baseUrl: 'localhost:8000',
+  ///   baseUrl: Uri.parse('localhost:8000'),
   ///   services: [
   ///     // Add a generated service
   ///     TodosListService.create()
@@ -111,14 +112,15 @@ class ChopperClient {
   ///   );
   /// ```
   ChopperClient({
-    this.baseUrl = '',
+    Uri? baseUrl,
     http.Client? client,
     Iterable interceptors = const [],
     this.authenticator,
     this.converter,
     this.errorConverter,
     Iterable<ChopperService> services = const [],
-  })  : httpClient = client ?? http.Client(),
+  })  : baseUrl = baseUrl ?? Uri.parse(''),
+        httpClient = client ?? http.Client(),
         _clientIsInternal = client == null {
     if (!interceptors.every(_isAnInterceptor)) {
       throw ArgumentError(
@@ -152,7 +154,7 @@ class ChopperClient {
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///   baseUrl: 'localhost:8000',
+  ///   baseUrl: Uri.parse('localhost:8000'),
   ///   services: [
   ///     // Add a generated service
   ///     TodosListService.create()
@@ -343,12 +345,12 @@ class ChopperClient {
   Future<Response<BodyType>> get<BodyType, InnerType>(
     Uri url, {
     Map<String, String> headers = const {},
-    String? baseUrl,
+    Uri? baseUrl,
     Map<String, dynamic> parameters = const {},
     dynamic body,
   }) =>
       send<BodyType, InnerType>(
-        Request.uri(
+        Request(
           HttpMethod.Get,
           url,
           baseUrl ?? this.baseUrl,
@@ -366,10 +368,10 @@ class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request.uri(
+        Request(
           HttpMethod.Post,
           url,
           baseUrl ?? this.baseUrl,
@@ -389,10 +391,10 @@ class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request.uri(
+        Request(
           HttpMethod.Put,
           url,
           baseUrl ?? this.baseUrl,
@@ -412,10 +414,10 @@ class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request.uri(
+        Request(
           HttpMethod.Patch,
           url,
           baseUrl ?? this.baseUrl,
@@ -432,10 +434,10 @@ class ChopperClient {
     Uri url, {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request.uri(
+        Request(
           HttpMethod.Delete,
           url,
           baseUrl ?? this.baseUrl,
@@ -449,10 +451,10 @@ class ChopperClient {
     Uri url, {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request.uri(
+        Request(
           HttpMethod.Head,
           url,
           baseUrl ?? this.baseUrl,
@@ -466,10 +468,10 @@ class ChopperClient {
     Uri url, {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
-        Request.uri(
+        Request(
           HttpMethod.Options,
           url,
           baseUrl ?? this.baseUrl,

@@ -1,14 +1,12 @@
 import 'dart:async';
 
-import 'package:chopper/src/extensions.dart';
+import 'package:chopper/chopper.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
 class Request extends http.BaseRequest {
-  final String path;
-  final String origin;
   final dynamic body;
   final Map<String, dynamic> parameters;
   final bool multipart;
@@ -18,8 +16,8 @@ class Request extends http.BaseRequest {
 
   Request(
     String method,
-    this.path,
-    this.origin, {
+    Uri uri,
+    Uri baseUri, {
     this.body,
     this.parameters = const {},
     Map<String, String> headers = const {},
@@ -30,43 +28,9 @@ class Request extends http.BaseRequest {
   }) : super(
           method,
           buildUri(
-            origin,
-            path,
+            baseUri,
+            uri,
             parameters,
-            useBrackets: useBrackets,
-            includeNullQueryVars: includeNullQueryVars,
-          ),
-        ) {
-    this.headers.addAll(headers);
-  }
-
-  /// Build the Chopper [Request] using a [Uri] instead of a [path] and [origin].
-  /// Both the query parameters in the [Uri] and those provided explicitly in
-  /// the [parameters] are merged together.
-  Request.uri(
-    String method,
-    Uri url,
-    String baseUrl, {
-    this.body,
-    Map<String, String> headers = const {},
-    Map<String, dynamic>? parameters,
-    this.multipart = false,
-    this.parts = const [],
-    this.useBrackets = false,
-    this.includeNullQueryVars = false,
-  })  : origin = url.isScheme('HTTP') || url.isScheme('HTTPS')
-            ? url.origin
-            : baseUrl,
-        path = url.path,
-        parameters = {...url.queryParametersAll, ...?parameters},
-        super(
-          method,
-          buildUri(
-            url.isScheme('HTTP') || url.isScheme('HTTPS')
-                ? url.origin
-                : baseUrl,
-            url.path,
-            {...url.queryParametersAll, ...?parameters},
             useBrackets: useBrackets,
             includeNullQueryVars: includeNullQueryVars,
           ),
@@ -77,8 +41,7 @@ class Request extends http.BaseRequest {
   /// Makes a copy of this [Request], replacing original values with the given ones.
   Request copyWith({
     String? method,
-    String? path,
-    String? origin,
+    Uri? url,
     dynamic body,
     Map<String, dynamic>? parameters,
     Map<String, String>? headers,
@@ -89,8 +52,9 @@ class Request extends http.BaseRequest {
   }) =>
       Request(
         method ?? this.method,
-        path ?? this.path,
-        origin ?? this.origin,
+        url ?? this.url,
+        // baseUrl is not need because it was concatenated the first time create the Request.
+        Uri.parse(''),
         body: body ?? this.body,
         parameters: parameters ?? this.parameters,
         headers: headers ?? this.headers,
@@ -105,17 +69,17 @@ class Request extends http.BaseRequest {
   /// If [url] starts with 'http://' or 'https://', baseUrl is ignored.
   @visibleForTesting
   static Uri buildUri(
-    String baseUrl,
-    String url,
+    Uri baseUrl,
+    Uri url,
     Map<String, dynamic> parameters, {
     bool useBrackets = false,
     bool includeNullQueryVars = false,
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
-    final Uri uri = url.startsWith('http://') || url.startsWith('https://')
-        ? Uri.parse(url)
-        : Uri.parse('${baseUrl.strip('/')}/${url.leftStrip('/')}');
+    final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
+        ? url
+        : _mergeUri(baseUrl, url);
 
     final String query = mapToQuery(
       parameters,
@@ -126,6 +90,25 @@ class Request extends http.BaseRequest {
     return query.isNotEmpty
         ? uri.replace(query: uri.hasQuery ? '${uri.query}&$query' : query)
         : uri;
+  }
+
+  static Uri _mergeUri(Uri baseUrl, Uri url) {
+    final queries = [];
+    if (baseUrl.hasQuery) {
+      queries.add(baseUrl.query);
+    }
+    if (url.hasQuery) {
+      queries.add(url.query);
+    }
+
+    final path = baseUrl.hasEmptyPath
+        ? url.path
+        : '${baseUrl.path.rightStrip('/')}/${url.path.leftStrip('/')}';
+
+    return baseUrl.replace(
+      path: path,
+      query: queries.isNotEmpty ? queries.join('&') : null,
+    );
   }
 
   /// Converts this Chopper Request into a [http.BaseRequest].

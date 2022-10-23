@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 import 'test_service.dart';
 
-const baseUrl = 'http://localhost:8000';
+final baseUrl = Uri.parse('http://localhost:8000');
 
 void main() {
   ChopperClient buildClient([
@@ -404,7 +404,7 @@ void main() {
 
     test('applyHeader', () {
       final req1 = applyHeader(
-        Request('GET', '/', baseUrl),
+        Request('GET', Uri.parse('/'), baseUrl),
         'foo',
         'bar',
       );
@@ -412,7 +412,7 @@ void main() {
       expect(req1.headers, equals({'foo': 'bar'}));
 
       final req2 = applyHeader(
-        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
+        Request('GET', Uri.parse('/'), baseUrl, headers: {'foo': 'bar'}),
         'bar',
         'foo',
       );
@@ -420,7 +420,7 @@ void main() {
       expect(req2.headers, equals({'foo': 'bar', 'bar': 'foo'}));
 
       final req3 = applyHeader(
-        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
+        Request('GET', Uri.parse('/'), baseUrl, headers: {'foo': 'bar'}),
         'foo',
         'foo',
       );
@@ -429,19 +429,19 @@ void main() {
     });
 
     test('applyHeaders', () {
-      final req1 = applyHeaders(Request('GET', '/', baseUrl), {'foo': 'bar'});
+      final req1 = applyHeaders(Request('GET', Uri.parse('/'), baseUrl), {'foo': 'bar'});
 
       expect(req1.headers, equals({'foo': 'bar'}));
 
       final req2 = applyHeaders(
-        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
+        Request('GET', Uri.parse('/'), baseUrl, headers: {'foo': 'bar'}),
         {'bar': 'foo'},
       );
 
       expect(req2.headers, equals({'foo': 'bar', 'bar': 'foo'}));
 
       final req3 = applyHeaders(
-        Request('GET', '/', baseUrl, headers: {'foo': 'bar'}),
+        Request('GET', Uri.parse('/'), baseUrl, headers: {'foo': 'bar'}),
         {'foo': 'foo'},
       );
 
@@ -471,49 +471,49 @@ void main() {
 
     test('url concatenation', () async {
       expect(
-        Request.buildUri('foo', 'bar', {}).toString(),
+        Request.buildUri(Uri.parse('foo'), Uri.parse('bar'), {}).toString(),
         equals('foo/bar'),
       );
 
       expect(
-        Request.buildUri('foo/', 'bar', {}).toString(),
+        Request.buildUri(Uri.parse('foo/'), Uri.parse('bar'), {}).toString(),
         equals('foo/bar'),
       );
 
       expect(
-        Request.buildUri('foo', '/bar', {}).toString(),
+        Request.buildUri(Uri.parse('foo'), Uri.parse('/bar'), {}).toString(),
         equals('foo/bar'),
       );
 
       expect(
-        Request.buildUri('foo/', '/bar', {}).toString(),
+        Request.buildUri(Uri.parse('foo/'), Uri.parse('/bar'), {}).toString(),
         equals('foo/bar'),
       );
 
       expect(
-        Request.buildUri('http://foo', '/bar', {}).toString(),
+        Request.buildUri(Uri.parse('http://foo'), Uri.parse('/bar'), {}).toString(),
         equals('http://foo/bar'),
       );
 
       expect(
-        Request.buildUri('https://foo', '/bar', {}).toString(),
+        Request.buildUri(Uri.parse('https://foo'), Uri.parse('/bar'), {}).toString(),
         equals('https://foo/bar'),
       );
 
       expect(
-        Request.buildUri('https://foo/', '/bar', {}).toString(),
+        Request.buildUri(Uri.parse('https://foo/'), Uri.parse('/bar'), {}).toString(),
         equals('https://foo/bar'),
       );
 
       expect(
-        Request.buildUri('https://foo/', '/bar', {'abc': 'xyz'}).toString(),
+        Request.buildUri(Uri.parse('https://foo/'), Uri.parse('/bar'), {'abc': 'xyz'}).toString(),
         equals('https://foo/bar?abc=xyz'),
       );
 
       expect(
         Request.buildUri(
-          'https://foo/',
-          '/bar?first=123&second=456',
+          Uri.parse('https://foo/'),
+          Uri.parse('/bar?first=123&second=456'),
           {
             'third': '789',
             'fourth': '012',
@@ -523,35 +523,35 @@ void main() {
       );
 
       expect(
-        Request.uri('GET', Uri(path: '/bar'), 'foo').url.toString(),
+        Request('GET', Uri(path: '/bar'), Uri.parse('foo')).url.toString(),
         equals('foo/bar'),
       );
 
       expect(
-        Request.uri('GET', Uri(host: 'bar'), 'foo').url.toString(),
+        Request('GET', Uri(host: 'bar'), Uri.parse('foo')).url.toString(),
         equals('foo/'),
       );
 
       expect(
-        Request.uri('GET', Uri(scheme: 'https', host: 'bar'), 'foo')
+        Request('GET', Uri.https('bar'), Uri.parse('foo'))
             .url
             .toString(),
-        equals('https://bar/'),
+        equals('https://bar'),
       );
 
       expect(
-        Request.uri('GET', Uri(scheme: 'https', host: 'bar', port: 666), 'foo')
+        Request('GET', Uri(scheme: 'https', host: 'bar', port: 666), Uri.parse('foo'))
             .url
             .toString(),
-        equals('https://bar:666/'),
+        equals('https://bar:666'),
       );
     });
 
     test('BodyBytes', () {
-      final request = Request.uri(
+      final request = Request(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
-        '',
+        Uri.parse(''),
         body: [1, 2, 3],
       ).toHttpRequest();
 
@@ -559,10 +559,10 @@ void main() {
     });
 
     test('BodyFields', () {
-      final request = Request.uri(
+      final request = Request(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
-        '',
+        Uri.parse(''),
         body: {'foo': 'bar'},
       ).toHttpRequest();
 
@@ -571,10 +571,10 @@ void main() {
 
     test('Wrong body', () {
       try {
-        Request.uri(
+        Request(
           HttpMethod.Post,
           Uri.parse('https://foo/'),
-          '',
+          Uri.parse(''),
           body: {'foo': 42},
         ).toHttpRequest();
       } on ArgumentError catch (e) {

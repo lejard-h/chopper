@@ -26,10 +26,10 @@ void main() {
 
   group('BuiltValueConverter', () {
     test('convert request', () {
-      var request = Request.uri(
+      var request = Request(
         HttpMethod.Post,
         Uri.parse('https://foo/'),
-        '',
+        Uri.parse(''),
         body: data,
       );
       request = converter.convertRequest(request);
@@ -70,10 +70,10 @@ void main() {
     });
 
     test('has json headers', () {
-      var request = Request.uri(
+      var request = Request(
         HttpMethod.Get,
         Uri.parse('https://foo/'),
-        '',
+        Uri.parse(''),
         body: data,
       );
       request = converter.convertRequest(request);

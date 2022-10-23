@@ -47,8 +47,10 @@ void main() {
     test('RequestInterceptorFunc', () async {
       final chopper = ChopperClient(
         interceptors: [
-          (Request request) =>
-              request.copyWith(path: '${request.url}/intercept'),
+          (Request request) => request.copyWith(
+                url: request.url
+                    .replace(path: '${request.url.path}/intercept'),
+              ),
         ],
         services: [
           HttpTestService.create(),
@@ -184,8 +186,8 @@ void main() {
 
     final fakeRequest = Request(
       'POST',
-      '/',
-      'base',
+      Uri.parse('/'),
+      Uri.parse('base'),
       body: 'test',
       headers: {'foo': 'bar'},
     );
@@ -270,8 +272,9 @@ class ResponseIntercept implements ResponseInterceptor {
 
 class RequestIntercept implements RequestInterceptor {
   @override
-  FutureOr<Request> onRequest(Request request) =>
-      request.copyWith(path: '${request.url}/intercept');
+  FutureOr<Request> onRequest(Request request) => request.copyWith(
+        url: request.url.replace(path: '${request.url}/intercept'),
+      );
 }
 
 class _Intercepted<BodyType> {

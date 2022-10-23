@@ -21,7 +21,7 @@ class _$HttpTestService extends HttpTestService {
     String id, {
     required String dynamicHeader,
   }) {
-    final String $url = '/test/get/${id}';
+    final Uri $url = Uri.parse('/test/get/${id}');
     final Map<String, String> $headers = {
       'test': dynamicHeader,
     };
@@ -36,7 +36,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> headTest() {
-    final String $url = '/test/head';
+    final Uri $url = Uri.parse('/test/head');
     final Request $request = Request(
       'HEAD',
       $url,
@@ -47,7 +47,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> optionsTest() {
-    final String $url = '/test/options';
+    final Uri $url = Uri.parse('/test/options');
     final Request $request = Request(
       'OPTIONS',
       $url,
@@ -58,7 +58,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<Stream<List<int>>>> getStreamTest() {
-    final String $url = '/test/get';
+    final Uri $url = Uri.parse('/test/get');
     final Request $request = Request(
       'GET',
       $url,
@@ -69,7 +69,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getAll() {
-    final String $url = '/test';
+    final Uri $url = Uri.parse('/test');
     final Request $request = Request(
       'GET',
       $url,
@@ -80,7 +80,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getAllWithTrailingSlash() {
-    final String $url = '/test/';
+    final Uri $url = Uri.parse('/test/');
     final Request $request = Request(
       'GET',
       $url,
@@ -95,7 +95,7 @@ class _$HttpTestService extends HttpTestService {
     int? number,
     int? def = 42,
   }) {
-    final String $url = '/test/query';
+    final Uri $url = Uri.parse('/test/query');
     final Map<String, dynamic> $params = <String, dynamic>{
       'name': name,
       'int': number,
@@ -112,7 +112,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getQueryMapTest(Map<String, dynamic> query) {
-    final String $url = '/test/query_map';
+    final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = query;
     final Request $request = Request(
       'GET',
@@ -128,7 +128,7 @@ class _$HttpTestService extends HttpTestService {
     Map<String, dynamic> query, {
     bool? test,
   }) {
-    final String $url = '/test/query_map';
+    final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = <String, dynamic>{'test': test};
     $params.addAll(query);
     final Request $request = Request(
@@ -146,7 +146,7 @@ class _$HttpTestService extends HttpTestService {
     int? number,
     Map<String, dynamic> filters = const {},
   }) {
-    final String $url = '/test/query_map';
+    final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = <String, dynamic>{
       'name': name,
       'number': number,
@@ -167,7 +167,7 @@ class _$HttpTestService extends HttpTestService {
     int? number,
     Map<String, dynamic>? filters,
   }) {
-    final String $url = '/test/query_map';
+    final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = <String, dynamic>{
       'name': name,
       'number': number,
@@ -184,7 +184,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getQueryMapTest5({Map<String, dynamic>? filters}) {
-    final String $url = '/test/query_map';
+    final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = filters ?? const {};
     final Request $request = Request(
       'GET',
@@ -197,7 +197,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> getBody(dynamic body) {
-    final String $url = '/test/get_body';
+    final Uri $url = Uri.parse('/test/get_body');
     final $body = body;
     final Request $request = Request(
       'GET',
@@ -210,7 +210,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postTest(String data) {
-    final String $url = '/test/post';
+    final Uri $url = Uri.parse('/test/post');
     final $body = data;
     final Request $request = Request(
       'POST',
@@ -223,7 +223,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postStreamTest(Stream<List<int>> byteStream) {
-    final String $url = '/test/post';
+    final Uri $url = Uri.parse('/test/post');
     final $body = byteStream;
     final Request $request = Request(
       'POST',
@@ -239,7 +239,7 @@ class _$HttpTestService extends HttpTestService {
     String test,
     String data,
   ) {
-    final String $url = '/test/put/${test}';
+    final Uri $url = Uri.parse('/test/put/${test}');
     final $body = data;
     final Request $request = Request(
       'PUT',
@@ -252,7 +252,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> deleteTest(String id) {
-    final String $url = '/test/delete/${id}';
+    final Uri $url = Uri.parse('/test/delete/${id}');
     final Map<String, String> $headers = {
       'foo': 'bar',
     };
@@ -270,7 +270,7 @@ class _$HttpTestService extends HttpTestService {
     String id,
     String data,
   ) {
-    final String $url = '/test/patch/${id}';
+    final Uri $url = Uri.parse('/test/patch/${id}');
     final $body = data;
     final Request $request = Request(
       'PATCH',
@@ -283,7 +283,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> mapTest(Map<String, String> map) {
-    final String $url = '/test/map';
+    final Uri $url = Uri.parse('/test/map');
     final $body = map;
     final Request $request = Request(
       'POST',
@@ -296,7 +296,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postForm(Map<String, String> fields) {
-    final String $url = '/test/form/body';
+    final Uri $url = Uri.parse('/test/form/body');
     final $body = fields;
     final Request $request = Request(
       'POST',
@@ -312,7 +312,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postFormUsingHeaders(Map<String, String> fields) {
-    final String $url = '/test/form/body';
+    final Uri $url = Uri.parse('/test/form/body');
     final Map<String, String> $headers = {
       'content-type': 'application/x-www-form-urlencoded',
     };
@@ -332,7 +332,7 @@ class _$HttpTestService extends HttpTestService {
     String foo,
     int bar,
   ) {
-    final String $url = '/test/form/body/fields';
+    final Uri $url = Uri.parse('/test/form/body/fields');
     final $body = <String, dynamic>{
       'foo': foo,
       'bar': bar,
@@ -351,7 +351,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> forceJsonTest(Map<dynamic, dynamic> map) {
-    final String $url = '/test/map/json';
+    final Uri $url = Uri.parse('/test/map/json');
     final $body = map;
     final Request $request = Request(
       'POST',
@@ -371,7 +371,7 @@ class _$HttpTestService extends HttpTestService {
     Map<dynamic, dynamic> a,
     Map<dynamic, dynamic> b,
   ) {
-    final String $url = '/test/multi';
+    final Uri $url = Uri.parse('/test/multi');
     final List<PartValue> $parts = <PartValue>[
       PartValue<Map<dynamic, dynamic>>(
         '1',
@@ -394,7 +394,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postFile(List<int> bytes) {
-    final String $url = '/test/file';
+    final Uri $url = Uri.parse('/test/file');
     final List<PartValue> $parts = <PartValue>[
       PartValueFile<List<int>>(
         'file',
@@ -416,7 +416,7 @@ class _$HttpTestService extends HttpTestService {
     MultipartFile file, {
     String? id,
   }) {
-    final String $url = '/test/file';
+    final Uri $url = Uri.parse('/test/file');
     final List<PartValue> $parts = <PartValue>[
       PartValue<String?>(
         'id',
@@ -439,7 +439,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postListFiles(List<MultipartFile> files) {
-    final String $url = '/test/files';
+    final Uri $url = Uri.parse('/test/files');
     final List<PartValue> $parts = <PartValue>[
       PartValueFile<List<MultipartFile>>(
         'files',
@@ -458,7 +458,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<dynamic> fullUrl() {
-    final String $url = 'https://test.com';
+    final Uri $url = Uri.parse('https://test.com');
     final Request $request = Request(
       'GET',
       $url,
@@ -469,7 +469,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<List<String>>> listString() {
-    final String $url = '/test/list/string';
+    final Uri $url = Uri.parse('/test/list/string');
     final Request $request = Request(
       'GET',
       $url,
@@ -480,7 +480,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> noBody() {
-    final String $url = '/test/no-body';
+    final Uri $url = Uri.parse('/test/no-body');
     final Request $request = Request(
       'POST',
       $url,
@@ -495,7 +495,7 @@ class _$HttpTestService extends HttpTestService {
     String? bar,
     String? baz,
   }) {
-    final String $url = '/test/query_param_include_null_query_vars';
+    final Uri $url = Uri.parse('/test/query_param_include_null_query_vars');
     final Map<String, dynamic> $params = <String, dynamic>{
       'foo': foo,
       'bar': bar,
@@ -513,7 +513,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingListQueryParam(List<String> value) {
-    final String $url = '/test/list_query_param';
+    final Uri $url = Uri.parse('/test/list_query_param');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -527,7 +527,7 @@ class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getUsingListQueryParamWithBrackets(
       List<String> value) {
-    final String $url = '/test/list_query_param_with_brackets';
+    final Uri $url = Uri.parse('/test/list_query_param_with_brackets');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -541,7 +541,7 @@ class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingMapQueryParam(Map<String, dynamic> value) {
-    final String $url = '/test/map_query_param';
+    final Uri $url = Uri.parse('/test/map_query_param');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -555,7 +555,7 @@ class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getUsingMapQueryParamIncludeNullQueryVars(
       Map<String, dynamic> value) {
-    final String $url = '/test/map_query_param_include_null_query_vars';
+    final Uri $url = Uri.parse('/test/map_query_param_include_null_query_vars');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -570,7 +570,7 @@ class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
       Map<String, dynamic> value) {
-    final String $url = '/test/map_query_param_with_brackets';
+    final Uri $url = Uri.parse('/test/map_query_param_with_brackets');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
