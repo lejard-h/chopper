@@ -112,8 +112,10 @@ void main() {
 
       expect(
         Request.uri(
-                'GET', Uri.parse('https://foo/bar?lorem=ipsum&dolor=123'), '')
-            .url,
+          'GET',
+          Uri.parse('https://foo/bar?lorem=ipsum&dolor=123'),
+          '',
+        ).url,
         equals(Uri.parse('https://foo/bar?lorem=ipsum&dolor=123')),
       );
 
@@ -146,6 +148,37 @@ void main() {
         equals(Uri.parse(
           'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b&lorem=ipsum&dolor=123&second_list=a&second_list=b',
         )),
+      );
+
+      expect(
+        Request.uri(
+          'GET',
+          Uri.parse(
+            'https://chopper.dev/test3',
+          ),
+          '',
+          parameters: {
+            'foo': 'bar',
+            'foo_list': [
+              'one',
+              'two',
+              'three',
+            ],
+            'user': {
+              'name': 'john',
+              'surname': 'doe',
+            },
+          },
+        ).url.toString(),
+        equals(
+          'https://chopper.dev/test3'
+          '?foo=bar'
+          '&foo_list=one'
+          '&foo_list=two'
+          '&foo_list=three'
+          '&user.name=john'
+          '&user.surname=doe',
+        ),
       );
     });
 
