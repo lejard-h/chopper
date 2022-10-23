@@ -49,6 +49,7 @@ class Request extends http.BaseRequest {
     String baseUrl, {
     this.body,
     Map<String, String> headers = const {},
+    Map<String, dynamic>? parameters,
     this.multipart = false,
     this.parts = const [],
     this.useBrackets = false,
@@ -57,7 +58,7 @@ class Request extends http.BaseRequest {
             ? url.origin
             : baseUrl,
         path = url.path,
-        parameters = url.queryParametersAll,
+        parameters = {...url.queryParametersAll, ...?parameters},
         super(
           method,
           buildUri(
@@ -65,7 +66,7 @@ class Request extends http.BaseRequest {
                 ? url.origin
                 : baseUrl,
             url.path,
-            url.queryParametersAll,
+            {...url.queryParametersAll, ...?parameters},
             useBrackets: useBrackets,
             includeNullQueryVars: includeNullQueryVars,
           ),

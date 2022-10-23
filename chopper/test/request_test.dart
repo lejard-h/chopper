@@ -120,11 +120,12 @@ void main() {
       expect(
         Request.uri(
           'GET',
-          Uri(scheme: 'https', host: 'foo', path: 'bar', queryParameters: {
-            'lorem': 'ipsum',
-            'dolor': '123',
-          }),
+          Uri.parse('https://foo/bar'),
           '',
+          parameters: {
+            'lorem': 'ipsum',
+            'dolor': 123,
+          },
         ).url,
         equals(Uri.parse('https://foo/bar?lorem=ipsum&dolor=123')),
       );
@@ -132,15 +133,15 @@ void main() {
       expect(
         Request.uri(
           'GET',
-          Uri(scheme: 'https', host: 'foo', path: 'bar', queryParameters: {
-            'first': 'sit',
-            'second': 'amet',
-            'first_list': ['a', 'b'],
-            'lorem': 'ipsum',
-            'dolor': '123',
-            'second_list': ['a', 'b'],
-          }),
+          Uri.parse(
+            'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b',
+          ),
           '',
+          parameters: {
+            'lorem': 'ipsum',
+            'dolor': 123,
+            'second_list': ['a', 'b'],
+          },
         ).url,
         equals(Uri.parse(
           'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b&lorem=ipsum&dolor=123&second_list=a&second_list=b',

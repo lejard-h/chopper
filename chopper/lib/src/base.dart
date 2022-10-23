@@ -344,6 +344,7 @@ class ChopperClient {
     Uri url, {
     Map<String, String> headers = const {},
     String? baseUrl,
+    Map<String, dynamic> parameters = const {},
     dynamic body,
   }) =>
       send<BodyType, InnerType>(
@@ -353,6 +354,7 @@ class ChopperClient {
           baseUrl ?? this.baseUrl,
           body: body,
           headers: headers,
+          parameters: parameters,
         ),
       );
 
@@ -362,6 +364,7 @@ class ChopperClient {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
+    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
@@ -373,6 +376,7 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
+          parameters: parameters,
           multipart: multipart,
         ),
       );
@@ -383,6 +387,7 @@ class ChopperClient {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
+    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
@@ -394,6 +399,7 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
+          parameters: parameters,
           multipart: multipart,
         ),
       );
@@ -404,6 +410,7 @@ class ChopperClient {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
+    Map<String, dynamic> parameters = const {},
     bool multipart = false,
     String? baseUrl,
   }) =>
@@ -415,6 +422,7 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
+          parameters: parameters,
           multipart: multipart,
         ),
       );
@@ -423,6 +431,7 @@ class ChopperClient {
   Future<Response<BodyType>> delete<BodyType, InnerType>(
     Uri url, {
     Map<String, String> headers = const {},
+    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
@@ -431,6 +440,7 @@ class ChopperClient {
           url,
           baseUrl ?? this.baseUrl,
           headers: headers,
+          parameters: parameters,
         ),
       );
 
@@ -438,6 +448,7 @@ class ChopperClient {
   Future<Response<BodyType>> head<BodyType, InnerType>(
     Uri url, {
     Map<String, String> headers = const {},
+    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
@@ -446,6 +457,7 @@ class ChopperClient {
           url,
           baseUrl ?? this.baseUrl,
           headers: headers,
+          parameters: parameters,
         ),
       );
 
@@ -453,6 +465,7 @@ class ChopperClient {
   Future<Response<BodyType>> options<BodyType, InnerType>(
     Uri url, {
     Map<String, String> headers = const {},
+    Map<String, dynamic> parameters = const {},
     String? baseUrl,
   }) =>
       send<BodyType, InnerType>(
@@ -461,6 +474,7 @@ class ChopperClient {
           url,
           baseUrl ?? this.baseUrl,
           headers: headers,
+          parameters: parameters,
         ),
       );
 
