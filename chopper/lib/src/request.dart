@@ -7,6 +7,8 @@ import 'package:meta/meta.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
 class Request extends http.BaseRequest {
+  final Uri uri;
+  final Uri baseUri;
   final dynamic body;
   final Map<String, dynamic> parameters;
   final bool multipart;
@@ -16,8 +18,8 @@ class Request extends http.BaseRequest {
 
   Request(
     String method,
-    Uri uri,
-    Uri baseUri, {
+    this.uri,
+    this.baseUri, {
     this.body,
     this.parameters = const {},
     Map<String, String> headers = const {},
@@ -41,7 +43,8 @@ class Request extends http.BaseRequest {
   /// Makes a copy of this [Request], replacing original values with the given ones.
   Request copyWith({
     String? method,
-    Uri? url,
+    Uri? uri,
+    Uri? baseUri,
     dynamic body,
     Map<String, dynamic>? parameters,
     Map<String, String>? headers,
@@ -52,9 +55,8 @@ class Request extends http.BaseRequest {
   }) =>
       Request(
         method ?? this.method,
-        url ?? this.url,
-        // baseUrl is not need because it was concatenated the first time create the Request.
-        Uri.parse(''),
+        uri ?? this.uri,
+        baseUri ?? this.baseUri,
         body: body ?? this.body,
         parameters: parameters ?? this.parameters,
         headers: headers ?? this.headers,

@@ -529,6 +529,41 @@ void main() {
       );
 
       expect(
+        Request.buildUri(
+          Uri.parse('https://foo?first=123&second=456'),
+          Uri.parse('/bar'),
+          {
+            'third': '789',
+            'fourth': '012',
+          },
+        ).toString(),
+        equals('https://foo/bar?first=123&second=456&third=789&fourth=012'),
+      );
+
+      expect(
+        Request.buildUri(
+          Uri.parse('https://foo?first=123&second=456'),
+          Uri.parse('/bar?third=789&fourth=012'),
+          {
+            'fifth': '345',
+            'sixth': '678',
+          },
+        ).toString(),
+        equals(
+          'https://foo/bar?first=123&second=456&third=789&fourth=012&fifth=345&sixth=678',
+        ),
+      );
+
+      expect(
+        Request.buildUri(
+          Uri.parse('https://foo.bar/foobar'),
+          Uri.parse('whatbar'),
+          {},
+        ).toString(),
+        equals('https://foo.bar/foobar/whatbar'),
+      );
+
+      expect(
         Request('GET', Uri(path: '/bar'), Uri.parse('foo')).url.toString(),
         equals('foo/bar'),
       );
