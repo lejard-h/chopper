@@ -511,8 +511,10 @@ void main() {
 
       expect(
         Request.buildUri(
-                Uri.parse('https://foo/'), Uri.parse('/bar'), {'abc': 'xyz'})
-            .toString(),
+          Uri.parse('https://foo/'),
+          Uri.parse('/bar'),
+          {'abc': 'xyz'},
+        ).toString(),
         equals('https://foo/bar?abc=xyz'),
       );
 
@@ -564,6 +566,15 @@ void main() {
       );
 
       expect(
+        Request.buildUri(
+          Uri.parse('https://foo/bar?first=123&second=456'),
+          Uri.parse('https://bar/foo?fourth=789&fifth=012'),
+          {},
+        ).toString(),
+        equals('https://bar/foo?fourth=789&fifth=012&first=123&second=456'),
+      );
+
+      expect(
         Request('GET', Uri(path: '/bar'), Uri.parse('foo')).url.toString(),
         equals('foo/bar'),
       );
@@ -579,10 +590,11 @@ void main() {
       );
 
       expect(
-        Request('GET', Uri(scheme: 'https', host: 'bar', port: 666),
-                Uri.parse('foo'))
-            .url
-            .toString(),
+        Request(
+          'GET',
+          Uri(scheme: 'https', host: 'bar', port: 666),
+          Uri.parse('foo'),
+        ).url.toString(),
         equals('https://bar:666'),
       );
     });

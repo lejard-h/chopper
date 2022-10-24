@@ -80,7 +80,7 @@ class Request extends http.BaseRequest {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
     final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
-        ? url
+        ? _mergeUri(url, baseUrl, mergePaths: false)
         : _mergeUri(baseUrl, url);
 
     final String query = mapToQuery(
@@ -94,20 +94,27 @@ class Request extends http.BaseRequest {
         : uri;
   }
 
-  static Uri _mergeUri(Uri baseUrl, Uri url) {
+  /// Merges Uri into another Uri preserving queries and paths
+  static Uri _mergeUri(
+    Uri mergeIntoUri,
+    Uri addToUri, {
+    bool mergePaths = true,
+  }) {
     final queries = [];
-    if (baseUrl.hasQuery) {
-      queries.add(baseUrl.query);
+    if (mergeIntoUri.hasQuery) {
+      queries.add(mergeIntoUri.query);
     }
-    if (url.hasQuery) {
-      queries.add(url.query);
+    if (addToUri.hasQuery) {
+      queries.add(addToUri.query);
     }
 
-    final path = baseUrl.hasEmptyPath
-        ? url.path
-        : '${baseUrl.path.rightStrip('/')}/${url.path.leftStrip('/')}';
+    final path = mergePaths
+        ? mergeIntoUri.hasEmptyPath
+            ? addToUri.path
+            : '${mergeIntoUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}'
+        : null;
 
-    return baseUrl.replace(
+    return mergeIntoUri.replace(
       path: path,
       query: queries.isNotEmpty ? queries.join('&') : null,
     );
