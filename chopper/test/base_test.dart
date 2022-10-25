@@ -571,7 +571,7 @@ void main() {
           Uri.parse('https://bar/foo?fourth=789&fifth=012'),
           {},
         ).toString(),
-        equals('https://bar/foo?fourth=789&fifth=012&first=123&second=456'),
+        equals('https://bar/foo?fourth=789&fifth=012'),
       );
 
       expect(
@@ -1257,5 +1257,54 @@ void main() {
     expect(response.statusCode, equals(200));
 
     httpClient.close();
+  });
+
+  test('client baseUrl cannot contain query parameters', () {
+    expect(
+      () => ChopperClient(
+        baseUrl: Uri.http(
+          'foo',
+          'bar',
+          {
+            'first': '123',
+            'second': '456',
+          },
+        ),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
+
+    expect(
+      () => ChopperClient(
+        baseUrl: Uri.parse('foo/bar?first=123'),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
+
+    expect(
+      () => ChopperClient(
+        baseUrl: Uri(
+          queryParameters: {
+            'first': '123',
+            'second': '456',
+          },
+        ),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
+    expect(
+      () => ChopperClient(
+        baseUrl: Uri(query: 'first=123&second=456'),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
   });
 }

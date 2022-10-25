@@ -27,7 +27,11 @@ class Request extends http.BaseRequest {
     this.parts = const [],
     this.useBrackets = false,
     this.includeNullQueryVars = false,
-  }) : super(
+  })  : assert(
+            !baseUri.hasQuery,
+            'baseUrl should not contain query parameters.'
+            'Use a request interceptor to add default query parameters'),
+        super(
           method,
           buildUri(
             baseUri,
@@ -80,7 +84,7 @@ class Request extends http.BaseRequest {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
     final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
-        ? _mergeUri(url, baseUrl, mergePaths: false)
+        ? url
         : _mergeUri(baseUrl, url);
 
     final String query = mapToQuery(
@@ -108,11 +112,9 @@ class Request extends http.BaseRequest {
       queries.add(addToUri.query);
     }
 
-    final path = mergePaths
-        ? mergeIntoUri.hasEmptyPath
-            ? addToUri.path
-            : '${mergeIntoUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}'
-        : null;
+    final path = mergeIntoUri.hasEmptyPath
+        ? addToUri.path
+        : '${mergeIntoUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
 
     return mergeIntoUri.replace(
       path: path,

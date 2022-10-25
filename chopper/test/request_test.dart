@@ -214,4 +214,61 @@ void main() {
       );
     });
   });
+
+  test('request baseUri cannot contain query parameters', () {
+    expect(
+      () => Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri.http(
+          'foo',
+          'bar',
+          {
+            'first': '123',
+            'second': '456',
+          },
+        ),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
+
+    expect(
+      () => Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri.parse('foo/bar?first=123'),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
+
+    expect(
+      () => Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri(
+          queryParameters: {
+            'first': '123',
+            'second': '456',
+          },
+        ),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
+    expect(
+      () => Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri(query: 'first=123&second=456'),
+      ),
+      throwsA(
+        TypeMatcher<AssertionError>(),
+      ),
+    );
+  });
 }

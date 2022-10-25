@@ -119,7 +119,11 @@ class ChopperClient {
     this.converter,
     this.errorConverter,
     Iterable<ChopperService> services = const [],
-  })  : baseUrl = baseUrl ?? Uri.parse(''),
+  })  : assert(
+            baseUrl == null || !baseUrl.hasQuery,
+            'baseUrl should not contain query parameters.'
+            'Use a request interceptor to add default query parameters'),
+        baseUrl = baseUrl ?? Uri.parse(''),
         httpClient = client ?? http.Client(),
         _clientIsInternal = client == null {
     if (!interceptors.every(_isAnInterceptor)) {
