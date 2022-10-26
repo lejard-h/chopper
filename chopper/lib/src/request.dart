@@ -21,7 +21,7 @@ class Request extends http.BaseRequest {
     this.uri,
     this.baseUri, {
     this.body,
-    this.parameters = const {},
+    Map<String, dynamic>? parameters,
     Map<String, String> headers = const {},
     this.multipart = false,
     this.parts = const [],
@@ -29,14 +29,16 @@ class Request extends http.BaseRequest {
     this.includeNullQueryVars = false,
   })  : assert(
             !baseUri.hasQuery,
-            'baseUrl should not contain query parameters.'
+            'baseUri should not contain query parameters.'
             'Use a request interceptor to add default query parameters'),
+        // Merge uri.queryParametersAll in the final parameters object so the request object reflects all configured queryParameters
+        parameters = {...uri.queryParametersAll, ...?parameters},
         super(
           method,
           buildUri(
             baseUri,
             uri,
-            parameters,
+            {...uri.queryParametersAll, ...?parameters},
             useBrackets: useBrackets,
             includeNullQueryVars: includeNullQueryVars,
           ),
@@ -87,38 +89,31 @@ class Request extends http.BaseRequest {
         ? url
         : _mergeUri(baseUrl, url);
 
+    // Check if parameter also has all the queryParameters from the url (not the merged uri)
+    final parametersContainsUriQuery = parameters.keys
+        .every((element) => url.queryParametersAll.keys.contains(element));
+    final allParameters = parametersContainsUriQuery
+        ? parameters
+        : {...url.queryParametersAll, ...parameters};
+
     final String query = mapToQuery(
-      parameters,
+      allParameters,
       useBrackets: useBrackets,
       includeNullQueryVars: includeNullQueryVars,
     );
 
-    return query.isNotEmpty
-        ? uri.replace(query: uri.hasQuery ? '${uri.query}&$query' : query)
-        : uri;
+    return query.isNotEmpty ? uri.replace(query: query) : uri;
   }
 
   /// Merges Uri into another Uri preserving queries and paths
-  static Uri _mergeUri(
-    Uri mergeIntoUri,
-    Uri addToUri, {
-    bool mergePaths = true,
-  }) {
-    final queries = [];
-    if (mergeIntoUri.hasQuery) {
-      queries.add(mergeIntoUri.query);
-    }
-    if (addToUri.hasQuery) {
-      queries.add(addToUri.query);
-    }
-
-    final path = mergeIntoUri.hasEmptyPath
+  static Uri _mergeUri(Uri baseUri, Uri addToUri) {
+    final path = baseUri.hasEmptyPath
         ? addToUri.path
-        : '${mergeIntoUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
+        : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
 
-    return mergeIntoUri.replace(
+    return baseUri.replace(
       path: path,
-      query: queries.isNotEmpty ? queries.join('&') : null,
+      query: addToUri.hasQuery ? addToUri.query : null,
     );
   }
 

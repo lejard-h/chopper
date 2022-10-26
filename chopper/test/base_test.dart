@@ -539,7 +539,7 @@ void main() {
             'fourth': '012',
           },
         ).toString(),
-        equals('https://foo/bar?first=123&second=456&third=789&fourth=012'),
+        equals('https://foo/bar?third=789&fourth=012'),
       );
 
       expect(
@@ -552,7 +552,7 @@ void main() {
           },
         ).toString(),
         equals(
-          'https://foo/bar?first=123&second=456&third=789&fourth=012&fifth=345&sixth=678',
+          'https://foo/bar?third=789&fourth=012&fifth=345&sixth=678',
         ),
       );
 
