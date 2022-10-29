@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:chopper/chopper.dart';
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
