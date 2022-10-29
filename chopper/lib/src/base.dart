@@ -123,7 +123,7 @@ class ChopperClient {
             baseUrl == null || !baseUrl.hasQuery,
             'baseUrl should not contain query parameters.'
             'Use a request interceptor to add default query parameters'),
-        baseUrl = baseUrl ?? Uri.parse(''),
+        baseUrl = baseUrl ?? Uri(),
         httpClient = client ?? http.Client(),
         _clientIsInternal = client == null {
     if (!interceptors.every(_isAnInterceptor)) {
