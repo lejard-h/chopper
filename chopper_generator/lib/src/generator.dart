@@ -174,7 +174,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       );
 
       final List<Code> blocks = [
-        declareFinal(_urlVar, type: refer('String')).assign(url).statement,
+        declareFinal(_urlVar, type: refer('Uri')).assign(url).statement,
       ];
 
       if (queries.isNotEmpty) {
@@ -475,20 +475,25 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       // if the request's url is already a fully qualified URL, we can use
       // as-is and ignore the baseUrl
-      return literal(path);
+      return _generateUri(path);
     } else if (path.isEmpty && baseUrl.isEmpty) {
-      return literal('');
+      return _generateUri('');
     } else {
       if (path.isNotEmpty &&
           baseUrl.isNotEmpty &&
           !baseUrl.endsWith('/') &&
           !path.startsWith('/')) {
-        return literal('$baseUrl/$path');
+        return _generateUri('$baseUrl/$path');
       }
 
-      return literal('$baseUrl$path');
+      return _generateUri('$baseUrl$path');
     }
   }
+
+  Expression _generateUri(String url) => refer('Uri').newInstanceNamed(
+        'parse',
+        [literal(url)],
+      );
 
   Expression _generateRequest(
     ConstantReader method, {
@@ -571,7 +576,9 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
       ];
 
       list.add(
-        refer('PartValueFile<${p.type.getDisplayString(withNullability: p.type.isNullable)}>')
+        refer('PartValueFile<${p.type.getDisplayString(
+          withNullability: p.type.isNullable,
+        )}>')
             .newInstance(params),
       );
     });

@@ -18,7 +18,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> getResource(String id) {
-    final String $url = '/resources/${id}';
+    final Uri $url = Uri.parse('/resources/${id}');
     final Request $request = Request(
       'GET',
       $url,
@@ -29,7 +29,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<Map<dynamic, dynamic>>> getMapResource(String id) {
-    final String $url = '/resources/';
+    final Uri $url = Uri.parse('/resources/');
     final Map<String, dynamic> $params = <String, dynamic>{'id': id};
     final Map<String, String> $headers = {
       'foo': 'bar',
@@ -46,7 +46,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<List<Map<dynamic, dynamic>>>> getListResources() {
-    final String $url = '/resources/resources';
+    final Uri $url = Uri.parse('/resources/resources');
     final Request $request = Request(
       'GET',
       $url,
@@ -61,7 +61,7 @@ class _$MyService extends MyService {
     String toto,
     String b,
   ) {
-    final String $url = '/resources/';
+    final Uri $url = Uri.parse('/resources/');
     final $body = <String, dynamic>{
       'a': toto,
       'b': b,
@@ -81,7 +81,7 @@ class _$MyService extends MyService {
     Map<dynamic, dynamic> b,
     String c,
   ) {
-    final String $url = '/resources/multi';
+    final Uri $url = Uri.parse('/resources/multi');
     final List<PartValue> $parts = <PartValue>[
       PartValue<Map<dynamic, dynamic>>(
         '1',
@@ -108,7 +108,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> postFile(List<int> bytes) {
-    final String $url = '/resources/file';
+    final Uri $url = Uri.parse('/resources/file');
     final List<PartValue> $parts = <PartValue>[
       PartValue<List<int>>(
         'file',

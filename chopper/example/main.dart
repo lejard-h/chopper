@@ -4,7 +4,7 @@ import 'definition.dart';
 
 Future<void> main() async {
   final chopper = ChopperClient(
-    baseUrl: 'http://localhost:8000',
+    baseUrl: Uri.parse('http://localhost:8000'),
     services: [
       // the generated service
       MyService.create(ChopperClient()),

@@ -18,7 +18,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<dynamic>> getResource(String id) {
-    final String $url = '/resources/${id}/';
+    final Uri $url = Uri.parse('/resources/${id}/');
     final Request $request = Request(
       'GET',
       $url,
@@ -29,7 +29,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<List<Resource>>> getResources() {
-    final String $url = '/resources/all';
+    final Uri $url = Uri.parse('/resources/all');
     final Map<String, String> $headers = {
       'test': 'list',
     };
@@ -44,7 +44,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<Map<dynamic, dynamic>>> getMapResource(String id) {
-    final String $url = '/resources/';
+    final Uri $url = Uri.parse('/resources/');
     final Map<String, dynamic> $params = <String, dynamic>{'id': id};
     final Request $request = Request(
       'GET',
@@ -57,7 +57,7 @@ class _$MyService extends MyService {
 
   @override
   Future<Response<Resource>> getTypedResource() {
-    final String $url = '/resources/';
+    final Uri $url = Uri.parse('/resources/');
     final Map<String, String> $headers = {
       'foo': 'bar',
     };
@@ -75,7 +75,7 @@ class _$MyService extends MyService {
     Resource resource, {
     String? name,
   }) {
-    final String $url = '/resources';
+    final Uri $url = Uri.parse('/resources');
     final Map<String, String> $headers = {
       if (name != null) 'name': name,
     };

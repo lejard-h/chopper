@@ -126,7 +126,7 @@ Future<void> main() async {
 
   final chopper = ChopperClient(
     client: client,
-    baseUrl: 'http://localhost:8000',
+    baseUrl: Uri.parse('http://localhost:8000'),
     // bind your object factories here
     converter: converter,
     errorConverter: converter,
