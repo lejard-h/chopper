@@ -170,6 +170,57 @@ interceptors: [
 
 The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and session handling - of your app looks like.
 
+### Authorized HTTP requests using the special Authenticator interceptor
+
+Similar to OkHTTP's [authenticator](https://github.com/square/okhttp/blob/480c20e46bb1745e280e42607bbcc73b2c953d97/okhttp/src/main/kotlin/okhttp3/Authenticator.kt),
+the idea here is to provide a reactive authentication in the event that an auth challenge is raised. It returns a 
+nullable Request that contains a possible update to the original Request to satisfy the authentication challenge.
+
+```dart
+import 'dart:async' show FutureOr;
+import 'dart:io' show HttpHeaders, HttpStatus;
+
+import 'package:chopper/chopper.dart';
+
+/// This method returns a [Request] that includes credentials to satisfy an authentication challenge received in
+/// [response]. It returns `null` if the challenge cannot be satisfied.
+class MyAuthenticator extends Authenticator {
+  @override
+  FutureOr<Request?> authenticate(
+    Request request,
+    Response response, [
+    Request? originalRequest,
+  ]) async {
+    if (response.statusCode == HttpStatus.unauthorized) {
+      final String? newToken = await refreshToken();
+
+      if (newToken != null) {
+        return request.copyWith(headers: {
+          ...request.headers,
+          HttpHeaders.authorizationHeader: newToken,
+        });
+      }
+    }
+
+    return null;
+  }
+
+  Future<String?> refreshToken() async {
+    /// Refresh the accessToken using refreshToken however needed.
+    /// This could be done either via an HTTP client, or a ChopperService, or a
+    /// repository could be a dependency.
+    /// This approach is intentionally not opinionated about how this works.
+    throw UnimplementedError();
+  }
+}
+
+/// When initializing your ChopperClient
+final client = ChopperClient(
+  /// register your Authenticator here
+  authenticator: MyAuthenticator(),
+);
+```
+
 ## Decoding JSON using Isolates
 
 Sometimes you want to decode JSON outside the main thread in order to reduce janking. In this example we're going to go
