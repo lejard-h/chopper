@@ -6,7 +6,6 @@ import 'package:http/testing.dart';
 import 'package:test/test.dart';
 
 import 'fake_authenticator.dart';
-import 'test_service.dart';
 
 void main() async {
   final Uri baseUrl = Uri.parse('http://localhost:8000');
@@ -94,16 +93,12 @@ void main() async {
   group('With Authenticator', () {
     ChopperClient buildClient([http.Client? httpClient]) => ChopperClient(
           baseUrl: baseUrl,
-          services: [
-            // the generated service
-            HttpTestService.create(),
-          ],
+          client: httpClient,
           interceptors: [
             (Request req) => applyHeader(req, 'foo', 'bar'),
           ],
-          authenticator: FakeAuthenticator(),
-          client: httpClient,
           converter: JsonConverter(),
+          authenticator: FakeAuthenticator(),
         );
 
     late bool authenticated;
