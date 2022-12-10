@@ -120,7 +120,35 @@ void main() async {
       };
     });
 
-    test('GET', () async {
+    test('GET authorized', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/get?key=val'),
+        );
+        expect(request.method, equals('GET'));
+        expect(request.headers['foo'], equals('bar'));
+        expect(request.headers['int'], equals('42'));
+
+        return http.Response('ok', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final response = await chopper.get(
+        Uri(
+          path: '/test/get',
+          queryParameters: {'key': 'val'},
+        ),
+        headers: {'int': '42'},
+      );
+
+      expect(response.body, equals('ok'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('GET unauthorized', () async {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
@@ -160,7 +188,48 @@ void main() async {
       httpClient.close();
     });
 
-    test('POST', () async {
+    test('POST authorized', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/post?key=val'),
+        );
+        expect(request.method, equals('POST'));
+        expect(request.headers['foo'], equals('bar'));
+        expect(request.headers['int'], equals('42'));
+        expect(
+          request.body,
+          jsonEncode(
+            {
+              'name': 'john',
+              'surname': 'doe',
+            },
+          ),
+        );
+
+        return http.Response('ok', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final response = await chopper.post(
+        Uri(
+          path: '/test/post',
+          queryParameters: {'key': 'val'},
+        ),
+        headers: {'int': '42'},
+        body: {
+          'name': 'john',
+          'surname': 'doe',
+        },
+      );
+
+      expect(response.body, equals('ok'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('POST unauthorized', () async {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
