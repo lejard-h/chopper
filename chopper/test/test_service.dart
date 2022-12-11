@@ -119,6 +119,12 @@ abstract class HttpTestService extends ChopperService {
     @PartFile('file') List<int> bytes,
   );
 
+  @Post(path: 'image')
+  @multipart
+  Future<Response> postImage(
+    @PartFile('image') List<int> imageData,
+  );
+
   @Post(path: 'file')
   @multipart
   Future<Response> postMultipartFile(

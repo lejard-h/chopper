@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:test/test.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'test_service.dart';
 
@@ -63,6 +64,29 @@ void main() {
       final service = HttpTestService.create(chopper);
 
       await service.postFile([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+      chopper.dispose();
+    });
+
+    test('image', () async {
+      final httpClient = MockClient((http.Request req) async {
+        final String body = String.fromCharCodes(req.bodyBytes);
+
+        expect(req.headers['Content-Type'], contains('multipart/form-data;'));
+        expect(body, contains('content-type: application/octet-stream'));
+        expect(body, contains('content-disposition: form-data; name="image"'));
+        expect(
+          body,
+          contains(String.fromCharCodes(kTransparentImage)),
+        );
+
+        return http.Response('ok', 200);
+      });
+
+      final chopper = ChopperClient(client: httpClient);
+      final service = HttpTestService.create(chopper);
+
+      await service.postImage(kTransparentImage);
 
       chopper.dispose();
     });
