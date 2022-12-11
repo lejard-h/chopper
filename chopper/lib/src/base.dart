@@ -293,9 +293,10 @@ class ChopperClient {
     ConvertRequest? requestConverter,
     ConvertResponse? responseConverter,
   }) async {
-    var req = await _interceptRequest(
+    final Request req = await _interceptRequest(
       await _handleRequestConverter(request, requestConverter),
     );
+
     _requestController.add(req);
 
     final streamRes = await httpClient.send(await req.toBaseRequest());
@@ -307,7 +308,11 @@ class ChopperClient {
     dynamic res = Response(response, response.body);
 
     if (authenticator != null) {
-      var updatedRequest = await authenticator!.authenticate(req, res, request);
+      final Request? updatedRequest = await authenticator!.authenticate(
+        request,
+        res,
+        request,
+      );
 
       if (updatedRequest != null) {
         res = await send<BodyType, InnerType>(
