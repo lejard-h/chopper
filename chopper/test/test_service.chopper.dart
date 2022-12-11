@@ -412,6 +412,25 @@ class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<dynamic>> postImage(List<int> imageData) {
+    final Uri $url = Uri.parse('/test/image');
+    final List<PartValue> $parts = <PartValue>[
+      PartValueFile<List<int>>(
+        'image',
+        imageData,
+      )
+    ];
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      parts: $parts,
+      multipart: true,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> postMultipartFile(
     MultipartFile file, {
     String? id,
