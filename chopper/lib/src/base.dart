@@ -29,7 +29,7 @@ final List<Type> allowedInterceptorsType = [
 class ChopperClient {
   /// Base URL of each request of the registered services.
   /// E.g., the hostname of your service.
-  final String baseUrl;
+  final Uri baseUrl;
 
   /// The [http.Client] used to make network calls.
   final http.Client httpClient;
@@ -60,6 +60,7 @@ class ChopperClient {
   /// The base URL of each request of the registered services can be defined
   /// with the [baseUrl] parameter.
   ///  E.g., the hostname of your service.
+  ///  If not provided, a empty default [Uri] will be used.
   ///
   /// A custom HTTP client can be passed as the [client] parameter to be used
   /// with the created [ChopperClient].
@@ -70,7 +71,7 @@ class ChopperClient {
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///   baseUrl: 'localhost:8000',
+  ///   baseUrl: Uri.parse('localhost:8000'),
   ///   services: [
   ///     // Add a generated service
   ///     TodosListService.create()
@@ -111,14 +112,19 @@ class ChopperClient {
   ///   );
   /// ```
   ChopperClient({
-    this.baseUrl = '',
+    Uri? baseUrl,
     http.Client? client,
     Iterable interceptors = const [],
     this.authenticator,
     this.converter,
     this.errorConverter,
     Iterable<ChopperService> services = const [],
-  })  : httpClient = client ?? http.Client(),
+  })  : assert(
+            baseUrl == null || !baseUrl.hasQuery,
+            'baseUrl should not contain query parameters.'
+            'Use a request interceptor to add default query parameters'),
+        baseUrl = baseUrl ?? Uri(),
+        httpClient = client ?? http.Client(),
         _clientIsInternal = client == null {
     if (!interceptors.every(_isAnInterceptor)) {
       throw ArgumentError(
@@ -152,7 +158,7 @@ class ChopperClient {
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///   baseUrl: 'localhost:8000',
+  ///   baseUrl: Uri.parse('localhost:8000'),
   ///   services: [
   ///     // Add a generated service
   ///     TodosListService.create()
@@ -287,9 +293,10 @@ class ChopperClient {
     ConvertRequest? requestConverter,
     ConvertResponse? responseConverter,
   }) async {
-    var req = await _interceptRequest(
+    final Request req = await _interceptRequest(
       await _handleRequestConverter(request, requestConverter),
     );
+
     _requestController.add(req);
 
     final streamRes = await httpClient.send(await req.toBaseRequest());
@@ -301,7 +308,11 @@ class ChopperClient {
     dynamic res = Response(response, response.body);
 
     if (authenticator != null) {
-      var updatedRequest = await authenticator!.authenticate(req, res, request);
+      final Request? updatedRequest = await authenticator!.authenticate(
+        request,
+        res,
+        request,
+      );
 
       if (updatedRequest != null) {
         res = await send<BodyType, InnerType>(
@@ -341,10 +352,10 @@ class ChopperClient {
 
   /// Makes a HTTP GET request using the [send] function.
   Future<Response<BodyType>> get<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
+    Uri? baseUrl,
     Map<String, dynamic> parameters = const {},
-    String? baseUrl,
     dynamic body,
   }) =>
       send<BodyType, InnerType>(
@@ -360,13 +371,13 @@ class ChopperClient {
 
   /// Makes a HTTP POST request using the [send] function
   Future<Response<BodyType>> post<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -376,20 +387,20 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
-          multipart: multipart,
           parameters: parameters,
+          multipart: multipart,
         ),
       );
 
   /// Makes a HTTP PUT request using the [send] function.
   Future<Response<BodyType>> put<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -399,20 +410,20 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
-          multipart: multipart,
           parameters: parameters,
+          multipart: multipart,
         ),
       );
 
   /// Makes a HTTP PATCH request using the [send] function.
   Future<Response<BodyType>> patch<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     dynamic body,
     List<PartValue> parts = const [],
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -422,17 +433,17 @@ class ChopperClient {
           body: body,
           parts: parts,
           headers: headers,
-          multipart: multipart,
           parameters: parameters,
+          multipart: multipart,
         ),
       );
 
   /// Makes a HTTP DELETE request using the [send] function.
   Future<Response<BodyType>> delete<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -446,10 +457,10 @@ class ChopperClient {
 
   /// Makes a HTTP HEAD request using the [send] function.
   Future<Response<BodyType>> head<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(
@@ -463,10 +474,10 @@ class ChopperClient {
 
   /// Makes a HTTP OPTIONS request using the [send] function.
   Future<Response<BodyType>> options<BodyType, InnerType>(
-    String url, {
+    Uri url, {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
-    String? baseUrl,
+    Uri? baseUrl,
   }) =>
       send<BodyType, InnerType>(
         Request(

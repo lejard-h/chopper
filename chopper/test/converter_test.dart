@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 import 'test_service.dart';
 
-const baseUrl = 'http://localhost:8000';
+final baseUrl = Uri.parse('http://localhost:8000');
 
 void main() {
   group('Converter', () {
@@ -34,7 +34,12 @@ void main() {
       final converter = TestConverter();
 
       final encoded = converter.convertRequest(
-        Request('GET', '/', baseUrl, body: _Converted<String>('foo')),
+        Request(
+          'GET',
+          Uri.parse('/'),
+          baseUrl,
+          body: _Converted<String>('foo'),
+        ),
       );
 
       expect(encoded.body is String, isTrue);

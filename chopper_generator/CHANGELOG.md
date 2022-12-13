@@ -1,8 +1,7 @@
 # Changelog
+## 5.2.0
 
-## 5.1.0+1
-
-- Analyzer upgrade
+- Replaced the String based path with Uri
 
 ## 5.1.0
 

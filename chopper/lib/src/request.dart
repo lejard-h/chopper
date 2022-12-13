@@ -7,8 +7,8 @@ import 'package:meta/meta.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
 class Request extends http.BaseRequest {
-  final String path;
-  final String origin;
+  final Uri uri;
+  final Uri baseUri;
   final dynamic body;
   final Map<String, dynamic> parameters;
   final bool multipart;
@@ -18,34 +18,8 @@ class Request extends http.BaseRequest {
 
   Request(
     String method,
-    this.path,
-    this.origin, {
-    this.body,
-    this.parameters = const {},
-    Map<String, String> headers = const {},
-    this.multipart = false,
-    this.parts = const [],
-    this.useBrackets = false,
-    this.includeNullQueryVars = false,
-  }) : super(
-          method,
-          buildUri(
-            origin,
-            path,
-            parameters,
-            useBrackets: useBrackets,
-            includeNullQueryVars: includeNullQueryVars,
-          ),
-        ) {
-    this.headers.addAll(headers);
-  }
-
-  /// Build the Chopper [Request] using a [Uri] instead of a [path] and [origin].
-  /// Both the query parameters in the [Uri] and those provided explicitly in
-  /// the [parameters] are merged together.
-  Request.uri(
-    String method,
-    Uri url, {
+    this.uri,
+    this.baseUri, {
     this.body,
     Map<String, dynamic>? parameters,
     Map<String, String> headers = const {},
@@ -53,15 +27,18 @@ class Request extends http.BaseRequest {
     this.parts = const [],
     this.useBrackets = false,
     this.includeNullQueryVars = false,
-  })  : origin = url.origin,
-        path = url.path,
-        parameters = {...url.queryParametersAll, ...?parameters},
+  })  : assert(
+            !baseUri.hasQuery,
+            'baseUri should not contain query parameters.'
+            'Use a request interceptor to add default query parameters'),
+        // Merge uri.queryParametersAll in the final parameters object so the request object reflects all configured queryParameters
+        parameters = {...uri.queryParametersAll, ...?parameters},
         super(
           method,
           buildUri(
-            url.origin,
-            url.path,
-            {...url.queryParametersAll, ...?parameters},
+            baseUri,
+            uri,
+            {...uri.queryParametersAll, ...?parameters},
             useBrackets: useBrackets,
             includeNullQueryVars: includeNullQueryVars,
           ),
@@ -72,8 +49,8 @@ class Request extends http.BaseRequest {
   /// Makes a copy of this [Request], replacing original values with the given ones.
   Request copyWith({
     String? method,
-    String? path,
-    String? origin,
+    Uri? uri,
+    Uri? baseUri,
     dynamic body,
     Map<String, dynamic>? parameters,
     Map<String, String>? headers,
@@ -84,8 +61,8 @@ class Request extends http.BaseRequest {
   }) =>
       Request(
         method ?? this.method,
-        path ?? this.path,
-        origin ?? this.origin,
+        uri ?? this.uri,
+        baseUri ?? this.baseUri,
         body: body ?? this.body,
         parameters: parameters ?? this.parameters,
         headers: headers ?? this.headers,
@@ -100,27 +77,44 @@ class Request extends http.BaseRequest {
   /// If [url] starts with 'http://' or 'https://', baseUrl is ignored.
   @visibleForTesting
   static Uri buildUri(
-    String baseUrl,
-    String url,
+    Uri baseUrl,
+    Uri url,
     Map<String, dynamic> parameters, {
     bool useBrackets = false,
     bool includeNullQueryVars = false,
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
-    final Uri uri = url.startsWith('http://') || url.startsWith('https://')
-        ? Uri.parse(url)
-        : Uri.parse('${baseUrl.strip('/')}/${url.leftStrip('/')}');
+    final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
+        ? url
+        : _mergeUri(baseUrl, url);
+
+    // Check if parameter also has all the queryParameters from the url (not the merged uri)
+    final bool parametersContainsUriQuery = parameters.keys
+        .every((element) => url.queryParametersAll.keys.contains(element));
+    final Map<String, dynamic> allParameters = parametersContainsUriQuery
+        ? parameters
+        : {...url.queryParametersAll, ...parameters};
 
     final String query = mapToQuery(
-      parameters,
+      allParameters,
       useBrackets: useBrackets,
       includeNullQueryVars: includeNullQueryVars,
     );
 
-    return query.isNotEmpty
-        ? uri.replace(query: uri.hasQuery ? '${uri.query}&$query' : query)
-        : uri;
+    return query.isNotEmpty ? uri.replace(query: query) : uri;
+  }
+
+  /// Merges Uri into another Uri preserving queries and paths
+  static Uri _mergeUri(Uri baseUri, Uri addToUri) {
+    final path = baseUri.hasEmptyPath
+        ? addToUri.path
+        : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
+
+    return baseUri.replace(
+      path: path,
+      query: addToUri.hasQuery ? addToUri.query : null,
+    );
   }
 
   /// Converts this Chopper Request into a [http.BaseRequest].

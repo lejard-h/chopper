@@ -14,3 +14,4 @@ coverage
 chopper/doc/
 .vscode/
 pubspec.temp.yaml
+.DS_Store
