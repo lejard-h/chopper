@@ -1,4 +1,7 @@
 # Changelog
+## 5.2.0
+
+- Replaced the String based path with Uri
 
 ## 5.1.0
 
