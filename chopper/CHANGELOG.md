@@ -1,9 +1,4 @@
 # Changelog
-## 5.2.0
-
-- Replaced the String based path with Uri
-- Fix for Authenticator body rewrite
-
 ## 6.0.0
 
 - Replaced the String based path with Uri (BREAKING CHANGE)
