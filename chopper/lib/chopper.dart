@@ -9,6 +9,7 @@ export 'src/base.dart';
 export 'src/constants.dart';
 export 'src/extensions.dart';
 export 'src/interceptor.dart';
+export 'src/http_logging_interceptor.dart';
 export 'src/request.dart';
 export 'src/response.dart';
 export 'src/utils.dart' hide mapToQuery;
