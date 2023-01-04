@@ -15,9 +15,9 @@ enum Level {
   ///
   /// Example:
   /// ```
-  /// --> POST /greeting (3-byte body)
+  /// --> POST https://foo.bar/greeting (3-byte body)
   ///
-  /// <-- 200 OK (6-byte body)
+  /// <-- 200 OK POST https://foo.bar/greeting (6-byte body)
   /// ```
   basic,
 
@@ -25,15 +25,14 @@ enum Level {
   ///
   /// Example:
   /// ```
-  /// --> POST /greeting
-  /// Host: example.com
-  /// Content-Type: plain/text
-  /// Content-Length: 3
+  /// --> POST https://foo.bar/greeting
+  /// content-type: plain/text
+  /// content-length: 3
   /// --> END POST
   ///
-  /// <-- 200 OK
-  /// Content-Type: plain/text
-  /// Content-Length: 6
+  /// <-- 200 OK POST https://foo.bar/greeting
+  /// content-type: plain/text
+  /// content-length: 6
   /// <-- END HTTP
   /// ```
   headers,
@@ -42,17 +41,16 @@ enum Level {
   ///
   /// Example:
   /// ```
-  /// --> POST /greeting
-  /// Host: example.com
-  /// Content-Type: plain/text
-  /// Content-Length: 3
+  /// --> POST https://foo.bar/greeting
+  /// content-type: plain/text
+  /// content-length: 3
   ///
   /// Hi?
-  /// --> END POST
+  /// --> END POST https://foo.bar/greeting
   ///
-  /// <-- 200 OK
-  /// Content-Type: plain/text
-  /// Content-Length: 6
+  /// <-- 200 OK POST https://foo.bar/greeting
+  /// content-type: plain/text
+  /// content-length: 6
   ///
   /// Hello!
   /// <-- END HTTP
@@ -63,6 +61,9 @@ enum Level {
 /// A [RequestInterceptor] and [ResponseInterceptor] implementation which logs
 /// HTTP request and response data.
 ///
+/// Log levels can be set by applying [level] for more fine grained control
+/// over amount of information being logged.
+///
 /// **Warning:** Log messages written by this interceptor have the potential to
 /// leak sensitive information, such as `Authorization` headers and user data
 /// in response bodies. This interceptor should only be used in a controlled way
@@ -70,7 +71,7 @@ enum Level {
 @immutable
 class HttpLoggingInterceptor
     implements RequestInterceptor, ResponseInterceptor {
-  const HttpLoggingInterceptor({this.level = Level.basic})
+  const HttpLoggingInterceptor({this.level = Level.body})
       : _logBody = level == Level.body,
         _logHeaders = level == Level.body || level == Level.headers;
 
@@ -114,7 +115,7 @@ class HttpLoggingInterceptor
     }
 
     if (_logHeaders || _logBody) {
-      chopperLogger.info('--> END ${base.method} ${base.url.toString()}');
+      chopperLogger.info('--> END ${base.method}');
     }
 
     return request;
@@ -163,7 +164,7 @@ class HttpLoggingInterceptor
     }
 
     if (_logBody || _logHeaders) {
-      chopperLogger.info('<-- END');
+      chopperLogger.info('<-- END HTTP');
     }
 
     return response;

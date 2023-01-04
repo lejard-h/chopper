@@ -64,7 +64,7 @@ void main() {
             'foo: bar',
             'content-type: text/plain; charset=utf-8',
             'content-length: 4',
-            '--> END POST base/',
+            '--> END POST',
           ],
         ),
       );
@@ -88,7 +88,7 @@ void main() {
             'content-length: 4',
             '',
             'test',
-            '--> END POST base/',
+            '--> END POST',
           ],
         ),
       );
@@ -158,7 +158,7 @@ void main() {
             '<-- 200 POST base/',
             'foo: bar',
             'content-length: 16',
-            '<-- END',
+            '<-- END HTTP',
           ],
         ),
       );
@@ -181,7 +181,7 @@ void main() {
             'content-length: 16',
             '',
             'responseBodyBase',
-            '<-- END',
+            '<-- END HTTP',
           ],
         ),
       );
@@ -224,7 +224,7 @@ void main() {
             'foo: bar',
             'content-length: 42',
             'content-type: text/plain; charset=utf-8',
-            '--> END POST base/',
+            '--> END POST',
           ],
         ),
       );
@@ -250,7 +250,7 @@ void main() {
             'content-type: text/plain; charset=utf-8',
             '',
             'test',
-            '--> END POST base/',
+            '--> END POST',
           ],
         ),
       );
@@ -271,7 +271,7 @@ void main() {
             '<-- 200 POST base/',
             'foo: bar',
             'content-length: 42',
-            '<-- END',
+            '<-- END HTTP',
           ],
         ),
       );
@@ -293,7 +293,7 @@ void main() {
             'content-length: 42',
             '',
             'responseBodyBase',
-            '<-- END',
+            '<-- END HTTP',
           ],
         ),
       );
