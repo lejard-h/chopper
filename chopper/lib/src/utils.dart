@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:chopper/chopper.dart';
 import 'package:logging/logging.dart';
 
@@ -39,13 +41,15 @@ Request applyHeaders(
   Map<String, String> headers, {
   bool override = true,
 }) {
-  final Map<String, String> headersCopy = {...request.headers};
+  final LinkedHashMap<String, String> headersCopy = LinkedHashMap(
+    equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
+    hashCode: (e) => e.toLowerCase().hashCode,
+  );
+  headersCopy.addAll(request.headers);
 
-  for (String key in headers.keys) {
-    String? value = headers[key];
-    if (value == null) continue;
-    if (!override && headersCopy.containsKey(key)) continue;
-    headersCopy[key] = value;
+  for (final entry in headers.entries) {
+    if (!override && headersCopy.containsKey(entry.key)) continue;
+    headersCopy[entry.key] = entry.value;
   }
 
   return request.copyWith(headers: headersCopy);

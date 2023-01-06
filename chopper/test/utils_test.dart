@@ -1,3 +1,4 @@
+import 'package:chopper/src/request.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:test/test.dart';
 
@@ -561,6 +562,169 @@ void main() {
           query,
         ),
       ),
+    );
+  });
+
+  Request createRequest(Map<String, String> headers) => Request(
+        "POST",
+        Uri.parse('foo'),
+        Uri.parse('bar'),
+        headers: headers,
+      );
+
+  group('applyHeader tests', () {
+    test('request apply single header', () {
+      final testRequest = createRequest({});
+
+      final result = applyHeader(testRequest, 'foo', 'bar');
+
+      expect(result.headers['foo'], 'bar');
+    });
+
+    test('request apply single header overrides existing', () {
+      final testRequest = createRequest({'foo': 'bar'});
+
+      final result = applyHeader(testRequest, 'foo', 'whut');
+
+      expect(result.headers['foo'], 'whut');
+    });
+
+    test(
+      'request apply single header overrides existing field name case insensitive',
+      () {
+        final testRequest = createRequest({'Foo': 'bar'});
+
+        final result = applyHeader(testRequest, 'foo', 'whut');
+
+        expect(result.headers['foo'], 'whut');
+      },
+    );
+
+    test('request apply single header doesn\'t overrides existing', () {
+      final testRequest = createRequest({'foo': 'bar'});
+
+      final result = applyHeader(testRequest, 'foo', 'whut', override: false);
+
+      expect(result.headers['foo'], 'bar');
+    });
+
+    test(
+      'request apply single header doesn\'t overrides existing field name case insensitive',
+      () {
+        final testRequest = createRequest({'Foo': 'bar'});
+
+        final result = applyHeader(testRequest, 'foo', 'whut', override: false);
+
+        expect(result.headers['Foo'], 'bar');
+      },
+    );
+  });
+
+  group('applyHeaders tests', () {
+    test('request apply headers', () {
+      final testRequest = createRequest({});
+
+      final result = applyHeaders(testRequest, {'foo': 'bar'});
+
+      expect(result.headers['foo'], 'bar');
+    });
+
+    test('request apply headers overrides existing', () {
+      final testRequest = createRequest({'foo': 'bar'});
+
+      final result = applyHeaders(testRequest, {'foo': 'whut'});
+
+      expect(result.headers['foo'], 'whut');
+    });
+
+    test(
+      'request apply headers overrides existing field name case insensitive',
+      () {
+        final testRequest = createRequest({'Foo': 'bar'});
+
+        final result = applyHeaders(testRequest, {'foo': 'whut'});
+
+        expect(result.headers['foo'], 'whut');
+      },
+    );
+
+    test('request apply headers doesn\'t overrides existing', () {
+      final testRequest = createRequest({'foo': 'bar'});
+
+      final result =
+          applyHeaders(testRequest, {'foo': 'whut'}, override: false);
+
+      expect(result.headers['foo'], 'bar');
+    });
+
+    test(
+      'request apply headers doesn\'t overrides existing field name case insensitive',
+      () {
+        final testRequest = createRequest({'Foo': 'bar'});
+
+        final result =
+            applyHeaders(testRequest, {'foo': 'whut'}, override: false);
+
+        expect(result.headers['Foo'], 'bar');
+      },
+    );
+
+    test(
+      'request apply headers multiple headers with override false',
+      () {
+        final testRequest = createRequest(
+          {
+            'Foo': 'bar',
+            'tomato': 'apple',
+            'phone': 'tablet',
+          },
+        );
+
+        final result = applyHeaders(
+          testRequest,
+          {
+            'foo': 'whut',
+            'phone': 'computer',
+            'chair': 'table',
+          },
+          override: false,
+        );
+
+        expect(result.headers['Foo'], 'bar');
+        expect(result.headers['tomato'], 'apple');
+        expect(result.headers['chair'], 'table');
+        expect(result.headers['phone'], 'tablet');
+        expect(result.headers.length, 4);
+      },
+    );
+
+    test(
+      'request apply headers multiple headers with override true',
+      () {
+        final testRequest = createRequest(
+          {
+            'Foo': 'bar',
+            'tomato': 'apple',
+            'phone': 'tablet',
+          },
+        );
+
+        final result = applyHeaders(
+          testRequest,
+          {
+            'foo': 'whut',
+            'phone': 'computer',
+            'chair': 'table',
+          },
+          override: true,
+        );
+
+        expect(result.headers['Foo'], 'whut');
+        expect(result.headers['tomato'], 'apple');
+        expect(result.headers['chair'], 'table');
+        expect(result.headers['phone'], 'computer');
+        expect(result.headers.length, 4);
+      },
     );
   });
 }
