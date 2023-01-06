@@ -87,12 +87,12 @@ class HttpLoggingInterceptor
     String startRequestMessage = '--> ${base.method} ${base.url.toString()}';
     String bodyMessage = '';
     if (base is http.Request) {
-      final body = base.body;
-      if (!_logHeaders && body.isNotEmpty) {
-        startRequestMessage += ' (${base.bodyBytes.length}-byte body)';
-      }
-      if (body.isNotEmpty) {
-        bodyMessage = body;
+      if (base.body.isNotEmpty) {
+        bodyMessage = base.body;
+
+        if (!_logHeaders) {
+          startRequestMessage += ' (${base.bodyBytes.length}-byte body)';
+        }
       }
     }
 
@@ -124,19 +124,20 @@ class HttpLoggingInterceptor
   @override
   FutureOr<Response> onResponse(Response response) {
     if (level == Level.none) return response;
+    final base = response.base;
 
     String bytes = '';
     String reasonPhrase = response.statusCode.toString();
     String bodyMessage = '';
-    if (response.base is http.Response) {
-      final resp = response.base as http.Response;
-      if (resp.reasonPhrase != null) {
+    if (base is http.Response) {
+      if (base.reasonPhrase != null) {
         reasonPhrase +=
-            ' ${resp.reasonPhrase != reasonPhrase ? resp.reasonPhrase : ''}';
+            ' ${base.reasonPhrase != reasonPhrase ? base.reasonPhrase : ''}';
       }
 
-      if (resp.body.isNotEmpty) {
-        bodyMessage = resp.body;
+      if (base.body.isNotEmpty) {
+        bodyMessage = base.body;
+
         if (!_logBody && !_logHeaders) {
           bytes = ' (${response.bodyBytes.length}-byte body)';
         }
@@ -146,15 +147,15 @@ class HttpLoggingInterceptor
     // Always start on a new line
     chopperLogger.info('');
     chopperLogger.info(
-      '<-- $reasonPhrase ${response.base.request?.method} ${response.base.request?.url.toString()}$bytes',
+      '<-- $reasonPhrase ${base.request?.method} ${base.request?.url.toString()}$bytes',
     );
 
     if (_logHeaders) {
-      response.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
+      base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
 
-      if (response.base.contentLength != null &&
-          response.headers['content-length'] == null) {
-        chopperLogger.info('content-length: ${response.base.contentLength}');
+      if (base.contentLength != null &&
+          base.headers['content-length'] == null) {
+        chopperLogger.info('content-length: ${base.contentLength}');
       }
     }
 
