@@ -566,7 +566,7 @@ void main() {
   });
 
   Request createRequest(Map<String, String> headers) => Request(
-        "POST",
+        'POST',
         Uri.parse('foo'),
         Uri.parse('bar'),
         headers: headers,
