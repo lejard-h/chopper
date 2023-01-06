@@ -158,58 +158,6 @@ class CurlInterceptor implements RequestInterceptor {
   }
 }
 
-/// A [RequestInterceptor] and [ResponseInterceptor] implementation which logs
-/// HTTP request and response data.
-///
-/// **Warning:** Log messages written by this interceptor have the potential to
-/// leak sensitive information, such as `Authorization` headers and user data
-/// in response bodies. This interceptor should only be used in a controlled way
-/// or in a non-production environment.
-@immutable
-class HttpLoggingInterceptor
-    implements RequestInterceptor, ResponseInterceptor {
-  @override
-  FutureOr<Request> onRequest(Request request) async {
-    final http.BaseRequest base = await request.toBaseRequest();
-    chopperLogger.info('--> ${base.method} ${base.url.toString()}');
-    base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
-
-    String bytes = '';
-    if (base is http.Request) {
-      final body = base.body;
-      if (body.isNotEmpty) {
-        chopperLogger.info(body);
-        bytes = ' (${base.bodyBytes.length}-byte body)';
-      }
-    }
-
-    chopperLogger.info('--> END ${base.method}$bytes');
-
-    return request;
-  }
-
-  @override
-  FutureOr<Response> onResponse(Response response) {
-    final http.BaseRequest? base = response.base.request;
-    chopperLogger.info('<-- ${response.statusCode} ${base!.url.toString()}');
-
-    response.base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
-
-    String bytes = '';
-    if (response.base is http.Response) {
-      final resp = response.base as http.Response;
-      if (resp.body.isNotEmpty) {
-        chopperLogger.info(resp.body);
-        bytes = ' (${response.bodyBytes.length}-byte body)';
-      }
-    }
-
-    chopperLogger.info('--> END ${base.method}$bytes');
-
-    return response;
-  }
-}
-
 /// A [Converter] implementation that calls [json.encode] on [Request]s and
 /// [json.decode] on [Response]s using the [dart:convert](https://api.dart.dev/stable/2.10.3/dart-convert/dart-convert-library.html)
 /// package's [utf8] and [json] utilities.
