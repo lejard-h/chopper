@@ -112,6 +112,20 @@ void main() {
       expect(converted.body, equals({'foo': 'bar'}));
     });
   });
+
+  test('respects content-type headers', () {
+    final jsonConverter = JsonConverter();
+    final testRequest = Request(
+      'POST',
+      Uri.parse('foo'),
+      Uri.parse('bar'),
+      headers: {'Content-Type': 'application/vnd.api+json'},
+    );
+
+    final result = jsonConverter.convertRequest(testRequest);
+
+    expect(result.headers['content-type'], 'application/vnd.api+json');
+  });
 }
 
 class TestConverter implements Converter {
