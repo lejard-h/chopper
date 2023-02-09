@@ -80,8 +80,7 @@ You may need to change the base URL of your network calls during runtime, for ex
 
 Chopper is built on top of `http` package.
 
-So, one can just use the mocking API of the HTTP package.
-https://pub.dev/documentation/http/latest/testing/MockClient-class.html
+So, one can just use the mocking API of the HTTP package. See the documentation for the [http.testing library](https://pub.dev/documentation/http/latest/http.testing/http.testing-library.html) and for the [MockClient class](https://pub.dev/documentation/http/latest/http.testing/MockClient-class.html).
 
 Also, you can follow this code by [ozburo](https://github.com/ozburo):
 

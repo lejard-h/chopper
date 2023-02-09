@@ -328,6 +328,7 @@ typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
 ///   )
 ///   Future<Response<Todo>> getTodo(@Path("id"));
 /// }
+/// ```
 @immutable
 class FactoryConverter {
   final ConvertRequest? request;
@@ -365,7 +366,6 @@ class Field {
 /// @Post(path: '/something')
 /// Future<Response> fetch(@FieldMap List<Map<String, dynamic>> query);
 /// ```
-///
 @immutable
 class FieldMap {
   const FieldMap();
@@ -405,7 +405,6 @@ class Part {
 /// @Multipart
 /// Future<Response> fetch(@PartMap() List<PartValue> query);
 /// ```
-///
 @immutable
 class PartMap {
   const PartMap();
@@ -413,7 +412,7 @@ class PartMap {
 
 /// Use [PartFile] to define a file field for a [Multipart] request.
 ///
-/// ```
+/// ```dart
 /// @Post(path: 'file')
 /// @multipart
 /// Future<Response> postFile(@PartFile('file') List<int> bytes);
@@ -437,7 +436,6 @@ class PartFile {
 /// @Multipart
 /// Future<Response> fetch(@PartFileMap() List<PartValueFile> query);
 /// ```
-///
 @immutable
 class PartFileMap {
   const PartFileMap();
