@@ -2,11 +2,12 @@ import 'dart:async';
 
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/utils.dart';
+import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
-class Request extends http.BaseRequest {
+class Request extends http.BaseRequest with EquatableMixin {
   final Uri uri;
   final Uri baseUri;
   final dynamic body;
@@ -207,11 +208,25 @@ class Request extends http.BaseRequest {
 
     return request;
   }
+
+  @override
+  List<Object?> get props => [
+        method,
+        uri,
+        baseUri,
+        body,
+        parameters,
+        headers,
+        multipart,
+        parts,
+        useBrackets,
+        includeNullQueryVars,
+      ];
 }
 
 /// Represents a part in a multipart request.
 @immutable
-class PartValue<T> {
+class PartValue<T> with EquatableMixin {
   final T value;
   final String name;
 
@@ -227,6 +242,12 @@ class PartValue<T> {
         name ?? this.name,
         value ?? this.value as NewType,
       );
+
+  @override
+  List<Object?> get props => [
+        name,
+        value,
+      ];
 }
 
 /// Represents a file part in a multipart request.
