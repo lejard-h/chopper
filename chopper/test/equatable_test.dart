@@ -189,4 +189,82 @@ void main() {
       ),
     );
   });
+
+  group('PartValue', () {
+    late PartValue<String> partValue;
+
+    setUp(() {
+      partValue = PartValue<String>(
+        faker.lorem.word(),
+        faker.lorem.word(),
+      );
+    });
+
+    test('should return true when comparing two identical objects', () {
+      expect(
+        PartValue<String>('foo', 'bar'),
+        equals(
+          PartValue<String>('foo', 'bar'),
+        ),
+      );
+    });
+
+    test(
+      'should return true when comparing original with copy',
+      () => expect(
+        partValue,
+        equals(
+          partValue.copyWith<String>(),
+        ),
+      ),
+    );
+
+    test(
+      'should return false when comparing two different objects',
+      () => expect(
+        partValue,
+        isNot(
+          equals(
+            PartValue('bar', 'baz'),
+          ),
+        ),
+      ),
+    );
+
+    test(
+      'should return false when comparing to null',
+      () => expect(
+        partValue,
+        isNot(
+          equals(null),
+        ),
+      ),
+    );
+
+    test(
+      'should return false when comparing to an object of a different type',
+      () {
+        expect(
+          partValue,
+          isNot(
+            equals(faker.lorem.word()),
+          ),
+        );
+      },
+    );
+
+    test(
+      'should return false when comparing to an object with different props',
+      () => expect(
+        partValue,
+        isNot(
+          equals(
+            partValue.copyWith(
+              value: 'bar',
+            ),
+          ),
+        ),
+      ),
+    );
+  });
 }
