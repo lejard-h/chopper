@@ -1,8 +1,15 @@
+import 'dart:convert' show jsonEncode;
+
 import 'package:chopper/chopper.dart';
 import 'package:faker/faker.dart';
+import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+import 'fixtures/http_response_fixture.dart' as http_fixture;
+import 'fixtures/payload_fixture.dart';
 import 'fixtures/request_fixture.dart';
+import 'fixtures/response_fixture.dart';
+import 'helpers/payload.dart';
 
 void main() {
   final Faker faker = Faker();
@@ -86,6 +93,96 @@ void main() {
           equals(
             request.copyWith(
               headers: {'bar': 'bazzz'},
+            ),
+          ),
+        ),
+      ),
+    );
+  });
+
+  group('Response', () {
+    late Payload payload;
+    late Response<Payload> response;
+
+    setUp(() {
+      payload = PayloadFixture.factory.makeSingle();
+      response = ResponseFixture.factory<Payload>()
+          .redefine(ResponseFixture.factory<Payload>().body(payload))
+          .makeSingle();
+    });
+
+    test('should return true when comparing two identical objects', () {
+      final http.Response base = http_fixture.ResponseFixture.factory
+          .redefine(
+            http_fixture.ResponseFixture.factory.body(
+              jsonEncode(payload),
+            ),
+          )
+          .makeSingle();
+
+      expect(
+        Response<Payload>(base, payload),
+        equals(
+          Response<Payload>(base, payload),
+        ),
+      );
+    });
+
+    test(
+      'should return true when comparing original with copy',
+      () => expect(
+        response,
+        equals(
+          response.copyWith<Payload>(),
+        ),
+      ),
+    );
+
+    test(
+      'should return false when comparing two different objects',
+      () => expect(
+        response,
+        isNot(
+          equals(
+            ResponseFixture.factory<Payload>()
+                .redefine(ResponseFixture.factory<Payload>()
+                    .body(PayloadFixture.factory.makeSingle()))
+                .makeSingle(),
+          ),
+        ),
+      ),
+    );
+
+    test(
+      'should return false when comparing to null',
+      () => expect(
+        response,
+        isNot(
+          equals(null),
+        ),
+      ),
+    );
+
+    test(
+      'should return false when comparing to an object of a different type',
+      () {
+        expect(
+          response,
+          isNot(
+            equals(faker.lorem.word()),
+          ),
+        );
+      },
+    );
+
+    test(
+      'should return false when comparing to an object with different props',
+      () => expect(
+        response,
+        isNot(
+          equals(
+            response.copyWith<Payload>(
+              body: PayloadFixture.factory.makeSingle(),
             ),
           ),
         ),
