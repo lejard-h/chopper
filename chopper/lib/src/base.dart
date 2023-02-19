@@ -7,7 +7,6 @@ import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -27,7 +26,7 @@ final List<Type> allowedInterceptorsType = [
 ///
 /// It manages registered services, encodes and decodes data, and intercepts
 /// requests and responses.
-class ChopperClient with EquatableMixin {
+class ChopperClient {
   /// Base URL of each request of the registered services.
   /// E.g., the hostname of your service.
   final Uri baseUrl;
@@ -516,19 +515,6 @@ class ChopperClient with EquatableMixin {
   /// A stream of processed [Response]s, as in after all [Converter]s and
   /// [ResponseInterceptor]s have been run.
   Stream<Response> get onResponse => _responseController.stream;
-
-  @override
-  List<Object?> get props => [
-        baseUrl,
-        httpClient,
-        _clientIsInternal,
-        _requestInterceptors,
-        _responseInterceptors,
-        authenticator,
-        converter,
-        errorConverter,
-        _services,
-      ];
 }
 
 /// A marker and helper class used by `chopper_generator` to generate network
