@@ -4,7 +4,6 @@ import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -71,7 +70,6 @@ enum Level {
 /// or in a non-production environment.
 @immutable
 class HttpLoggingInterceptor
-    with EquatableMixin
     implements RequestInterceptor, ResponseInterceptor {
   const HttpLoggingInterceptor({this.level = Level.body})
       : _logBody = level == Level.body,
@@ -172,7 +170,4 @@ class HttpLoggingInterceptor
 
     return response;
   }
-
-  @override
-  List<Object?> get props => [level];
 }

@@ -5,7 +5,6 @@ import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -106,7 +105,7 @@ abstract class ErrorConverter {
 /// Note that this interceptor will overwrite existing headers having the same
 /// keys as [headers].
 @immutable
-class HeadersInterceptor with EquatableMixin implements RequestInterceptor {
+class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
   const HeadersInterceptor(this.headers);
@@ -114,9 +113,6 @@ class HeadersInterceptor with EquatableMixin implements RequestInterceptor {
   @override
   Future<Request> onRequest(Request request) async =>
       applyHeaders(request, headers);
-
-  @override
-  List<Object?> get props => [headers];
 }
 
 typedef ResponseInterceptorFunc1 = FutureOr<Response<BodyType>>
