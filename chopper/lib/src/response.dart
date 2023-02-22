@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -15,7 +16,7 @@ import 'package:meta/meta.dart';
 /// Future<Response<Item>> fetchItem();
 /// ```
 @immutable
-class Response<BodyType> {
+class Response<BodyType> with EquatableMixin {
   /// The [http.BaseResponse] from `package:http` that this [Response] wraps.
   final http.BaseResponse base;
 
@@ -65,4 +66,11 @@ class Response<BodyType> {
   /// call was successful, else this will be `null`.
   String get bodyString =>
       base is http.Response ? (base as http.Response).body : '';
+
+  @override
+  List<Object?> get props => [
+        base,
+        body,
+        error,
+      ];
 }

@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:chopper/chopper.dart';
+import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:logging/logging.dart';
 
 /// Creates a new [Request] by copying [request] and adding a header with the
@@ -130,7 +131,7 @@ Iterable<_Pair<String, String>> _iterableToQuery(
 
 String _normalizeValue(value) => Uri.encodeComponent(value?.toString() ?? '');
 
-class _Pair<A, B> {
+class _Pair<A, B> with EquatableMixin {
   final A first;
   final B second;
   final bool useBrackets;
@@ -145,6 +146,12 @@ class _Pair<A, B> {
   String toString() => useBrackets
       ? '$first${Uri.encodeQueryComponent('[]')}=$second'
       : '$first=$second';
+
+  @override
+  List<Object?> get props => [
+        first,
+        second,
+      ];
 }
 
 bool isTypeOf<ThisType, OfType>() => _Instance<ThisType>() is _Instance<OfType>;
