@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.1.1
+- EquatableMixin for Request, Response and PartValue
+
 ## 6.1.0
 
 - HttpLogging interceptor more configurable
