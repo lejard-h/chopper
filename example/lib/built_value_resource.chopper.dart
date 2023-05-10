@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of resource;
+part of 'built_value_resource.dart';
 
 // **************************************************************************
 // ChopperGenerator
