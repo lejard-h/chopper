@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.1.2
+- Packages upgrade, constraints upgrade
+
 ## 6.1.1
 - EquatableMixin for Request, Response and PartValue
 

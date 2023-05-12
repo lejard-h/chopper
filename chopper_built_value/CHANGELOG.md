@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+- Packages upgrade, constraints upgrade
+
 ## 1.2.0
 
 - Chopper upgraded
