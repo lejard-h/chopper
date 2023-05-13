@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - develop # for testing
 defaults:
   run:
     shell: bash
@@ -21,10 +22,6 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v3
-      - id: credentials
-        run: |
-          mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - id: publish_dry_run
         run: bash tool/publish.sh chopper --dry-run
   publish_chopper_generator:
@@ -36,10 +33,6 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v3
-      - id: credentials
-        run: |
-          mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - id: publish_dry_run
         run: bash tool/publish.sh chopper_generator --dry-run
   publish_chopper_built_value:
@@ -51,9 +44,5 @@ jobs:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v3
-      - id: credentials
-        run: |
-          mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - id: publish_dry_run
         run: bash tool/publish.sh chopper_built_value --dry-run
