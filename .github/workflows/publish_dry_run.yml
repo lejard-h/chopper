@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - develop # for testing
 defaults:
   run:
     shell: bash
