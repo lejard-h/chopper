@@ -3,6 +3,12 @@ name: Publish packages
 on:
   push:
     branches: [ 'master' ]
+defaults:
+  run:
+    shell: bash
+env:
+  PUB_ENVIRONMENT: bot.github
+permissions: read-all
 
 jobs:
   publish_chopper:
