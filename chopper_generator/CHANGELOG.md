@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.1
+
+- Packages upgrade, constraints upgrade
+
 ## 6.0.0
 
 - Replaced the String based path with Uri (BREAKING CHANGE)

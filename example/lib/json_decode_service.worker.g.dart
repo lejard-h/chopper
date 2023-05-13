@@ -3,7 +3,7 @@
 part of 'json_decode_service.dart';
 
 // **************************************************************************
-// SquadronWorkerGenerator
+// WorkerGenerator
 // **************************************************************************
 
 // Operations map for JsonDecodeService
@@ -14,9 +14,8 @@ mixin $JsonDecodeServiceOperations on WorkerService {
 
   static const int _$jsonDecodeId = 1;
 
-  static Map<int, CommandHandler> _getOperations(JsonDecodeService svc) => {
-        _$jsonDecodeId: (r) => svc.jsonDecode(r.args[0]),
-      };
+  static Map<int, CommandHandler> _getOperations(JsonDecodeService svc) =>
+      {_$jsonDecodeId: (req) => svc.jsonDecode(req.args[0])};
 }
 
 // Service initializer
@@ -33,9 +32,6 @@ class JsonDecodeServiceWorker extends Worker
   Future<dynamic> jsonDecode(String source) => send(
         $JsonDecodeServiceOperations._$jsonDecodeId,
         args: [source],
-        token: null,
-        inspectRequest: false,
-        inspectResponse: false,
       );
 
   @override
@@ -52,7 +48,7 @@ class JsonDecodeServiceWorkerPool extends WorkerPool<JsonDecodeServiceWorker>
 
   @override
   Future<dynamic> jsonDecode(String source) =>
-      execute((w) => w.jsonDecode(source));
+      execute(($w) => $w.jsonDecode(source));
 
   @override
   Map<int, CommandHandler> get operations => WorkerService.noOperations;
