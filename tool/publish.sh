@@ -10,5 +10,10 @@ sed '/Comment before publish$/,+2 d' pubspec.yaml > pubspec.temp.yaml
 rm pubspec.yaml
 mv pubspec.temp.yaml pubspec.yaml
 
-dart pub publish -f
+if [ "$2" == "--dry-run" ]; then
+  dart pub publish --dry-run
+else
+  dart pub publish --force
+fi
+
 popd

@@ -1,7 +1,7 @@
-name: Publish packages
+name: Publish packages (dry run)
 
 on:
-  push:
+  pull_request:
     branches:
       - master
 defaults:
@@ -25,8 +25,8 @@ jobs:
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-      - id: publish
-        run: bash tool/publish.sh chopper
+      - id: publish_dry_run
+        run: bash tool/publish.sh chopper --dry-run
   publish_chopper_generator:
     name: "Publish chopper_generator"
     runs-on: ubuntu-latest
@@ -40,8 +40,8 @@ jobs:
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-      - id: publish
-        run: bash tool/publish.sh chopper_generator
+      - id: publish_dry_run
+        run: bash tool/publish.sh chopper_generator --dry-run
   publish_chopper_built_value:
     name: "Publish chopper_built_value"
     runs-on: ubuntu-latest
@@ -55,5 +55,5 @@ jobs:
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-      - id: publish
-        run: bash tool/publish.sh chopper_built_value
+      - id: publish_dry_run
+        run: bash tool/publish.sh chopper_built_value --dry-run
