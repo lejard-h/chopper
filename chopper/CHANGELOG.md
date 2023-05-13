@@ -1,4 +1,16 @@
 # Changelog
+
+## 6.1.2
+- Packages upgrade, constraints upgrade
+
+## 6.1.1
+- EquatableMixin for Request, Response and PartValue
+
+## 6.1.0
+
+- HttpLogging interceptor more configurable
+- Apply headers field name case insensitive.
+
 ## 6.0.0
 
 - Replaced the String based path with Uri (BREAKING CHANGE)

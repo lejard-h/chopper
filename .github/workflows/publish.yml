@@ -2,45 +2,58 @@ name: Publish packages
 
 on:
   push:
-    branches: ['master']
+    branches:
+      - master
+defaults:
+  run:
+    shell: bash
+env:
+  PUB_ENVIRONMENT: bot.github
+permissions: read-all
 
 jobs:
   publish_chopper:
-      name: "Publish chopper"
-      runs-on: ubuntu-latest
-      steps:
-      - uses: dart-lang/setup-dart@v1.3
+    name: "Publish chopper"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v3
+      - id: credentials
+        run: |
+          mkdir -p $XDG_CONFIG_HOME/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - id: publish
         run: bash tool/publish.sh chopper
-        env:
-          CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
   publish_chopper_generator:
     name: "Publish chopper_generator"
     runs-on: ubuntu-latest
     steps:
-    - uses: dart-lang/setup-dart@v1.3
-      with:
-        sdk: stable
-    - id: checkout
-      uses: actions/checkout@v3
-    - id: publish
-      run: bash tool/publish.sh chopper_generator
-      env:
-        CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v3
+      - id: credentials
+        run: |
+          mkdir -p $XDG_CONFIG_HOME/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+      - id: publish
+        run: bash tool/publish.sh chopper_generator
   publish_chopper_built_value:
     name: "Publish chopper_built_value"
     runs-on: ubuntu-latest
     steps:
-    - uses: dart-lang/setup-dart@v1.3
-      with:
-        sdk: stable
-    - id: checkout
-      uses: actions/checkout@v3
-    - id: publish
-      run: bash tool/publish.sh chopper_built_value
-      env:
-        CREDENTIAL_JSON: ${{ secrets.CREDENTIAL_JSON }}
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v3
+      - id: credentials
+        run: |
+          mkdir -p $XDG_CONFIG_HOME/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+      - id: publish
+        run: bash tool/publish.sh chopper_built_value
