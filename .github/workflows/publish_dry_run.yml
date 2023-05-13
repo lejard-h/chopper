@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - master
-      - develop # for testing
 defaults:
   run:
     shell: bash
@@ -14,7 +13,7 @@ permissions: read-all
 
 jobs:
   publish_chopper:
-    name: "Publish chopper"
+    name: "Publish chopper (dry run)"
     runs-on: ubuntu-latest
     steps:
       - uses: dart-lang/setup-dart@v1
@@ -29,7 +28,7 @@ jobs:
       - id: publish_dry_run
         run: bash tool/publish.sh chopper --dry-run
   publish_chopper_generator:
-    name: "Publish chopper_generator"
+    name: "Publish chopper_generator (dry run)"
     runs-on: ubuntu-latest
     steps:
       - uses: dart-lang/setup-dart@v1
@@ -44,7 +43,7 @@ jobs:
       - id: publish_dry_run
         run: bash tool/publish.sh chopper_generator --dry-run
   publish_chopper_built_value:
-    name: "Publish chopper_built_value"
+    name: "Publish chopper_built_value (dry run)"
     runs-on: ubuntu-latest
     steps:
       - uses: dart-lang/setup-dart@v1
