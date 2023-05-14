@@ -10,7 +10,6 @@ defaults:
     shell: bash
 env:
   PUB_ENVIRONMENT: bot.github
-  APP_VERSION: ${{ steps.load_version.outputs.APP_VERSION }}
 permissions: read-all
 
 jobs:
