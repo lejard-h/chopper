@@ -30,13 +30,13 @@ jobs:
         run: |
           echo "THIS_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
       - name: Checkout base branch
-        run: git checkout origin/${{ github.event.pull_request.base.ref }}
+        run: git checkout -b ${{ github.event.pull_request.base.ref }}
       - name: Load base version
         id: load_base_version
         run: |
           echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
       - name: Checkout pull request branch
-        run: git switch -
+        run: git checkout -
       - name: Define version comparison function
         run: |
           function version() {
