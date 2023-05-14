@@ -30,7 +30,7 @@ jobs:
       - name: Load base version
         id: load_base_version
         run: |
-          echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
+          echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_OUTPUT
           cat $GITHUB_ENV
   publish_dry_run:
     name: "Publish DRY RUN"
@@ -40,6 +40,8 @@ jobs:
       matrix:
         package: [ chopper, chopper_generator, chopper_built_value ]
     steps:
+      - env:
+          BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -56,7 +58,7 @@ jobs:
             echo $1 | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }';
           }
           
-          if [ $(version $1) -gt $(version $2) ]; then
+          if [ $(version $THIS_VERSION) -gt $(version $BASE_VERSION) ]; then
               echo "IS_VERSION_GREATER=1" >> $GITHUB_ENV
           else
               echo "IS_VERSION_GREATER=0" >> $GITHUB_ENV
