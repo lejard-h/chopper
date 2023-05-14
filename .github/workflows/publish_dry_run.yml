@@ -13,8 +13,24 @@ env:
 permissions: read-all
 
 jobs:
+  get_base_version:
+    name: "Get base version"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+      - name: Load base version
+        id: load_base_version
+        run: |
+          echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
   publish_dry_run:
     name: "Publish DRY RUN"
+    needs: get_base_version
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -29,31 +45,18 @@ jobs:
         id: load_this_version
         run: |
           echo "THIS_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
-      - name: Checkout base branch
-        run: git checkout -b origin/${{ github.event.pull_request.base.ref }}
-      - name: Load base version
-        id: load_base_version
-        run: |
-          echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
-      - name: Checkout pull request branch
-        run: git checkout -
-      - name: Define version comparison function
+      - name: Compare versions
+        id: compare_versions
         run: |
           function version() {
             echo $1 | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }';
           }
           
-          function compare_versions() {
-            if [ $(version $1) -gt $(version $2) ]; then
-                echo 1
-            else
-                echo 0
-            fi
-          }
-      - name: Compare versions
-        id: compare_versions
-        run: |
-          echo "IS_VERSION_GREATER=$(compare_versions $THIS_VERSION $BASE_VERSION)" >> $GITHUB_ENV
+          if [ $(version $1) -gt $(version $2) ]; then
+              echo "IS_VERSION_GREATER=1" >> $GITHUB_ENV
+          else
+              echo "IS_VERSION_GREATER=0" >> $GITHUB_ENV
+          fi
           
           cat $GITHUB_ENV
       - name: Publish (dry run)
