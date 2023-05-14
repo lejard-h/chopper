@@ -20,7 +20,9 @@ jobs:
       matrix:
         package: [ chopper, chopper_generator, chopper_built_value ]
     outputs:
-      BASE_VERSION: ${{ steps.load_base_version.outputs.BASE_VERSION }}
+      BASE_VERSION_chopper: ${{ steps.load_base_version.outputs.BASE_VERSION_chopper }}
+      BASE_VERSION_chopper_generator: ${{ steps.load_base_version.outputs.BASE_VERSION_chopper_generator }}
+      BASE_VERSION_chopper_built_value: ${{ steps.load_base_version.outputs.BASE_VERSION_chopper_built_value }}
     steps:
       - uses: dart-lang/setup-dart@v1
         with:
@@ -32,7 +34,7 @@ jobs:
       - name: Load base version
         id: load_base_version
         run: |
-          echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_OUTPUT
+          echo "BASE_VERSION_${{ matrix.package }}=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_OUTPUT
   publish_dry_run:
     name: "Publish DRY RUN"
     needs: get_base_version
@@ -53,27 +55,25 @@ jobs:
       - name: Compare versions
         id: compare_versions
         env:
-          BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
+          BASE_VERSION_chopper: ${{ needs.get_base_version.outputs.BASE_VERSION_chopper }}
+          BASE_VERSION_chopper_generator: ${{ needs.get_base_version.outputs.BASE_VERSION_chopper_generator }}
+          BASE_VERSION_chopper_built_value: ${{ needs.get_base_version.outputs.BASE_VERSION_chopper_built_value }}
         run: |
           pushd tool || exit
           
           dart pub get
-          echo "IS_VERSION_GREATER=$(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION)" >> $GITHUB_ENV
-          echo dart run compare_versions.dart $THIS_VERSION $BASE_VERSION
-          echo $(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION)
+          echo "IS_VERSION_GREATER=$(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION_${{ matrix.package }})" >> $GITHUB_ENV
+          echo dart run compare_versions.dart $THIS_VERSION $BASE_VERSION_${{ matrix.package }}
+          echo $(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION_${{ matrix.package }})
           
           popd || exit
           
           cat $GITHUB_ENV
       - name: Publish (dry run)
         id: publish_dry_run
-        env:
-          BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
         if: ${{ env.IS_VERSION_GREATER == 1 }}
         run: bash tool/publish.sh ${{ matrix.package }} --dry-run
       - name: Skip publish (dry run)
         id: skip_publish_dry_run
-        env:
-          BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
         if: ${{ env.IS_VERSION_GREATER == 0 }}
         run: echo "Skipping publish (dry run) for ${{ matrix.package }} because the version is not greater than the one on pub.dev"
