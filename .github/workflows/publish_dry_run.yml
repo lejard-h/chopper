@@ -31,7 +31,6 @@ jobs:
         id: load_base_version
         run: |
           echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_OUTPUT
-          cat $GITHUB_ENV
   publish_dry_run:
     name: "Publish DRY RUN"
     needs: get_base_version
@@ -42,6 +41,7 @@ jobs:
     steps:
       - env:
           BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
+        run: echo "$BASE_VERSION" >> $GITHUB_ENV
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -63,8 +63,6 @@ jobs:
           else
               echo "IS_VERSION_GREATER=0" >> $GITHUB_ENV
           fi
-          
-          cat $GITHUB_ENV
       - name: Publish (dry run)
         id: publish_dry_run
         if: ${{ env.IS_VERSION_GREATER == 1 }}
