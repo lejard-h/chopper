@@ -61,6 +61,9 @@ jobs:
           echo "IS_VERSION_GREATER=$(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION)" >> $GITHUB_ENV
           
           popd || exit
+          
+          echo $(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION)
+          cat $GITHUB_ENV
       - name: Publish (dry run)
         id: publish_dry_run
         env:
