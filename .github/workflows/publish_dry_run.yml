@@ -33,7 +33,7 @@ jobs:
         id: compare_versions
         run: |
           echo "IS_VERSION_GREATER=$(echo $APP_VERSION ${GITHUB_SHA} | awk '{print $1>$2}')" >> $GITHUB_ENV
-          echo $APP_VERSION ${GITHUB_SHA} | awk '{print $1>$2}'
+          echo $IS_VERSION_GREATER
       - name: Publish (dry run)
         id: publish_dry_run
         if: ${{ env.IS_VERSION_GREATER == 'true' }}
