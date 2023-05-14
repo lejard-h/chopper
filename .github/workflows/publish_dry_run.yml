@@ -29,7 +29,6 @@ jobs:
         id: load_version
         run: |
           echo "APP_VERSION=$(awk '/^version: / {print $2}' pubspec.yaml)" >> $GITHUB_ENV
-          echo "::set-env name=APP_VERSION::$APP_VERSION"
       - name: Compare versions
         id: compare_versions
         run: |
