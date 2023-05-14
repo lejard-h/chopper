@@ -55,15 +55,12 @@ jobs:
         env:
           BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
         run: |
-          function version() {
-            echo $1 | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }';
-          }
+          pushd tool || exit
           
-          if [ $(version $THIS_VERSION) -gt $(version $BASE_VERSION) ]; then
-              echo "IS_VERSION_GREATER=1" >> $GITHUB_ENV
-          else
-              echo "IS_VERSION_GREATER=0" >> $GITHUB_ENV
-          fi
+          dart pub get
+          echo "IS_VERSION_GREATER=$(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION)" >> $GITHUB_ENV
+          
+          popd || exit
       - name: Publish (dry run)
         id: publish_dry_run
         env:
