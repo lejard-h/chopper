@@ -7,7 +7,9 @@ void main(List<String> args) {
     exitCode = 0;
 
     if (args.length != 2) {
-      stderr.write('Please provide two arguments!\n\nExample usage:\ndart run compare_versions.dart 2.0.0+1 1.9.0+5\n');
+      stderr.write(
+        'Please provide two arguments!\n\nExample usage:\ndart run compare_versions.dart 2.0.0+1 1.9.0+5\n',
+      );
       exitCode = 1;
       return;
     }
