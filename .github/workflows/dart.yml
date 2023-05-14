@@ -260,9 +260,8 @@ jobs:
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         if: "always() && steps.coverage.conclusion == 'success'"
-        working-directory: ${{ matrix.package }}
         with:
-          file: ./coverage/lcov.info
+          file: ./${{ matrix.package }}/coverage/lcov.info
           verbose: true
     needs:
       - job_001
