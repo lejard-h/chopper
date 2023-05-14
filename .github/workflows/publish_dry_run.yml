@@ -69,10 +69,6 @@ jobs:
           else
               echo "IS_VERSION_GREATER=0" >> $GITHUB_ENV
           fi
-          
-          cat $BASE_VERSION
-          cat $THIS_VERSION
-          cat $GITHUB_ENV
       - name: Publish (dry run)
         id: publish_dry_run
         if: ${{ env.IS_VERSION_GREATER == 1 }}
