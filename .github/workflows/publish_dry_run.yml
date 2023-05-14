@@ -41,13 +41,6 @@ jobs:
       matrix:
         package: [ chopper, chopper_generator, chopper_built_value ]
     steps:
-      - env:
-          BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
-        run: |
-          if [ -z "$BASE_VERSION" ]; then
-              echo "BASE_VERSION is empty, exiting"
-              exit 1
-          fi
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -59,6 +52,8 @@ jobs:
           echo "THIS_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
       - name: Compare versions
         id: compare_versions
+        env:
+          BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
         run: |
           function version() {
             echo $1 | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }';
