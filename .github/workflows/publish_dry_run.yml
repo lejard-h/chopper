@@ -19,6 +19,8 @@ jobs:
     strategy:
       matrix:
         package: [ chopper, chopper_generator, chopper_built_value ]
+    outputs:
+      BASE_VERSION: ${{ steps.load_base_version.outputs.BASE_VERSION }}
     steps:
       - uses: dart-lang/setup-dart@v1
         with:
@@ -41,7 +43,11 @@ jobs:
     steps:
       - env:
           BASE_VERSION: ${{ needs.get_base_version.outputs.BASE_VERSION }}
-        run: echo "$BASE_VERSION" >> $GITHUB_ENV
+        run: |
+          if [ -z "$BASE_VERSION" ]; then
+              echo "BASE_VERSION is empty, exiting"
+              exit 1
+          fi
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
@@ -63,6 +69,10 @@ jobs:
           else
               echo "IS_VERSION_GREATER=0" >> $GITHUB_ENV
           fi
+          
+          cat $BASE_VERSION
+          cat $THIS_VERSION
+          cat $GITHUB_ENV
       - name: Publish (dry run)
         id: publish_dry_run
         if: ${{ env.IS_VERSION_GREATER == 1 }}
