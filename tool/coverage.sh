@@ -27,6 +27,8 @@ for PKG in "${PKGS[@]}"
 do
   # move to package directory
   cd "$PKG" || exit
+  # install dependencies
+  dart pub get
   # run tests with coverage
   dart pub global run coverage:test_with_coverage
   # remove generated files from coverage
