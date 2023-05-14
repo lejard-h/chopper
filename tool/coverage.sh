@@ -19,5 +19,5 @@ do
   # if coverage/lcov.info exists, upload to codecov
   curl -s https://codecov.io/bash | bash
   # move back to root directory
-  popd - || exit
+  popd || exit
 done
