@@ -24,7 +24,7 @@ jobs:
       - id: credentials
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+          echo '${{ secrets.CREDENTIAL_JSON }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - id: publish
         run: bash tool/publish.sh chopper
   publish_chopper_generator:
@@ -39,7 +39,7 @@ jobs:
       - id: credentials
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+          echo '${{ secrets.CREDENTIAL_JSON }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - id: publish
         run: bash tool/publish.sh chopper_generator
   publish_chopper_built_value:
@@ -54,6 +54,6 @@ jobs:
       - id: credentials
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.PUB_CREDENTIALS }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
+          echo '${{ secrets.CREDENTIAL_JSON }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - id: publish
         run: bash tool/publish.sh chopper_built_value
