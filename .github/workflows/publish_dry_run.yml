@@ -26,13 +26,13 @@ jobs:
       - id: checkout
         uses: actions/checkout@v3
       - name: Load this version
-        id: load_version
+        id: load_this_version
         run: |
           echo "THIS_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
       - name: Checkout base branch
         run: git checkout ${{ github.event.pull_request.base.ref }}
       - name: Load base version
-        id: load_version
+        id: load_base_version
         run: |
           echo "BASE_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
       - name: Checkout pull request branch
