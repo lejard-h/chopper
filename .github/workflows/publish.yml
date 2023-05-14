@@ -31,7 +31,7 @@ jobs:
       - name: Compare versions
         id: compare_versions
         run: |
-          echo "IS_VERSION_GREATER=$(echo $APP_VERSION | awk '{print $1>$2}')" >> $GITHUB_ENV
+          echo "IS_VERSION_GREATER=$(echo $APP_VERSION ${GITHUB_SHA} | awk '{print $1>$2}')" >> $GITHUB_ENV
       - name: Set up pub credentials
         id: credentials
         if: ${{ env.IS_VERSION_GREATER == 'true' }}
