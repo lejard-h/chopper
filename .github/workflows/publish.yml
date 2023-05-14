@@ -13,7 +13,7 @@ permissions: read-all
 
 jobs:
   publish:
-    name: "Publish package"
+    name: "Publish"
     runs-on: ubuntu-latest
     strategy:
       matrix:

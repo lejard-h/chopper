@@ -14,7 +14,7 @@ permissions: read-all
 
 jobs:
   publish_dry_run:
-    name: "Publish package (dry run)"
+    name: "Publish DRY RUN"
     runs-on: ubuntu-latest
     strategy:
       matrix:
