@@ -17,7 +17,7 @@ do
   # remove generated files from coverage
   dart pub global run remove_from_coverage:remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$'
   # if coverage/lcov.info exists, upload to codecov
-  curl -s https://codecov.io/bash | bash
+  [ -f coverage/lcov.info ] && bash <(curl -s https://codecov.io/bash) -f coverage/lcov.info
   # move back to root directory
   popd || exit
 done
