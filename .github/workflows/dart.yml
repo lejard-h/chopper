@@ -257,11 +257,10 @@ jobs:
         run: |
           dart pub global run coverage:test_with_coverage
           dart pub global run remove_from_coverage:remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$'
-      - id: upload_coverage
-        name: Upload coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
         if: "always() && steps.coverage.conclusion == 'success'"
         working-directory: ${{ matrix.package }}
-        uses: codecov/codecov-action@v3
         with:
           file: ./coverage/lcov.info
           verbose: true
