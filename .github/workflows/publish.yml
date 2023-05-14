@@ -9,51 +9,41 @@ defaults:
     shell: bash
 env:
   PUB_ENVIRONMENT: bot.github
+  APP_VERSION: ${{ steps.load_version.outputs.APP_VERSION }}
 permissions: read-all
 
 jobs:
-  publish_chopper:
-    name: "Publish chopper"
+  publish:
+    name: "Publish package"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [ chopper, chopper_generator, chopper_built_value ]
     steps:
       - uses: dart-lang/setup-dart@v1
         with:
           sdk: stable
       - id: checkout
         uses: actions/checkout@v3
-      - id: credentials
+      - name: Load version
+        id: load_version
+        run: |
+          echo "APP_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
+      - name: Compare versions
+        id: compare_versions
+        run: |
+          echo "::set-output name=IS_VERSION_GREATER::$(echo $APP_VERSION ${GITHUB_HEAD_REF:-HEAD} | awk '{print $1>$2}')"
+      - name: Set up pub credentials
+        id: credentials
+        if: ${{ steps.compare_versions.outputs.IS_VERSION_GREATER == 'true' }}
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
           echo '${{ secrets.CREDENTIAL_JSON }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-      - id: publish
-        run: bash tool/publish.sh chopper
-  publish_chopper_generator:
-    name: "Publish chopper_generator"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v3
-      - id: credentials
-        run: |
-          mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.CREDENTIAL_JSON }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-      - id: publish
-        run: bash tool/publish.sh chopper_generator
-  publish_chopper_built_value:
-    name: "Publish chopper_built_value"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v3
-      - id: credentials
-        run: |
-          mkdir -p $XDG_CONFIG_HOME/dart
-          echo '${{ secrets.CREDENTIAL_JSON }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
-      - id: publish
-        run: bash tool/publish.sh chopper_built_value
+      - name: Publish
+        id: publish
+        if: ${{ steps.compare_versions.outputs.IS_VERSION_GREATER == 'true' }}
+        run: bash tool/publish.sh ${{ matrix.package }}
+      - name: Published version is up to date
+        id: version_up_to_date
+        if: ${{ steps.compare_versions.outputs.IS_VERSION_GREATER != 'true' }}
+        run: echo "Published version is up to date. Will not publish."
