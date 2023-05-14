@@ -4,28 +4,64 @@ github:
   on:
     push:
       branches:
-      - master
-      - develop
+        - master
+        - develop
     pull_request:
       branches:
-      - master
-      - develop
-  on_completion:
-    - name: "Coverage"
-      runs-on: ubuntu-latest
-      steps:
-      - uses: dart-lang/setup-dart@v1.3
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v3
-      - id: upload_coverage
-        name: "chopper; tool/coverage.sh"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        run: bash tool/coverage.sh
-        env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        - master
+        - develop
+#  on_completion:
+#    - name: Coverage
+#      runs-on: ubuntu-latest
+#      strategy:
+#        matrix:
+#          package: [ chopper, chopper_built_value, chopper_generator ]
+#      steps:
+#        - name: Cache Pub hosted dependencies
+#          uses: actions/cache@v3
+#          with:
+#            path: "~/.pub-cache/hosted"
+#            key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:${{ matrix.package }};commands:coverage"
+#            restore-keys: |
+#              os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:${{ matrix.package }}
+#              os:ubuntu-latest;pub-cache-hosted;sdk:stable
+#              os:ubuntu-latest;pub-cache-hosted
+#              os:ubuntu-latest
+#        - name: Setup Dart SDK
+#          uses: dart-lang/setup-dart@v1
+#          with:
+#            sdk: stable
+#        - id: checkout
+#          uses: actions/checkout@v3
+#        - id: pub_upgrade
+#          name: dart pub upgrade
+#          if: "always() && steps.checkout.conclusion == 'success'"
+#          working-directory: ${{ matrix.package }}
+#          run: dart pub upgrade
+#        - id: install
+#          name: Install coverage packages
+#          if: "always() && steps.pub_upgrade.conclusion == 'success'"
+#          working-directory: ${{ matrix.package }}
+#          run: |
+#            dart pub global activate coverage
+#            dart pub global activate remove_from_coverage
+#        - id: coverage
+#          name: Collect and report coverage
+#          if: "always() && steps.install.conclusion == 'success'"
+#          working-directory: ${{ matrix.package }}
+#          run: |
+#            dart pub global run coverage:test_with_coverage
+#            dart pub global run remove_from_coverage:remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$'
+#        - name: Upload coverage
+#          uses: codecov/codecov-action@v3
+#          if: "always() && steps.coverage.conclusion == 'success'"
+#          with:
+#            file: ./${{ matrix.package }}/coverage/lcov.info
+#            verbose: true
 
 merge_stages:
-- analyzer_and_format
-- unit_test
+  - analyzer_and_format
+  - unit_test
+
+coverage_service:
+  - codecov
