@@ -214,55 +214,19 @@ jobs:
       - job_003
   job_006:
     name: Coverage
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ ubuntu-latest ]
-        sdk: [ stable ]
-        package: [ chopper, chopper_built_value, chopper_generator ]
+    runs-on: ubuntu-latest
     steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@v3
+      - uses: dart-lang/setup-dart@v1.3
         with:
-          path: "~/.pub-cache/hosted"
-          key: "os:${{ runner.os }};pub-cache-hosted;sdk:${{ matrix.sdk }};packages:${{ matrix.package }};commands:coverage"
-          restore-keys: |
-            os:${{ matrix.os }};pub-cache-hosted;sdk:${{ matrix.sdk }};packages:${{ matrix.package }}
-            os:${{ matrix.os }};pub-cache-hosted;sdk:${{ matrix.sdk }}
-            os:${{ matrix.os }};pub-cache-hosted
-            os:${{ matrix.os }}
-      - name: Setup Dart SDK
-        uses: dart-lang/setup-dart@v1
-        with:
-          sdk: ${{ matrix.sdk }}
+          sdk: stable
       - id: checkout
         uses: actions/checkout@v3
-      - id: pub_upgrade
-        name: dart pub upgrade
+      - id: upload_coverage
+        name: chopper; tool/coverage.sh
+        run: bash tool/coverage.sh
         if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: ${{ matrix.package }}
-        run: dart pub upgrade
-      - id: install
-        name: Install coverage packages
-        if: "always() && steps.pub_upgrade.conclusion == 'success'"
-        working-directory: ${{ matrix.package }}
-        run: |
-          dart pub global activate coverage
-          dart pub global activate remove_from_coverage
-      - id: coverage
-        name: Collect and report coverage
-        if: "always() && steps.install.conclusion == 'success'"
-        working-directory: ${{ matrix.package }}
-        run: |
-          dart pub global run coverage:test_with_coverage
-          dart pub global run remove_from_coverage:remove_from_coverage -f coverage/lcov.info -r '\.g\.dart$'
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        if: "always() && steps.coverage.conclusion == 'success'"
-        with:
-          file: ./${{ matrix.package }}/coverage/lcov.info
-          verbose: true
+        env:
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
     needs:
       - job_001
       - job_002
