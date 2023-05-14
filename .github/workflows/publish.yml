@@ -31,18 +31,14 @@ jobs:
       - name: Compare versions
         id: compare_versions
         run: |
-          echo "::set-output name=IS_VERSION_GREATER::$(echo $APP_VERSION ${GITHUB_HEAD_REF:-HEAD} | awk '{print $1>$2}')"
+          echo "IS_VERSION_GREATER=$(echo $APP_VERSION ${GITHUB_HEAD_REF:-HEAD} | awk '{print $1>$2}')" >> $GITHUB_ENV
       - name: Set up pub credentials
         id: credentials
-        if: ${{ steps.compare_versions.outputs.IS_VERSION_GREATER == 'true' }}
+        if: ${{ env.IS_VERSION_GREATER == 'true' }}
         run: |
           mkdir -p $XDG_CONFIG_HOME/dart
           echo '${{ secrets.CREDENTIAL_JSON }}' > "$XDG_CONFIG_HOME/dart/pub-credentials.json"
       - name: Publish
         id: publish
-        if: ${{ steps.compare_versions.outputs.IS_VERSION_GREATER == 'true' }}
+        if: ${{ env.IS_VERSION_GREATER == 'true' }}
         run: bash tool/publish.sh ${{ matrix.package }}
-      - name: Published version is up to date
-        id: version_up_to_date
-        if: ${{ steps.compare_versions.outputs.IS_VERSION_GREATER != 'true' }}
-        run: echo "Published version is up to date. Will not publish."
