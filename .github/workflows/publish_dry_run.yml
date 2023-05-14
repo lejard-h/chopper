@@ -1,0 +1,47 @@
+name: Publish packages (dry run)
+
+on:
+  pull_request:
+    branches:
+      - master
+defaults:
+  run:
+    shell: bash
+env:
+  PUB_ENVIRONMENT: bot.github
+permissions: read-all
+
+jobs:
+  publish_chopper:
+    name: "Publish chopper (dry run)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v3
+      - id: publish_dry_run
+        run: bash tool/publish.sh chopper --dry-run
+  publish_chopper_generator:
+    name: "Publish chopper_generator (dry run)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v3
+      - id: publish_dry_run
+        run: bash tool/publish.sh chopper_generator --dry-run
+  publish_chopper_built_value:
+    name: "Publish chopper_built_value (dry run)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - id: checkout
+        uses: actions/checkout@v3
+      - id: publish_dry_run
+        run: bash tool/publish.sh chopper_built_value --dry-run
