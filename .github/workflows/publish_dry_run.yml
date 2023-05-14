@@ -31,8 +31,8 @@ jobs:
         id: load_version
         run: |
           echo "APP_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
-      - name: Checkout pull request branch
-        run: git checkout ${{ github.head_ref }}
+      - id: checkout
+        uses: actions/checkout@v3
       - name: Compare versions
         id: compare_versions
         run: |
