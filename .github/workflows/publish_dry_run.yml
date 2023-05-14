@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "THIS_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
       - name: Checkout base branch
-        run: git checkout ${{ github.event.pull_request.base.ref }}
+        run: git checkout origin/${{ github.event.pull_request.base.ref }}
       - name: Load base version
         id: load_base_version
         run: |
