@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - develop # TODO: only here for testing the job
 defaults:
   run:
     shell: bash
