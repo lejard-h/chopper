@@ -7,7 +7,7 @@ stages:
     - format
     - analyze: --fatal-infos .
 - unit_test:
-  - test:
+  - test_with_coverage:
   - test: -p chrome
 
 cache:
