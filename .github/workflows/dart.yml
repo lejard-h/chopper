@@ -127,6 +127,63 @@ jobs:
       - job_001
       - job_002
   job_004:
+    name: "unit_test; PKGS: chopper, chopper_built_value; `dart pub global run coverage:test_with_coverage`"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_with_coverage"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value
+            os:ubuntu-latest;pub-cache-hosted;sdk:stable
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
+        with:
+          sdk: stable
+      - name: "Activate package:coverage"
+        run: "dart pub global activate coverage '>=1.5.0'"
+      - id: checkout
+        name: Checkout repository
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
+      - id: chopper_pub_upgrade
+        name: chopper; dart pub upgrade
+        run: dart pub upgrade
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: chopper
+      - name: "chopper; dart pub global run coverage:test_with_coverage"
+        run: "dart pub global run coverage:test_with_coverage"
+        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper
+      - name: Upload coverage to codecov.io
+        uses: codecov/codecov-action@main
+        with:
+          files: chopper/coverage/lcov.info
+          fail_ci_if_error: true
+          name: coverage_00
+      - id: chopper_built_value_pub_upgrade
+        name: chopper_built_value; dart pub upgrade
+        run: dart pub upgrade
+        if: "always() && steps.checkout.conclusion == 'success'"
+        working-directory: chopper_built_value
+      - name: "chopper_built_value; dart pub global run coverage:test_with_coverage"
+        run: "dart pub global run coverage:test_with_coverage"
+        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
+        working-directory: chopper_built_value
+      - name: Upload coverage to codecov.io
+        uses: codecov/codecov-action@main
+        with:
+          files: chopper_built_value/coverage/lcov.info
+          fail_ci_if_error: true
+          name: coverage_01
+    needs:
+      - job_001
+      - job_002
+      - job_003
+  job_005:
     name: "unit_test; PKGS: chopper, chopper_built_value; `dart test -p chrome`"
     runs-on: ubuntu-latest
     steps:
@@ -134,7 +191,7 @@ jobs:
         uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
         with:
           path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_1"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test"
           restore-keys: |
             os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value
             os:ubuntu-latest;pub-cache-hosted;sdk:stable
@@ -169,67 +226,3 @@ jobs:
       - job_001
       - job_002
       - job_003
-  job_005:
-    name: "unit_test; PKGS: chopper, chopper_built_value; `dart test`"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Cache Pub hosted dependencies
-        uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8
-        with:
-          path: "~/.pub-cache/hosted"
-          key: "os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value;commands:test_0"
-          restore-keys: |
-            os:ubuntu-latest;pub-cache-hosted;sdk:stable;packages:chopper-chopper_built_value
-            os:ubuntu-latest;pub-cache-hosted;sdk:stable
-            os:ubuntu-latest;pub-cache-hosted
-            os:ubuntu-latest
-      - name: Setup Dart SDK
-        uses: dart-lang/setup-dart@d6a63dab3335f427404425de0fbfed4686d93c4f
-        with:
-          sdk: stable
-      - id: checkout
-        name: Checkout repository
-        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
-      - id: chopper_pub_upgrade
-        name: chopper; dart pub upgrade
-        run: dart pub upgrade
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: chopper
-      - name: chopper; dart test
-        run: dart test
-        if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper
-      - id: chopper_built_value_pub_upgrade
-        name: chopper_built_value; dart pub upgrade
-        run: dart pub upgrade
-        if: "always() && steps.checkout.conclusion == 'success'"
-        working-directory: chopper_built_value
-      - name: chopper_built_value; dart test
-        run: dart test
-        if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
-        working-directory: chopper_built_value
-    needs:
-      - job_001
-      - job_002
-      - job_003
-  job_006:
-    name: Coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: dart-lang/setup-dart@v1.3
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v3
-      - id: upload_coverage
-        name: chopper; tool/coverage.sh
-        run: bash tool/coverage.sh
-        if: "always() && steps.checkout.conclusion == 'success'"
-        env:
-          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}"
-    needs:
-      - job_001
-      - job_002
-      - job_003
-      - job_004
-      - job_005

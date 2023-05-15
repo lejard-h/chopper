@@ -75,13 +75,13 @@ for PKG in ${PKGS}; do
         echo 'dart format --output=none --set-exit-if-changed .'
         dart format --output=none --set-exit-if-changed . || EXIT_CODE=$?
         ;;
-      test_0)
-        echo 'dart test'
-        dart test || EXIT_CODE=$?
-        ;;
-      test_1)
+      test)
         echo 'dart test -p chrome'
         dart test -p chrome || EXIT_CODE=$?
+        ;;
+      test_with_coverage)
+        echo 'dart pub global run coverage:test_with_coverage'
+        dart pub global run coverage:test_with_coverage || EXIT_CODE=$?
         ;;
       *)
         echo -e "\033[31mUnknown TASK '${TASK}' - TERMINATING JOB\033[0m"

@@ -4,28 +4,16 @@ github:
   on:
     push:
       branches:
-      - master
-      - develop
+        - master
+        - develop
     pull_request:
       branches:
-      - master
-      - develop
-  on_completion:
-    - name: "Coverage"
-      runs-on: ubuntu-latest
-      steps:
-      - uses: dart-lang/setup-dart@v1.3
-        with:
-          sdk: stable
-      - id: checkout
-        uses: actions/checkout@v3
-      - id: upload_coverage
-        name: "chopper; tool/coverage.sh"
-        if: "always() && steps.checkout.conclusion == 'success'"
-        run: bash tool/coverage.sh
-        env:
-            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        - master
+        - develop
 
 merge_stages:
-- analyzer_and_format
-- unit_test
+  - analyzer_and_format
+  - unit_test
+
+coverage_service:
+  - codecov
