@@ -29,7 +29,8 @@ jobs:
       - id: checkout
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 2
+      - run: git checkout HEAD^
       - name: Load base version
         id: load_base_version
         run: |
