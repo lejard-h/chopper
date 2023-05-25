@@ -86,16 +86,13 @@ class Request extends http.BaseRequest with EquatableMixin {
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
-    final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
-        ? url
-        : _mergeUri(baseUrl, url);
+    final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS') ? url : _mergeUri(baseUrl, url);
 
     // Check if parameter also has all the queryParameters from the url (not the merged uri)
-    final bool parametersContainsUriQuery = parameters.keys
-        .every((element) => url.queryParametersAll.keys.contains(element));
-    final Map<String, dynamic> allParameters = parametersContainsUriQuery
-        ? parameters
-        : {...url.queryParametersAll, ...parameters};
+    final bool parametersContainsUriQuery =
+        parameters.keys.every((element) => url.queryParametersAll.keys.contains(element));
+    final Map<String, dynamic> allParameters =
+        parametersContainsUriQuery ? parameters : {...url.queryParametersAll, ...parameters};
 
     final String query = mapToQuery(
       allParameters,
@@ -138,6 +135,7 @@ class Request extends http.BaseRequest with EquatableMixin {
   @visibleForTesting
   http.Request toHttpRequest() {
     final http.Request request = http.Request(method, url)
+      ..followRedirects = followRedirects
       ..headers.addAll(headers);
 
     if (body != null) {
@@ -197,8 +195,7 @@ class Request extends http.BaseRequest with EquatableMixin {
   /// Convert this [Request] to a [http.StreamedRequest]
   @visibleForTesting
   http.StreamedRequest toStreamedRequest(Stream<List<int>> bodyStream) {
-    final http.StreamedRequest request = http.StreamedRequest(method, url)
-      ..headers.addAll(headers);
+    final http.StreamedRequest request = http.StreamedRequest(method, url)..headers.addAll(headers);
 
     bodyStream.listen(
       request.sink.add,
@@ -237,8 +234,7 @@ class PartValue<T> with EquatableMixin {
 
   /// Makes a copy of this PartValue, replacing original values with the given ones.
   /// This method can also alter the type of the request body.
-  PartValue<NewType> copyWith<NewType>({String? name, NewType? value}) =>
-      PartValue<NewType>(
+  PartValue<NewType> copyWith<NewType>({String? name, NewType? value}) => PartValue<NewType>(
         name ?? this.name,
         value ?? this.value as NewType,
       );
