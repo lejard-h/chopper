@@ -8,6 +8,6 @@ import 'package:squadron/squadron_service.dart';
 import 'json_decode_service.dart';
 
 // VM entry point
-void _start(Map command) => run($JsonDecodeServiceInitializer, command, null);
+void _start(List command) => run($JsonDecodeServiceInitializer, command, null);
 
 dynamic $getJsonDecodeServiceActivator() => _start;
