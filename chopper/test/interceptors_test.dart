@@ -204,6 +204,35 @@ void main() {
         ),
       );
     });
+
+    final fakeRequestMultipart = Request(
+      'POST',
+      Uri.parse('/'),
+      Uri.parse('base'),
+      headers: {'foo': 'bar'},
+      parts: [
+        PartValue<int>('p1', 123),
+        PartValueFile<http.MultipartFile>(
+          'p2',
+          http.MultipartFile.fromBytes('file', [0], filename: 'filename'),
+        ),
+      ],
+      multipart: true,
+    );
+
+    test('Curl interceptors Multipart', () async {
+      final curl = CurlInterceptor();
+      var log = '';
+      chopperLogger.onRecord.listen((r) => log = r.message);
+      await curl.onRequest(fakeRequestMultipart);
+
+      expect(
+        log,
+        equals(
+          "curl -v -X POST -H 'foo: bar' -f 'p1: 123' -f 'file: filename' \"base/\"",
+        ),
+      );
+    });
   });
 }
 
