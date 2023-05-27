@@ -85,4 +85,4 @@ jobs:
         id: cleanup
         if: ${{ always() }}
         run: |
-          rm -rf $XDG_CONFIG_HOME/dart/pub-credentials.json
+          rm -rf "$XDG_CONFIG_HOME/dart/pub-credentials.json"
