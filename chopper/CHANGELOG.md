@@ -1,9 +1,17 @@
 # Changelog
 
+## 6.1.3
+
+- Add follow redirects to toHttpRequest ([#430](https://github.com/lejard-h/chopper/pull/430))
+- Update http constraint to ">=0.13.0 <2.0.0" ([#431](https://github.com/lejard-h/chopper/pull/431))
+- Add MultipartRequest log to CurlInterceptor ([#435](https://github.com/lejard-h/chopper/pull/435))
+
 ## 6.1.2
+
 - Packages upgrade, constraints upgrade
 
 ## 6.1.1
+
 - EquatableMixin for Request, Response and PartValue
 
 ## 6.1.0
@@ -37,6 +45,7 @@
 ## 4.0.1
 
 - Fix for the null safety support
+
 ## 4.0.0
 
 - **Null safety support**
@@ -73,14 +82,14 @@
 
 **Breaking change**
 New way to handle errors
-    if (response.isSuccessful) {
-      final body = response.body;
-    } else {
-      final error = response.error;
-    }
+if (response.isSuccessful) {
+final body = response.body;
+} else {
+final error = response.error;
+}
+
 - Fix error handling by introducing `Response.error` getter
 - Remove `onError` since every response are available via `onResponse` stream
-
 
 ## 2.5.0
 
@@ -90,8 +99,8 @@ New way to handle errors
 ## 2.4.2
 
 - Fix on JsonConverter
-    If content type header overrided using @Post(headers: {'content-type': '...'})
-    The converter won't add json header and won't apply json.encode if content type is not JSON
+  If content type header overrided using @Post(headers: {'content-type': '...'})
+  The converter won't add json header and won't apply json.encode if content type is not JSON
 
 - add `bool override` on `applyHeader(s)` functions, true by default
 
@@ -107,8 +116,9 @@ New way to handle errors
   `Response.base` is now a `BaseRequest` instead of a `Request`, which means that you can't do base.body now.
   Please use Response.bodyBytes or Response.bodyString instead for non streaming case.
 - Now supports streams !
-  - You can pass `Stream<List<int>>` as a body to a request
-  - You can also use `Stream<List<int>>` as the BodyType for the response, in this case the returned response will contain a stream in `body`.
+    - You can pass `Stream<List<int>>` as a body to a request
+    - You can also use `Stream<List<int>>` as the BodyType for the response, in this case the returned response will
+      contain a stream in `body`.
 - Support passing `MutlipartFile` (from packages:http) directly to `@FileField` annotation
 
 ## 2.3.2
@@ -138,12 +148,12 @@ New way to handle errors
 ## 2.2.0
 
 - Fix converter issue on List
-  - ***Breaking Change***
-  on `Converter.convertResponse<ResultType>(response)`,
-  it take a new generic type => `Converter.convertResponse<ResultType, ItemType>(response)`
+    - ***Breaking Change***
+      on `Converter.convertResponse<ResultType>(response)`,
+      it take a new generic type => `Converter.convertResponse<ResultType, ItemType>(response)`
 
 - deprecated `Chopper.service<Type>(Type)`, use `Chopper.getservice<Type>()` instead
-thanks to @MichaelDark
+  thanks to @MichaelDark
 
 ## 2.1.0
 
@@ -159,29 +169,30 @@ thanks to @MichaelDark
 
 - Request is now containing baseUrl
 - Can call `Request.toHttpRequest()` direclty to get the `http.BaseRequest` will receive
-- If a full url is specified in the `path` (ex: @Get(path: 'https://...')), it won't be concaten with the baseUrl of the ChopperClient and the ChopperAPI
+- If a full url is specified in the `path` (ex: @Get(path: 'https://...')), it won't be concaten with the baseUrl of the
+  ChopperClient and the ChopperAPI
 - Add `CurlInterceptor` thanks @edwardaux
 - Add `HttpLoggingInterceptor`
 - Add `FactoryConverter` annotation `@FactoryConverter(request: convertRequest, response: convertResponse)`
 
 - ***BreakingChange***
-  - Method.url renamed to path
-  - `Converter.encode` and `Converter.decode` removed, implement `Converter.convertResponse` and Converter.convertRequest` instead
-  - `ChopperClient.jsonApi` deprecated, use a `JsonConverter` instead
-  - `ChopperClient.formUrlEncodedApi`, use `FormUrlEncodedConverter` instead
-  - remove `JsonEncoded` annotation, use `FactoryConverter` instead
+    - Method.url renamed to path
+    - `Converter.encode` and `Converter.decode` removed, implement `Converter.convertResponse` and
+      Converter.convertRequest` instead
+    - `ChopperClient.jsonApi` deprecated, use a `JsonConverter` instead
+    - `ChopperClient.formUrlEncodedApi`, use `FormUrlEncodedConverter` instead
+    - remove `JsonEncoded` annotation, use `FactoryConverter` instead
 
 ## 1.1.0
 
 - ***BreakingChange***
-    Removed `name` parameter on `ChopperApi`
-    New way to instanciate a service
+  Removed `name` parameter on `ChopperApi`
+  New way to instanciate a service
 
         @ChopperApi()
         abstract class MyService extends ChopperService {
             static MyService create([ChopperClient client]) => _$MyService(client);
         }
-
 
 ## 1.0.0
 

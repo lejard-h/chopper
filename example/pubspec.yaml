@@ -1,6 +1,6 @@
 name: chopper_example
 description: Example usage of the Chopper package
-version: 0.0.4
+version: 0.0.5
 documentation: https://hadrien-lejard.gitbook.io/chopper/
 #author: Hadrien Lejard <hadrien.lejard@gmail.com>
 
@@ -14,7 +14,7 @@ dependencies:
   analyzer:
   http:
   built_collection:
-  squadron: ^4.3.8
+  squadron: ^5.0.0
 
 dev_dependencies:
   build_runner:
@@ -23,7 +23,7 @@ dev_dependencies:
   built_value_generator:
   dart_code_metrics: '>=4.8.1 <6.0.0'
   lints: ^2.0.0
-  squadron_builder: ^2.0.0
+  squadron_builder: ^2.1.2
 
 dependency_overrides:
  chopper:
