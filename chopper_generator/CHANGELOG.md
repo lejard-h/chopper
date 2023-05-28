@@ -36,12 +36,12 @@
 ## 4.0.1
 
 - Fix for the null safety support
+
 ## 4.0.0
 
 - **Null safety support**
 - Fix `@Header` annotation not generating null safe code
 - Respect `required` keyword in functions
-
 
 ## 3.0.5
 
@@ -66,7 +66,8 @@
 
 ## 3.0.0
 
-- Maintenance release to support last version of `chopper` package (3.0.0) that introduced a breaking change on error handling
+- Maintenance release to support last version of `chopper` package (3.0.0) that introduced a breaking change on error
+  handling
 
 ## 2.5.0
 
@@ -76,8 +77,8 @@
 ## 2.4.2
 
 - Fix on JsonConverter
-    If content type header overrided using @Post(headers: {'content-type': '...'})
-    The converter won't add json header and won't apply json.encode if content type is not JSON
+  If content type header overrided using @Post(headers: {'content-type': '...'})
+  The converter won't add json header and won't apply json.encode if content type is not JSON
 
 - add `bool override` on `applyHeader(s)` functions, true by default
 
@@ -94,7 +95,7 @@
 
 ## 2.3.4
 
-  fix trailing slash when empty path
+fix trailing slash when empty path
 
 ## 2.3.3
 
@@ -127,12 +128,12 @@
 ## 2.2.0
 
 - Fix converter issue on List
-  - ***Breaking Change***
-  on `Converter.convertResponse<ResultType>(response)`,
-  it take a new generic type => `Converter.convertResponse<ResultType, ItemType>(response)`
+    - ***Breaking Change***
+      on `Converter.convertResponse<ResultType>(response)`,
+      it take a new generic type => `Converter.convertResponse<ResultType, ItemType>(response)`
 
 - deprecated `Chopper.service<Type>(Type)`, use `Chopper.getservice<Type>()` instead
-thanks to @MichaelDark
+  thanks to @MichaelDark
 
 ## 2.1.0
 
@@ -142,29 +143,31 @@ thanks to @MichaelDark
 
 - Request is now containing baseUrl
 - Can call `Request.toHttpRequest()` direclty to get the `http.BaseRequest` will receive
-- If a full url is specified in the `path` (ex: @Get(path: 'https://...')), it won't be concaten with the baseUrl of the ChopperClient and the ChopperAPI
+- If a full url is specified in the `path` (ex: @Get(path: 'https://...')), it won't be concaten with the baseUrl of the
+  ChopperClient and the ChopperAPI
 - Add `CurlInterceptor` thanks @edwardaux
 - Add `HttpLoggingInterceptor`
 - Add `FactoryConverter` annotation `@FactoryConverter(request: convertRequest, response: convertResponse)`
 
 - ***BreakingChange***
-  - Method.url renamed to path
-  - `Converter.encode` and `Converter.decode` removed, implement `Converter.convertResponse` and Converter.convertRequest` instead
-  - `ChopperClient.jsonApi` deprecated, use a `JsonConverter` instead
-  - `ChopperClient.formUrlEncodedApi`, use `FormUrlEncodedConverter` instead
-  - remove `JsonEncoded` annotation, use `FactoryConverter` instead
+    - Method.url renamed to path
+    - `Converter.encode` and `Converter.decode` removed, implement `Converter.convertResponse` and
+      Converter.convertRequest` instead
+    - `ChopperClient.jsonApi` deprecated, use a `JsonConverter` instead
+    - `ChopperClient.formUrlEncodedApi`, use `FormUrlEncodedConverter` instead
+    - remove `JsonEncoded` annotation, use `FactoryConverter` instead
 
 ## 1.1.0
 
 - ***BreakingChange***
-    Removed `name` parameter on `ChopperApi`
-    New way to instanciate a service
-        ```dart
-            @ChopperApi()
-            abstract class MyService extends ChopperService {
-                static MyService create([ChopperClient client]) => _$MyService(client);
-            }
-        ```
+  Removed `name` parameter on `ChopperApi`
+  New way to instanciate a service
+  ```dart
+  @ChopperApi()
+  abstract class MyService extends ChopperService {
+  static MyService create([ChopperClient client]) => _$MyService(client);
+  }
+  ```
 
 ## 1.0.1
 
