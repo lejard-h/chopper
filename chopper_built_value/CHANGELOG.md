@@ -2,7 +2,7 @@
 
 ## 1.2.2
 
-- update http constraint to ">=0.13.0 <2.0.0" [#431](https://github.com/lejard-h/chopper/pull/431)
+- Update http constraint to ">=0.13.0 <2.0.0" ([#431](https://github.com/lejard-h/chopper/pull/431))
 
 ## 1.2.1
 

@@ -2,9 +2,9 @@
 
 ## 6.1.3
 
-- add follow redirects to toHttpRequest [#430](https://github.com/lejard-h/chopper/pull/430)
-- update http constraint to ">=0.13.0 <2.0.0" [#431](https://github.com/lejard-h/chopper/pull/431)
-- add MultipartRequest log to CurlInterceptor [#435](https://github.com/lejard-h/chopper/pull/435)
+- Add follow redirects to toHttpRequest ([#430](https://github.com/lejard-h/chopper/pull/430))
+- Update http constraint to ">=0.13.0 <2.0.0" ([#431](https://github.com/lejard-h/chopper/pull/431))
+- Add MultipartRequest log to CurlInterceptor ([#435](https://github.com/lejard-h/chopper/pull/435))
 
 ## 6.1.2
 
