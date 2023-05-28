@@ -138,6 +138,7 @@ class Request extends http.BaseRequest with EquatableMixin {
   @visibleForTesting
   http.Request toHttpRequest() {
     final http.Request request = http.Request(method, url)
+      ..followRedirects = followRedirects
       ..headers.addAll(headers);
 
     if (body != null) {

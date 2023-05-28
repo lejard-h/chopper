@@ -151,6 +151,16 @@ class CurlInterceptor implements RequestInterceptor {
         curl += ' -d \'$body\'';
       }
     }
+    if (baseRequest is http.MultipartRequest) {
+      final fields = baseRequest.fields;
+      final files = baseRequest.files;
+      fields.forEach((k, v) {
+        curl += ' -f \'$k: $v\'';
+      });
+      for (var file in files) {
+        curl += ' -f \'${file.field}: ${file.filename ?? ''}\'';
+      }
+    }
     curl += ' "$url"';
     chopperLogger.info(curl);
 

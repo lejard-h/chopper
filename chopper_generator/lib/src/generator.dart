@@ -457,6 +457,7 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
         _typeChecker(Map).isExactlyType(type) ||
         _typeChecker(BuiltMap).isExactlyType(type)) return type;
 
+    // ignore: deprecated_member_use
     if (generic.isDynamic) return null;
 
     if (_typeChecker(List).isExactlyType(type) ||
