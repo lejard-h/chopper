@@ -215,10 +215,10 @@ class Request extends http.BaseRequest with EquatableMixin {
           }
         }
       } else if (part.value is Iterable) {
-        for (int i = 0; i < part.value.length; i++) {
-          request.fields['${part.name}[$i]'] =
-              part.value.elementAt(i).toString();
-        }
+        request.fields.addAll({
+          for (int i = 0; i < part.value.length; i++)
+            '${part.name}[$i]': part.value.elementAt(i).toString(),
+        });
       } else {
         request.fields[part.name] = part.value.toString();
       }
