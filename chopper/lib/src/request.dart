@@ -217,7 +217,7 @@ class Request extends http.BaseRequest with EquatableMixin {
       } else if (part.value is Iterable) {
         for (int i = 0; i < part.value.length; i++) {
           request.fields['${part.name}[$i]'] =
-              part.value.elementAt(i).toString().toString();
+              part.value.elementAt(i).toString();
         }
       } else {
         request.fields[Uri.encodeComponent(part.name)] = part.value.toString();
