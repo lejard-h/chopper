@@ -418,6 +418,11 @@ void main() {
         'dolor',
         '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
       ];
+      final List<PartValueFile<List<int>>> bytes = [
+        PartValueFile<List<int>>('bytes1', utf8.encode(fileStrings[0])),
+        PartValueFile<List<int>>('bytes2', utf8.encode(fileStrings[1])),
+        PartValueFile<List<int>>('bytes3', utf8.encode(fileStrings[2])),
+      ];
       final List<PartValueFile<String>> files = [
         PartValueFile<String>('file1', 'test/fixtures/files/file1.txt'),
         PartValueFile<String>('file2', 'test/fixtures/files/file2.txt'),
@@ -433,6 +438,7 @@ void main() {
           PartValue<List<double>>('doubles', doubles),
           PartValue<List<num>>('nums', nums),
           PartValue<List<String>>('strings', strings),
+          PartValue<List<PartValueFile<List<int>>>>('bytes', bytes),
           PartValue<List<PartValueFile<String>>>('files', files),
         ],
       ).toMultipartRequest();
@@ -441,7 +447,7 @@ void main() {
         req.fields.length,
         equals(ints.length + doubles.length + nums.length + strings.length),
       );
-      expect(req.files.length, equals(files.length));
+      expect(req.files.length, equals(bytes.length + files.length));
 
       for (var i = 0; i < ints.length; i++) {
         expect(req.fields['ints[$i]'], equals(ints[i].toString()));
@@ -459,11 +465,22 @@ void main() {
         expect(req.fields['strings[$i]'], equals(strings[i]));
       }
 
-      for (var i = 0; i < files.length; i++) {
-        expect(req.files[i].filename, equals('file${i + 1}.txt'));
+      for (var i = 0; i < 3; i++) {
+        expect(req.files[i].field, equals('bytes[$i]'));
+        expect(req.files[i].filename, isNull);
         expect(
           await req.files[i].finalize().first,
-          equals(utf8.encode(fileStrings[i])),
+          equals(bytes[i].value),
+        );
+      }
+
+      for (var i = 3; i < 6; i++) {
+        final j = i - 3;
+        expect(req.files[i].field, equals('files[$j]'));
+        expect(req.files[i].filename, equals('file${j + 1}.txt'));
+        expect(
+          await req.files[i].finalize().first,
+          equals(utf8.encode(fileStrings[j])),
         );
       }
     },
