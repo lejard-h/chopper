@@ -193,14 +193,14 @@ class Request extends http.BaseRequest with EquatableMixin {
           if (part.value.elementAt(i).value is List<int>) {
             request.files.add(
               http.MultipartFile.fromBytes(
-                '${part.name}[$i]',
+                part.name,
                 part.value.elementAt(i).value,
               ),
             );
           } else if (part.value.elementAt(i).value is String) {
             request.files.add(
               await http.MultipartFile.fromPath(
-                '${part.name}[$i]',
+                part.name,
                 part.value.elementAt(i).value,
               ),
             );

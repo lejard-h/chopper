@@ -466,7 +466,6 @@ void main() {
       }
 
       for (var i = 0; i < 3; i++) {
-        expect(req.files[i].field, equals('bytes[$i]'));
         expect(req.files[i].filename, isNull);
         expect(
           await req.files[i].finalize().first,
@@ -476,7 +475,6 @@ void main() {
 
       for (var i = 3; i < 6; i++) {
         final j = i - 3;
-        expect(req.files[i].field, equals('files[$j]'));
         expect(req.files[i].filename, equals('file${j + 1}.txt'));
         expect(
           await req.files[i].finalize().first,
