@@ -158,6 +158,7 @@ class Request extends http.BaseRequest with EquatableMixin {
 
   /// Convert this [Request] to a [http.MultipartRequest]
   @visibleForTesting
+  // ignore: long-method
   Future<http.MultipartRequest> toMultipartRequest() async {
     final http.MultipartRequest request = http.MultipartRequest(method, url)
       ..headers.addAll(headers);
@@ -180,22 +181,46 @@ class Request extends http.BaseRequest with EquatableMixin {
           );
         } else {
           throw ArgumentError(
-            'Type ${part.value.runtimeType} is not a supported type for PartFile'
-            'Please use one of the following types'
-            ' - List<int>'
-            ' - String (path of your file) '
-            ' - MultipartFile (from package:http)',
+            'Type ${part.value.runtimeType} is not a supported type for PartFile. '
+            'Please use one of the following types:\n'
+            '- List<int>\n'
+            '- String (path of your file)\n'
+            '- MultipartFile (from package:http)',
           );
+        }
+      } else if (part.value is Iterable<PartValueFile>) {
+        for (int i = 0; i < part.value.length; i++) {
+          if (part.value.elementAt(i).value is List<int>) {
+            request.files.add(
+              http.MultipartFile.fromBytes(
+                '${part.name}[$i]',
+                part.value.elementAt(i).value,
+              ),
+            );
+          } else if (part.value.elementAt(i).value is String) {
+            request.files.add(
+              await http.MultipartFile.fromPath(
+                '${part.name}[$i]',
+                part.value.elementAt(i).value,
+              ),
+            );
+          } else {
+            throw ArgumentError(
+              'Type ${part.value.elementAt(i).value.runtimeType} is not a supported type for PartFile. '
+              'Please use one of the following types:\n'
+              '- List<int>\n'
+              '- String (path of your file)\n'
+              '- MultipartFile (from package:http)',
+            );
+          }
         }
       } else if (part.value is Iterable) {
         for (int i = 0; i < part.value.length; i++) {
-          request.fields['${Uri.encodeComponent(part.name)}[$i]'] =
-              Uri.encodeComponent(
-            part.value.elementAt(i).toString().toString(),
-          );
+          request.fields['${part.name}[$i]'] =
+              part.value.elementAt(i).toString().toString();
         }
       } else {
-        request.fields[part.name] = part.value.toString();
+        request.fields[Uri.encodeComponent(part.name)] = part.value.toString();
       }
     }
 
