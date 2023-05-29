@@ -367,11 +367,6 @@ void main() {
       'dolor',
       '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
     ];
-    final List<PartValueFile<String>> files = [
-      PartValueFile<String>('file1', 'test/fixtures/files/file1.txt'),
-      PartValueFile<String>('file2', 'test/fixtures/files/file2.txt'),
-      PartValueFile<String>('file3', 'test/fixtures/files/file3.txt'),
-    ];
 
     final req = await Request(
       HttpMethod.Post,
@@ -382,7 +377,6 @@ void main() {
         PartValue<List<double>>('doubles', doubles),
         PartValue<List<num>>('nums', nums),
         PartValue<List<String>>('strings', strings),
-        PartValue<List<PartValueFile<String>>>('files', files),
       ],
     ).toMultipartRequest();
 
@@ -390,7 +384,6 @@ void main() {
       req.fields.length,
       equals(ints.length + doubles.length + nums.length + strings.length),
     );
-    expect(req.files.length, equals(files.length));
 
     for (var i = 0; i < ints.length; i++) {
       expect(req.fields['ints[$i]'], equals(ints[i].toString()));
@@ -407,13 +400,69 @@ void main() {
     for (var i = 0; i < strings.length; i++) {
       expect(req.fields['strings[$i]'], equals(strings[i]));
     }
-
-    for (var i = 0; i < files.length; i++) {
-      expect(req.files[i].filename, equals('file${i + 1}.txt'));
-      expect(
-        await req.files[i].finalize().first,
-        equals(utf8.encode(fileStrings[i])),
-      );
-    }
   });
+
+  test(
+    'Multipart request List and List<PartValueFile>',
+    () async {
+      final List<int> ints = [1, 2, 3];
+      final List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
+      final List<num> nums = [1.23443534678, 0.00000000001, -34251, 0.0, 3 / 4];
+      final List<String> strings = [
+        'lorem',
+        'ipsum',
+        'dolor',
+        '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
+      ];
+      final List<PartValueFile<String>> files = [
+        PartValueFile<String>('file1', 'test/fixtures/files/file1.txt'),
+        PartValueFile<String>('file2', 'test/fixtures/files/file2.txt'),
+        PartValueFile<String>('file3', 'test/fixtures/files/file3.txt'),
+      ];
+
+      final req = await Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        parts: [
+          PartValue<List<int>>('ints', ints),
+          PartValue<List<double>>('doubles', doubles),
+          PartValue<List<num>>('nums', nums),
+          PartValue<List<String>>('strings', strings),
+          PartValue<List<PartValueFile<String>>>('files', files),
+        ],
+      ).toMultipartRequest();
+
+      expect(
+        req.fields.length,
+        equals(ints.length + doubles.length + nums.length + strings.length),
+      );
+      expect(req.files.length, equals(files.length));
+
+      for (var i = 0; i < ints.length; i++) {
+        expect(req.fields['ints[$i]'], equals(ints[i].toString()));
+      }
+
+      for (var i = 0; i < doubles.length; i++) {
+        expect(req.fields['doubles[$i]'], equals(doubles[i].toString()));
+      }
+
+      for (var i = 0; i < nums.length; i++) {
+        expect(req.fields['nums[$i]'], equals(nums[i].toString()));
+      }
+
+      for (var i = 0; i < strings.length; i++) {
+        expect(req.fields['strings[$i]'], equals(strings[i]));
+      }
+
+      for (var i = 0; i < files.length; i++) {
+        expect(req.files[i].filename, equals('file${i + 1}.txt'));
+        expect(
+          await req.files[i].finalize().first,
+          equals(utf8.encode(fileStrings[i])),
+        );
+      }
+    },
+    testOn: 'vm',
+  );
 }
