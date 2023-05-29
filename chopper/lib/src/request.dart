@@ -189,24 +189,24 @@ class Request extends http.BaseRequest with EquatableMixin {
           );
         }
       } else if (part.value is Iterable<PartValueFile>) {
-        for (int i = 0; i < part.value.length; i++) {
-          if (part.value.elementAt(i).value is List<int>) {
+        for (final PartValueFile partValueFile in part.value) {
+          if (partValueFile.value is List<int>) {
             request.files.add(
               http.MultipartFile.fromBytes(
                 part.name,
-                part.value.elementAt(i).value,
+                partValueFile.value,
               ),
             );
-          } else if (part.value.elementAt(i).value is String) {
+          } else if (partValueFile.value is String) {
             request.files.add(
               await http.MultipartFile.fromPath(
                 part.name,
-                part.value.elementAt(i).value,
+                partValueFile.value,
               ),
             );
           } else {
             throw ArgumentError(
-              'Type ${part.value.elementAt(i).value.runtimeType} is not a supported type for PartFile. '
+              'Type ${partValueFile.value.runtimeType} is not a supported type for PartFile. '
               'Please use one of the following types:\n'
               '- List<int>\n'
               '- String (path of your file)\n'
