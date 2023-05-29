@@ -220,7 +220,7 @@ class Request extends http.BaseRequest with EquatableMixin {
               part.value.elementAt(i).toString();
         }
       } else {
-        request.fields[Uri.encodeComponent(part.name)] = part.value.toString();
+        request.fields[part.name] = part.value.toString();
       }
     }
 
