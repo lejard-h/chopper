@@ -362,7 +362,7 @@ void main() {
       'lorem',
       'ipsum',
       'dolor',
-      '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'\q/sd;poeßšđčćž''',
+      '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
     ];
 
     final req = await Request(
