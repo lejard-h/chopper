@@ -390,8 +390,7 @@ void main() {
       req.fields.length,
       equals(ints.length + doubles.length + nums.length + strings.length),
     );
-
-    expect(req.files.length, files.length);
+    expect(req.files.length, equals(files.length));
 
     for (var i = 0; i < ints.length; i++) {
       expect(req.fields['ints[$i]'], equals(ints[i].toString()));
@@ -410,10 +409,11 @@ void main() {
     }
 
     for (var i = 0; i < files.length; i++) {
-      final List<int> bytes = await req.files[i].finalize().first;
-
       expect(req.files[i].filename, equals('file${i + 1}.txt'));
-      expect(bytes, equals(utf8.encode(fileStrings[i])));
+      expect(
+        await req.files[i].finalize().first,
+        equals(utf8.encode(fileStrings[i])),
+      );
     }
   });
 }
