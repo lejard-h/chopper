@@ -484,4 +484,24 @@ void main() {
     },
     testOn: 'vm',
   );
+
+  test(
+    'Throw exception',
+    () async {
+      expect(
+        () async => await Request(
+          HttpMethod.Post,
+          Uri.parse('https://foo/'),
+          Uri.parse(''),
+          parts: [
+            PartValue<List<PartValueFile>>('files', <PartValueFile>[
+              PartValueFile('', 123),
+            ]),
+          ],
+        ).toMultipartRequest(),
+        throwsA(isA<ArgumentError>()),
+      );
+    },
+    testOn: 'vm',
+  );
 }
