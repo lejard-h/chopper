@@ -353,4 +353,71 @@ void main() {
       throwsA(isA<ArgumentError>()),
     );
   });
+
+  test('Multipart request List', () async {
+    final List<int> ints = [1, 2, 3];
+    final List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
+    final List<num> nums = [1.23443534678, 0.00000000001, -34251, 0.0, 3 / 4];
+    final List<String> strings = [
+      'lorem',
+      'ipsum',
+      'dolor',
+      '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'\q/sd;poeßšđčćž''',
+    ];
+
+    final req = await Request(
+      HttpMethod.Post,
+      Uri.parse('https://foo/'),
+      Uri.parse(''),
+      parts: [
+        PartValue<List<int>>('ints', ints),
+        PartValue<List<double>>('doubles', doubles),
+        PartValue<List<num>>('nums', nums),
+        PartValue<List<String>>('strings', strings),
+      ],
+    ).toMultipartRequest();
+
+    expect(
+      req.fields.length,
+      equals(
+        ints.length + doubles.length + nums.length + strings.length,
+      ),
+    );
+
+    for (var i = 0; i < ints.length; i++) {
+      expect(
+        req.fields['ints[$i]'],
+        equals(
+          Uri.encodeComponent(ints[i].toString()),
+        ),
+      );
+    }
+
+    for (var i = 0; i < doubles.length; i++) {
+      expect(
+        req.fields['doubles[$i]'],
+        equals(
+          Uri.encodeComponent(doubles[i].toString()),
+        ),
+      );
+    }
+
+    for (var i = 0; i < nums.length; i++) {
+      expect(
+        req.fields['nums[$i]'],
+        equals(
+          Uri.encodeComponent(nums[i].toString()),
+        ),
+      );
+    }
+
+    for (var i = 0; i < strings.length; i++) {
+      expect(
+        req.fields['strings[$i]'],
+        equals(
+          Uri.encodeComponent(strings[i]),
+        ),
+      );
+    }
+  });
 }
