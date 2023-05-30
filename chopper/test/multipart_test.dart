@@ -361,16 +361,16 @@ void main() {
     test(
       'Multipart request List',
       () async {
-        final List<int> ints = [1, 2, 3];
-        final List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
-        final List<num> nums = [
+        const List<int> ints = [1, 2, 3];
+        const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
+        const List<num> nums = [
           1.23443534678,
           0.00000000001,
           -34251,
           0.0,
           3 / 4,
         ];
-        final List<String> strings = [
+        const List<String> strings = [
           'lorem',
           'ipsum',
           'dolor',
@@ -413,19 +413,114 @@ void main() {
       testOn: 'browser',
     );
 
+    test('Multipart lists', () async {
+      const List<int> ints = [1, 2, 3];
+      const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
+      const List<num> nums = [
+        1.23443534678,
+        0.00000000001,
+        -34251,
+        0.0,
+        3 / 4,
+      ];
+      const String utf8String =
+          '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''';
+      const List<String> strings = [
+        'lorem',
+        'ipsum',
+        'dolor',
+        utf8String,
+      ];
+
+      final httpClient = MockClient((http.Request req) async {
+        expect(req.headers['Content-Type'], contains('multipart/form-data;'));
+
+        for (var i = 0; i < ints.length; i++) {
+          expect(
+            req.body,
+            contains(
+              'content-disposition: form-data; name="ints[$i]"\r\n'
+              '\r\n'
+              '${ints[i]}\r\n',
+            ),
+          );
+        }
+
+        for (var i = 0; i < doubles.length; i++) {
+          expect(
+            req.body,
+            contains(
+              'content-disposition: form-data; name="doubles[$i]"\r\n'
+              '\r\n'
+              '${doubles[i]}\r\n',
+            ),
+          );
+        }
+
+        for (var i = 0; i < nums.length; i++) {
+          expect(
+            req.body,
+            contains(
+              'content-disposition: form-data; name="nums[$i]"\r\n'
+              '\r\n'
+              '${nums[i]}\r\n',
+            ),
+          );
+        }
+
+        for (var i = 0; i < strings.length; i++) {
+          if (strings[i] == utf8String) {
+            expect(
+              req.body,
+              contains(
+                'content-disposition: form-data; name="strings[$i]"\r\n'
+                'content-type: text/plain; charset=utf-8\r\n'
+                'content-transfer-encoding: binary\r\n'
+                '\r\n'
+                '${strings[i]}\r\n',
+              ),
+            );
+          } else {
+            expect(
+              req.body,
+              contains(
+                'content-disposition: form-data; name="strings[$i]"\r\n'
+                '\r\n'
+                '${strings[i]}\r\n',
+              ),
+            );
+          }
+        }
+
+        return http.Response('ok', 200);
+      });
+
+      final chopper = ChopperClient(client: httpClient);
+      final service = HttpTestService.create(chopper);
+
+      await service.postMultipartList(
+        ints: ints,
+        doubles: doubles,
+        nums: nums,
+        strings: strings,
+      );
+
+      chopper.dispose();
+    });
+
     test(
       'Multipart request List and List<PartValueFile>',
       () async {
-        final List<int> ints = [1, 2, 3];
-        final List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
-        final List<num> nums = [
+        const List<int> ints = [1, 2, 3];
+        const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
+        const List<num> nums = [
           1.23443534678,
           0.00000000001,
           -34251,
           0.0,
           3 / 4,
         ];
-        final List<String> strings = [
+        const List<String> strings = [
           'lorem',
           'ipsum',
           'dolor',
@@ -436,7 +531,7 @@ void main() {
           PartValueFile<List<int>>('bytes2', utf8.encode(fileStrings[1])),
           PartValueFile<List<int>>('bytes3', utf8.encode(fileStrings[2])),
         ];
-        final List<PartValueFile<String>> files = [
+        const List<PartValueFile<String>> files = [
           PartValueFile<String>('file1', 'test/fixtures/files/file1.txt'),
           PartValueFile<String>('file2', 'test/fixtures/files/file2.txt'),
           PartValueFile<String>('file3', 'test/fixtures/files/file3.txt'),
