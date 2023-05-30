@@ -615,7 +615,7 @@ void main() {
               req.body,
               contains(
                 'content-type: application/octet-stream\r\n'
-                'content-disposition: form-data; name="part_value_bytes"\r\n'
+                'content-disposition: form-data; name="bytes${i + 1}"\r\n'
                 '\r\n'
                 '${fileStrings[i]}',
               ),
@@ -627,7 +627,7 @@ void main() {
               req.body,
               contains(
                 'content-type: application/octet-stream\r\n'
-                'content-disposition: form-data; name="part_value_files"; filename="file${i + 1}.txt"\r\n'
+                'content-disposition: form-data; name="file${i + 1}"; filename="file${i + 1}.txt"\r\n'
                 '\r\n'
                 '${fileStrings[i]}',
               ),

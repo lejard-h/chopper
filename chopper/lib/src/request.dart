@@ -158,7 +158,6 @@ class Request extends http.BaseRequest with EquatableMixin {
 
   /// Convert this [Request] to a [http.MultipartRequest]
   @visibleForTesting
-  // ignore: long-method
   Future<http.MultipartRequest> toMultipartRequest() async {
     final http.MultipartRequest request = http.MultipartRequest(method, url)
       ..headers.addAll(headers);
@@ -171,51 +170,7 @@ class Request extends http.BaseRequest with EquatableMixin {
       } else if (part.value is Iterable<http.MultipartFile>) {
         request.files.addAll(part.value);
       } else if (part is PartValueFile) {
-        if (part.value is Iterable<PartValueFile>) {
-          for (final PartValueFile partValueFile in part.value) {
-            if (partValueFile.value is List<int>) {
-              request.files.add(
-                http.MultipartFile.fromBytes(
-                  part.name,
-                  partValueFile.value,
-                ),
-              );
-            } else if (partValueFile.value is String) {
-              request.files.add(
-                await http.MultipartFile.fromPath(
-                  part.name,
-                  partValueFile.value,
-                ),
-              );
-            } else {
-              throw ArgumentError(
-                'Type ${partValueFile.value.runtimeType} is not a supported type for PartFile. '
-                'Please use one of the following types:\n'
-                '- List<int>\n'
-                '- String (path of your file)\n'
-                '- MultipartFile (from package:http)',
-              );
-            }
-          }
-        } else if (part.value is List<int>) {
-          request.files.add(
-            http.MultipartFile.fromBytes(part.name, part.value),
-          );
-        } else if (part.value is String) {
-          request.files.add(
-            await http.MultipartFile.fromPath(part.name, part.value),
-          );
-        } else {
-          throw ArgumentError(
-            'Type ${part.value.runtimeType} is not a supported type for PartFile. '
-            'Please use one of the following types:\n'
-            '- List<int>\n'
-            '- String (path of your file)\n'
-            '- MultipartFile (from package:http)\n'
-            '- List<PartValueFile<List<int>>>\n'
-            '- List<PartValueFile<List<String>>>\n',
-          );
-        }
+        await handlePartValueFile(request, part);
       } else if (part.value is Iterable) {
         request.fields.addAll({
           for (int i = 0; i < part.value.length; i++)
@@ -227,6 +182,43 @@ class Request extends http.BaseRequest with EquatableMixin {
     }
 
     return request;
+  }
+
+  @internal
+  @visibleForTesting
+  Future<void> handlePartValueFile(
+    http.MultipartRequest request,
+    PartValueFile part,
+  ) async {
+    if (part.value is Iterable<PartValueFile>) {
+      for (final PartValueFile partFile in part.value) {
+        await handlePartValueFile(request, partFile);
+      }
+    } else if (part.value is List<int>) {
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          part.name,
+          part.value,
+        ),
+      );
+    } else if (part.value is String) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          part.name,
+          part.value,
+        ),
+      );
+    } else {
+      throw ArgumentError(
+        'Type ${part.value.runtimeType} is not a supported type for PartFile. '
+        'Please use one of the following types:\n'
+        '- List<int>\n'
+        '- String (path of your file)\n'
+        '- MultipartFile (from package:http)\n'
+        '- List<PartValueFile<List<int>>>\n'
+        '- List<PartValueFile<List<String>>>\n',
+      );
+    }
   }
 
   /// Convert this [Request] to a [http.StreamedRequest]
