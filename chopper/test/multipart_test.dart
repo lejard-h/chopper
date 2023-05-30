@@ -1,5 +1,3 @@
-import 'dart:convert' show utf8;
-
 import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
@@ -7,7 +5,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:test/test.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import 'fixtures/file_strings.dart';
 import 'test_service.dart';
 
 void main() {
@@ -358,60 +355,56 @@ void main() {
       );
     });
 
-    test(
-      'Multipart request List',
-      () async {
-        const List<int> ints = [1, 2, 3];
-        const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
-        const List<num> nums = [
-          1.23443534678,
-          0.00000000001,
-          -34251,
-          0.0,
-          3 / 4,
-        ];
-        const List<String> strings = [
-          'lorem',
-          'ipsum',
-          'dolor',
-          '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
-        ];
+    test('Multipart request List', () async {
+      const List<int> ints = [1, 2, 3];
+      const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
+      const List<num> nums = [
+        1.23443534678,
+        0.00000000001,
+        -34251,
+        0.0,
+        3 / 4,
+      ];
+      const List<String> strings = [
+        'lorem',
+        'ipsum',
+        'dolor',
+        '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
+      ];
 
-        final req = await Request(
-          HttpMethod.Post,
-          Uri.parse('https://foo/'),
-          Uri.parse(''),
-          parts: [
-            PartValue<List<int>>('ints', ints),
-            PartValue<List<double>>('doubles', doubles),
-            PartValue<List<num>>('nums', nums),
-            PartValue<List<String>>('strings', strings),
-          ],
-        ).toMultipartRequest();
+      final req = await Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        parts: [
+          PartValue<List<int>>('ints', ints),
+          PartValue<List<double>>('doubles', doubles),
+          PartValue<List<num>>('nums', nums),
+          PartValue<List<String>>('strings', strings),
+        ],
+      ).toMultipartRequest();
 
-        expect(
-          req.fields.length,
-          equals(ints.length + doubles.length + nums.length + strings.length),
-        );
+      expect(
+        req.fields.length,
+        equals(ints.length + doubles.length + nums.length + strings.length),
+      );
 
-        for (var i = 0; i < ints.length; i++) {
-          expect(req.fields['ints[$i]'], equals(ints[i].toString()));
-        }
+      for (var i = 0; i < ints.length; i++) {
+        expect(req.fields['ints[$i]'], equals(ints[i].toString()));
+      }
 
-        for (var i = 0; i < doubles.length; i++) {
-          expect(req.fields['doubles[$i]'], equals(doubles[i].toString()));
-        }
+      for (var i = 0; i < doubles.length; i++) {
+        expect(req.fields['doubles[$i]'], equals(doubles[i].toString()));
+      }
 
-        for (var i = 0; i < nums.length; i++) {
-          expect(req.fields['nums[$i]'], equals(nums[i].toString()));
-        }
+      for (var i = 0; i < nums.length; i++) {
+        expect(req.fields['nums[$i]'], equals(nums[i].toString()));
+      }
 
-        for (var i = 0; i < strings.length; i++) {
-          expect(req.fields['strings[$i]'], equals(strings[i]));
-        }
-      },
-      testOn: 'browser',
-    );
+      for (var i = 0; i < strings.length; i++) {
+        expect(req.fields['strings[$i]'], equals(strings[i]));
+      }
+    });
 
     test('Multipart lists', () async {
       const List<int> ints = [1, 2, 3];
@@ -507,167 +500,5 @@ void main() {
 
       chopper.dispose();
     });
-
-    test(
-      'Multipart request List and List<PartValueFile>',
-      () async {
-        const List<int> ints = [1, 2, 3];
-        const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
-        const List<num> nums = [
-          1.23443534678,
-          0.00000000001,
-          -34251,
-          0.0,
-          3 / 4,
-        ];
-        const List<String> strings = [
-          'lorem',
-          'ipsum',
-          'dolor',
-          '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
-        ];
-        final List<PartValueFile<List<int>>> bytes = [
-          PartValueFile<List<int>>('bytes1', utf8.encode(fileStrings[0])),
-          PartValueFile<List<int>>('bytes2', utf8.encode(fileStrings[1])),
-          PartValueFile<List<int>>('bytes3', utf8.encode(fileStrings[2])),
-        ];
-        const List<PartValueFile<String>> files = [
-          PartValueFile<String>('file1', 'test/fixtures/files/file1.txt'),
-          PartValueFile<String>('file2', 'test/fixtures/files/file2.txt'),
-          PartValueFile<String>('file3', 'test/fixtures/files/file3.txt'),
-        ];
-
-        final req = await Request(
-          HttpMethod.Post,
-          Uri.parse('https://foo/'),
-          Uri.parse(''),
-          parts: [
-            PartValue<List<int>>('ints', ints),
-            PartValue<List<double>>('doubles', doubles),
-            PartValue<List<num>>('nums', nums),
-            PartValue<List<String>>('strings', strings),
-            PartValueFile<List<PartValueFile<List<int>>>>('bytes', bytes),
-            PartValueFile<List<PartValueFile<String>>>('files', files),
-          ],
-        ).toMultipartRequest();
-
-        expect(
-          req.fields.length,
-          equals(ints.length + doubles.length + nums.length + strings.length),
-        );
-        expect(req.files.length, equals(bytes.length + files.length));
-
-        for (var i = 0; i < ints.length; i++) {
-          expect(req.fields['ints[$i]'], equals(ints[i].toString()));
-        }
-
-        for (var i = 0; i < doubles.length; i++) {
-          expect(req.fields['doubles[$i]'], equals(doubles[i].toString()));
-        }
-
-        for (var i = 0; i < nums.length; i++) {
-          expect(req.fields['nums[$i]'], equals(nums[i].toString()));
-        }
-
-        for (var i = 0; i < strings.length; i++) {
-          expect(req.fields['strings[$i]'], equals(strings[i]));
-        }
-
-        for (var i = 0; i < 3; i++) {
-          expect(req.files[i].filename, isNull);
-          expect(
-            await req.files[i].finalize().first,
-            equals(bytes[i].value),
-          );
-        }
-
-        for (var i = 3; i < 6; i++) {
-          final j = i - 3;
-          expect(req.files[i].filename, equals('file${j + 1}.txt'));
-          expect(
-            await req.files[i].finalize().first,
-            equals(utf8.encode(fileStrings[j])),
-          );
-        }
-      },
-      testOn: 'vm',
-    );
-
-    test(
-      'Multipart List<PartValueFile>',
-      () async {
-        final List<PartValueFile<List<int>>> bytes = [
-          PartValueFile<List<int>>('bytes1', utf8.encode(fileStrings[0])),
-          PartValueFile<List<int>>('bytes2', utf8.encode(fileStrings[1])),
-          PartValueFile<List<int>>('bytes3', utf8.encode(fileStrings[2])),
-        ];
-        const List<PartValueFile<String>> files = [
-          PartValueFile<String>('file1', 'test/fixtures/files/file1.txt'),
-          PartValueFile<String>('file2', 'test/fixtures/files/file2.txt'),
-          PartValueFile<String>('file3', 'test/fixtures/files/file3.txt'),
-        ];
-
-        final httpClient = MockClient((http.Request req) async {
-          expect(req.headers['Content-Type'], contains('multipart/form-data;'));
-
-          for (var i = 0; i < bytes.length; i++) {
-            expect(
-              req.body,
-              contains(
-                'content-type: application/octet-stream\r\n'
-                'content-disposition: form-data; name="bytes${i + 1}"\r\n'
-                '\r\n'
-                '${fileStrings[i]}',
-              ),
-            );
-          }
-
-          for (var i = 0; i < files.length; i++) {
-            expect(
-              req.body,
-              contains(
-                'content-type: application/octet-stream\r\n'
-                'content-disposition: form-data; name="file${i + 1}"; filename="file${i + 1}.txt"\r\n'
-                '\r\n'
-                '${fileStrings[i]}',
-              ),
-            );
-          }
-
-          return http.Response('ok', 200);
-        });
-
-        final chopper = ChopperClient(client: httpClient);
-        final service = HttpTestService.create(chopper);
-
-        await service.postMultipartListPartValueFiles(
-          partValueBytes: bytes,
-          partValueFiles: files,
-        );
-
-        chopper.dispose();
-      },
-      testOn: 'vm',
-    );
-
-    test(
-      'Throw exception',
-      () async {
-        expect(
-          () async => await Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            parts: [
-              PartValueFile<List<PartValueFile>>('files', <PartValueFile>[
-                PartValueFile('', 123),
-              ]),
-            ],
-          ).toMultipartRequest(),
-          throwsA(isA<ArgumentError>()),
-        );
-      },
-      testOn: 'vm',
-    );
   });
 }

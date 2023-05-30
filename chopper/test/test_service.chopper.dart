@@ -512,32 +512,6 @@ class _$HttpTestService extends HttpTestService {
   }
 
   @override
-  Future<Response<dynamic>> postMultipartListPartValueFiles({
-    required List<PartValueFile<List<int>>> partValueBytes,
-    required List<PartValueFile<String>> partValueFiles,
-  }) {
-    final Uri $url = Uri.parse('/test/multipart_list_part_value_files');
-    final List<PartValue> $parts = <PartValue>[
-      PartValueFile<List<PartValueFile<List<int>>>>(
-        'part_value_bytes',
-        partValueBytes,
-      ),
-      PartValueFile<List<PartValueFile<String>>>(
-        'part_value_files',
-        partValueFiles,
-      ),
-    ];
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      parts: $parts,
-      multipart: true,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
   Future<dynamic> fullUrl() {
     final Uri $url = Uri.parse('https://test.com');
     final Request $request = Request(
