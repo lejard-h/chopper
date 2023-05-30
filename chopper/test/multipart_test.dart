@@ -546,8 +546,8 @@ void main() {
             PartValue<List<double>>('doubles', doubles),
             PartValue<List<num>>('nums', nums),
             PartValue<List<String>>('strings', strings),
-            PartValue<List<PartValueFile<List<int>>>>('bytes', bytes),
-            PartValue<List<PartValueFile<String>>>('files', files),
+            PartValueFile<List<PartValueFile<List<int>>>>('bytes', bytes),
+            PartValueFile<List<PartValueFile<String>>>('files', files),
           ],
         ).toMultipartRequest();
 
@@ -594,6 +594,63 @@ void main() {
     );
 
     test(
+      'Multipart List<PartValueFile>',
+      () async {
+        final List<PartValueFile<List<int>>> bytes = [
+          PartValueFile<List<int>>('bytes1', utf8.encode(fileStrings[0])),
+          PartValueFile<List<int>>('bytes2', utf8.encode(fileStrings[1])),
+          PartValueFile<List<int>>('bytes3', utf8.encode(fileStrings[2])),
+        ];
+        const List<PartValueFile<String>> files = [
+          PartValueFile<String>('file1', 'test/fixtures/files/file1.txt'),
+          PartValueFile<String>('file2', 'test/fixtures/files/file2.txt'),
+          PartValueFile<String>('file3', 'test/fixtures/files/file3.txt'),
+        ];
+
+        final httpClient = MockClient((http.Request req) async {
+          expect(req.headers['Content-Type'], contains('multipart/form-data;'));
+
+          for (var i = 0; i < bytes.length; i++) {
+            expect(
+              req.body,
+              contains(
+                'content-type: application/octet-stream\r\n'
+                'content-disposition: form-data; name="part_value_bytes"\r\n'
+                '\r\n'
+                '${fileStrings[i]}',
+              ),
+            );
+          }
+
+          for (var i = 0; i < files.length; i++) {
+            expect(
+              req.body,
+              contains(
+                'content-type: application/octet-stream\r\n'
+                'content-disposition: form-data; name="part_value_files"; filename="file${i + 1}.txt"\r\n'
+                '\r\n'
+                '${fileStrings[i]}',
+              ),
+            );
+          }
+
+          return http.Response('ok', 200);
+        });
+
+        final chopper = ChopperClient(client: httpClient);
+        final service = HttpTestService.create(chopper);
+
+        await service.postMultipartListPartValueFiles(
+          partValueBytes: bytes,
+          partValueFiles: files,
+        );
+
+        chopper.dispose();
+      },
+      testOn: 'vm',
+    );
+
+    test(
       'Throw exception',
       () async {
         expect(
@@ -602,7 +659,7 @@ void main() {
             Uri.parse('https://foo/'),
             Uri.parse(''),
             parts: [
-              PartValue<List<PartValueFile>>('files', <PartValueFile>[
+              PartValueFile<List<PartValueFile>>('files', <PartValueFile>[
                 PartValueFile('', 123),
               ]),
             ],
