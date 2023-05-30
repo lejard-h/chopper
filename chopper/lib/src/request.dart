@@ -189,7 +189,7 @@ class Request extends http.BaseRequest with EquatableMixin {
               );
             } else {
               throw ArgumentError(
-                'Type ${partValueFile.value.runtimeType} is not a supported type for PartFileList. '
+                'Type ${partValueFile.value.runtimeType} is not a supported type for PartFile. '
                 'Please use one of the following types:\n'
                 '- List<int>\n'
                 '- String (path of your file)\n'
@@ -211,7 +211,9 @@ class Request extends http.BaseRequest with EquatableMixin {
             'Please use one of the following types:\n'
             '- List<int>\n'
             '- String (path of your file)\n'
-            '- MultipartFile (from package:http)',
+            '- MultipartFile (from package:http)\n'
+            '- List<PartValueFile<List<int>>>\n'
+            '- List<PartValueFile<List<String>>>\n',
           );
         }
       } else if (part.value is Iterable) {
