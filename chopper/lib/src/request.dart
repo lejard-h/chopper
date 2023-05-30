@@ -216,7 +216,7 @@ class Request extends http.BaseRequest with EquatableMixin {
         '- String (path of your file)\n'
         '- MultipartFile (from package:http)\n'
         '- List<PartValueFile<List<int>>>\n'
-        '- List<PartValueFile<List<String>>>\n',
+        '- List<PartValueFile<String>>\n',
       );
     }
   }
