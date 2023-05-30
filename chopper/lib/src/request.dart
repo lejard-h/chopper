@@ -170,7 +170,7 @@ class Request extends http.BaseRequest with EquatableMixin {
       } else if (part.value is Iterable<http.MultipartFile>) {
         request.files.addAll(part.value);
       } else if (part is PartValueFile) {
-        await handlePartValueFile(request, part);
+        await _handlePartValueFile(request, part);
       } else if (part.value is Iterable) {
         request.fields.addAll({
           for (int i = 0; i < part.value.length; i++)
@@ -184,15 +184,13 @@ class Request extends http.BaseRequest with EquatableMixin {
     return request;
   }
 
-  @internal
-  @visibleForTesting
-  Future<void> handlePartValueFile(
+  Future<void> _handlePartValueFile(
     http.MultipartRequest request,
     PartValueFile part,
   ) async {
     if (part.value is Iterable<PartValueFile>) {
       for (final PartValueFile partFile in part.value) {
-        await handlePartValueFile(request, partFile);
+        await _handlePartValueFile(request, partFile);
       }
     } else if (part.value is List<int>) {
       request.files.add(
