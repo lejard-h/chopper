@@ -136,6 +136,15 @@ abstract class HttpTestService extends ChopperService {
   @multipart
   Future<Response> postListFiles(@PartFile() List<MultipartFile> files);
 
+  @Post(path: 'multipart_list')
+  @multipart
+  Future<Response> postMultipartList({
+    @Part('ints') required List<int> ints,
+    @Part('doubles') required List<double> doubles,
+    @Part('nums') required List<num> nums,
+    @Part('strings') required List<String> strings,
+  });
+
   @Get(path: 'https://test.com')
   Future fullUrl();
 

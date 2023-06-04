@@ -180,13 +180,18 @@ class Request extends http.BaseRequest with EquatableMixin {
           );
         } else {
           throw ArgumentError(
-            'Type ${part.value.runtimeType} is not a supported type for PartFile'
-            'Please use one of the following types'
-            ' - List<int>'
-            ' - String (path of your file) '
-            ' - MultipartFile (from package:http)',
+            'Type ${part.value.runtimeType} is not a supported type for PartFile. '
+            'Please use one of the following types:\n'
+            '- List<int>\n'
+            '- String (path of your file)\n'
+            '- MultipartFile (from package:http)',
           );
         }
+      } else if (part.value is Iterable) {
+        request.fields.addAll({
+          for (int i = 0; i < part.value.length; i++)
+            '${part.name}[$i]': part.value.elementAt(i).toString(),
+        });
       } else {
         request.fields[part.name] = part.value.toString();
       }
@@ -251,7 +256,7 @@ class PartValue<T> with EquatableMixin {
       ];
 }
 
-/// Represents a file part in a multipart request.
+/// Represents a file [PartValue] in a multipart request.
 @immutable
 class PartValueFile<T> extends PartValue<T> {
   const PartValueFile(super.name, super.value);
