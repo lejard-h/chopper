@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.1.4
+
+- Fix Multipart for List<int> and List<String> ([#439](https://github.com/lejard-h/chopper/pull/439))
+
 ## 6.1.3
 
 - Add follow redirects to toHttpRequest ([#430](https://github.com/lejard-h/chopper/pull/430))
