@@ -634,10 +634,19 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   }
 }
 
-Builder chopperGeneratorFactoryBuilder({String? header}) => PartBuilder(
+Builder chopperGeneratorFactoryBuilder(BuilderOptions options) => PartBuilder(
       [ChopperGenerator()],
       '.chopper.dart',
-      header: header,
+      header: options.config['header'],
+      formatOutput:
+          PartBuilder([ChopperGenerator()], '.chopper.dart').formatOutput,
+      options: !options.config.containsKey('build_extensions')
+          ? options.overrideWith(
+              BuilderOptions({
+                'build_extensions': {'.dart': '.chopper.dart'},
+              }),
+            )
+          : options,
     );
 
 bool getMethodOptionalBody(ConstantReader method) =>
