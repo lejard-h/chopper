@@ -25,10 +25,10 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     BuildStep buildStep,
   ) {
     if (element is! ClassElement) {
-      final String friendlyName = element.displayName;
       throw InvalidGenerationSourceError(
-        'Generator cannot target `$friendlyName`.',
-        todo: 'Remove the [ChopperApi] annotation from `$friendlyName`.',
+        'Generator cannot target `${element.displayName}`.',
+        todo:
+            'Remove the [ChopperApi] annotation from `${element.displayName}`.',
       );
     }
 
