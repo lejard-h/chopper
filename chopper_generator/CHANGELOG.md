@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.2
+
+- Add support for generating files in different directories ([#444](https://github.com/lejard-h/chopper/pull/444))
+
 ## 6.0.1
 
 - Packages upgrade, constraints upgrade
