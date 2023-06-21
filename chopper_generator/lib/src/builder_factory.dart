@@ -7,11 +7,11 @@ import 'generator.dart';
 /// The [options] are provided by Dart's build system and read from the
 /// `build.yaml` file.
 Builder chopperGeneratorFactory(BuilderOptions options) => PartBuilder(
-      [ChopperGenerator()],
+      [const ChopperGenerator()],
       '.chopper.dart',
       header: options.config['header'],
       formatOutput:
-          PartBuilder([ChopperGenerator()], '.chopper.dart').formatOutput,
+          PartBuilder([const ChopperGenerator()], '.chopper.dart').formatOutput,
       options: !options.config.containsKey('build_extensions')
           ? options.overrideWith(
               BuilderOptions({
