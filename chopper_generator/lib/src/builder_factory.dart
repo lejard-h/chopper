@@ -3,6 +3,9 @@ import 'package:source_gen/source_gen.dart';
 
 import 'generator.dart';
 
+/// Creates a [PartBuilder] used to generate code for any [ChopperService].
+/// The [options] are provided by Dart's build system. It is read from the
+/// `build.yaml` file.
 Builder chopperGeneratorFactory(BuilderOptions options) => PartBuilder(
       [ChopperGenerator()],
       '.chopper.dart',
