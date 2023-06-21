@@ -16,6 +16,8 @@ import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
 
 class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
+  const ChopperGenerator();
+
   static final Logger _logger = Logger('Chopper Generator');
 
   @override
