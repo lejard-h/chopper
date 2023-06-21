@@ -1,4 +1,3 @@
-///@nodoc
 import 'dart:async' show FutureOr;
 
 import 'package:analyzer/dart/constant/value.dart';
