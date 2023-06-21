@@ -15,6 +15,7 @@ import 'package:dart_style/dart_style.dart';
 import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
 
+/// Code generator for [chopper.ChopperApi] annotated classes.
 class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
   const ChopperGenerator();
 
