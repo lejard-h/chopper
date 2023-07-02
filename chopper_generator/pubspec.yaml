@@ -19,9 +19,12 @@ dependencies:
   source_gen: ^1.0.0
 
 dev_dependencies:
-  test: ^1.16.4
+  build_runner: ^2.0.0
+  build_verify: ^3.1.0
   dart_code_metrics: '>=4.8.1 <6.0.0'
+  http: ">=0.13.0 <2.0.0"
   lints: ^2.0.0
+  test: ^1.16.4
 
 dependency_overrides:
   # Comment before publish
