@@ -6,6 +6,8 @@ stages:
   - group:
     - format
     - analyze: --fatal-infos .
+- unit_test:
+  - test_with_coverage:
 
 cache:
   directories:
