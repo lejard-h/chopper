@@ -7,7 +7,7 @@ void main() {
   test(
     'ensure_build',
     () => expectBuildClean(
-      packageRelativeDirectory: 'chopper_generator',
+      packageRelativeDirectory: 'chopper',
       gitDiffPathArguments: [
         'test/test_service.chopper.dart',
       ],
