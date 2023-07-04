@@ -1,5 +1,19 @@
 # Changelog
 
+## 6.0.3
+
+- Simplify library export
+- Extract PartBuilder into its own file
+- Extract constant variables into an enum
+- Extract helper methods into a Utils class
+- Use a const constructor
+- Make all methods static
+- Ensure all immutable variables are final
+- Simplify syntax
+- Add API documentation
+- Add build_verify test
+- Update README
+
 ## 6.0.2
 
 - Add support for generating files in different directories ([#444](https://github.com/lejard-h/chopper/pull/444))
