@@ -11,7 +11,6 @@
 - Ensure all immutable variables are final
 - Simplify syntax
 - Add API documentation
-- Add build_verify test
 - Update README
 
 ## 6.0.2
