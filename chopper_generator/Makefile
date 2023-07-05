@@ -41,6 +41,10 @@ install:
 	@# Help: Install all the project's packages
 	dart pub get
 
+tests:
+	@# Help: Run Dart unit and widget tests for the current project.
+	dart test
+
 upgrade:
 	@# Help: Upgrade all the project's packages.
 	dart pub upgrade
