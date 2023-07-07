@@ -309,7 +309,7 @@ class ChopperClient {
 
     if (authenticator != null) {
       final Request? updatedRequest = await authenticator!.authenticate(
-        request,
+        req,
         res,
         request,
       );
