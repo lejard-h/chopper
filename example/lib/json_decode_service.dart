@@ -14,8 +14,7 @@ part 'json_decode_service.worker.g.dart';
   // disable web to keep the number of generated files low for this example
   web: false,
 )
-class JsonDecodeService extends WorkerService
-    with $JsonDecodeServiceOperations {
+class JsonDecodeService {
   @SquadronMethod()
   Future<dynamic> jsonDecode(String source) async => json.decode(source);
 }
