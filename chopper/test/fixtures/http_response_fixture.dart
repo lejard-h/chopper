@@ -12,7 +12,7 @@ extension ResponseFixture on http.Response {
 }
 
 @internal
-class ResponseFactory extends FixtureFactory<http.Response> {
+final class ResponseFactory extends FixtureFactory<http.Response> {
   @override
   FixtureDefinition<http.Response> definition() => define(
         (Faker faker) => http.Response(

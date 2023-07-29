@@ -8,7 +8,7 @@ extension PayloadFixture on Payload {
 }
 
 @internal
-class PayloadFactory extends FixtureFactory<Payload> {
+final class PayloadFactory extends FixtureFactory<Payload> {
   @override
   FixtureDefinition<Payload> definition() => define(
         (Faker faker) => Payload(
