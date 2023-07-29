@@ -20,7 +20,7 @@ import 'package:meta/meta.dart';
 ///
 /// See [Method] to define an HTTP request
 @immutable
-class ChopperApi {
+final class ChopperApi {
   /// A part of a URL that every request defined inside a class annotated with [ChopperApi] will be prefixed with.
   final String baseUrl;
 
@@ -42,7 +42,7 @@ class ChopperApi {
 /// Future<Response> fetch(@Path() String param);
 /// ```
 @immutable
-class Path {
+final class Path {
   /// Name is used to bind a method parameter to
   /// a URL path parameter.
   /// ```dart
@@ -65,7 +65,7 @@ class Path {
 ///
 /// See [QueryMap] to pass an [Map<String, dynamic>] as value
 @immutable
-class Query {
+final class Query {
   /// Name is used to bind a method parameter to
   /// the query parameter.
   /// ```dart
@@ -90,7 +90,7 @@ class Query {
 /// // something?foo=bar&list=1&list=2
 /// ```
 @immutable
-class QueryMap {
+final class QueryMap {
   const QueryMap();
 }
 
@@ -104,7 +104,7 @@ class QueryMap {
 /// The body can be of any type, but chopper does not automatically convert it to JSON.
 /// See [Converter] to apply conversion to the body.
 @immutable
-class Body {
+final class Body {
   const Body();
 }
 
@@ -117,7 +117,7 @@ class Body {
 /// Future<Response> fetch(@Header() String foo);
 /// ```
 @immutable
-class Header {
+final class Header {
   /// Name is used to bind a method parameter to
   /// a header name.
   /// ```dart
@@ -147,7 +147,7 @@ class Header {
 /// However, chopper will not automatically convert the body response to your type.
 /// A [Converter] needs to be specified for conversion.
 @immutable
-class Method {
+sealed class Method {
   /// HTTP method for the request
   final String method;
 
@@ -207,7 +207,7 @@ class Method {
 
 /// Defines a method as an HTTP GET request.
 @immutable
-class Get extends Method {
+final class Get extends Method {
   const Get({
     super.optionalBody = true,
     super.path,
@@ -221,7 +221,7 @@ class Get extends Method {
 ///
 /// Use the [Body] annotation to pass data to send.
 @immutable
-class Post extends Method {
+final class Post extends Method {
   const Post({
     super.optionalBody,
     super.path,
@@ -233,7 +233,7 @@ class Post extends Method {
 
 /// Defines a method as an HTTP DELETE request.
 @immutable
-class Delete extends Method {
+final class Delete extends Method {
   const Delete({
     super.optionalBody = true,
     super.path,
@@ -247,7 +247,7 @@ class Delete extends Method {
 ///
 /// Use the [Body] annotation to pass data to send.
 @immutable
-class Put extends Method {
+final class Put extends Method {
   const Put({
     super.optionalBody,
     super.path,
@@ -260,7 +260,7 @@ class Put extends Method {
 /// Defines a method as an HTTP PATCH request.
 /// Use the [Body] annotation to pass data to send.
 @immutable
-class Patch extends Method {
+final class Patch extends Method {
   const Patch({
     super.optionalBody,
     super.path,
@@ -272,7 +272,7 @@ class Patch extends Method {
 
 /// Defines a method as an HTTP HEAD request.
 @immutable
-class Head extends Method {
+final class Head extends Method {
   const Head({
     super.optionalBody = true,
     super.path,
@@ -283,7 +283,7 @@ class Head extends Method {
 }
 
 @immutable
-class Options extends Method {
+final class Options extends Method {
   const Options({
     super.optionalBody = true,
     super.path,
@@ -330,7 +330,7 @@ typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
 /// }
 /// ```
 @immutable
-class FactoryConverter {
+final class FactoryConverter {
   final ConvertRequest? request;
   final ConvertResponse? response;
 
@@ -349,7 +349,7 @@ class FactoryConverter {
 /// ```
 /// Will be converted to `{ 'name': value }`.
 @immutable
-class Field {
+final class Field {
   /// Name can be use to specify the name of the field
   /// ```dart
   /// @Post(path: '/')
@@ -367,7 +367,7 @@ class Field {
 /// Future<Response> fetch(@FieldMap List<Map<String, dynamic>> query);
 /// ```
 @immutable
-class FieldMap {
+final class FieldMap {
   const FieldMap();
 }
 
@@ -382,7 +382,7 @@ class FieldMap {
 /// Use [Part] annotation to send simple data.
 /// Use [PartFile] annotation to send `File` or `List<int>`.
 @immutable
-class Multipart {
+final class Multipart {
   const Multipart();
 }
 
@@ -392,7 +392,7 @@ class Multipart {
 ///
 /// Also accepts `MultipartFile` (from package:http).
 @immutable
-class Part {
+final class Part {
   final String? name;
 
   const Part([this.name]);
@@ -406,7 +406,7 @@ class Part {
 /// Future<Response> fetch(@PartMap() List<PartValue> query);
 /// ```
 @immutable
-class PartMap {
+final class PartMap {
   const PartMap();
 }
 
@@ -423,7 +423,7 @@ class PartMap {
 ///   - [String] (path of your file)
 ///   - `MultipartFile` (from package:http)
 @immutable
-class PartFile {
+final class PartFile {
   final String? name;
 
   const PartFile([this.name]);
@@ -437,7 +437,7 @@ class PartFile {
 /// Future<Response> fetch(@PartFileMap() List<PartValueFile> query);
 /// ```
 @immutable
-class PartFileMap {
+final class PartFileMap {
   const PartFileMap();
 }
 

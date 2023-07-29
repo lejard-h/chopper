@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.0
+
+- Require Dart 3.0 or later
+- Add base, final, and interface modifiers to some classes ([#453](https://github.com/lejard-h/chopper/pull/453))
+
 ## 6.1.4
 
 - Fix Multipart for List<int> and List<String> ([#439](https://github.com/lejard-h/chopper/pull/439))

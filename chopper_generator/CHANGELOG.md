@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.0
+
+- Require Dart 3.0 or later
+- Add final modifier to some classes ([#453](https://github.com/lejard-h/chopper/pull/453))
+- Replace deprecated Element.enclosingElement3 with Element.enclosingElement
+
 ## 6.0.3
 
 - Simplify library export
