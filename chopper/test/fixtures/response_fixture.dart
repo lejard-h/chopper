@@ -10,7 +10,7 @@ extension ResponseFixture on Response {
 }
 
 @internal
-class ResponseFixtureFactory<T> extends FixtureFactory<Response<T>> {
+final class ResponseFixtureFactory<T> extends FixtureFactory<Response<T>> {
   @override
   FixtureDefinition<Response<T>> definition() {
     final http.Response base =

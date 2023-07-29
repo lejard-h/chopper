@@ -16,7 +16,7 @@ import 'package:meta/meta.dart';
 /// Future<Response<Item>> fetchItem();
 /// ```
 @immutable
-class Response<BodyType> with EquatableMixin {
+base class Response<BodyType> with EquatableMixin {
   /// The [http.BaseResponse] from `package:http` that this [Response] wraps.
   final http.BaseResponse base;
 
