@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
-final class Request extends http.BaseRequest with EquatableMixin {
+base class Request extends http.BaseRequest with EquatableMixin {
   final Uri uri;
   final Uri baseUri;
   final dynamic body;
@@ -232,7 +232,7 @@ final class Request extends http.BaseRequest with EquatableMixin {
 
 /// Represents a part in a multipart request.
 @immutable
-class PartValue<T> with EquatableMixin {
+final class PartValue<T> with EquatableMixin {
   final T value;
   final String name;
 
@@ -258,6 +258,6 @@ class PartValue<T> with EquatableMixin {
 
 /// Represents a file [PartValue] in a multipart request.
 @immutable
-class PartValueFile<T> extends PartValue<T> {
+final class PartValueFile<T> extends PartValue<T> {
   const PartValueFile(super.name, super.value);
 }
