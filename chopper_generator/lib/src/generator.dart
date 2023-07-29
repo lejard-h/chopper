@@ -376,13 +376,11 @@ class ChopperGenerator extends GeneratorForAnnotation<chopper.ChopperApi> {
     });
   }
 
-  /// TODO: Upgrade to `Element.enclosingElement` when analyzer 6.0.0 is released; in the mean time ignore the deprecation warning
-  /// https://github.com/dart-lang/sdk/blob/main/pkg/analyzer/CHANGELOG.md#520
   static String _factoryForFunction(FunctionTypedElement function) =>
       // ignore: deprecated_member_use
-      function.enclosingElement3 is ClassElement
+      function.enclosingElement is ClassElement
           // ignore: deprecated_member_use
-          ? '${function.enclosingElement3!.name}.${function.name}'
+          ? '${function.enclosingElement!.name}.${function.name}'
           : function.name!;
 
   static Map<String, ConstantReader> _getAnnotation(
