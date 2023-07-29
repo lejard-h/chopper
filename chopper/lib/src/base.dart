@@ -13,7 +13,7 @@ import 'package:meta/meta.dart';
 Type _typeOf<T>() => T;
 
 @visibleForTesting
-final List<Type> allowedInterceptorsType = [
+const List<Type> allowedInterceptorsType = [
   RequestInterceptor,
   RequestInterceptorFunc,
   ResponseInterceptor,
