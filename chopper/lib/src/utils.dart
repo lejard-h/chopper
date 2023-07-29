@@ -131,7 +131,7 @@ Iterable<_Pair<String, String>> _iterableToQuery(
 
 String _normalizeValue(value) => Uri.encodeComponent(value?.toString() ?? '');
 
-class _Pair<A, B> with EquatableMixin {
+final class _Pair<A, B> with EquatableMixin {
   final A first;
   final B second;
   final bool useBrackets;

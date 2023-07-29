@@ -3,7 +3,7 @@ import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:source_gen/source_gen.dart';
 
-class Utils {
+final class Utils {
   static bool getMethodOptionalBody(ConstantReader method) =>
       method.read('optionalBody').boolValue;
 

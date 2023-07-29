@@ -9,7 +9,7 @@ extension RequestFixture on Request {
 }
 
 @internal
-class RequestFixtureFactory extends FixtureFactory<Request> {
+final class RequestFixtureFactory extends FixtureFactory<Request> {
   @override
   FixtureDefinition<Request> definition() {
     final String method =

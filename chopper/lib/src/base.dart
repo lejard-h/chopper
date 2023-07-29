@@ -26,7 +26,7 @@ final List<Type> allowedInterceptorsType = [
 ///
 /// It manages registered services, encodes and decodes data, and intercepts
 /// requests and responses.
-class ChopperClient {
+base class ChopperClient {
   /// Base URL of each request of the registered services.
   /// E.g., the hostname of your service.
   final Uri baseUrl;

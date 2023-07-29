@@ -31,7 +31,7 @@ import 'package:meta/meta.dart';
 /// }
 /// ```
 @immutable
-abstract class ResponseInterceptor {
+abstract interface class ResponseInterceptor {
   FutureOr<Response> onResponse(Response response);
 }
 
@@ -58,7 +58,7 @@ abstract class ResponseInterceptor {
 ///
 /// (See [applyHeader(request, name, value)] and [applyHeaders(request, headers)].)
 @immutable
-abstract class RequestInterceptor {
+abstract interface class RequestInterceptor {
   FutureOr<Request> onRequest(Request request);
 }
 
@@ -72,7 +72,7 @@ abstract class RequestInterceptor {
 ///
 /// See [JsonConverter] and [FormUrlEncodedConverter] for example implementations.
 @immutable
-abstract class Converter {
+abstract interface class Converter {
   /// Converts the received [Request] to a [Request] which has a body with the
   /// HTTP representation of the original body.
   FutureOr<Request> convertRequest(Request request);
@@ -94,7 +94,7 @@ abstract class Converter {
 ///
 /// An `ErrorConverter` is called only on error responses
 /// (statusCode < 200 || statusCode >= 300) and before any [ResponseInterceptor]s.
-abstract class ErrorConverter {
+abstract interface class ErrorConverter {
   /// Converts the received [Response] to a [Response] which has a body with the
   /// HTTP representation of the original body.
   FutureOr<Response> convertError<BodyType, InnerType>(Response response);
@@ -105,7 +105,7 @@ abstract class ErrorConverter {
 /// Note that this interceptor will overwrite existing headers having the same
 /// keys as [headers].
 @immutable
-class HeadersInterceptor implements RequestInterceptor {
+final class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
   const HeadersInterceptor(this.headers);
@@ -133,7 +133,7 @@ typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
 ///
 /// Thanks, @edwardaux
 @immutable
-class CurlInterceptor implements RequestInterceptor {
+final class CurlInterceptor implements RequestInterceptor {
   @override
   Future<Request> onRequest(Request request) async {
     final http.BaseRequest baseRequest = await request.toBaseRequest();

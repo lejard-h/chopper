@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// This class represents an HTTP request that can be made with Chopper.
-class Request extends http.BaseRequest with EquatableMixin {
+final class Request extends http.BaseRequest with EquatableMixin {
   final Uri uri;
   final Uri baseUri;
   final dynamic body;

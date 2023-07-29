@@ -69,7 +69,7 @@ enum Level {
 /// in response bodies. This interceptor should only be used in a controlled way
 /// or in a non-production environment.
 @immutable
-class HttpLoggingInterceptor
+final class HttpLoggingInterceptor
     implements RequestInterceptor, ResponseInterceptor {
   const HttpLoggingInterceptor({this.level = Level.body})
       : _logBody = level == Level.body,
