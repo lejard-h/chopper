@@ -18,6 +18,8 @@ jobs:
     strategy:
       matrix:
         package: [ chopper, chopper_generator, chopper_built_value ]
+      fail-fast: true
+      max-parallel: 1
     outputs:
       BASE_VERSION_chopper: ${{ steps.load_base_version.outputs.BASE_VERSION_chopper }}
       BASE_VERSION_chopper_generator: ${{ steps.load_base_version.outputs.BASE_VERSION_chopper_generator }}
