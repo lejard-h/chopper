@@ -105,7 +105,7 @@ abstract interface class ErrorConverter {
 /// Note that this interceptor will overwrite existing headers having the same
 /// keys as [headers].
 @immutable
-final class HeadersInterceptor implements RequestInterceptor {
+class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
   const HeadersInterceptor(this.headers);
@@ -133,7 +133,7 @@ typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
 ///
 /// Thanks, @edwardaux
 @immutable
-final class CurlInterceptor implements RequestInterceptor {
+class CurlInterceptor implements RequestInterceptor {
   @override
   Future<Request> onRequest(Request request) async {
     final http.BaseRequest baseRequest = await request.toBaseRequest();
