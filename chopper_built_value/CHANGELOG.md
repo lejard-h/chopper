@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0
+
+- Require Dart 3.0 or later
+
 ## 1.2.2
 
 - Update http constraint to ">=0.13.0 <2.0.0" ([#431](https://github.com/lejard-h/chopper/pull/431))
