@@ -156,6 +156,4 @@ final class _Pair<A, B> with EquatableMixin {
 
 bool isTypeOf<ThisType, OfType>() => _Instance<ThisType>() is _Instance<OfType>;
 
-class _Instance<T> {
-  //
-}
+final class _Instance<T> {}
