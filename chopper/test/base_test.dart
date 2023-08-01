@@ -28,6 +28,18 @@ void main() {
       );
 
   group('Base', () {
+    test('getService', () async {
+      final httpClient = MockClient(
+        (_) async => http.Response('get response', 200),
+      );
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      expect(service, isNotNull);
+      expect(service, isA<HttpTestService>());
+    });
+
     test('get service errors', () async {
       final chopper = ChopperClient(
         baseUrl: baseUrl,
@@ -38,7 +50,7 @@ void main() {
       } on Exception catch (e) {
         expect(
           e.toString(),
-          equals('Exception: Service of type \'HttpTestService\' not found.'),
+          equals("Exception: Service of type 'HttpTestService' not found."),
         );
       }
 
