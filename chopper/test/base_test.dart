@@ -667,7 +667,30 @@ void main() {
           ),
         );
       }
-    });
+    }, testOn: 'vm');
+
+    test('wrong type for interceptor', () {
+      expect(
+        () => ChopperClient(interceptors: [(bool foo) => 'bar']),
+        throwsA(isA<AssertionError>()),
+      );
+
+      try {
+        ChopperClient(
+          interceptors: [
+            (bool foo) => 'bar',
+          ],
+        );
+      } on AssertionError catch (error) {
+        expect(
+          error.toString(),
+          contains(
+            'Unsupported type for interceptors, it only support the following types:\\n'
+            ' - ${allowedInterceptorsType.join('\\n - ')}',
+          ),
+        );
+      }
+    }, testOn: 'browser');
 
     test('Query Map 1', () async {
       final httpClient = MockClient((request) async {
