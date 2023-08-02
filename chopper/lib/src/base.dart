@@ -45,11 +45,13 @@ base class ChopperClient {
   /// (statusCode < 200 || statusCode >= 300\).
   final ErrorConverter? errorConverter;
 
-  final Map<Type, ChopperService> _services = {};
-  final _requestInterceptors = [];
-  final _responseInterceptors = [];
-  final _requestController = StreamController<Request>.broadcast();
-  final _responseController = StreamController<Response>.broadcast();
+  late final Map<Type, ChopperService> _services;
+  late final List _requestInterceptors;
+  late final List _responseInterceptors;
+  final StreamController<Request> _requestController =
+      StreamController<Request>.broadcast();
+  final StreamController<Response> _responseController =
+      StreamController<Response>.broadcast();
 
   final bool _clientIsInternal;
 
@@ -112,44 +114,46 @@ base class ChopperClient {
   ChopperClient({
     Uri? baseUrl,
     http.Client? client,
-    Iterable interceptors = const [],
+    Iterable? interceptors,
     this.authenticator,
     this.converter,
     this.errorConverter,
-    Iterable<ChopperService> services = const [],
+    Iterable<ChopperService>? services,
   })  : assert(
-            baseUrl == null || !baseUrl.hasQuery,
-            'baseUrl should not contain query parameters.'
-            'Use a request interceptor to add default query parameters'),
+          baseUrl == null || !baseUrl.hasQuery,
+          'baseUrl should not contain query parameters. '
+          'Use a request interceptor to add default query parameters',
+        ),
         baseUrl = baseUrl ?? Uri(),
         httpClient = client ?? http.Client(),
-        _clientIsInternal = client == null {
-    if (!interceptors.every(_isAnInterceptor)) {
-      throw ArgumentError(
-        'Unsupported type for interceptors, it only support the following types:\n'
-        '${allowedInterceptorsType.join('\n - ')}',
-      );
-    }
-
-    _requestInterceptors.addAll(interceptors.where(_isRequestInterceptor));
-    _responseInterceptors.addAll(interceptors.where(_isResponseInterceptor));
-
-    services.toSet().forEach((s) {
-      s.client = this;
-      _services[s.definitionType] = s;
-    });
+        _clientIsInternal = client == null,
+        assert(
+          interceptors?.every(_isAnInterceptor) ?? true,
+          'Unsupported type for interceptors, it only support the following types:\n'
+          ' - ${allowedInterceptorsType.join('\n - ')}',
+        ),
+        _requestInterceptors = [
+          ...?interceptors?.where(_isRequestInterceptor),
+        ],
+        _responseInterceptors = [
+          ...?interceptors?.where(_isResponseInterceptor),
+        ] {
+    _services = <Type, ChopperService>{
+      for (final ChopperService service in services?.toSet() ?? [])
+        service.definitionType: service..client = this
+    };
   }
 
-  bool _isRequestInterceptor(value) =>
+  static bool _isRequestInterceptor(value) =>
       value is RequestInterceptor || value is RequestInterceptorFunc;
 
-  bool _isResponseInterceptor(value) =>
+  static bool _isResponseInterceptor(value) =>
       value is ResponseInterceptor ||
       value is ResponseInterceptorFunc1 ||
       value is ResponseInterceptorFunc2 ||
       value is DynamicResponseInterceptorFunc;
 
-  bool _isAnInterceptor(value) =>
+  static bool _isAnInterceptor(value) =>
       _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
   /// Retrieve any service included in the [ChopperClient]
@@ -182,7 +186,7 @@ base class ChopperClient {
   Future<Request> _encodeRequest(Request request) async =>
       converter?.convertRequest(request) ?? request;
 
-  Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
+  static Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
     Response response,
     Converter withConverter,
   ) async =>
