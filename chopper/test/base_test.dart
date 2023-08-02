@@ -647,17 +647,24 @@ void main() {
     });
 
     test('wrong type for interceptor', () {
+      expect(
+        () => ChopperClient(interceptors: [(bool foo) => 'bar']),
+        throwsA(isA<AssertionError>()),
+      );
+
       try {
         ChopperClient(
           interceptors: [
             (bool foo) => 'bar',
           ],
         );
-      } on ArgumentError catch (e) {
+      } on AssertionError catch (error) {
         expect(
-          e.toString(),
-          'Invalid argument(s): Unsupported type for interceptors, it only support the following types:\n'
-          '${allowedInterceptorsType.join('\n - ')}',
+          error.toString(),
+          contains(
+            'Unsupported type for interceptors, it only support the following types:\n'
+            ' - ${allowedInterceptorsType.join('\n - ')}',
+          ),
         );
       }
     });
