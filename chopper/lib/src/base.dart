@@ -10,8 +10,6 @@ import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-Type _typeOf<T>() => T;
-
 @visibleForTesting
 const List<Type> allowedInterceptorsType = [
   RequestInterceptor,
@@ -168,15 +166,14 @@ base class ChopperClient {
   /// final todoService = chopper.getService<TodosListService>();
   /// ```
   ServiceType getService<ServiceType extends ChopperService>() {
-    final Type serviceType = _typeOf<ServiceType>();
-    if (serviceType == dynamic || serviceType == ChopperService) {
+    if (ServiceType == dynamic || ServiceType == ChopperService) {
       throw Exception(
         'Service type should be provided, `dynamic` is not allowed.',
       );
     }
-    final ChopperService? service = _services[serviceType];
+    final ChopperService? service = _services[ServiceType];
     if (service == null) {
-      throw Exception('Service of type \'$serviceType\' not found.');
+      throw Exception("Service of type '$ServiceType' not found.");
     }
 
     return service as ServiceType;
