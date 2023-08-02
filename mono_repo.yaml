@@ -12,7 +12,7 @@ github:
         - develop
 
 merge_stages:
-  - analyzer_and_format
+  - analyze_and_format
   - unit_test
 
 coverage_service:
