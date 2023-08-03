@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.1
+
+- Add final class modifier to generated Chopper API implementations
+
 ## 7.0.0
 
 - Require Dart 3.0 or later
