@@ -68,6 +68,7 @@ final class ChopperGenerator
 
     final Class classBuilder = Class((builder) {
       builder
+        ..modifier = ClassModifier.final$
         ..name = name
         ..extend = refer(friendlyName)
         ..fields.add(_buildDefinitionTypeMethod(friendlyName))

@@ -137,32 +137,27 @@ class CurlInterceptor implements RequestInterceptor {
   @override
   Future<Request> onRequest(Request request) async {
     final http.BaseRequest baseRequest = await request.toBaseRequest();
-    final String method = baseRequest.method;
-    final String url = baseRequest.url.toString();
-    final Map<String, String> headers = baseRequest.headers;
-    String curl = 'curl -v -X $method';
-    headers.forEach((k, v) {
-      curl += ' -H \'$k: $v\'';
-    });
+    final List<String> curlParts = ['curl -v -X ${baseRequest.method}'];
+    for (final MapEntry<String, String> header in baseRequest.headers.entries) {
+      curlParts.add("-H '${header.key}: ${header.value}'");
+    }
     // this is fairly naive, but it should cover most cases
     if (baseRequest is http.Request) {
-      final body = baseRequest.body;
+      final String body = baseRequest.body;
       if (body.isNotEmpty) {
-        curl += ' -d \'$body\'';
+        curlParts.add("-d '$body'");
       }
     }
     if (baseRequest is http.MultipartRequest) {
-      final fields = baseRequest.fields;
-      final files = baseRequest.files;
-      fields.forEach((k, v) {
-        curl += ' -f \'$k: $v\'';
-      });
-      for (var file in files) {
-        curl += ' -f \'${file.field}: ${file.filename ?? ''}\'';
+      for (final MapEntry<String, String> field in baseRequest.fields.entries) {
+        curlParts.add("-f '${field.key}: ${field.value}'");
+      }
+      for (final http.MultipartFile file in baseRequest.files) {
+        curlParts.add("-f '${file.field}: ${file.filename ?? ''}'");
       }
     }
-    curl += ' "$url"';
-    chopperLogger.info(curl);
+    curlParts.add('"${baseRequest.url}"');
+    chopperLogger.info(curlParts.join(' '));
 
     return request;
   }
