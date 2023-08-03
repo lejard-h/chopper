@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.0.1
+
+- Refactor ChopperClient constructor
+- Refactor ChopperClient.getService
+- Refactor CurlInterceptor
+
 ## 7.0.0
 
 - Require Dart 3.0 or later
