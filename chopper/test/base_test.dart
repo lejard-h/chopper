@@ -28,6 +28,18 @@ void main() {
       );
 
   group('Base', () {
+    test('getService', () async {
+      final httpClient = MockClient(
+        (_) async => http.Response('get response', 200),
+      );
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestService>();
+
+      expect(service, isNotNull);
+      expect(service, isA<HttpTestService>());
+    });
+
     test('get service errors', () async {
       final chopper = ChopperClient(
         baseUrl: baseUrl,
@@ -38,7 +50,7 @@ void main() {
       } on Exception catch (e) {
         expect(
           e.toString(),
-          equals('Exception: Service of type \'HttpTestService\' not found.'),
+          equals("Exception: Service of type 'HttpTestService' not found."),
         );
       }
 
@@ -635,20 +647,50 @@ void main() {
     });
 
     test('wrong type for interceptor', () {
+      expect(
+        () => ChopperClient(interceptors: [(bool foo) => 'bar']),
+        throwsA(isA<AssertionError>()),
+      );
+
       try {
         ChopperClient(
           interceptors: [
             (bool foo) => 'bar',
           ],
         );
-      } on ArgumentError catch (e) {
+      } on AssertionError catch (error) {
         expect(
-          e.toString(),
-          'Invalid argument(s): Unsupported type for interceptors, it only support the following types:\n'
-          '${allowedInterceptorsType.join('\n - ')}',
+          error.toString(),
+          contains(
+            'Unsupported type for interceptors, it only support the following types:\n'
+            ' - ${allowedInterceptorsType.join('\n - ')}',
+          ),
         );
       }
-    });
+    }, testOn: 'vm');
+
+    test('wrong type for interceptor', () {
+      expect(
+        () => ChopperClient(interceptors: [(bool foo) => 'bar']),
+        throwsA(isA<AssertionError>()),
+      );
+
+      try {
+        ChopperClient(
+          interceptors: [
+            (bool foo) => 'bar',
+          ],
+        );
+      } on AssertionError catch (error) {
+        expect(
+          error.toString(),
+          contains(
+            'Unsupported type for interceptors, it only support the following types:\\n'
+            ' - ${allowedInterceptorsType.join('\\n - ')}',
+          ),
+        );
+      }
+    }, testOn: 'browser');
 
     test('Query Map 1', () async {
       final httpClient = MockClient((request) async {

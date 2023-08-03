@@ -2,7 +2,7 @@ sdk:
  - stable
 
 stages:
-- analyzer_and_format:
+- analyze_and_format:
   - group:
     - format
     - analyze: --fatal-infos .
