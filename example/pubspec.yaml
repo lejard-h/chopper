@@ -11,7 +11,7 @@ dependencies:
   chopper:
   json_annotation: ^4.8.1
   built_value:
-  analyzer: ^5.13.0
+  analyzer: ">=5.13.0 <7.0.0"
   http: ^1.1.0
   built_collection: ^5.1.1
   squadron: ^5.1.3
