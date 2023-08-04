@@ -1,4 +1,4 @@
-self_validate: analyzer_and_format
+self_validate: analyze_and_format
 
 github:
   on:
