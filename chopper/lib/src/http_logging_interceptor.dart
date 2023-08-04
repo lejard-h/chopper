@@ -5,6 +5,7 @@ import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 enum Level {
@@ -71,11 +72,13 @@ enum Level {
 @immutable
 class HttpLoggingInterceptor
     implements RequestInterceptor, ResponseInterceptor {
-  const HttpLoggingInterceptor({this.level = Level.body})
-      : _logBody = level == Level.body,
+  HttpLoggingInterceptor({this.level = Level.body, Logger? logger})
+      : _logger = logger ?? chopperLogger,
+        _logBody = level == Level.body,
         _logHeaders = level == Level.body || level == Level.headers;
 
   final Level level;
+  final Logger _logger;
   final bool _logBody;
   final bool _logHeaders;
 
@@ -97,25 +100,25 @@ class HttpLoggingInterceptor
     }
 
     // Always start on a new line
-    chopperLogger.info('');
-    chopperLogger.info(startRequestMessage);
+    _logger.info('');
+    _logger.info(startRequestMessage);
 
     if (_logHeaders) {
-      base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
+      base.headers.forEach((k, v) => _logger.info('$k: $v'));
 
       if (base.contentLength != null &&
           base.headers['content-length'] == null) {
-        chopperLogger.info('content-length: ${base.contentLength}');
+        _logger.info('content-length: ${base.contentLength}');
       }
     }
 
     if (_logBody && bodyMessage.isNotEmpty) {
-      chopperLogger.info('');
-      chopperLogger.info(bodyMessage);
+      _logger.info('');
+      _logger.info(bodyMessage);
     }
 
     if (_logHeaders || _logBody) {
-      chopperLogger.info('--> END ${base.method}');
+      _logger.info('--> END ${base.method}');
     }
 
     return request;
@@ -145,27 +148,27 @@ class HttpLoggingInterceptor
     }
 
     // Always start on a new line
-    chopperLogger.info('');
-    chopperLogger.info(
+    _logger.info('');
+    _logger.info(
       '<-- $reasonPhrase ${base.request?.method} ${base.request?.url.toString()}$bytes',
     );
 
     if (_logHeaders) {
-      base.headers.forEach((k, v) => chopperLogger.info('$k: $v'));
+      base.headers.forEach((k, v) => _logger.info('$k: $v'));
 
       if (base.contentLength != null &&
           base.headers['content-length'] == null) {
-        chopperLogger.info('content-length: ${base.contentLength}');
+        _logger.info('content-length: ${base.contentLength}');
       }
     }
 
     if (_logBody && bodyMessage.isNotEmpty) {
-      chopperLogger.info('');
-      chopperLogger.info(bodyMessage);
+      _logger.info('');
+      _logger.info(bodyMessage);
     }
 
     if (_logBody || _logHeaders) {
-      chopperLogger.info('<-- END HTTP');
+      _logger.info('<-- END HTTP');
     }
 
     return response;
