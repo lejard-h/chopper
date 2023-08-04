@@ -100,8 +100,6 @@ jobs:
         run: dart analyze --fatal-infos .
         if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_generator
-    needs:
-      - job_001
   job_003:
     name: "unit_test; PKGS: chopper, chopper_built_value, chopper_generator; `dart pub global run coverage:test_with_coverage`"
     runs-on: ubuntu-latest
