@@ -81,8 +81,7 @@ jobs:
         run: |
           set -e
           pushd ${{ matrix.package }} || exit
-          yq 'del(.dependency_overrides)' pubspec.yaml | yq 'del(.. | select(has("path")).path)' - | sed 's/{\(.*\)}/\1/g' > $RUNNER_TEMP/pubspec.yaml
-          mv $RUNNER_TEMP/pubspec.yaml pubspec.yaml
+          yq -i 'del(.dependency_overrides)' pubspec.yaml
           dart pub publish --force
           popd || exit
       - name: Skip publish
@@ -94,4 +93,3 @@ jobs:
         if: ${{ always() }}
         run: |
           rm -rf $XDG_CONFIG_HOME/dart/pub-credentials.json
-          rm -rf $RUNNER_TEMP/pubspec.yaml
