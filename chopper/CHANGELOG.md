@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.2
+
+- Add option to pass custom Logger to HttpLoggingInterceptor ([#470](https://github.com/lejard-h/chopper/pull/470))
+
 ## 7.0.1
 
 - Refactor ChopperClient constructor
