@@ -26,6 +26,5 @@ dev_dependencies:
   test: ^1.24.4
 
 dependency_overrides:
-  # Comment before publish
   chopper:
     path: ../chopper
