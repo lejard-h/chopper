@@ -21,6 +21,5 @@ dev_dependencies:
   lints: ^2.1.1
 
 dependency_overrides:
-  # Comment before publish
   chopper:
     path: ../chopper
