@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chopper/src/chopper_log_record.dart';
 import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
@@ -100,25 +101,33 @@ class HttpLoggingInterceptor
     }
 
     // Always start on a new line
-    _logger.info('');
-    _logger.info(startRequestMessage);
+    _logger.info(ChopperLogRecord('', request: request));
+    _logger.info(ChopperLogRecord(startRequestMessage, request: request));
 
     if (_logHeaders) {
-      base.headers.forEach((k, v) => _logger.info('$k: $v'));
+      base.headers.forEach(
+        (k, v) => _logger.info(ChopperLogRecord('$k: $v', request: request)),
+      );
 
       if (base.contentLength != null &&
           base.headers['content-length'] == null) {
-        _logger.info('content-length: ${base.contentLength}');
+        _logger.info(ChopperLogRecord(
+          'content-length: ${base.contentLength}',
+          request: request,
+        ));
       }
     }
 
     if (_logBody && bodyMessage.isNotEmpty) {
-      _logger.info('');
-      _logger.info(bodyMessage);
+      _logger.info(ChopperLogRecord('', request: request));
+      _logger.info(ChopperLogRecord(bodyMessage, request: request));
     }
 
     if (_logHeaders || _logBody) {
-      _logger.info('--> END ${base.method}');
+      _logger.info(ChopperLogRecord(
+        '--> END ${base.method}',
+        request: request,
+      ));
     }
 
     return request;
@@ -148,27 +157,33 @@ class HttpLoggingInterceptor
     }
 
     // Always start on a new line
-    _logger.info('');
-    _logger.info(
+    _logger.info(ChopperLogRecord('', response: response));
+    _logger.info(ChopperLogRecord(
       '<-- $reasonPhrase ${base.request?.method} ${base.request?.url.toString()}$bytes',
-    );
+      response: response,
+    ));
 
     if (_logHeaders) {
-      base.headers.forEach((k, v) => _logger.info('$k: $v'));
+      base.headers.forEach(
+        (k, v) => _logger.info(ChopperLogRecord('$k: $v', response: response)),
+      );
 
       if (base.contentLength != null &&
           base.headers['content-length'] == null) {
-        _logger.info('content-length: ${base.contentLength}');
+        _logger.info(ChopperLogRecord(
+          'content-length: ${base.contentLength}',
+          response: response,
+        ));
       }
     }
 
     if (_logBody && bodyMessage.isNotEmpty) {
-      _logger.info('');
-      _logger.info(bodyMessage);
+      _logger.info(ChopperLogRecord('', response: response));
+      _logger.info(ChopperLogRecord(bodyMessage, response: response));
     }
 
     if (_logBody || _logHeaders) {
-      _logger.info('<-- END HTTP');
+      _logger.info(ChopperLogRecord('<-- END HTTP', response: response));
     }
 
     return response;
