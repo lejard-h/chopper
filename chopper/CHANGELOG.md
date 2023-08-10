@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.3
+
+- Use ChopperLogRecord in HttpLoggingInterceptor to log lines ([#475](https://github.com/lejard-h/chopper/pull/475))
+
 ## 7.0.2
 
 - Add option to pass custom Logger to HttpLoggingInterceptor ([#470](https://github.com/lejard-h/chopper/pull/470))
