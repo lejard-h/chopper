@@ -230,6 +230,9 @@ base class Request extends http.BaseRequest with EquatableMixin {
       ];
 }
 
+@visibleForTesting
+base mixin MockRequestMixin implements Request {}
+
 /// Represents a part in a multipart request.
 @immutable
 final class PartValue<T> with EquatableMixin {
@@ -256,8 +259,14 @@ final class PartValue<T> with EquatableMixin {
       ];
 }
 
+@visibleForTesting
+base mixin MockPartValueMixin<T> implements PartValue<T> {}
+
 /// Represents a file [PartValue] in a multipart request.
 @immutable
 final class PartValueFile<T> extends PartValue<T> {
   const PartValueFile(super.name, super.value);
 }
+
+@visibleForTesting
+base mixin MockPartValueFileMixin<T> implements PartValueFile<T> {}

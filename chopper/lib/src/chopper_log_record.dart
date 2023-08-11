@@ -1,7 +1,8 @@
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
+import 'package:meta/meta.dart';
 
-class ChopperLogRecord {
+final class ChopperLogRecord {
   const ChopperLogRecord(this.message, {this.request, this.response});
 
   final String message;
@@ -11,3 +12,6 @@ class ChopperLogRecord {
   @override
   String toString() => message;
 }
+
+@visibleForTesting
+base mixin MockChopperLogRecordMixin implements ChopperLogRecord {}

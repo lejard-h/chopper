@@ -74,3 +74,6 @@ base class Response<BodyType> with EquatableMixin {
         error,
       ];
 }
+
+@visibleForTesting
+base mixin MockResponseMixin<BodyType> implements Response<BodyType> {}

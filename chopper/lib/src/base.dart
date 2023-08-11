@@ -518,6 +518,9 @@ base class ChopperClient {
   Stream<Response> get onResponse => _responseController.stream;
 }
 
+@visibleForTesting
+base mixin MockChopperClientMixin implements ChopperClient {}
+
 /// A marker and helper class used by `chopper_generator` to generate network
 /// call implementations.
 ///
