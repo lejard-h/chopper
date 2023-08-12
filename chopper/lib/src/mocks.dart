@@ -6,12 +6,12 @@ import 'package:mockito/mockito.dart';
 
 base class MockChopperClient extends Mock with MockChopperClientMixin {}
 
-final class MockChopperLogRecord extends Mock with MockChopperLogRecordMixin {}
+base class MockChopperLogRecord extends Mock with MockChopperLogRecordMixin {}
 
 base class MockRequest extends Mock with MockRequestMixin {}
 
-final class MockPartValue extends Mock with MockPartValueMixin {}
+base class MockPartValue extends Mock with MockPartValueMixin {}
 
-final class MockPartValueFile extends Mock with MockPartValueFileMixin {}
+base class MockPartValueFile extends Mock with MockPartValueFileMixin {}
 
 base class MockResponse extends Mock with MockResponseMixin {}
