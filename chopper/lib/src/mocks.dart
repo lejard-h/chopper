@@ -10,8 +10,8 @@ base class MockChopperLogRecord extends Mock with MockChopperLogRecordMixin {}
 
 base class MockRequest extends Mock with MockRequestMixin {}
 
-base class MockPartValue extends Mock with MockPartValueMixin {}
+base class MockPartValue<T> extends Mock with MockPartValueMixin<T> {}
 
-base class MockPartValueFile extends Mock with MockPartValueFileMixin {}
+base class MockPartValueFile<T> extends Mock with MockPartValueFileMixin<T> {}
 
 base class MockResponse extends Mock with MockResponseMixin {}
