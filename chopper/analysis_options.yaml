@@ -6,6 +6,7 @@ analyzer:
     - "**.chopper.dart"
     - "**.mocks.dart"
     - "example/**"
+    - "lib/src/mocks.dart"
 
 linter:
   rules:

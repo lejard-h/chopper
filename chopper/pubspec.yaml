@@ -23,6 +23,7 @@ dev_dependencies:
   faker: ^2.1.0
   http_parser: ^4.0.2
   lints: ^2.1.1
+  mockito: ^5.4.2
   test: ^1.24.4
   transparent_image: ^2.0.1
   chopper_generator: ^7.0.0

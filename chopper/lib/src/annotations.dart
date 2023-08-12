@@ -29,9 +29,6 @@ final class ChopperApi {
   });
 }
 
-@visibleForTesting
-base mixin MockChopperApiMixin implements ChopperApi {}
-
 /// Provides a parameter in the url.
 ///
 /// Declared as follows inside the path String:
@@ -57,9 +54,6 @@ final class Path {
   const Path([this.name]);
 }
 
-@visibleForTesting
-base mixin MockPathMixin implements Path {}
-
 /// Provides the query parameters of a request.
 ///
 /// [Query] is used to add query parameters after the request url.
@@ -83,9 +77,6 @@ final class Query {
   const Query([this.name]);
 }
 
-@visibleForTesting
-base mixin MockQueryMixin implements Query {}
-
 /// Provides query parameters of a request as [Map<String, dynamic>].
 ///
 /// ```dart
@@ -103,9 +94,6 @@ final class QueryMap {
   const QueryMap();
 }
 
-@visibleForTesting
-base mixin MockQueryMapMixin implements QueryMap {}
-
 /// Declares the Body of [Post], [Put], and [Patch] requests
 ///
 /// ```dart
@@ -119,9 +107,6 @@ base mixin MockQueryMapMixin implements QueryMap {}
 final class Body {
   const Body();
 }
-
-@visibleForTesting
-base mixin MockBodyMixin implements Body {}
 
 /// Passes a value to the header of the request.
 ///
@@ -143,9 +128,6 @@ final class Header {
 
   const Header([this.name]);
 }
-
-@visibleForTesting
-base mixin MockHeaderMixin implements Header {}
 
 /// Defines an HTTP method.
 ///
@@ -223,9 +205,6 @@ sealed class Method {
   });
 }
 
-@visibleForTesting
-base mixin MockMethodMixin implements Method {}
-
 /// Defines a method as an HTTP GET request.
 @immutable
 final class Get extends Method {
@@ -237,9 +216,6 @@ final class Get extends Method {
     super.includeNullQueryVars,
   }) : super(HttpMethod.Get);
 }
-
-@visibleForTesting
-base mixin MockGetMixin implements Get {}
 
 /// Defines a method as an HTTP POST request.
 ///
@@ -255,9 +231,6 @@ final class Post extends Method {
   }) : super(HttpMethod.Post);
 }
 
-@visibleForTesting
-base mixin MockPostMixin implements Post {}
-
 /// Defines a method as an HTTP DELETE request.
 @immutable
 final class Delete extends Method {
@@ -269,9 +242,6 @@ final class Delete extends Method {
     super.includeNullQueryVars,
   }) : super(HttpMethod.Delete);
 }
-
-@visibleForTesting
-base mixin MockDeleteMixin implements Delete {}
 
 /// Defines a method as an HTTP PUT request.
 ///
@@ -287,9 +257,6 @@ final class Put extends Method {
   }) : super(HttpMethod.Put);
 }
 
-@visibleForTesting
-base mixin MockPutMixin implements Put {}
-
 /// Defines a method as an HTTP PATCH request.
 /// Use the [Body] annotation to pass data to send.
 @immutable
@@ -303,9 +270,6 @@ final class Patch extends Method {
   }) : super(HttpMethod.Patch);
 }
 
-@visibleForTesting
-base mixin MockPatchMixin implements Patch {}
-
 /// Defines a method as an HTTP HEAD request.
 @immutable
 final class Head extends Method {
@@ -318,9 +282,6 @@ final class Head extends Method {
   }) : super(HttpMethod.Head);
 }
 
-@visibleForTesting
-base mixin MockHeadMixin implements Head {}
-
 @immutable
 final class Options extends Method {
   const Options({
@@ -331,9 +292,6 @@ final class Options extends Method {
     super.includeNullQueryVars,
   }) : super(HttpMethod.Options);
 }
-
-@visibleForTesting
-base mixin MockOptionsMixin implements Options {}
 
 /// A function that should convert the body of a [Request] to the HTTP representation.
 typedef ConvertRequest = FutureOr<Request> Function(Request request);
@@ -382,9 +340,6 @@ final class FactoryConverter {
   });
 }
 
-@visibleForTesting
-base mixin MockFactoryConverterMixin implements FactoryConverter {}
-
 /// Defines a field for a `x-www-form-urlencoded` request.
 /// Automatically binds to the name of the method parameter.
 ///
@@ -405,9 +360,6 @@ final class Field {
   const Field([this.name]);
 }
 
-@visibleForTesting
-base mixin MockFieldMixin implements Field {}
-
 /// Provides field parameters of a request as [Map<String, dynamic>].
 ///
 /// ```dart
@@ -418,9 +370,6 @@ base mixin MockFieldMixin implements Field {}
 final class FieldMap {
   const FieldMap();
 }
-
-@visibleForTesting
-base mixin MockFieldMapMixin implements FieldMap {}
 
 /// Defines a multipart request.
 ///
@@ -437,9 +386,6 @@ final class Multipart {
   const Multipart();
 }
 
-@visibleForTesting
-base mixin MockMultipartMixin implements Multipart {}
-
 /// Use [Part] to define a part of a [Multipart] request.
 ///
 /// All values will be converted to [String] using their [toString] method.
@@ -452,9 +398,6 @@ final class Part {
   const Part([this.name]);
 }
 
-@visibleForTesting
-base mixin MockPartMixin implements Part {}
-
 /// Provides part parameters of a request as [PartValue].
 ///
 /// ```dart
@@ -466,9 +409,6 @@ base mixin MockPartMixin implements Part {}
 final class PartMap {
   const PartMap();
 }
-
-@visibleForTesting
-base mixin MockPartMapMixin implements PartMap {}
 
 /// Use [PartFile] to define a file field for a [Multipart] request.
 ///
@@ -489,9 +429,6 @@ final class PartFile {
   const PartFile([this.name]);
 }
 
-@visibleForTesting
-base mixin MockPartFileMixin implements PartFile {}
-
 /// Provides partFile parameters of a request as [PartValueFile].
 ///
 /// ```dart
@@ -503,9 +440,6 @@ base mixin MockPartFileMixin implements PartFile {}
 final class PartFileMap {
   const PartFileMap();
 }
-
-@visibleForTesting
-base mixin MockPartFileMapMixin implements PartFileMap {}
 
 const multipart = Multipart();
 const body = Body();
