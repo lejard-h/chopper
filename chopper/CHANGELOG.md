@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.4
+
+- Export ChopperLogRecord to library surface ([#480](https://github.com/lejard-h/chopper/pull/480))
+- Make ChopperLogRecord final ([#481](https://github.com/lejard-h/chopper/pull/481))
+
 ## 7.0.3
 
 - Use ChopperLogRecord in HttpLoggingInterceptor to log lines ([#475](https://github.com/lejard-h/chopper/pull/475))
