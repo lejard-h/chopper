@@ -1,7 +1,7 @@
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 
-class ChopperLogRecord {
+final class ChopperLogRecord {
   const ChopperLogRecord(this.message, {this.request, this.response});
 
   final String message;
