@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.2
+
+- Update analyzer dependency to >=5.13.0 <7.0.0 ([#484](https://github.com/lejard-h/chopper/pull/484))
+
 ## 7.0.1
 
 - Add final class modifier to generated Chopper API implementations
