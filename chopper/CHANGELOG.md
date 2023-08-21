@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.5
+
+- Fix documentation links in README ([#488](https://github.com/lejard-h/chopper/pull/488))
+
 ## 7.0.4
 
 - Export ChopperLogRecord to library surface ([#480](https://github.com/lejard-h/chopper/pull/480))
