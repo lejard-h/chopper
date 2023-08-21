@@ -37,9 +37,9 @@ Latest versions:
 
 ## Documentation
 
-* [Getting started](getting-started.md)
-* [Converters](converters/converters.md)
-* [Interceptors](interceptors.md)
+* [Getting started](../getting-started.md)
+* [Converters](../converters/converters.md)
+* [Interceptors](../interceptors.md)
 
 ## Examples
 
