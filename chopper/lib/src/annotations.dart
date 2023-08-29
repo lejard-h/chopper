@@ -22,6 +22,8 @@ import 'package:meta/meta.dart';
 @immutable
 final class ChopperApi {
   /// A part of a URL that every request defined inside a class annotated with [ChopperApi] will be prefixed with.
+  ///
+  /// The `baseUrl` can be a top level constant string variable.
   final String baseUrl;
 
   const ChopperApi({
