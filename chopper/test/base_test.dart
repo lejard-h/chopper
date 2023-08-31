@@ -9,8 +9,10 @@ import 'package:http/testing.dart';
 import 'package:test/test.dart';
 
 import 'test_service.dart';
+import 'test_service_variable.dart';
 
 final baseUrl = Uri.parse('http://localhost:8000');
+const String testEnv = 'https://localhost:4000';
 
 void main() {
   ChopperClient buildClient([
@@ -22,6 +24,7 @@ void main() {
         services: [
           // the generated service
           HttpTestService.create(),
+          HttpTestServiceVariable.create(),
         ],
         client: httpClient,
         errorConverter: errorConverter,
@@ -35,9 +38,12 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
+      final serviceVariable = chopper.getService<HttpTestServiceVariable>();
 
       expect(service, isNotNull);
+      expect(serviceVariable, isNotNull);
       expect(service, isA<HttpTestService>());
+      expect(serviceVariable, isA<HttpTestServiceVariable>());
     });
 
     test('get service errors', () async {
@@ -77,6 +83,28 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getTest('1234', dynamicHeader: '');
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('GET Variable', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$testEnv/get/1234'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestServiceVariable>();
 
       final response = await service.getTest('1234', dynamicHeader: '');
 
@@ -231,6 +259,29 @@ void main() {
       httpClient.close();
     });
 
+    test('POST Variable', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$testEnv/post'),
+        );
+        expect(request.method, equals('POST'));
+        expect(request.body, equals('post body'));
+
+        return http.Response('post response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestServiceVariable>();
+
+      final response = await service.postTest('post body');
+
+      expect(response.body, equals('post response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('POST with streamed body', () async {
       final httpClient = MockClient((request) async {
         expect(
@@ -282,6 +333,29 @@ void main() {
       httpClient.close();
     });
 
+    test('PUT Variable', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$testEnv/put/1234'),
+        );
+        expect(request.method, equals('PUT'));
+        expect(request.body, equals('put body'));
+
+        return http.Response('put response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestServiceVariable>();
+
+      final response = await service.putTest('1234', 'put body');
+
+      expect(response.body, equals('put response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('PATCH', () async {
       final httpClient = MockClient((request) async {
         expect(
@@ -296,6 +370,29 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
+
+      final response = await service.patchTest('1234', 'patch body');
+
+      expect(response.body, equals('patch response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('PATCH Variable', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$testEnv/patch/1234'),
+        );
+        expect(request.method, equals('PATCH'));
+        expect(request.body, equals('patch body'));
+
+        return http.Response('patch response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestServiceVariable>();
 
       final response = await service.patchTest('1234', 'patch body');
 
@@ -327,6 +424,28 @@ void main() {
       httpClient.close();
     });
 
+    test('DELETE Variable', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$testEnv/delete/1234'),
+        );
+        expect(request.method, equals('DELETE'));
+
+        return http.Response('delete response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestServiceVariable>();
+
+      final response = await service.deleteTest('1234');
+
+      expect(response.body, equals('delete response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('Head', () async {
       final httpClient = MockClient((request) async {
         expect(
@@ -340,6 +459,28 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
+
+      final response = await service.headTest();
+
+      expect(response.body, equals('head response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
+    test('Head Variable', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$testEnv/head'),
+        );
+        expect(request.method, equals('HEAD'));
+
+        return http.Response('head response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final service = chopper.getService<HttpTestServiceVariable>();
 
       final response = await service.headTest();
 

@@ -63,8 +63,21 @@ final class ChopperGenerator
 
     final String friendlyName = element.name;
     final String name = '_\$$friendlyName';
-    final String baseUrl =
-        annotation.peek(Vars.baseUrl.toString())?.stringValue ?? '';
+
+    final ConstantReader? baseUrlReader =
+        annotation.peek(Vars.baseUrl.toString());
+
+    TopLevelVariableElement? baseUrlVariableElement;
+
+    final VariableElement? posibleBaseUrl = baseUrlReader?.objectValue.variable;
+
+    if (posibleBaseUrl is TopLevelVariableElement &&
+        posibleBaseUrl.type.isDartCoreString &&
+        posibleBaseUrl.isConst) {
+      baseUrlVariableElement = posibleBaseUrl;
+    }
+
+    final String baseUrl = baseUrlReader?.stringValue ?? '';
 
     final Class classBuilder = Class((builder) {
       builder
@@ -73,7 +86,11 @@ final class ChopperGenerator
         ..extend = refer(friendlyName)
         ..fields.add(_buildDefinitionTypeMethod(friendlyName))
         ..constructors.add(_generateConstructor())
-        ..methods.addAll(_parseMethods(element, baseUrl));
+        ..methods.addAll(_parseMethods(
+          element,
+          baseUrl,
+          baseUrlVariableElement,
+        ));
     });
 
     const String ignore = '// ignore_for_file: '
@@ -102,7 +119,11 @@ final class ChopperGenerator
         },
       );
 
-  static Iterable<Method> _parseMethods(ClassElement element, String baseUrl) =>
+  static Iterable<Method> _parseMethods(
+    ClassElement element,
+    String baseUrl,
+    TopLevelVariableElement? baseUrlVariableElement,
+  ) =>
       element.methods
           .where(
             (MethodElement method) =>
@@ -110,9 +131,19 @@ final class ChopperGenerator
                 method.isAbstract &&
                 method.returnType.isDartAsyncFuture,
           )
-          .map((MethodElement m) => _generateMethod(m, baseUrl));
+          .map(
+            (MethodElement m) => _generateMethod(
+              m,
+              baseUrl,
+              baseUrlVariableElement,
+            ),
+          );
 
-  static Method _generateMethod(MethodElement m, String baseUrl) {
+  static Method _generateMethod(
+    MethodElement m,
+    String baseUrl,
+    TopLevelVariableElement? baseUrlVariableElement,
+  ) {
     final ConstantReader? method = _getMethodAnnotation(m);
     final bool multipart = _hasAnnotation(m, chopper.Multipart);
     final ConstantReader? factoryConverter = _getFactoryConverterAnnotation(m);
@@ -138,7 +169,12 @@ final class ChopperGenerator
         _getAnnotation(m, chopper.PartFileMap);
 
     final Code? headers = _generateHeaders(m, method!);
-    final Expression url = _generateUrl(method, paths, baseUrl);
+    final Expression url = _generateUrl(
+      method,
+      paths,
+      baseUrl,
+      baseUrlVariableElement,
+    );
     final DartType? responseType = _getResponseType(m.returnType);
     final DartType? responseInnerType =
         _getResponseInnerType(m.returnType) ?? responseType;
@@ -481,6 +517,7 @@ final class ChopperGenerator
     ConstantReader method,
     Map<ParameterElement, ConstantReader> paths,
     String baseUrl,
+    TopLevelVariableElement? baseUrlVariableElement,
   ) {
     String path = Utils.getMethodPath(method);
     paths.forEach((p, ConstantReader r) {
@@ -498,14 +535,26 @@ final class ChopperGenerator
       return _generateUri('');
     }
 
-    if (path.isNotEmpty &&
-        baseUrl.isNotEmpty &&
-        !baseUrl.endsWith('/') &&
-        !path.startsWith('/')) {
-      return _generateUri('$baseUrl/$path');
+    String finalBaseUrl = baseUrl;
+
+    if (baseUrlVariableElement != null) {
+      finalBaseUrl = '\${${baseUrlVariableElement.displayName}}';
     }
 
-    return _generateUri('$baseUrl$path');
+    if (path.isNotEmpty && baseUrl.isNotEmpty) {
+      bool pathHasSlash = path.startsWith('/');
+      bool baseUrlHasSlash = baseUrl.endsWith('/');
+
+      if ((!baseUrlHasSlash && !pathHasSlash)) {
+        return _generateUri('$finalBaseUrl/$path');
+      }
+
+      if (baseUrlHasSlash && pathHasSlash) {
+        return _generateUri('$finalBaseUrl${path.replaceFirst('/', '')}');
+      }
+    }
+
+    return _generateUri('$finalBaseUrl$path'.replaceAll('//', '/'));
   }
 
   static Expression _generateUri(String url) =>
