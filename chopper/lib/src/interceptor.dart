@@ -194,7 +194,7 @@ class JsonConverter implements Converter, ErrorConverter {
     final String? contentType = request.headers[contentTypeKey];
 
     if ((contentType?.contains(jsonHeaders) ?? false) &&
-        (request.body.runtimeType != String || !_isJson(request.body))) {
+        (request.body.runtimeType != String || !isJson(request.body))) {
       return request.copyWith(body: json.encode(request.body));
     }
 
@@ -259,7 +259,8 @@ class JsonConverter implements Converter, ErrorConverter {
   static Request requestFactory(Request request) =>
       const JsonConverter().convertRequest(request);
 
-  static bool _isJson(dynamic data) {
+  @visibleForTesting
+  static bool isJson(dynamic data) {
     try {
       json.decode(data);
       return true;
