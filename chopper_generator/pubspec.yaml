@@ -28,3 +28,9 @@ dev_dependencies:
 dependency_overrides:
   chopper:
     path: ../chopper
+
+topics:
+  - api
+  - codegen
+  - http
+  - rest

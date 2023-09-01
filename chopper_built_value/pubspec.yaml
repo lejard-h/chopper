@@ -23,3 +23,8 @@ dev_dependencies:
 dependency_overrides:
   chopper:
     path: ../chopper
+
+topics:
+  - codegen
+  - converter
+  - built_value
