@@ -309,11 +309,8 @@ base class ChopperClient {
     dynamic res = Response(response, response.body);
 
     if (authenticator != null) {
-      final Request? updatedRequest = await authenticator!.authenticate(
-        request,
-        res,
-        request,
-      );
+      final Request? updatedRequest =
+          await authenticator!.authenticate(req, res, request);
 
       if (updatedRequest != null) {
         res = await send<BodyType, InnerType>(
