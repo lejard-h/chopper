@@ -30,3 +30,9 @@ dev_dependencies:
 dependency_overrides:
   chopper_generator:
     path: ../chopper_generator
+
+topics:
+  - api
+  - client
+  - http
+  - rest

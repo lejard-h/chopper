@@ -6,11 +6,19 @@ import 'package:test/test.dart';
 void main() {
   test(
     'ensure_build',
-    () => expectBuildClean(
-      packageRelativeDirectory: 'chopper',
-      gitDiffPathArguments: [
-        'test/test_service.chopper.dart',
-      ],
-    ),
+    () {
+      expectBuildClean(
+        packageRelativeDirectory: 'chopper',
+        gitDiffPathArguments: [
+          'test/test_service.chopper.dart',
+        ],
+      );
+      expectBuildClean(
+        packageRelativeDirectory: 'chopper',
+        gitDiffPathArguments: [
+          'test/test_service_variable.chopper.dart',
+        ],
+      );
+    },
   );
 }
