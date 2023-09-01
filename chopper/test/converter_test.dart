@@ -119,13 +119,16 @@ void main() {
       expect(JsonConverter.isJson(null), isFalse);
       expect(JsonConverter.isJson(42), isFalse);
       expect(JsonConverter.isJson([]), isFalse);
-      expect(JsonConverter.isJson([1,2,3]), isFalse);
+      expect(JsonConverter.isJson([1, 2, 3]), isFalse);
       expect(JsonConverter.isJson(['a', 'b', 'c']), isFalse);
       expect(JsonConverter.isJson({}), isFalse);
-      expect(JsonConverter.isJson({
-        'foo': 'bar',
-        'list': [1, 2, 3],
-      }), isFalse);
+      expect(
+        JsonConverter.isJson({
+          'foo': 'bar',
+          'list': [1, 2, 3],
+        }),
+        isFalse,
+      );
     });
   });
 
