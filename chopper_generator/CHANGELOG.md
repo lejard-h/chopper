@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.3
+
+- The @ChopperApi annotation's baseUrl property can be used as a top level constant string variable ([#493](https://github.com/lejard-h/chopper/pull/493))
+- Add pub.dev topics to package metadata ([#495](https://github.com/lejard-h/chopper/pull/495))
+
 ## 7.0.2
 
 - Update analyzer dependency to >=5.13.0 <7.0.0 ([#484](https://github.com/lejard-h/chopper/pull/484))
