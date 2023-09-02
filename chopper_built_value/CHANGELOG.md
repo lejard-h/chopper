@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1+1
+
+- Fix pub.dev topics
+
 ## 2.0.1
 
 - Add pub.dev topics to package metadata ([#495](https://github.com/lejard-h/chopper/pull/495))
