@@ -193,9 +193,12 @@ class JsonConverter implements Converter, ErrorConverter {
   Request encodeJson(Request request) {
     final String? contentType = request.headers[contentTypeKey];
 
-    return (contentType?.contains(jsonHeaders) ?? false)
-        ? request.copyWith(body: json.encode(request.body))
-        : request;
+    if ((contentType?.contains(jsonHeaders) ?? false) &&
+        (request.body.runtimeType != String || !isJson(request.body))) {
+      return request.copyWith(body: json.encode(request.body));
+    }
+
+    return request;
   }
 
   FutureOr<Response> decodeJson<BodyType, InnerType>(Response response) async {
@@ -255,6 +258,16 @@ class JsonConverter implements Converter, ErrorConverter {
 
   static Request requestFactory(Request request) =>
       const JsonConverter().convertRequest(request);
+
+  @visibleForTesting
+  static bool isJson(dynamic data) {
+    try {
+      json.decode(data);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 }
 
 /// A [Converter] implementation that converts only [Request]s having a [Map] as their body.
