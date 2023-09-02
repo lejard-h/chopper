@@ -3,6 +3,7 @@
 ## 7.0.6
 
 - The @ChopperApi annotation's baseUrl property can be used as a top level constant string variable ([#493](https://github.com/lejard-h/chopper/pull/493))
+- Fix ChopperClient.send() sending wrong request when using an Authenticator ([#497](https://github.com/lejard-h/chopper/pull/497))
 - Add pub.dev topics to package metadata ([#495](https://github.com/lejard-h/chopper/pull/495))
 
 ## 7.0.5
