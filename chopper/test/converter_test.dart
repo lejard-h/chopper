@@ -111,6 +111,25 @@ void main() {
 
       expect(converted.body, equals({'foo': 'bar'}));
     });
+
+    test('JsonConverter.isJson', () {
+      expect(JsonConverter.isJson('{"foo":"bar"}'), isTrue);
+      expect(JsonConverter.isJson('foo'), isFalse);
+      expect(JsonConverter.isJson(''), isFalse);
+      expect(JsonConverter.isJson(null), isFalse);
+      expect(JsonConverter.isJson(42), isFalse);
+      expect(JsonConverter.isJson([]), isFalse);
+      expect(JsonConverter.isJson([1, 2, 3]), isFalse);
+      expect(JsonConverter.isJson(['a', 'b', 'c']), isFalse);
+      expect(JsonConverter.isJson({}), isFalse);
+      expect(
+        JsonConverter.isJson({
+          'foo': 'bar',
+          'list': [1, 2, 3],
+        }),
+        isFalse,
+      );
+    });
   });
 
   test('respects content-type headers', () {

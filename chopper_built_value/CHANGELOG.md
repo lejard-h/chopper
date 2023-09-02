@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+- Add pub.dev topics to package metadata ([#495](https://github.com/lejard-h/chopper/pull/495))
+
 ## 2.0.0
 
 - Require Dart 3.0 or later
