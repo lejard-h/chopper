@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.4
+
+- Ignore unnecessary_string_interpolations ([#501](https://github.com/lejard-h/chopper/pull/501))
+
 ## 7.0.3
 
 - The @ChopperApi annotation's baseUrl property can be used as a top level constant string variable ([#493](https://github.com/lejard-h/chopper/pull/493))
