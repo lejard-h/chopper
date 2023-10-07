@@ -93,12 +93,7 @@ final class ChopperGenerator
         ));
     });
 
-    const String ignore = '// ignore_for_file: '
-        'always_put_control_body_on_new_line, '
-        'always_specify_types, '
-        'prefer_const_declarations, '
-        'unnecessary_string_interpolations, '
-        'unnecessary_brace_in_string_interps';
+    const String ignore = '// ignore_for_file: type=lint';
     final DartEmitter emitter = DartEmitter();
 
     return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
