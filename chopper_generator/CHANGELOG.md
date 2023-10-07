@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.5
+
+- Correct static analysis suppression of *.chopper.dart files ([#507](https://github.com/lejard-h/chopper/pull/507))
+
 ## 7.0.4
 
 - Ignore unnecessary_string_interpolations ([#501](https://github.com/lejard-h/chopper/pull/501))
