@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.5+1
+
+- Fix Github release workflow permissions ([#512](https://github.com/lejard-h/chopper/pull/512))
+
 ## 7.0.5
 
 - Correct static analysis suppression of *.chopper.dart files ([#507](https://github.com/lejard-h/chopper/pull/507))
