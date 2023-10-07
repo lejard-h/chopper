@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.7+1
+
+- Fix Github release workflow permissions ([#512](https://github.com/lejard-h/chopper/pull/512))
+
 ## 7.0.7
 
 - Remove charset from http request headers when the body is in bytes ([#508](https://github.com/lejard-h/chopper/pull/508))
