@@ -769,9 +769,15 @@ void main() {
         HttpMethod.Post,
         Uri.parse('https://foo/'),
         Uri.parse(''),
+        headers: {
+          'authorization': 'Bearer fooBarBaz',
+          'x-foo': 'bar',
+        },
         body: kTransparentImage,
       ).toHttpRequest();
 
+      expect(request.headers['authorization'], equals('Bearer fooBarBaz'));
+      expect(request.headers['x-foo'], equals('bar'));
       expect(request.headers['content-type'], isNull);
       expect(request.headers['content-type'], isNot(contains('charset=')));
       expect(request.bodyBytes, equals(kTransparentImage));
