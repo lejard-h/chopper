@@ -138,16 +138,23 @@ base class Request extends http.BaseRequest with EquatableMixin {
   @visibleForTesting
   http.Request toHttpRequest() {
     final http.Request request = http.Request(method, url)
-      ..followRedirects = followRedirects
-      ..headers.addAll(headers);
+      ..followRedirects = followRedirects;
 
-    if (body != null) {
+    if (body == null) {
+      request.headers.addAll(headers);
+    } else {
       if (body is String) {
-        request.body = body;
+        request
+          ..headers.addAll(headers)
+          ..body = body;
       } else if (body is List<int>) {
-        request.bodyBytes = body;
+        request
+          ..bodyBytes = body
+          ..headers.addAll(headers);
       } else if (body is Map<String, String>) {
-        request.bodyFields = body;
+        request
+          ..headers.addAll(headers)
+          ..bodyFields = body;
       } else {
         throw ArgumentError.value('$body', 'body');
       }

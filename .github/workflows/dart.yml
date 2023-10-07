@@ -1,4 +1,4 @@
-# Created with package:mono_repo v6.5.7
+# Created with package:mono_repo v6.6.0
 name: Dart CI
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
         name: Checkout repository
         uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab
       - name: mono_repo self validate
-        run: dart pub global activate mono_repo 6.5.7
+        run: dart pub global activate mono_repo 6.6.0
       - name: mono_repo self validate
         run: dart pub global run mono_repo generate --validate
   job_002:
@@ -133,7 +133,7 @@ jobs:
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@main
+        uses: codecov/codecov-action@v3
         with:
           files: chopper/coverage/lcov.info
           fail_ci_if_error: true
@@ -148,7 +148,7 @@ jobs:
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@main
+        uses: codecov/codecov-action@v3
         with:
           files: chopper_built_value/coverage/lcov.info
           fail_ci_if_error: true
@@ -163,7 +163,7 @@ jobs:
         if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_generator
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@main
+        uses: codecov/codecov-action@v3
         with:
           files: chopper_generator/coverage/lcov.info
           fail_ci_if_error: true
