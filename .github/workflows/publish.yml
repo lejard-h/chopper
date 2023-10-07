@@ -41,6 +41,8 @@ jobs:
     name: "Publish"
     needs: get_base_version
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       matrix:
         package: [ chopper, chopper_generator, chopper_built_value ]
