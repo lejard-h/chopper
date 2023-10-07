@@ -772,6 +772,7 @@ void main() {
         body: kTransparentImage,
       ).toHttpRequest();
 
+      expect(request.headers['content-type'], isNull);
       expect(request.headers['content-type'], isNot(contains('charset=')));
       expect(request.bodyBytes, equals(kTransparentImage));
     });
