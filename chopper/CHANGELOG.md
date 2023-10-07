@@ -1,5 +1,13 @@
 # Changelog
 
+## 7.0.7+1
+
+- Fix Github release workflow permissions ([#512](https://github.com/lejard-h/chopper/pull/512))
+
+## 7.0.7
+
+- Remove charset from http request headers when the body is in bytes ([#508](https://github.com/lejard-h/chopper/pull/508))
+
 ## 7.0.6
 
 - The @ChopperApi annotation's baseUrl property can be used as a top level constant string variable ([#493](https://github.com/lejard-h/chopper/pull/493))
