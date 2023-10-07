@@ -7,6 +7,7 @@ import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'test_service.dart';
 import 'test_service_variable.dart';
@@ -761,6 +762,18 @@ void main() {
       ).toHttpRequest();
 
       expect(request.bodyBytes, equals([1, 2, 3]));
+    });
+
+    test('BodyBytes does not have charset header', () {
+      final request = Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        body: kTransparentImage,
+      ).toHttpRequest();
+
+      expect(request.headers['content-type'], isNot(contains('charset=')));
+      expect(request.bodyBytes, equals(kTransparentImage));
     });
 
     test('BodyFields', () {
