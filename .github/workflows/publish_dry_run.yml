@@ -32,9 +32,10 @@ jobs:
           ref: ${{ github.event.pull_request.base.ref }}
       - name: Load base version
         id: load_base_version
+        working-directory: ${{ matrix.package }}
         run: |
           set -e
-          echo "BASE_VERSION_${{ matrix.package }}=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_OUTPUT
+          echo "BASE_VERSION_${{ matrix.package }}=$(awk '/^version: / {print $2}' pubspec.yaml)" >> $GITHUB_OUTPUT
   publish_dry_run:
     name: "Publish DRY RUN"
     needs: get_base_version
@@ -52,26 +53,26 @@ jobs:
         uses: actions/checkout@v3
       - name: Load this version
         id: load_this_version
+        working-directory: ${{ matrix.package }}
         run: |
           set -e
-          echo "THIS_VERSION=$(awk '/^version: / {print $2}' ${{ matrix.package }}/pubspec.yaml)" >> $GITHUB_ENV
+          echo "THIS_VERSION=$(awk '/^version: / {print $2}' pubspec.yaml)" >> $GITHUB_ENV
       - name: Compare versions
         id: compare_versions
         env:
           BASE_VERSION_chopper: ${{ needs.get_base_version.outputs.BASE_VERSION_chopper }}
           BASE_VERSION_chopper_generator: ${{ needs.get_base_version.outputs.BASE_VERSION_chopper_generator }}
           BASE_VERSION_chopper_built_value: ${{ needs.get_base_version.outputs.BASE_VERSION_chopper_built_value }}
+        working-directory: tool
         run: |
           set -e
-          pushd tool || exit
           dart pub get
           echo "IS_VERSION_GREATER=$(dart run compare_versions.dart $THIS_VERSION $BASE_VERSION_${{ matrix.package }})" >> $GITHUB_ENV
-          popd || exit
       - name: Validate pub.dev topics
         id: validate_pub_dev_topics
+        working-directory: ${{ matrix.package }}
         run: |
           set -e
-          pushd ${{ matrix.package }} || exit
           pattern="^[a-z][a-z0-9-]*[a-z0-9]$"
           for topic in $(yq -r '.topics[]' pubspec.yaml); do
             if [[ ! $topic =~ $pattern ]]; then
@@ -79,16 +80,14 @@ jobs:
               exit 1
             fi
           done
-          popd || exit
       - name: Publish (dry run)
         id: publish_dry_run
         if: ${{ env.IS_VERSION_GREATER == 1 }}
+        working-directory: ${{ matrix.package }}
         run: |
           set -e
-          pushd ${{ matrix.package }} || exit
           yq -i 'del(.dependency_overrides)' pubspec.yaml
           dart pub publish --dry-run
-          popd || exit
       - name: Skip publish (dry run)
         id: skip_publish_dry_run
         if: ${{ env.IS_VERSION_GREATER == 0 }}
