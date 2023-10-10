@@ -1292,6 +1292,8 @@ void main() {
   });
 
   test('Map query param using default dot QueryMapSeparator', () async {
+    final DateTime now = DateTime.now();
+
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
@@ -1304,7 +1306,8 @@ void main() {
             '&value.etc.mno.uvw=xyz'
             '&value.etc.mno.list=a'
             '&value.etc.mno.list=123'
-            '&value.etc.mno.list=false'),
+            '&value.etc.mno.list=false'
+            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
       );
       expect(request.method, equals('GET'));
 
@@ -1325,6 +1328,7 @@ void main() {
           'uvw': 'xyz',
           'list': ['a', 123, false],
         },
+        'dt': now,
       },
     });
 
@@ -1335,6 +1339,8 @@ void main() {
   });
 
   test('Map query param with brackets QueryMapSeparator', () async {
+    final DateTime now = DateTime.now();
+
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
@@ -1347,7 +1353,8 @@ void main() {
             '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
             '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=a'
             '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=123'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'),
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'
+            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
       );
       expect(request.method, equals('GET'));
 
@@ -1369,6 +1376,7 @@ void main() {
           'uvw': 'xyz',
           'list': ['a', 123, false],
         },
+        'dt': now,
       },
     });
 
@@ -1379,6 +1387,8 @@ void main() {
   });
 
   test('Map query param without including null query vars', () async {
+    final DateTime now = DateTime.now();
+
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
@@ -1388,7 +1398,8 @@ void main() {
             '&value.etc.mno.opq=rst'
             '&value.etc.mno.list=a'
             '&value.etc.mno.list=123'
-            '&value.etc.mno.list=false'),
+            '&value.etc.mno.list=false'
+            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
       );
       expect(request.method, equals('GET'));
 
@@ -1409,6 +1420,7 @@ void main() {
           'uvw': null,
           'list': ['a', 123, false],
         },
+        'dt': now,
       },
     });
 
@@ -1419,6 +1431,8 @@ void main() {
   });
 
   test('Map query param including null query vars', () async {
+    final DateTime now = DateTime.now();
+
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
@@ -1431,7 +1445,8 @@ void main() {
             '&value.etc.mno.uvw='
             '&value.etc.mno.list=a'
             '&value.etc.mno.list=123'
-            '&value.etc.mno.list=false'),
+            '&value.etc.mno.list=false'
+            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
       );
       expect(request.method, equals('GET'));
 
@@ -1453,6 +1468,7 @@ void main() {
           'uvw': null,
           'list': ['a', 123, false],
         },
+        'dt': now,
       },
     });
 
@@ -1509,5 +1525,59 @@ void main() {
         TypeMatcher<AssertionError>(),
       ),
     );
+  });
+
+  <DateTime, String>{
+    DateTime.utc(2023, 1, 1): '2023-01-01T00%3A00%3A00.000Z',
+    DateTime.utc(2023, 1, 1, 12, 34, 56): '2023-01-01T12%3A34%3A56.000Z',
+    DateTime.utc(2023, 1, 1, 12, 34, 56, 789): '2023-01-01T12%3A34%3A56.789Z',
+  }.forEach((DateTime dateTime, String expected) {
+    test('DateTime is encoded as ISO8601', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/date_time?value=$expected'),
+        );
+        expect(request.method, equals('GET'));
+
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient, JsonConverter());
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getDateTime(dateTime);
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+  });
+
+  test('Local DateTime is encoded as UTC ISO8601', () async {
+    final DateTime dateTime = DateTime.now();
+    final String expected =
+        Uri.encodeComponent(dateTime.toUtc().toIso8601String());
+
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/date_time?value=$expected'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient, JsonConverter());
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getDateTime(dateTime);
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
   });
 }
