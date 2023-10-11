@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.8
+
+- Encode DateTime query parameters in ISO8601 format ([#516](https://github.com/lejard-h/chopper/pull/516))
+
 ## 7.0.7+1
 
 - Fix Github release workflow permissions ([#512](https://github.com/lejard-h/chopper/pull/512))
