@@ -636,4 +636,17 @@ final class _$HttpTestService extends HttpTestService {
     );
     return client.send<String, String>($request);
   }
+
+  @override
+  Future<Response<String>> getDateTime(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<String, String>($request);
+  }
 }
