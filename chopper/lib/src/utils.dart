@@ -129,7 +129,11 @@ Iterable<_Pair<String, String>> _iterableToQuery(
           ),
         );
 
-String _normalizeValue(value) => Uri.encodeComponent(value?.toString() ?? '');
+String _normalizeValue(value) => Uri.encodeComponent(
+      value is DateTime
+          ? value.toUtc().toIso8601String()
+          : value?.toString() ?? '',
+    );
 
 final class _Pair<A, B> with EquatableMixin {
   final A first;

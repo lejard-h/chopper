@@ -188,6 +188,11 @@ abstract class HttpTestService extends ChopperService {
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
     @Query('value') Map<String, dynamic> value,
   );
+
+  @Get(path: '/date_time')
+  Future<Response<String>> getDateTime(
+    @Query('value') DateTime value,
+  );
 }
 
 Request customConvertRequest(Request req) {
