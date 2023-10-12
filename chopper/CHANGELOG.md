@@ -2,7 +2,7 @@
 
 ## 7.0.9
 
-- Fix ChopperGenerator building ```https://...``` with one slash ([#519](https://github.com/lejard-h/chopper/pull/519))
+- Fix ChopperGenerator building ```https://...``` with one slash ([#520](https://github.com/lejard-h/chopper/pull/520))
 
 ## 7.0.8
 
