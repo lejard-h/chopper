@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.6
+
+- Fix incorrect url generation when using new baseUrl ([#520](https://github.com/lejard-h/chopper/pull/520))
+
 ## 7.0.5+1
 
 - Fix Github release workflow permissions ([#512](https://github.com/lejard-h/chopper/pull/512))
