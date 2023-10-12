@@ -550,7 +550,22 @@ final class ChopperGenerator
       }
     }
 
-    return _generateUri('$finalBaseUrl$path'.replaceAll('//', '/'));
+    if (finalBaseUrl.startsWith('http://') ||
+        finalBaseUrl.startsWith('https://')) {
+      final tempUri = Uri.tryParse(finalBaseUrl);
+
+      if (tempUri != null) {
+        final urlNoScheme =
+            '${tempUri.authority}${tempUri.path}$path'.replaceAll('//', '/');
+        return _generateUri(
+          '${tempUri.scheme}://$urlNoScheme',
+        );
+      }
+    }
+
+    return _generateUri(
+      '$finalBaseUrl$path'.replaceAll('//', '/'),
+    );
   }
 
   static Expression _generateUri(String url) =>
