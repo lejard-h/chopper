@@ -10,6 +10,7 @@ import 'package:test/test.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'test_service.dart';
+import 'test_service_base_url.dart';
 import 'test_service_variable.dart';
 
 final baseUrl = Uri.parse('http://localhost:8000');
@@ -26,6 +27,7 @@ void main() {
           // the generated service
           HttpTestService.create(),
           HttpTestServiceVariable.create(),
+          HttpTestServiceBaseUrl.create(),
         ],
         client: httpClient,
         errorConverter: errorConverter,
@@ -1164,6 +1166,23 @@ void main() {
     await service.getAll();
   });
 
+  test('Empty path gives no trailing slash new base url', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$testEnv/test'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestServiceBaseUrl>();
+
+    await service.getAll();
+  });
+
   test('Slash in path gives a trailing slash', () async {
     final httpClient = MockClient((request) async {
       expect(
@@ -1177,6 +1196,23 @@ void main() {
 
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
+
+    await service.getAllWithTrailingSlash();
+  });
+
+  test('Slash in path gives a trailing slash new base url', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$testEnv/test/'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestServiceBaseUrl>();
 
     await service.getAllWithTrailingSlash();
   });
