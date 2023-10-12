@@ -1,9 +1,5 @@
 # Changelog
 
-## 7.0.9
-
-- Fix ChopperGenerator building ```https://...``` with one slash ([#520](https://github.com/lejard-h/chopper/pull/520))
-
 ## 7.0.8
 
 - Encode DateTime query parameters in ISO8601 format ([#516](https://github.com/lejard-h/chopper/pull/516))
