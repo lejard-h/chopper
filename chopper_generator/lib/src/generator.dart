@@ -550,7 +550,12 @@ final class ChopperGenerator
       }
     }
 
-    return _generateUri('$finalBaseUrl$path'.replaceAll('//', '/'));
+    return _generateUri(
+      '$finalBaseUrl$path'.replaceAll(
+        RegExp(r'(?<!http:|https:)\/\/'),
+        '/',
+      ),
+    );
   }
 
   static Expression _generateUri(String url) =>
