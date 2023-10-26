@@ -320,13 +320,13 @@ base class ChopperClient {
         );
         // To prevent double call with typed response
         if (_responseIsSuccessful(res.statusCode)) {
-          await authenticator!
-              .onAuthenticationSuccessful(updatedRequest, res, request);
+          await authenticator!.onAuthenticationSuccessful
+              ?.call(updatedRequest, res, request);
           return _processResponse(res);
         } else {
           res = await _handleErrorResponse<BodyType, InnerType>(res);
-          await authenticator!
-              .onAuthenticationFailed(updatedRequest, res, request);
+          await authenticator!.onAuthenticationFailed
+              ?.call(updatedRequest, res, request);
           return _processResponse(res);
         }
       }
