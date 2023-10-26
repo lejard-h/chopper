@@ -41,10 +41,11 @@ class FakeAuthenticator extends Authenticator {
   }
 
   @override
-  FutureOr<void> onAuthenticationSuccessful(Request request,
-      Response response, [
-        Request? originalRequest,
-      ]) {
+  FutureOr<void> onAuthenticationSuccessful(
+    Request request,
+    Response response, [
+    Request? originalRequest,
+  ]) {
     onAuthenticationSuccessfulCalled = true;
     capturedRequest = request;
     capturedResponse = response;
@@ -52,10 +53,11 @@ class FakeAuthenticator extends Authenticator {
   }
 
   @override
-  FutureOr<void> onAuthenticationFailed(Request request,
-      Response response, [
-        Request? originalRequest,
-      ]) {
+  FutureOr<void> onAuthenticationFailed(
+    Request request,
+    Response response, [
+    Request? originalRequest,
+  ]) {
     onAuthenticationFailedCalled = true;
     capturedRequest = request;
     capturedResponse = response;

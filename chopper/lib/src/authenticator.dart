@@ -19,13 +19,15 @@ abstract class Authenticator {
     Request? originalRequest,
   ]);
 
-  FutureOr<void> onAuthenticationSuccessful(Request request,
-      Response response, [
-        Request? originalRequest,
-      ]) {}
+  FutureOr<void> onAuthenticationSuccessful(
+    Request request,
+    Response response, [
+    Request? originalRequest,
+  ]) {}
 
-  FutureOr<void> onAuthenticationFailed(Request request,
-      Response response, [
-        Request? originalRequest,
-      ]) {}
+  FutureOr<void> onAuthenticationFailed(
+    Request request,
+    Response response, [
+    Request? originalRequest,
+  ]) {}
 }

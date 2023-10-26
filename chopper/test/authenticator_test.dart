@@ -98,8 +98,10 @@ void main() async {
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
@@ -143,8 +145,10 @@ void main() async {
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
@@ -244,8 +248,10 @@ void main() async {
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
@@ -302,8 +308,10 @@ void main() async {
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
@@ -403,8 +411,10 @@ void main() async {
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
@@ -461,8 +471,10 @@ void main() async {
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
@@ -562,9 +574,11 @@ void main() async {
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
       expect(authenticator.capturedResponse, response);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
       httpClient.close();
@@ -620,9 +634,11 @@ void main() async {
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest, authenticator.capturedAuthenticateRequest);
+      expect(authenticator.capturedRequest,
+          authenticator.capturedAuthenticateRequest);
       expect(authenticator.capturedResponse, response);
-      expect(authenticator.capturedOriginalRequest, authenticator.capturedAuthenticateOriginalRequest);
+      expect(authenticator.capturedOriginalRequest,
+          authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
       httpClient.close();
