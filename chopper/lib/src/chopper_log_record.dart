@@ -1,6 +1,7 @@
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
+
 final class ChopperLogRecord {
   const ChopperLogRecord(this.message, {this.request, this.response});
 
