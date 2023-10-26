@@ -515,6 +515,17 @@ base class ChopperClient {
   Stream<Response> get onResponse => _responseController.stream;
 }
 
+///
+/// [ChopperClient] mixin for the purposes of creating mocks
+/// using a mocking framework such as Mockito or Mocktail.
+///
+/// ```dart
+/// base class MockChopperClient extends Mock with MockChopperClientMixin {}
+/// ```
+///
+@visibleForTesting
+base mixin MockChopperClientMixin implements ChopperClient {}
+
 /// A marker and helper class used by `chopper_generator` to generate network
 /// call implementations.
 ///
