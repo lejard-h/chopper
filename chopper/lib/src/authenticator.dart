@@ -19,19 +19,15 @@ abstract class Authenticator {
     Request? originalRequest,
   ]);
 
-  // coverage:ignore-start
   FutureOr<void> onAuthenticationSuccessful(
     Request request,
     Response response, [
     Request? originalRequest,
   ]) {}
-  // coverage:ignore-end
 
-  // coverage:ignore-start
   FutureOr<void> onAuthenticationFailed(
     Request request,
     Response response, [
     Request? originalRequest,
   ]) {}
-  // coverage:ignore-end
 }
