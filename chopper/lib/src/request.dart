@@ -237,6 +237,17 @@ base class Request extends http.BaseRequest with EquatableMixin {
       ];
 }
 
+///
+/// [Request] mixin for the purposes of creating mocks
+/// using a mocking framework such as Mockito or Mocktail.
+///
+/// ```dart
+/// base class MockRequest extends Mock with MockRequestMixin {}
+/// ```
+///
+@visibleForTesting
+base mixin MockRequestMixin implements Request {}
+
 /// Represents a part in a multipart request.
 @immutable
 final class PartValue<T> with EquatableMixin {
@@ -263,8 +274,30 @@ final class PartValue<T> with EquatableMixin {
       ];
 }
 
+///
+/// [PartValue] mixin for the purposes of creating mocks
+/// using a mocking framework such as Mockito or Mocktail.
+///
+/// ```dart
+/// base class MockPartValue<T> extends Mock with MockPartValueMixin<T> {}
+/// ```
+///
+@visibleForTesting
+base mixin MockPartValueMixin<T> implements PartValue<T> {}
+
 /// Represents a file [PartValue] in a multipart request.
 @immutable
 final class PartValueFile<T> extends PartValue<T> {
   const PartValueFile(super.name, super.value);
 }
+
+///
+/// [PartValueFile] mixin for the purposes of creating mocks
+/// using a mocking framework such as Mockito or Mocktail.
+///
+/// ```dart
+/// base class MockPartValueFile<T> extends Mock with MockPartValueFileMixin<T> {}
+/// ```
+///
+@visibleForTesting
+base mixin MockPartValueFileMixin<T> implements PartValueFile<T> {}

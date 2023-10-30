@@ -1,5 +1,10 @@
 # Changelog
 
+## 7.0.9
+
+- Add success/failure callback hooks to Authenticator ([#527](https://github.com/lejard-h/chopper/pull/527))
+- Add mock mixins of Chopper components ([#529](https://github.com/lejard-h/chopper/pull/529))
+
 ## 7.0.8
 
 - Encode DateTime query parameters in ISO8601 format ([#516](https://github.com/lejard-h/chopper/pull/516))

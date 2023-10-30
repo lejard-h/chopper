@@ -74,3 +74,14 @@ base class Response<BodyType> with EquatableMixin {
         error,
       ];
 }
+
+///
+/// [Response] mixin for the purposes of creating mocks
+/// using a mocking framework such as Mockito or Mocktail.
+///
+/// ```dart
+/// base class MockResponse<BodyType> extends Mock with MockResponseMixin<BodyType> {}
+/// ```
+///
+@visibleForTesting
+base mixin MockResponseMixin<BodyType> implements Response<BodyType> {}

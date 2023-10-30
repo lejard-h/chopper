@@ -320,10 +320,13 @@ base class ChopperClient {
         );
         // To prevent double call with typed response
         if (_responseIsSuccessful(res.statusCode)) {
+          await authenticator!.onAuthenticationSuccessful
+              ?.call(updatedRequest, res, request);
           return _processResponse(res);
         } else {
           res = await _handleErrorResponse<BodyType, InnerType>(res);
-
+          await authenticator!.onAuthenticationFailed
+              ?.call(updatedRequest, res, request);
           return _processResponse(res);
         }
       }
@@ -514,6 +517,17 @@ base class ChopperClient {
   /// [ResponseInterceptor]s have been run.
   Stream<Response> get onResponse => _responseController.stream;
 }
+
+///
+/// [ChopperClient] mixin for the purposes of creating mocks
+/// using a mocking framework such as Mockito or Mocktail.
+///
+/// ```dart
+/// base class MockChopperClient extends Mock with MockChopperClientMixin {}
+/// ```
+///
+@visibleForTesting
+base mixin MockChopperClientMixin implements ChopperClient {}
 
 /// A marker and helper class used by `chopper_generator` to generate network
 /// call implementations.
