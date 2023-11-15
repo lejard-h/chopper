@@ -6,6 +6,7 @@ part of 'test_service_variable.dart';
 // ChopperGenerator
 // **************************************************************************
 
+// coverage:ignore-file
 // ignore_for_file: type=lint
 final class _$HttpTestServiceVariable extends HttpTestServiceVariable {
   _$HttpTestServiceVariable([ChopperClient? client]) {
@@ -14,7 +15,7 @@ final class _$HttpTestServiceVariable extends HttpTestServiceVariable {
   }
 
   @override
-  final definitionType = HttpTestServiceVariable;
+  final Type definitionType = HttpTestServiceVariable;
 
   @override
   Future<Response<String>> getTest(
