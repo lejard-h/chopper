@@ -9,6 +9,7 @@ import 'package:http/testing.dart';
 import 'package:test/test.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import 'fixtures/example_enum.dart';
 import 'test_service.dart';
 import 'test_service_base_url.dart';
 import 'test_service_variable.dart';
@@ -1612,6 +1613,38 @@ void main() {
     final response = await service.getDateTime(dateTime);
 
     expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('headers are always stringified', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/headers'),
+      );
+      expect(request.method, equals('GET'));
+      expect(request.headers['x-string'], equals('lorem'));
+      expect(request.headers['x-boolean'], equals('true'));
+      expect(request.headers['x-int'], equals('42'));
+      expect(request.headers['x-double'], equals('42.42'));
+      expect(request.headers['x-enum'], equals('baz'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient, JsonConverter());
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getHeaders(
+      stringHeader: 'lorem',
+      boolHeader: true,
+      intHeader: 42,
+      doubleHeader: 42.42,
+      enumHeader: ExampleEnum.baz,
+    );
+
     expect(response.statusCode, equals(200));
 
     httpClient.close();
