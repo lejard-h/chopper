@@ -686,21 +686,14 @@ final class ChopperGenerator
     ) {
       final String paramName = parameter.displayName;
       final String name = annotation.peek('name')?.stringValue ?? paramName;
-
+      final String headerValue = switch (parameter.type.isDartCoreString) {
+        true => "'$name': $paramName,",
+        false => "'$name': $paramName.toString(),",
+      };
       if (parameter.type.isNullable) {
-        if (parameter.type.isDartCoreString) {
-          codeBuffer.writeln("if ($paramName != null) '$name': $paramName,");
-        } else {
-          codeBuffer.writeln(
-            "if ($paramName != null) '$name': $paramName.toString(),",
-          );
-        }
+        codeBuffer.writeln('if ($paramName != null) $headerValue');
       } else {
-        if (parameter.type.isDartCoreString) {
-          codeBuffer.writeln("'$name': $paramName,");
-        } else {
-          codeBuffer.writeln("'$name': $paramName.toString(),");
-        }
+        codeBuffer.writeln(headerValue);
       }
     });
 
