@@ -676,18 +676,24 @@ final class ChopperGenerator
   ) {
     final StringBuffer codeBuffer = StringBuffer('')..writeln('{');
 
-    /// Search for @Header anotation in method parameters
+    /// Search for @Header annotation in method parameters
     final Map<ParameterElement, ConstantReader> annotations =
         _getAnnotations(methodElement, chopper.Header);
 
-    annotations.forEach((parameter, ConstantReader annotation) {
+    annotations.forEach((
+      ParameterElement parameter,
+      ConstantReader annotation,
+    ) {
       final String paramName = parameter.displayName;
       final String name = annotation.peek('name')?.stringValue ?? paramName;
-
+      final String headerValue = switch (parameter.type.isDartCoreString) {
+        true => "'$name': $paramName,",
+        false => "'$name': $paramName.toString(),",
+      };
       if (parameter.type.isNullable) {
-        codeBuffer.writeln('if ($paramName != null) \'$name\': $paramName,');
+        codeBuffer.writeln('if ($paramName != null) $headerValue');
       } else {
-        codeBuffer.writeln('\'$name\': $paramName,');
+        codeBuffer.writeln(headerValue);
       }
     });
 
@@ -700,7 +706,7 @@ final class ChopperGenerator
     methodAnnotations.forEach((headerName, headerValue) {
       if (headerName != null && headerValue != null) {
         codeBuffer.writeln(
-          '\'${headerName.toStringValue()}\': ${literal(headerValue.toStringValue())},',
+          "'${headerName.toStringValue()}': ${literal(headerValue.toStringValue())},",
         );
       }
     });

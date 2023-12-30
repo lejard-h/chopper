@@ -188,6 +188,15 @@ abstract class HttpTestService extends ChopperService {
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
     @Query('value') Map<String, dynamic> value,
   );
+
+  @Get(path: 'headers')
+  Future<Response<String>> getHeaders({
+    @Header('x-string') required String stringHeader,
+    @Header('x-boolean') bool? boolHeader,
+    @Header('x-int') int? intHeader,
+    @Header('x-double') double? doubleHeader,
+    @Header('x-enum') ExampleEnum? enumHeader,
+  });
 }
 
 Request customConvertRequest(Request req) {
@@ -215,4 +224,13 @@ Request convertForm(Request req) {
   }
 
   return req;
+}
+
+enum ExampleEnum {
+  foo,
+  bar,
+  baz;
+
+  @override
+  String toString() => name;
 }

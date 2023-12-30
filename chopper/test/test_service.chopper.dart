@@ -650,4 +650,29 @@ final class _$HttpTestService extends HttpTestService {
     );
     return client.send<String, String>($request);
   }
+
+  @override
+  Future<Response<String>> getHeaders({
+    required String stringHeader,
+    bool? boolHeader,
+    int? intHeader,
+    double? doubleHeader,
+    ExampleEnum? enumHeader,
+  }) {
+    final Uri $url = Uri.parse('/test/headers');
+    final Map<String, String> $headers = {
+      'x-string': stringHeader,
+      if (boolHeader != null) 'x-boolean': boolHeader.toString(),
+      if (intHeader != null) 'x-int': intHeader.toString(),
+      if (doubleHeader != null) 'x-double': doubleHeader.toString(),
+      if (enumHeader != null) 'x-enum': enumHeader.toString(),
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
+    );
+    return client.send<String, String>($request);
+  }
 }
