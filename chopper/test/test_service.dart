@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' show MultipartFile;
 
+import 'fixtures/example_enum.dart';
+
 part 'test_service.chopper.dart';
 
 @ChopperApi(baseUrl: '/test')
@@ -193,6 +195,15 @@ abstract class HttpTestService extends ChopperService {
   Future<Response<String>> getDateTime(
     @Query('value') DateTime value,
   );
+
+  @Get(path: 'headers')
+  Future<Response<String>> getHeaders({
+    @Header('x-string') required String stringHeader,
+    @Header('x-boolean') bool? boolHeader,
+    @Header('x-int') int? intHeader,
+    @Header('x-double') double? doubleHeader,
+    @Header('x-enum') ExampleEnum? enumHeader,
+  });
 }
 
 Request customConvertRequest(Request req) {

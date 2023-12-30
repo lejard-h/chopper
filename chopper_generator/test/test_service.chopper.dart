@@ -6,6 +6,7 @@ part of 'test_service.dart';
 // ChopperGenerator
 // **************************************************************************
 
+// coverage:ignore-file
 // ignore_for_file: type=lint
 final class _$HttpTestService extends HttpTestService {
   _$HttpTestService([ChopperClient? client]) {
@@ -14,7 +15,7 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
-  final definitionType = HttpTestService;
+  final Type definitionType = HttpTestService;
 
   @override
   Future<Response<String>> getTest(
@@ -633,6 +634,31 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
       useBrackets: true,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getHeaders({
+    required String stringHeader,
+    bool? boolHeader,
+    int? intHeader,
+    double? doubleHeader,
+    ExampleEnum? enumHeader,
+  }) {
+    final Uri $url = Uri.parse('/test/headers');
+    final Map<String, String> $headers = {
+      'x-string': stringHeader,
+      if (boolHeader != null) 'x-boolean': boolHeader.toString(),
+      if (intHeader != null) 'x-int': intHeader.toString(),
+      if (doubleHeader != null) 'x-double': doubleHeader.toString(),
+      if (enumHeader != null) 'x-enum': enumHeader.toString(),
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      headers: $headers,
     );
     return client.send<String, String>($request);
   }

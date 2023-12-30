@@ -44,6 +44,7 @@ final class ChopperGenerator
   static Field _buildDefinitionTypeMethod(String superType) => Field(
         (method) => method
           ..annotations.add(refer('override'))
+          ..type = refer('Type')
           ..name = 'definitionType'
           ..modifier = FieldModifier.final$
           ..assignment = Code(superType),
@@ -69,12 +70,13 @@ final class ChopperGenerator
 
     TopLevelVariableElement? baseUrlVariableElement;
 
-    final VariableElement? posibleBaseUrl = baseUrlReader?.objectValue.variable;
+    final VariableElement? possibleBaseUrl =
+        baseUrlReader?.objectValue.variable;
 
-    if (posibleBaseUrl is TopLevelVariableElement &&
-        posibleBaseUrl.type.isDartCoreString &&
-        posibleBaseUrl.isConst) {
-      baseUrlVariableElement = posibleBaseUrl;
+    if (possibleBaseUrl is TopLevelVariableElement &&
+        possibleBaseUrl.type.isDartCoreString &&
+        possibleBaseUrl.isConst) {
+      baseUrlVariableElement = possibleBaseUrl;
     }
 
     final String baseUrl = baseUrlReader?.stringValue ?? '';
@@ -93,26 +95,32 @@ final class ChopperGenerator
         ));
     });
 
-    const String ignore = '// ignore_for_file: type=lint';
-    final DartEmitter emitter = DartEmitter();
+    const String ignore = '// coverage:ignore-file\n'
+        '// ignore_for_file: type=lint';
+    final DartEmitter emitter = DartEmitter(useNullSafetySyntax: true);
 
     return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
   }
 
   static Constructor _generateConstructor() => Constructor(
-        (ConstructorBuilder constructorBuilder) {
-          constructorBuilder.optionalParameters.add(
-            Parameter((paramBuilder) {
-              paramBuilder.name = Vars.client.toString();
-              paramBuilder.type = refer('${chopper.ChopperClient}?');
-            }),
-          );
-
-          constructorBuilder.body = Code(
-            'if (${Vars.client} == null) return;\n'
-            'this.${Vars.client} = ${Vars.client};',
-          );
-        },
+        (ConstructorBuilder constructorBuilder) => constructorBuilder
+          ..optionalParameters.add(
+            Parameter(
+              (paramBuilder) => paramBuilder
+                ..name = Vars.client.toString()
+                ..type = TypeReference(
+                  (typeBuilder) => typeBuilder
+                    ..symbol = '${chopper.ChopperClient}'
+                    ..isNullable = true,
+                ),
+            ),
+          )
+          ..body = Code(
+            [
+              'if (${Vars.client} == null) return;',
+              'this.${Vars.client} = ${Vars.client};'
+            ].join('\n'),
+          ),
       );
 
   static Iterable<Method> _parseMethods(
@@ -175,37 +183,33 @@ final class ChopperGenerator
     final DartType? responseInnerType =
         _getResponseInnerType(m.returnType) ?? responseType;
 
-    return Method((MethodBuilder b) {
-      b.annotations.add(refer('override'));
-      b.name = m.displayName;
-
-      /// We don't support returning null Type
-      b.returns = Reference(
-        m.returnType.getDisplayString(withNullability: false),
-      );
-
-      /// And null Typed parameters
-      b.types.addAll(
-        m.typeParameters.map(
-          (t) => Reference(t.getDisplayString(withNullability: false)),
-        ),
-      );
-
-      b.requiredParameters.addAll(
-        m.parameters
-            .where((p) => p.isRequiredPositional)
-            .map(Utils.buildRequiredPositionalParam),
-      );
-
-      b.optionalParameters.addAll(
-        m.parameters
-            .where((p) => p.isOptionalPositional)
-            .map(Utils.buildOptionalPositionalParam),
-      );
-
-      b.optionalParameters.addAll(
-        m.parameters.where((p) => p.isNamed).map(Utils.buildNamedParam),
-      );
+    return Method((MethodBuilder methodBuilder) {
+      methodBuilder
+        ..annotations.add(refer('override'))
+        ..name = m.displayName
+        // We don't support returning null Type
+        ..returns = refer(
+          m.returnType.getDisplayString(withNullability: false),
+        )
+        // And null Typed parameters
+        ..types.addAll(
+          m.typeParameters.map(
+            (t) => refer(t.getDisplayString(withNullability: false)),
+          ),
+        )
+        ..requiredParameters.addAll(
+          m.parameters
+              .where((p) => p.isRequiredPositional)
+              .map(Utils.buildRequiredPositionalParam),
+        )
+        ..optionalParameters.addAll(
+          m.parameters
+              .where((p) => p.isOptionalPositional)
+              .map(Utils.buildOptionalPositionalParam),
+        )
+        ..optionalParameters.addAll(
+          m.parameters.where((p) => p.isNamed).map(Utils.buildNamedParam),
+        );
 
       final List<Code> blocks = [
         declareFinal(Vars.url.toString(), type: refer('Uri'))
@@ -231,14 +235,17 @@ final class ChopperGenerator
       final bool hasQueryMap = queryMap.isNotEmpty;
       if (hasQueryMap) {
         if (queries.isNotEmpty) {
-          blocks.add(refer('${Vars.parameters}.addAll').call(
-            [
-              /// Check if the parameter is nullable
-              optionalNullableParameters.contains(queryMap.keys.first)
-                  ? refer(queryMap.keys.first).ifNullThen(refer('const {}'))
-                  : refer(queryMap.keys.first),
-            ],
-          ).statement);
+          blocks.add(
+            refer(Vars.parameters.toString()).property('addAll').call(
+              [
+                /// Check if the parameter is nullable
+                if (optionalNullableParameters.contains(queryMap.keys.first))
+                  refer(queryMap.keys.first).ifNullThen(literalConstMap({}))
+                else
+                  refer(queryMap.keys.first),
+              ],
+            ).statement,
+          );
         } else {
           blocks.add(
             declareFinal(
@@ -248,7 +255,8 @@ final class ChopperGenerator
                 .assign(
                   /// Check if the parameter is nullable
                   optionalNullableParameters.contains(queryMap.keys.first)
-                      ? refer(queryMap.keys.first).ifNullThen(refer('const {}'))
+                      ? refer(queryMap.keys.first)
+                          .ifNullThen(literalConstMap({}))
                       : refer(queryMap.keys.first),
                 )
                 .statement,
@@ -285,9 +293,11 @@ final class ChopperGenerator
       final bool hasFieldMap = fieldMap.isNotEmpty;
       if (hasFieldMap) {
         if (hasBody) {
-          blocks.add(refer('${Vars.body}.addAll').call(
-            [refer(fieldMap.keys.first)],
-          ).statement);
+          blocks.add(
+            refer(Vars.body.toString()).property('addAll').call(
+              [refer(fieldMap.keys.first)],
+            ).statement,
+          );
         } else {
           blocks.add(
             declareFinal(Vars.body.toString())
@@ -312,7 +322,7 @@ final class ChopperGenerator
       if (hasPartMap) {
         if (hasParts) {
           blocks.add(
-            refer('${Vars.parts}.addAll').call(
+            refer(Vars.parts.toString()).property('addAll').call(
               [refer(partMap.keys.first)],
             ).statement,
           );
@@ -329,7 +339,7 @@ final class ChopperGenerator
       if (hasFileFilesMap) {
         if (hasParts || hasPartMap) {
           blocks.add(
-            refer('${Vars.parts}.addAll').call(
+            refer(Vars.parts.toString()).property('addAll').call(
               [refer(fileFieldMap.keys.first)],
             ).statement,
           );
@@ -394,19 +404,25 @@ final class ChopperGenerator
 
       final List<Reference> typeArguments = [];
       if (responseType != null) {
-        typeArguments
-            .add(refer(responseType.getDisplayString(withNullability: false)));
-        typeArguments.add(
+        typeArguments.addAll([
+          refer(responseType.getDisplayString(withNullability: false)),
           refer(responseInnerType!.getDisplayString(withNullability: false)),
-        );
+        ]);
       }
 
-      blocks.add(refer('${Vars.client}.send')
-          .call([refer(Vars.request.toString())], namedArguments, typeArguments)
-          .returned
-          .statement);
+      blocks.add(
+        refer(Vars.client.toString())
+            .property('send')
+            .call(
+              [refer(Vars.request.toString())],
+              namedArguments,
+              typeArguments,
+            )
+            .returned
+            .statement,
+      );
 
-      b.body = Block.of(blocks);
+      methodBuilder.body = Block.of(blocks);
     });
   }
 
@@ -414,7 +430,9 @@ final class ChopperGenerator
       // ignore: deprecated_member_use
       function.enclosingElement is ClassElement
           // ignore: deprecated_member_use
-          ? '${function.enclosingElement!.name}.${function.name}'
+          ? refer(function.enclosingElement!.name!)
+              .property(function.name!)
+              .toString()
           : function.name!;
 
   static Map<String, ConstantReader> _getAnnotation(
@@ -584,7 +602,7 @@ final class ChopperGenerator
         [
           literal(Utils.getMethodName(method)),
           refer(Vars.url.toString()),
-          refer('${Vars.client}.${Vars.baseUrl}'),
+          refer(Vars.client.toString()).property(Vars.baseUrl.toString()),
         ],
         {
           if (hasBody) 'body': refer(Vars.body.toString()),
@@ -658,18 +676,24 @@ final class ChopperGenerator
   ) {
     final StringBuffer codeBuffer = StringBuffer('')..writeln('{');
 
-    /// Search for @Header anotation in method parameters
+    /// Search for @Header annotation in method parameters
     final Map<ParameterElement, ConstantReader> annotations =
         _getAnnotations(methodElement, chopper.Header);
 
-    annotations.forEach((parameter, ConstantReader annotation) {
+    annotations.forEach((
+      ParameterElement parameter,
+      ConstantReader annotation,
+    ) {
       final String paramName = parameter.displayName;
       final String name = annotation.peek('name')?.stringValue ?? paramName;
-
+      final String headerValue = switch (parameter.type.isDartCoreString) {
+        true => "'$name': $paramName,",
+        false => "'$name': $paramName.toString(),",
+      };
       if (parameter.type.isNullable) {
-        codeBuffer.writeln('if ($paramName != null) \'$name\': $paramName,');
+        codeBuffer.writeln('if ($paramName != null) $headerValue');
       } else {
-        codeBuffer.writeln('\'$name\': $paramName,');
+        codeBuffer.writeln(headerValue);
       }
     });
 
@@ -682,7 +706,7 @@ final class ChopperGenerator
     methodAnnotations.forEach((headerName, headerValue) {
       if (headerName != null && headerValue != null) {
         codeBuffer.writeln(
-          '\'${headerName.toStringValue()}\': ${literal(headerValue.toStringValue())},',
+          "'${headerName.toStringValue()}': ${literal(headerValue.toStringValue())},",
         );
       }
     });
