@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.7
+
+- Enable the user to specify non-String type header values by calling `.toString()` on any non-String Dart type. ([#538](https://github.com/lejard-h/chopper/pull/538))
+
 ## 7.0.6
 
 - Fix incorrect url generation when using new baseUrl ([#520](https://github.com/lejard-h/chopper/pull/520))
