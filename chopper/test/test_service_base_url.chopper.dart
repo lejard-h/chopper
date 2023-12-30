@@ -6,6 +6,7 @@ part of 'test_service_base_url.dart';
 // ChopperGenerator
 // **************************************************************************
 
+// coverage:ignore-file
 // ignore_for_file: type=lint
 final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
   _$HttpTestServiceBaseUrl([ChopperClient? client]) {
@@ -14,7 +15,7 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
   }
 
   @override
-  final definitionType = HttpTestServiceBaseUrl;
+  final Type definitionType = HttpTestServiceBaseUrl;
 
   @override
   Future<Response<dynamic>> getAll() {
