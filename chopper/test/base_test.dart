@@ -1649,4 +1649,46 @@ void main() {
 
     httpClient.close();
   });
+
+  group('Response error casting test', () {
+    test('successful response returns null', () {
+      final base = http.Response('Foobar', 200);
+
+      final response = Response(base, 'Foobar');
+
+      final result = response.errorWhereType<int>();
+
+      expect(result, isNull);
+    });
+
+    test('error response returns null if no error is set', () {
+      final base = http.Response('Foobar', 400);
+
+      final response = Response(base, '');
+
+      final result = response.errorWhereType<int>();
+
+      expect(result, isNull);
+    });
+
+    test('error response returns null if error is not of type', () {
+      final base = http.Response('Foobar', 400);
+
+      final response = Response(base, '', error: 'Foobar');
+
+      final result = response.errorWhereType<int>();
+
+      expect(result, isNull);
+    });
+
+    test('error response returns type if error matches type', () {
+      final base = http.Response('Foobar', 400);
+
+      final response = Response(base, 'Foobar', error: 1);
+
+      final result = response.errorWhereType<int>();
+
+      expect(result, 1);
+    });
+  });
 }
