@@ -67,6 +67,15 @@ base class Response<BodyType> with EquatableMixin {
   String get bodyString =>
       base is http.Response ? (base as http.Response).body : '';
 
+  /// Check if the response is an error and if the error is of type [ErrorType] and casts the error to [ErrorType]. Otherwise it returns null.
+  ErrorType? errorWhereType<ErrorType>() {
+    if (error != null && error is ErrorType) {
+      return error as ErrorType;
+    } else {
+      return null;
+    }
+  }
+
   @override
   List<Object?> get props => [
         base,
