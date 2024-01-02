@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.0.10
+
+- Enable the user to specify non-String type header values by calling `.toString()` on any non-String Dart type. ([#538](https://github.com/lejard-h/chopper/pull/538))
+
 ## 7.0.9
 
 - Add success/failure callback hooks to Authenticator ([#527](https://github.com/lejard-h/chopper/pull/527))
