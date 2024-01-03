@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart' show EquatableMixin;
@@ -73,6 +74,20 @@ base class Response<BodyType> with EquatableMixin {
       return error as ErrorType;
     } else {
       return null;
+    }
+  }
+
+  /// Returns the response body if [Response] [isSuccessful] and [body] is not null.
+  /// Otherwise it throws an [HttpException] with the response status code and error object.
+  /// If the error object is an [Exception], it will be thrown instead.
+  BodyType get bodyOrThrow {
+    if (isSuccessful && body != null) {
+      return body!;
+    } else {
+      if (error is Exception) {
+        throw error!;
+      }
+      throw HttpException('Could not fetch response $statusCode: $error');
     }
   }
 

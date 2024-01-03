@@ -146,7 +146,7 @@ abstract class HttpTestService extends ChopperService {
   });
 
   @Get(path: 'https://test.com')
-  Future fullUrl();
+  Future<Response> fullUrl();
 
   @Get(path: '/list/string')
   Future<Response<List<String>>> listString();

@@ -12,6 +12,7 @@ void main() {
         gitDiffPathArguments: [
           'test/test_service.chopper.dart',
           'test/test_service_variable.chopper.dart',
+          'test/test_without_response_service.chopper.dart',
           'test/test_service_base_url.chopper.dart',
         ],
       );
