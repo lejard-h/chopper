@@ -5,6 +5,8 @@ import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
+import 'helpers/fake_chain.dart';
+
 void main() {
   final fakeRequest = Request(
     'POST',
@@ -20,7 +22,7 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onRequest(fakeRequest);
+      await logger.intercept(FakeChain(fakeRequest));
 
       expect(
         logs,
@@ -35,11 +37,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onRequest(fakeRequest);
+      await logger.intercept(FakeChain(fakeRequest));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '--> POST base/ (4-byte body)',
@@ -53,11 +55,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onRequest(fakeRequest);
+      await logger.intercept(FakeChain(fakeRequest));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '--> POST base/',
@@ -75,11 +77,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onRequest(fakeRequest);
+      await logger.intercept(FakeChain(fakeRequest));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '--> POST base/',
@@ -115,7 +117,7 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onResponse(fakeResponse);
+      await logger.intercept(FakeChain(fakeRequest));
 
       expect(
         logs,
@@ -130,11 +132,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onResponse(fakeResponse);
+      await logger.intercept(FakeChain(fakeRequest, response: fakeResponse));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '<-- 200 POST base/ (16-byte body)',
@@ -148,11 +150,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onResponse(fakeResponse);
+      await logger.intercept(FakeChain(fakeRequest, response: fakeResponse));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '<-- 200 POST base/',
@@ -169,11 +171,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onResponse(fakeResponse);
+      await logger.intercept(FakeChain(fakeRequest, response: fakeResponse));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '<-- 200 POST base/',
@@ -212,12 +214,12 @@ void main() {
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-      await logger.onRequest(fakeRequest
-          .copyWith(headers: {...fakeRequest.headers, 'content-length': '42'}));
+      await logger.intercept(FakeChain(fakeRequest
+          .copyWith(headers: {...fakeRequest.headers, 'content-length': '42'})));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '--> POST base/',
@@ -236,12 +238,12 @@ void main() {
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-      await logger.onRequest(fakeRequest
-          .copyWith(headers: {...fakeRequest.headers, 'content-length': '42'}));
+      await logger.intercept(FakeChain(fakeRequest
+          .copyWith(headers: {...fakeRequest.headers, 'content-length': '42'})));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '--> POST base/',
@@ -261,11 +263,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onResponse(fakeResponse);
+      await logger.intercept(FakeChain(fakeRequest, response: fakeResponse));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '<-- 200 POST base/',
@@ -281,11 +283,11 @@ void main() {
 
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
-      await logger.onResponse(fakeResponse);
+      await logger.intercept(FakeChain(fakeRequest, response: fakeResponse));
 
       expect(
         logs,
-        equals(
+        containsAll(
           [
             '',
             '<-- 200 POST base/',

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
 
+import 'helpers/fake_chain.dart';
 import 'test_service.dart';
 
 void main() {
@@ -98,7 +99,7 @@ void main() {
       final curl = CurlInterceptor();
       var log = '';
       chopperLogger.onRecord.listen((r) => log = r.message);
-      await curl.intercept(TestChain(fakeRequest));
+      await curl.intercept(FakeChain(fakeRequest));
 
       expect(
         log,
@@ -127,7 +128,7 @@ void main() {
       final curl = CurlInterceptor();
       var log = '';
       chopperLogger.onRecord.listen((r) => log = r.message);
-      await curl.intercept(TestChain(fakeRequestMultipart));
+      await curl.intercept(FakeChain(fakeRequestMultipart));
 
       expect(
         log,
@@ -162,18 +163,6 @@ class RequestIntercept implements Interceptor {
       ),
     );
   }
-}
-
-class TestChain implements Chain {
-  TestChain(this.request);
-
-  @override
-  FutureOr<Response<BodyType>> proceed<BodyType, InnerType>(Request request) {
-    return Response(http.Response('TestChain', 200), 'TestChain' as BodyType);
-  }
-
-  @override
-  final Request request;
 }
 
 class _Intercepted<BodyType> {
