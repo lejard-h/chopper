@@ -25,3 +25,7 @@ extension StripStringExtension on String {
   String strip([String? character]) =>
       character != null ? leftStrip(character).rightStrip(character) : trim();
 }
+
+extension StatusCodeIntExtension on int {
+  bool get isSuccessfulStatusCode => this >= 200 && this < 300;
+}

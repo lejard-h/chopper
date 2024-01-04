@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/chopper_log_record.dart';
 import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/request.dart';
@@ -72,7 +73,7 @@ enum Level {
 /// or in a non-production environment.
 @immutable
 class HttpLoggingInterceptor
-    implements RequestInterceptor, ResponseInterceptor {
+    implements Interceptor {
   HttpLoggingInterceptor({this.level = Level.body, Logger? logger})
       : _logger = logger ?? chopperLogger,
         _logBody = level == Level.body,
@@ -84,18 +85,19 @@ class HttpLoggingInterceptor
   final bool _logHeaders;
 
   @override
-  FutureOr<Request> onRequest(Request request) async {
-    if (level == Level.none) return request;
-    final http.BaseRequest base = await request.toBaseRequest();
+  Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
+    final request = chain.request;
+    if (level == Level.none) return chain.proceed(request);
+    final http.BaseRequest baseRequest = await request.toBaseRequest();
 
-    String startRequestMessage = '--> ${base.method} ${base.url.toString()}';
-    String bodyMessage = '';
-    if (base is http.Request) {
-      if (base.body.isNotEmpty) {
-        bodyMessage = base.body;
+    String startRequestMessage = '--> ${baseRequest.method} ${baseRequest.url.toString()}';
+    String bodyRequestMessage = '';
+    if (baseRequest is http.Request) {
+      if (baseRequest.body.isNotEmpty) {
+        bodyRequestMessage = baseRequest.body;
 
         if (!_logHeaders) {
-          startRequestMessage += ' (${base.bodyBytes.length}-byte body)';
+          startRequestMessage += ' (${baseRequest.bodyBytes.length}-byte body)';
         }
       }
     }
@@ -105,50 +107,47 @@ class HttpLoggingInterceptor
     _logger.info(ChopperLogRecord(startRequestMessage, request: request));
 
     if (_logHeaders) {
-      base.headers.forEach(
+      baseRequest.headers.forEach(
         (k, v) => _logger.info(ChopperLogRecord('$k: $v', request: request)),
       );
 
-      if (base.contentLength != null &&
-          base.headers['content-length'] == null) {
+      if (baseRequest.contentLength != null &&
+          baseRequest.headers['content-length'] == null) {
         _logger.info(ChopperLogRecord(
-          'content-length: ${base.contentLength}',
+          'content-length: ${baseRequest.contentLength}',
           request: request,
         ));
       }
     }
 
-    if (_logBody && bodyMessage.isNotEmpty) {
+    if (_logBody && bodyRequestMessage.isNotEmpty) {
       _logger.info(ChopperLogRecord('', request: request));
-      _logger.info(ChopperLogRecord(bodyMessage, request: request));
+      _logger.info(ChopperLogRecord(bodyRequestMessage, request: request));
     }
 
     if (_logHeaders || _logBody) {
       _logger.info(ChopperLogRecord(
-        '--> END ${base.method}',
+        '--> END ${baseRequest.method}',
         request: request,
       ));
     }
 
-    return request;
-  }
+    final response = await chain.proceed<BodyType,InnerType>(request);
 
-  @override
-  FutureOr<Response> onResponse(Response response) {
     if (level == Level.none) return response;
-    final base = response.base;
+    final baseResponse = response.base;
 
     String bytes = '';
     String reasonPhrase = response.statusCode.toString();
-    String bodyMessage = '';
-    if (base is http.Response) {
-      if (base.reasonPhrase != null) {
+    String bodyResponseMessage = '';
+    if (baseResponse is http.Response) {
+      if (baseResponse.reasonPhrase != null) {
         reasonPhrase +=
-            ' ${base.reasonPhrase != reasonPhrase ? base.reasonPhrase : ''}';
+            ' ${baseResponse.reasonPhrase != reasonPhrase ? baseResponse.reasonPhrase : ''}';
       }
 
-      if (base.body.isNotEmpty) {
-        bodyMessage = base.body;
+      if (baseResponse.body.isNotEmpty) {
+        bodyResponseMessage = baseResponse.body;
 
         if (!_logBody && !_logHeaders) {
           bytes = ' (${response.bodyBytes.length}-byte body)';
@@ -159,27 +158,27 @@ class HttpLoggingInterceptor
     // Always start on a new line
     _logger.info(ChopperLogRecord('', response: response));
     _logger.info(ChopperLogRecord(
-      '<-- $reasonPhrase ${base.request?.method} ${base.request?.url.toString()}$bytes',
+      '<-- $reasonPhrase ${baseResponse.request?.method} ${baseResponse.request?.url.toString()}$bytes',
       response: response,
     ));
 
     if (_logHeaders) {
-      base.headers.forEach(
+      baseResponse.headers.forEach(
         (k, v) => _logger.info(ChopperLogRecord('$k: $v', response: response)),
       );
 
-      if (base.contentLength != null &&
-          base.headers['content-length'] == null) {
+      if (baseResponse.contentLength != null &&
+          baseResponse.headers['content-length'] == null) {
         _logger.info(ChopperLogRecord(
-          'content-length: ${base.contentLength}',
+          'content-length: ${baseResponse.contentLength}',
           response: response,
         ));
       }
     }
 
-    if (_logBody && bodyMessage.isNotEmpty) {
+    if (_logBody && bodyResponseMessage.isNotEmpty) {
       _logger.info(ChopperLogRecord('', response: response));
-      _logger.info(ChopperLogRecord(bodyMessage, response: response));
+      _logger.info(ChopperLogRecord(bodyResponseMessage, response: response));
     }
 
     if (_logBody || _logHeaders) {

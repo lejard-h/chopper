@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
+
+abstract interface class Interceptor {
+  FutureOr<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain);
+}
 
 /// An interface for implementing response interceptors.
 ///
@@ -30,10 +35,10 @@ import 'package:meta/meta.dart';
 ///   }
 /// }
 /// ```
-@immutable
-abstract interface class ResponseInterceptor {
-  FutureOr<Response> onResponse(Response response);
-}
+// @immutable
+// abstract interface class ResponseInterceptor {
+//   FutureOr<Response> onResponse(Response response);
+// }
 
 /// An interface for implementing request interceptors.
 ///
@@ -57,10 +62,10 @@ abstract interface class ResponseInterceptor {
 /// ```
 ///
 /// (See [applyHeader(request, name, value)] and [applyHeaders(request, headers)].)
-@immutable
-abstract interface class RequestInterceptor {
-  FutureOr<Request> onRequest(Request request);
-}
+// @immutable
+// abstract interface class RequestInterceptor {
+//   FutureOr<Request> onRequest(Request request);
+// }
 
 /// An interface for implementing request and response converters.
 ///
@@ -105,38 +110,28 @@ abstract interface class ErrorConverter {
 /// Note that this interceptor will overwrite existing headers having the same
 /// keys as [headers].
 @immutable
-class HeadersInterceptor implements RequestInterceptor {
+class HeadersInterceptor implements Interceptor {
   final Map<String, String> headers;
 
   const HeadersInterceptor(this.headers);
 
   @override
-  Future<Request> onRequest(Request request) async =>
-      applyHeaders(request, headers);
-}
+  Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
+    final Request request = applyHeaders(chain.request, headers);
 
-typedef ResponseInterceptorFunc1 = FutureOr<Response<BodyType>>
-    Function<BodyType>(
-  Response<BodyType> response,
-);
-typedef ResponseInterceptorFunc2 = FutureOr<Response<BodyType>>
-    Function<BodyType, InnerType>(
-  Response<BodyType> response,
-);
-typedef DynamicResponseInterceptorFunc = FutureOr<Response> Function(
-  Response response,
-);
-typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
+    return chain.proceed(request);
+  }
+}
 
 /// A [RequestInterceptor] implementation that prints a curl request equivalent
 /// to the network call channeled through it for debugging purposes.
 ///
 /// Thanks, @edwardaux
 @immutable
-class CurlInterceptor implements RequestInterceptor {
+class CurlInterceptor implements Interceptor {
   @override
-  Future<Request> onRequest(Request request) async {
-    final http.BaseRequest baseRequest = await request.toBaseRequest();
+  Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
+    final http.BaseRequest baseRequest = await chain.request.toBaseRequest();
     final List<String> curlParts = ['curl -v -X ${baseRequest.method}'];
     for (final MapEntry<String, String> header in baseRequest.headers.entries) {
       curlParts.add("-H '${header.key}: ${header.value}'");
@@ -159,7 +154,7 @@ class CurlInterceptor implements RequestInterceptor {
     curlParts.add('"${baseRequest.url}"');
     chopperLogger.info(curlParts.join(' '));
 
-    return request;
+    return chain.proceed(chain.request);
   }
 }
 
