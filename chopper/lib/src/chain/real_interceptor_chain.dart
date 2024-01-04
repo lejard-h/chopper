@@ -10,9 +10,12 @@ class RealInterceptorChain implements Chain {
   RealInterceptorChain({
     required this.interceptors,
     required this.request,
+    required this.exchangable,
     required this.call,
     this.index = 0,
   });
+
+  final bool exchangable;
 
   @override
   final Request request;
@@ -30,7 +33,7 @@ class RealInterceptorChain implements Chain {
 
     calls++;
 
-    if (!call.exchangable) {
+    if (!exchangable) {
       assert(
         call.request.body == request.body,
         'Interceptors should not transform the body of the request'
@@ -48,7 +51,7 @@ class RealInterceptorChain implements Chain {
         await interceptor.intercept<BodyType, InnerType>(next);
 
     //TODO(Guldem): Hard to check if response has been modified.
-    if (!call.exchangable) {
+    if (!exchangable) {
       assert(
         calls == 1,
         'interceptor $interceptor must call proceed() exactly once',
@@ -60,11 +63,13 @@ class RealInterceptorChain implements Chain {
 
   RealInterceptorChain copyWith({
     Request? request,
+    bool? exchangable,
     int? index,
   }) =>
       RealInterceptorChain(
         request: request ?? this.request,
         index: index ?? this.index,
+        exchangable: exchangable ?? this.exchangable,
         interceptors: interceptors,
         call: call,
       );

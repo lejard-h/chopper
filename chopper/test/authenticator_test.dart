@@ -14,7 +14,7 @@ void main() async {
         baseUrl: baseUrl,
         client: httpClient,
         interceptors: [
-          (Request req) => applyHeader(req, 'foo', 'bar'),
+          HeadersInterceptor({'foo': 'bar'}),
         ],
         converter: JsonConverter(),
         authenticator: FakeAuthenticator(),

@@ -15,14 +15,11 @@ class RequestConverterInterceptor implements Interceptor {
   Future<Response<BodyType>> intercept<BodyType, InnerType>(
     Chain chain,
   ) async {
-    final realChain = chain as RealInterceptorChain;
-    realChain.call.exchangable = true;
+    final realChain = (chain as RealInterceptorChain).copyWith(exchangable: true);
     final request =
         await _handleRequestConverter(chain.request, requestConverter);
 
-    final response = await chain.proceed<BodyType, InnerType>(request);
-
-    realChain.call.exchangable = false;
+    final response = await realChain.proceed<BodyType, InnerType>(request);
 
     return response;
   }

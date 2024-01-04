@@ -12,7 +12,6 @@ class AuthenticatorInterceptor implements Interceptor {
   @override
   Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
     final realChain = chain as RealInterceptorChain;
-    realChain.call.exchangable = true;
 
     final originalRequest = realChain.request;
 
@@ -25,6 +24,7 @@ class AuthenticatorInterceptor implements Interceptor {
     );
 
     if (updatedRequest != null) {
+      final newChain = realChain.copyWith(exchangable: true);
       response = await realChain.proceed<BodyType, InnerType>(updatedRequest);
       if (response.statusCode.isSuccessfulStatusCode) {
         await authenticator.onAuthenticationSuccessful
@@ -34,8 +34,6 @@ class AuthenticatorInterceptor implements Interceptor {
             ?.call(updatedRequest, response, originalRequest);
       }
     }
-
-    realChain.call.exchangable = false;
 
     return response;
   }

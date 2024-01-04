@@ -20,12 +20,9 @@ class ResponseConverterInterceptor implements Interceptor {
   Future<Response<BodyType>> intercept<BodyType, InnerType>(
     Chain chain,
   ) async {
-    final realChain = chain as RealInterceptorChain;
-    realChain.call.exchangable = true;
+    final realChain = (chain as RealInterceptorChain).copyWith(exchangable: true);
 
-    final response = await chain.proceed<BodyType, InnerType>(chain.request);
-
-    realChain.call.exchangable = false;
+    final response = await realChain.proceed<BodyType, InnerType>(chain.request);
 
     return response.statusCode.isSuccessfulStatusCode
         ? _handleSuccessResponse(response, responseConverter)

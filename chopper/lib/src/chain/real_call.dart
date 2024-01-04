@@ -18,8 +18,6 @@ class RealCall {
   final Request request;
   final ChopperClient client;
 
-  bool exchangable = false;
-
   Future<Response<BodyType>> execute<BodyType, InnerType>(
     ConvertRequest? requestConverter,
     ConvertResponse? responseConverter,
@@ -41,6 +39,7 @@ class RealCall {
     final interceptorChain = RealInterceptorChain(
       request: request,
       interceptors: interceptors,
+      exchangable: false,
       call: this,
     );
 
