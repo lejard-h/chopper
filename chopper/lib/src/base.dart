@@ -326,8 +326,6 @@ base class ChopperClient {
     _responseController.close();
     _services.clear();
 
-    interceptors.clear();
-
     if (_clientIsInternal) {
       httpClient.close();
     }
