@@ -269,7 +269,7 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
-  Future<dynamic> deleteTest(String id) async {
+  Future<void> deleteTest(String id) async {
     final Uri $url = Uri.parse('/test/delete/${id}');
     final Map<String, String> $headers = {
       'foo': 'bar',
@@ -280,7 +280,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<void, void>($request);
     return $response.bodyOrThrow;
   }
 

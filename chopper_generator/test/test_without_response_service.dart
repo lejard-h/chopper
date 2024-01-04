@@ -80,7 +80,7 @@ abstract class HttpTestService extends ChopperService {
   Future putTest(@Path('id') String test, @Body() String data);
 
   @Delete(path: 'delete/{id}', headers: {'foo': 'bar'})
-  Future deleteTest(@Path() String id);
+  Future<void> deleteTest(@Path() String id);
 
   @Patch(path: 'patch/{id}')
   Future patchTest(@Path() String id, @Body() String data);

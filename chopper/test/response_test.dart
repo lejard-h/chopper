@@ -1,8 +1,7 @@
-import 'dart:io';
-
+import 'package:chopper/src/chopper_http_exception.dart';
 import 'package:chopper/src/response.dart';
-import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
+import 'package:test/test.dart';
 
 import 'fixtures/error_fixtures.dart';
 
@@ -81,25 +80,35 @@ void main() {
       final base = http.Response('Foobar', 400);
       final response = Response(base, '', error: 'Error occurred');
 
-      expect(() => response.bodyOrThrow, throwsA(isA<HttpException>()));
+      expect(() => response.bodyOrThrow, throwsA(isA<ChopperHttpException>()));
     });
 
     test(
-        'Response is unsuccessful and has no error, [bodyOrThrow throws HttpException]',
+        'Response is unsuccessful and has no error, [bodyOrThrow throws ChopperHttpException]',
         () {
       final base = http.Response('Foobar', 400);
       final response = Response(base, '');
 
-      expect(() => response.bodyOrThrow, throwsA(isA<HttpException>()));
+      expect(() => response.bodyOrThrow, throwsA(isA<ChopperHttpException>()));
     });
 
     test(
-        'Response is successful and has no body, [bodyOrThrow throws HttpException]',
+        'Response is successful and has no body, [bodyOrThrow throws ChopperHttpException]',
         () {
       final base = http.Response('Foobar', 200);
-      final response = Response(base, null);
+      final Response<String> response = Response(base, null);
 
-      expect(() => response.bodyOrThrow, throwsA(isA<HttpException>()));
+      expect(() => response.bodyOrThrow, throwsA(isA<ChopperHttpException>()));
+    });
+
+    test('Response is successful and has void body, [bodyOrThrow returns void]',
+        () {
+      final base = http.Response('Foobar', 200);
+      // Ignoring void checks for testing purposes
+      //ignore: void_checks
+      final Response<void> response = Response(base, Null);
+
+      expect(() => response.bodyOrThrow, returnsNormally);
     });
   });
 }
