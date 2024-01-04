@@ -106,7 +106,7 @@ void main() {
       final base = http.Response('Foobar', 200);
       // Ignoring void checks for testing purposes
       //ignore: void_checks
-      final Response<void> response = Response(base, Null);
+      final Response<void> response = Response(base, '');
 
       expect(() => response.bodyOrThrow, returnsNormally);
     });
