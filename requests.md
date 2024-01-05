@@ -261,3 +261,5 @@ Future<Response<MyClass>> fetch();
 @Get(path: "/")
 Future<MyClass> fetch();
 ```
+
+> Note: Chopper doesn't convert response bodies by itself to dart object. You need to use a [Converter](converters/converters.md) for that. 
