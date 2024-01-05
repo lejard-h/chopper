@@ -114,9 +114,10 @@ Dynamic query parameters can be added to the URL by adding parameters to a reque
 annotation. Default values are supported.
 
 ```dart
-Future<Response> search(@Query() String name, {
-  @Query("count") int numberOfResults = 42,
-});
+Future<Response> search(
+    @Query() String name, {
+      @Query("count") int numberOfResults = 42,
+    });
 ```
 
 If the parameter of the `@Query` annotation is not set, Chopper will use the actual name of the annotated parameter as
