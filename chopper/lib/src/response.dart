@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:chopper/src/chopper_http_exception.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -73,6 +74,20 @@ base class Response<BodyType> with EquatableMixin {
       return error as ErrorType;
     } else {
       return null;
+    }
+  }
+
+  /// Returns the response body if [Response] [isSuccessful] and [body] is not null.
+  /// Otherwise it throws an [HttpException] with the response status code and error object.
+  /// If the error object is an [Exception], it will be thrown instead.
+  BodyType get bodyOrThrow {
+    if (isSuccessful && body != null) {
+      return body!;
+    } else {
+      if (error is Exception) {
+        throw error!;
+      }
+      throw ChopperHttpException(this);
     }
   }
 
