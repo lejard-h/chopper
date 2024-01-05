@@ -30,8 +30,7 @@ class RealCall {
       ResponseConverterInterceptor(
         converter: client.converter,
         errorConverter: client.errorConverter,
-        responseConverter:
-            responseConverter,
+        responseConverter: responseConverter,
       ),
       HttpCallInterceptor(client.httpClient),
     ];

@@ -71,8 +71,7 @@ enum Level {
 /// in response bodies. This interceptor should only be used in a controlled way
 /// or in a non-production environment.
 @immutable
-class HttpLoggingInterceptor
-    implements Interceptor {
+class HttpLoggingInterceptor implements Interceptor {
   HttpLoggingInterceptor({this.level = Level.body, Logger? logger})
       : _logger = logger ?? chopperLogger,
         _logBody = level == Level.body,
@@ -89,7 +88,8 @@ class HttpLoggingInterceptor
     if (level == Level.none) return chain.proceed(request);
     final http.BaseRequest baseRequest = await request.toBaseRequest();
 
-    String startRequestMessage = '--> ${baseRequest.method} ${baseRequest.url.toString()}';
+    String startRequestMessage =
+        '--> ${baseRequest.method} ${baseRequest.url.toString()}';
     String bodyRequestMessage = '';
     if (baseRequest is http.Request) {
       if (baseRequest.body.isNotEmpty) {
@@ -131,7 +131,7 @@ class HttpLoggingInterceptor
       ));
     }
 
-    final response = await chain.proceed<BodyType,InnerType>(request);
+    final response = await chain.proceed<BodyType, InnerType>(request);
 
     if (level == Level.none) return response;
     final baseResponse = response.base;

@@ -4,6 +4,7 @@ import 'package:chopper/src/chain/real_interceptor_chain.dart';
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/response.dart';
+import 'package:chopper/src/utils.dart';
 
 class ResponseConverterInterceptor implements InternalInterceptor {
   ResponseConverterInterceptor({
@@ -22,11 +23,15 @@ class ResponseConverterInterceptor implements InternalInterceptor {
   ) async {
     final realChain = chain as RealInterceptorChain;
 
-    final response =
-        await realChain.proceed<BodyType, InnerType>(chain.request);
+    final Response response = switch (isTypeOf<BodyType, Stream<List<int>>>()) {
+      true =>
+        await realChain.proceed<Stream<List<int>>, InnerType>(chain.request),
+      false => await realChain.proceed<String, InnerType>(chain.request),
+    };
 
     return response.statusCode.isSuccessfulStatusCode
-        ? _handleSuccessResponse(response, responseConverter)
+        ? _handleSuccessResponse<BodyType, InnerType>(
+            response, responseConverter)
         : _handleErrorResponse(response);
   }
 
@@ -34,16 +39,17 @@ class ResponseConverterInterceptor implements InternalInterceptor {
     Response response,
     ConvertResponse? responseConverter,
   ) async {
+    Response? newResponse;
     if (responseConverter != null) {
-      response = await responseConverter(response);
+      newResponse = await responseConverter(response);
     } else if (converter != null) {
-      response =
+      newResponse =
           await _decodeResponse<BodyType, InnerType>(response, converter!);
     }
 
     return Response<BodyType>(
-      response.base,
-      response.body,
+      newResponse?.base ?? response.base,
+      newResponse?.body ?? response.body,
     );
   }
 

@@ -121,7 +121,7 @@ class HeadersInterceptor implements Interceptor {
   Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
     final Request request = applyHeaders(chain.request, headers);
 
-    return chain.proceed(request);
+    return chain.proceed<BodyType, InnerType>(request);
   }
 }
 
@@ -156,7 +156,7 @@ class CurlInterceptor implements Interceptor {
     curlParts.add('"${baseRequest.url}"');
     chopperLogger.info(curlParts.join(' '));
 
-    return chain.proceed(chain.request);
+    return chain.proceed<BodyType, InnerType>(chain.request);
   }
 }
 

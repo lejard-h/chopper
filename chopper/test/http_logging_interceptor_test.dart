@@ -214,8 +214,8 @@ void main() {
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-      await logger.intercept(FakeChain(fakeRequest
-          .copyWith(headers: {...fakeRequest.headers, 'content-length': '42'})));
+      await logger.intercept(FakeChain(fakeRequest.copyWith(
+          headers: {...fakeRequest.headers, 'content-length': '42'})));
 
       expect(
         logs,
@@ -238,8 +238,8 @@ void main() {
       final logs = [];
       chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-      await logger.intercept(FakeChain(fakeRequest
-          .copyWith(headers: {...fakeRequest.headers, 'content-length': '42'})));
+      await logger.intercept(FakeChain(fakeRequest.copyWith(
+          headers: {...fakeRequest.headers, 'content-length': '42'})));
 
       expect(
         logs,

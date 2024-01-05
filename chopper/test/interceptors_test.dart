@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
-import 'package:chopper/src/chain/chain.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';

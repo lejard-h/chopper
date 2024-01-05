@@ -19,11 +19,11 @@ class HttpCallInterceptor implements InternalInterceptor {
 
     if (isTypeOf<BodyType, Stream<List<int>>>()) {
       return Response(streamRes, (streamRes.stream) as BodyType);
+    } else if (isTypeOf<BodyType, String>()) {
+      final response = await http.Response.fromStream(streamRes);
+      return Response(response, response.body as BodyType);
+    } else {
+      throw Exception('Unsupported type');
     }
-
-    final response = await http.Response.fromStream(streamRes);
-    dynamic res = Response(response, response.body);
-
-    return res;
   }
 }

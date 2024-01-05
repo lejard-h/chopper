@@ -12,7 +12,7 @@ void main() {
         baseUrl: baseUrl,
         client: httpClient,
         interceptors: [
-          HeadersInterceptor({'foo':'bar'}),
+          HeadersInterceptor({'foo': 'bar'}),
         ],
         converter: JsonConverter(),
       );

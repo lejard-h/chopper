@@ -1,7 +1,10 @@
-import 'package:chopper/chopper.dart';
+import 'package:chopper/src/authenticator.dart';
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/chain/real_interceptor_chain.dart';
-
+import 'package:chopper/src/extensions.dart';
+import 'package:chopper/src/interceptor.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
 
 /// Interceptor which uses Authenticator to authenticate requests.
 class AuthenticatorInterceptor implements InternalInterceptor {
@@ -15,7 +18,8 @@ class AuthenticatorInterceptor implements InternalInterceptor {
 
     final originalRequest = realChain.request;
 
-    Response<BodyType> response = await realChain.proceed(originalRequest);
+    Response<BodyType> response =
+        await realChain.proceed<BodyType, InnerType>(originalRequest);
 
     final Request? updatedRequest = await authenticator.authenticate(
       originalRequest,
