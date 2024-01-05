@@ -510,6 +510,45 @@ final class PartFileMap {
   const PartFileMap();
 }
 
+/// {@macro ChopperApi}
+const chopperApi = ChopperApi();
+/// {@macro Multipart}
 const multipart = Multipart();
 /// {@macro Body}
 const body = Body();
+/// {@macro Path}
+const path = Path();
+/// {@macro Query}
+const query = Query();
+/// {@macro QueryMap}
+const queryMap = QueryMap();
+/// {@macro Header}
+const header = Header();
+/// {@macro Get}
+const get = Get();
+/// {@macro Post}
+const post = Post();
+/// {@macro Delete}
+const delete = Delete();
+/// {@macro Put}
+const put = Put();
+/// {@macro Patch}
+const patch = Patch();
+/// {@macro Head}
+const head = Head();
+/// {@macro Options}
+const options = Options();
+/// {@macro FactoryConverter}
+const factoryConverter = FactoryConverter();
+/// {@macro Field}
+const field = Field();
+/// {@macro FieldMap}
+const fieldMap = FieldMap();
+/// {@macro Part}
+const part = Part();
+/// {@macro PartMap}
+const partMap = PartMap();
+/// {@macro PartFile}
+const partFile = PartFile();
+/// {@macro PartFileMap}
+const partFileMap = PartFileMap();
