@@ -179,18 +179,34 @@ final class ChopperGenerator
       baseUrl,
       baseUrlVariableElement,
     );
-    final DartType? responseType = _getResponseType(m.returnType);
+
+    // Check if Response is present in the return type
+    final bool isResponseObject = _isResponse(m.returnType);
+    final DartType? responseType =
+        _getResponseType(m.returnType, isResponseObject);
     final DartType? responseInnerType =
         _getResponseInnerType(m.returnType) ?? responseType;
+
+    // Set Response with generic types
+    final Reference responseTypeReference = refer(
+        responseType?.getDisplayString(withNullability: false) ??
+            responseType?.getDisplayString(withNullability: false) ??
+            'dynamic');
+    // Set the return type
+    final returnType = isResponseObject
+        ? refer(m.returnType.getDisplayString(withNullability: false))
+        : TypeReference(
+            (b) => b
+              ..symbol = 'Future'
+              ..types.add(responseTypeReference),
+          );
 
     return Method((MethodBuilder methodBuilder) {
       methodBuilder
         ..annotations.add(refer('override'))
         ..name = m.displayName
         // We don't support returning null Type
-        ..returns = refer(
-          m.returnType.getDisplayString(withNullability: false),
-        )
+        ..returns = returnType
         // And null Typed parameters
         ..types.addAll(
           m.typeParameters.map(
@@ -210,6 +226,12 @@ final class ChopperGenerator
         ..optionalParameters.addAll(
           m.parameters.where((p) => p.isNamed).map(Utils.buildNamedParam),
         );
+
+      // Make method async if Response is omitted.
+      // We need the await the response in order to return the body.
+      if (!isResponseObject) {
+        methodBuilder.modifier = MethodModifier.async;
+      }
 
       final List<Code> blocks = [
         declareFinal(Vars.url.toString(), type: refer('Uri'))
@@ -410,17 +432,35 @@ final class ChopperGenerator
         ]);
       }
 
-      blocks.add(
-        refer(Vars.client.toString())
-            .property('send')
-            .call(
-              [refer(Vars.request.toString())],
-              namedArguments,
-              typeArguments,
-            )
-            .returned
-            .statement,
+      final returnStatement =
+          refer(Vars.client.toString()).property('send').call(
+        [refer(Vars.request.toString())],
+        namedArguments,
+        typeArguments,
       );
+
+      if (isResponseObject) {
+        // Return the response object directly from chopper.send
+        blocks.add(returnStatement.returned.statement);
+      } else {
+        // Await the response object from chopper.send
+        blocks.add(
+          // generic types are not passed in the code_builder at the moment.
+          declareFinal(
+            Vars.response.toString(),
+            type: TypeReference(
+              (b) => b
+                ..symbol = 'Response'
+                ..types.add(responseTypeReference),
+            ),
+          ).assign(returnStatement.awaited).statement,
+        );
+        // Return the body of the response object
+        blocks.add(refer(Vars.response.toString())
+            .property('bodyOrThrow')
+            .returned
+            .statement);
+      }
 
       methodBuilder.body = Block.of(blocks);
     });
@@ -508,8 +548,15 @@ final class ChopperGenerator
           ? type.typeArguments.first
           : null;
 
-  static DartType? _getResponseType(DartType type) =>
-      _genericOf(_genericOf(type));
+  static bool _isResponse(DartType type) {
+    final DartType? responseType = _genericOf(type);
+    if (responseType == null) return false;
+
+    return _typeChecker(chopper.Response).isExactlyType(responseType);
+  }
+
+  static DartType? _getResponseType(DartType type, bool isResponseObject) =>
+      isResponseObject ? _genericOf(_genericOf(type)) : _genericOf(type);
 
   static DartType? _getResponseInnerType(DartType type) {
     final DartType? generic = _genericOf(type);

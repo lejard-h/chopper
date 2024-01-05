@@ -6,18 +6,13 @@ import 'package:test/test.dart';
 void main() {
   test(
     'ensure_build',
-    () {
-      expectBuildClean(
+    () async {
+      await expectBuildClean(
         packageRelativeDirectory: 'chopper_generator',
         gitDiffPathArguments: [
           'test/test_service.chopper.dart',
-        ],
-      );
-
-      expectBuildClean(
-        packageRelativeDirectory: 'chopper_generator',
-        gitDiffPathArguments: [
           'test/test_service_variable.chopper.dart',
+          'test/test_without_response_service.chopper.dart',
         ],
       );
     },

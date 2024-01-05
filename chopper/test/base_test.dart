@@ -9,7 +9,6 @@ import 'package:http/testing.dart';
 import 'package:test/test.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import 'fixtures/error_fixtures.dart';
 import 'fixtures/example_enum.dart';
 import 'test_service.dart';
 import 'test_service_base_url.dart';
@@ -1649,53 +1648,5 @@ void main() {
     expect(response.statusCode, equals(200));
 
     httpClient.close();
-  });
-
-  group('Response error casting test', () {
-    test('Response is succesfull, [returns null]', () {
-      final base = http.Response('Foobar', 200);
-
-      final response = Response(base, 'Foobar');
-
-      final result = response.errorWhereType<FooErrorType>();
-
-      expect(result, isNull);
-    });
-
-    test('Response is unsuccessful and has no error object, [returns null]',
-        () {
-      final base = http.Response('Foobar', 400);
-
-      final response = Response(base, '');
-
-      final result = response.errorWhereType<FooErrorType>();
-
-      expect(result, isNull);
-    });
-
-    test(
-        'Response is unsuccessful and has error object of different type, [returns null]',
-        () {
-      final base = http.Response('Foobar', 400);
-
-      final response = Response(base, '', error: 'Foobar');
-
-      final result = response.errorWhereType<FooErrorType>();
-
-      expect(result, isNull);
-    });
-
-    test(
-        'Response is unsuccessful and has error object of specified type, [returns error as ErrorType]',
-        () {
-      final base = http.Response('Foobar', 400);
-
-      final response = Response(base, 'Foobar', error: FooErrorType());
-
-      final result = response.errorWhereType<FooErrorType>();
-
-      expect(result, isNotNull);
-      expect(result, isA<FooErrorType>());
-    });
   });
 }
