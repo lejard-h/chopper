@@ -116,7 +116,7 @@ annotation. Default values are supported.
 ```dart
 Future<Response> search(
     @Query() String name, {
-      @Query("count") int numberOfResults = 42,
+    @Query("count") int numberOfResults = 42,
     });
 ```
 
