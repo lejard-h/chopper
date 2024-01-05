@@ -117,7 +117,7 @@ annotation. Default values are supported.
 Future<Response> search(
     @Query() String name, {
     @Query("count") int numberOfResults = 42,
-    });
+});
 ```
 
 If the parameter of the `@Query` annotation is not set, Chopper will use the actual name of the annotated parameter as
