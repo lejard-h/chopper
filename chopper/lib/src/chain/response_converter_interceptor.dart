@@ -5,7 +5,7 @@ import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/response.dart';
 
-class ResponseConverterInterceptor implements Interceptor {
+class ResponseConverterInterceptor implements InternalInterceptor {
   ResponseConverterInterceptor({
     this.converter,
     this.errorConverter,
@@ -20,9 +20,10 @@ class ResponseConverterInterceptor implements Interceptor {
   Future<Response<BodyType>> intercept<BodyType, InnerType>(
     Chain chain,
   ) async {
-    final realChain = (chain as RealInterceptorChain).copyWith(exchangable: true);
+    final realChain = chain as RealInterceptorChain;
 
-    final response = await realChain.proceed<BodyType, InnerType>(chain.request);
+    final response =
+        await realChain.proceed<BodyType, InnerType>(chain.request);
 
     return response.statusCode.isSuccessfulStatusCode
         ? _handleSuccessResponse(response, responseConverter)

@@ -39,7 +39,6 @@ class RealCall {
     final interceptorChain = RealInterceptorChain(
       request: request,
       interceptors: interceptors,
-      exchangable: false,
       call: this,
     );
 

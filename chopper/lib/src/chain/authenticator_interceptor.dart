@@ -4,7 +4,7 @@ import 'package:chopper/src/chain/real_interceptor_chain.dart';
 
 
 /// Interceptor which uses Authenticator to authenticate requests.
-class AuthenticatorInterceptor implements Interceptor {
+class AuthenticatorInterceptor implements InternalInterceptor {
   AuthenticatorInterceptor(this.authenticator);
 
   final Authenticator authenticator;
@@ -24,7 +24,6 @@ class AuthenticatorInterceptor implements Interceptor {
     );
 
     if (updatedRequest != null) {
-      final newChain = realChain.copyWith(exchangable: true);
       response = await realChain.proceed<BodyType, InnerType>(updatedRequest);
       if (response.statusCode.isSuccessfulStatusCode) {
         await authenticator.onAuthenticationSuccessful

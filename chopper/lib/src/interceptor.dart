@@ -13,6 +13,8 @@ abstract interface class Interceptor {
   FutureOr<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain);
 }
 
+abstract interface class InternalInterceptor implements Interceptor {}
+
 /// An interface for implementing response interceptors.
 ///
 /// [ResponseInterceptor]s are called after [Converter.convertResponse].

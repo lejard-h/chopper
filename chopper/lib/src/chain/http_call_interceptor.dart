@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../utils.dart';
 
-class HttpCallInterceptor implements Interceptor {
+class HttpCallInterceptor implements InternalInterceptor {
   const HttpCallInterceptor(this.httpClient);
 
   final http.Client httpClient;
