@@ -2,17 +2,20 @@
 
 ## \*.chopper.dart not found ?
 
-If you have this error, you probably forgot to run the `build` package. To do that, simply run the following command in your shell.
+If you have this error, you probably forgot to run the `build` package. To do that, simply run the following command in
+your shell.
 
 `pub run build_runner build`
 
-It will generate the code that actually do the HTTP request \(YOUR_FILE.chopper.dart\). If you wish to update the code automatically when you change your definition run the `watch` command.
+It will generate the code that actually do the HTTP request \(YOUR_FILE.chopper.dart\). If you wish to update the code
+automatically when you change your definition run the `watch` command.
 
 `pub run build_runner watch`
 
 ## How to increase timeout ?
 
-Connection timeout is very limited for now due to http package \(see: [dart-lang/http\#21](https://github.com/dart-lang/http/issues/21)\)
+Connection timeout is very limited for now due to http package
+\(see: [dart-lang/http\#21](https://github.com/dart-lang/http/issues/21)\)
 
 But if you are on VM or Flutter you can set the `connectionTimeout` you want
 
@@ -21,10 +24,11 @@ import 'package:http/io_client.dart' as http;
 import 'dart:io';
 
 final chopper = ChopperClient(
-    client: http.IOClient(
-      HttpClient()..connectionTimeout = const Duration(seconds: 60),
-    ),
-  );
+  client: http.IOClient(
+    HttpClient()
+      ..connectionTimeout = const Duration(seconds: 60),
+  ),
+);
 ```
 
 ## Add query parameter to all requests
@@ -32,8 +36,9 @@ final chopper = ChopperClient(
 Possible using an interceptor.
 
 ```dart
+
 final chopper = ChopperClient(
-    interceptors: [_addQuery],
+  interceptors: [_addQuery],
 );
 
 Request _addQuery(Request req) {
@@ -54,8 +59,7 @@ Request compressRequest(Request request) {
   request = applyHeader(request, 'Content-Encoding', 'gzip');
   request = request.replace(body: gzip.encode(request.body));
   return request;
-}
-...
+}...
 
 @FactoryConverter(request: compressRequest)
 @Post()
@@ -64,15 +68,20 @@ Future<Response> postRequest(@Body() Map<String, String> data);
 
 ## Runtime baseUrl change
 
-You may need to change the base URL of your network calls during runtime, for example, if you have to use different servers or routes dynamically in your app in case of a "regular" or a "paid" user. You can store the current server base url in your SharedPreferences (encrypt/decrypt it if needed) and use it in an interceptor like this:
+You may need to change the base URL of your network calls during runtime, for example, if you have to use different
+servers or routes dynamically in your app in case of a "regular" or a "paid" user. You can store the current server base
+url in your SharedPreferences (encrypt/decrypt it if needed) and use it in an interceptor like this:
 
 ```dart
-...
-(Request request) async =>
-              SharedPreferences.containsKey('baseUrl')
-                  ? request.copyWith(
-                      baseUri: Uri.parse(SharedPreferences.getString('baseUrl'))
-                  ): request
+...(Request request) async =>
+SharedPreferences.containsKey('baseUrl')
+? request.copyWith(
+baseUri: Uri.parse(SharedPreferences.getString('baseUrl'
+)
+)
+)
+:
+request
 ...
 ```
 
@@ -80,7 +89,9 @@ You may need to change the base URL of your network calls during runtime, for ex
 
 Chopper is built on top of `http` package.
 
-So, one can just use the mocking API of the HTTP package. See the documentation for the [http.testing library](https://pub.dev/documentation/http/latest/http.testing/http.testing-library.html) and for the [MockClient class](https://pub.dev/documentation/http/latest/http.testing/MockClient-class.html).
+So, one can just use the mocking API of the HTTP package. See the documentation for
+the [http.testing library](https://pub.dev/documentation/http/latest/http.testing/http.testing-library.html) and for
+the [MockClient class](https://pub.dev/documentation/http/latest/http.testing/MockClient-class.html).
 
 Also, you can follow this code by [ozburo](https://github.com/ozburo):
 
@@ -132,12 +143,19 @@ import 'dart:io';
 import 'package:http/io_client.dart' as http;
 
 final ioc = new HttpClient();
-ioc.findProxy = (url) => 'PROXY 192.168.0.102:9090';
+ioc.findProxy = (
+url) => 'PROXY 192.168.0.102:9090';
 ioc.badCertificateCallback = (X509Certificate cert, String host, int port)
-  => true;
+=> true;
 
 final chopper = ChopperClient(
-  client: http.IOClient(ioc),
+client: http
+.
+IOClient
+(
+ioc
+)
+,
 );
 ```
 
@@ -145,7 +163,8 @@ final chopper = ChopperClient(
 
 Basically, the algorithm goes like this (credits to [stewemetal](https://github.com/stewemetal)):
 
-Add the authentication token to the request (by "Authorization" header, for example) -> try the request -> if it fails use the refresh token to get a new auth token ->
+Add the authentication token to the request (by "Authorization" header, for example) -> try the request -> if it fails
+use the refresh token to get a new auth token ->
 if that succeeds, save the auth token and retry the original request with it
 if the refresh token is not valid anymore, drop the session (and navigate to the login screen, for example)
 
@@ -153,26 +172,29 @@ Simple code example:
 
 ```dart
 interceptors: [
-  // Auth Interceptor
-  (Request request) async => applyHeader(request, 'authorization',
-      SharedPrefs.localStorage.getString(tokenHeader),
-      override: false),
-  (Response response) async {
-    if (response?.statusCode == 401) {
-      SharedPrefs.localStorage.remove(tokenHeader);
-      // Navigate to some login page or just request new token
-    }
-    return response;
-  },
+// Auth Interceptor
+(
+Request request) async => applyHeader(request, 'authorization',
+SharedPrefs.localStorage.getString(tokenHeader),
+override: false),
+(Response response) async {
+if (response?.statusCode == 401) {
+SharedPrefs.localStorage.remove(tokenHeader);
+// Navigate to some login page or just request new token
+}
+return response;
+},
 ]
 ```
 
-The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and session handling - of your app looks like.
+The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and
+session handling - of your app looks like.
 
 ### Authorized HTTP requests using the special Authenticator interceptor
 
-Similar to OkHTTP's [authenticator](https://github.com/square/okhttp/blob/480c20e46bb1745e280e42607bbcc73b2c953d97/okhttp/src/main/kotlin/okhttp3/Authenticator.kt),
-the idea here is to provide a reactive authentication in the event that an auth challenge is raised. It returns a 
+Similar to
+OkHTTP's [authenticator](https://github.com/square/okhttp/blob/480c20e46bb1745e280e42607bbcc73b2c953d97/okhttp/src/main/kotlin/okhttp3/Authenticator.kt),
+the idea here is to provide a reactive authentication in the event that an auth challenge is raised. It returns a
 nullable Request that contains a possible update to the original Request to satisfy the authentication challenge.
 
 ```dart
@@ -185,11 +207,10 @@ import 'package:chopper/chopper.dart';
 /// [response]. It returns `null` if the challenge cannot be satisfied.
 class MyAuthenticator extends Authenticator {
   @override
-  FutureOr<Request?> authenticate(
-    Request request,
-    Response response, [
-    Request? originalRequest,
-  ]) async {
+  FutureOr<Request?> authenticate(Request request,
+      Response response, [
+        Request? originalRequest,
+      ]) async {
     if (response.statusCode == HttpStatus.unauthorized) {
       final String? newToken = await refreshToken();
 
@@ -215,6 +236,7 @@ class MyAuthenticator extends Authenticator {
 
 /// When initializing your ChopperClient
 final client = ChopperClient(
+
   /// register your Authenticator here
   authenticator: MyAuthenticator(),
 );
@@ -223,7 +245,7 @@ final client = ChopperClient(
 ## Decoding JSON using Isolates
 
 Sometimes you want to decode JSON outside the main thread in order to reduce janking. In this example we're going to go
-even further and implement a Worker Pool using [Squadron](https://pub.dev/packages/squadron/install) which can 
+even further and implement a Worker Pool using [Squadron](https://pub.dev/packages/squadron/install) which can
 dynamically spawn a maximum number of Workers as they become needed.
 
 #### Install the dependencies
@@ -259,7 +281,8 @@ Extracted from the [full example here](example/lib/json_decode_service.dart).
 
 #### Write a custom JsonConverter
 
-Using [json_serializable](https://pub.dev/packages/json_serializable) we'll create a [JsonConverter](https://github.com/lejard-h/chopper/blob/master/chopper/lib/src/interceptor.dart#L228) 
+Using [json_serializable](https://pub.dev/packages/json_serializable) we'll create
+a [JsonConverter](https://github.com/lejard-h/chopper/blob/master/chopper/lib/src/interceptor.dart#L228)
 which works with or without a [WorkerPool](https://github.com/d-markey/squadron#features).
 
 ```dart
@@ -276,7 +299,7 @@ class JsonSerializableWorkerPoolConverter extends JsonConverter {
   const JsonSerializableWorkerPoolConverter(this.factories, [this.workerPool]);
 
   final Map<Type, JsonFactory> factories;
-  
+
   /// Make the WorkerPool optional so that the JsonConverter still works without it
   final JsonDecodeServiceWorkerPool? workerPool;
 
@@ -296,7 +319,7 @@ class JsonSerializableWorkerPoolConverter extends JsonConverter {
       return data;
     }
   }
-  
+
   T? _decodeMap<T>(Map<String, dynamic> values) {
     final jsonFactory = factories[T];
     if (jsonFactory == null || jsonFactory is! JsonFactory<T>) {
@@ -318,9 +341,7 @@ class JsonSerializableWorkerPoolConverter extends JsonConverter {
   }
 
   @override
-  FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(
-    Response response,
-  ) async {
+  FutureOr<Response<ResultType>> convertResponse<ResultType, Item>(Response response,) async {
     final jsonRes = await super.convertResponse(response);
 
     return jsonRes.copyWith<ResultType>(body: _decode<Item>(jsonRes.body));
@@ -375,6 +396,7 @@ Future<void> main() async {
     {
       Resource: Resource.fromJsonFactory,
     },
+
     /// make sure to provide the WorkerPool to the JsonConverter
     jsonDecodeServiceWorkerPool,
   );
@@ -396,7 +418,7 @@ Future<void> main() async {
 
   /// Do stuff with myService
   final myService = chopper.getService<MyService>();
-  
+
   /// ...stuff...
 
   /// stop the Worker Pool once done
@@ -409,7 +431,45 @@ Future<void> main() async {
 #### Further reading
 
 This barely scratches the surface. If you want to know more about [squadron](https://github.com/d-markey/squadron) and
-[squadron_builder](https://github.com/d-markey/squadron_builder) make sure to head over to their respective repositories.
+[squadron_builder](https://github.com/d-markey/squadron_builder) make sure to head over to their respective
+repositories.
 
-[David Markey](https://github.com/d-markey]), the author of squadron, was kind enough as to provide us with an [excellent Flutter example](https://github.com/d-markey/squadron_builder) using
+[David Markey](https://github.com/d-markey]), the author of squadron, was kind enough as to provide us with
+an [excellent Flutter example](https://github.com/d-markey/squadron_builder) using
 both packages.
+
+## How to use Chopper with [Injectable](https://pub.dev/packages/injectable)
+
+### Create a module for your ChopperClient
+
+Define a module for your ChopperClient. You can use the `@lazySingleton` (or other type if preferred) annotation to make sure that only one is created.
+
+```dart
+@module
+abstract class ChopperModule {
+
+  @lazySingleton
+  ChopperClient get chopperClient =>
+      ChopperClient(
+        baseUrl: 'https://base-url.com',
+        converter: JsonConverter(),
+      );
+}
+```
+
+### Create ChopperService with Injectable
+
+Define your ChopperService as usual. Annotate the class with `@lazySingleton` (or other type if preferred) and use the `@factoryMethod` annotation to specify the factory method for the service. This would normally be the static create method.
+
+```dart
+@lazySingleton
+@ChopperApi(baseUrl: '/todos')
+abstract class TodosListService extends ChopperService {
+
+  @factoryMethod
+  static TodosListService create(ChopperClient client) => _$TodosListService(client);
+
+  @Get()
+  Future<Response<List<Todo>>> getTodos();
+}
+```
