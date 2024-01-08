@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:chopper/src/chopper_http_exception.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
+/// {@template response}
 /// A [http.BaseResponse] wrapper representing a response of a Chopper network call.
 ///
 /// ```dart
@@ -15,6 +17,7 @@ import 'package:meta/meta.dart';
 /// @Get(path: '/items/{id}')
 /// Future<Response<Item>> fetchItem();
 /// ```
+/// {@endtemplate}
 @immutable
 base class Response<BodyType> with EquatableMixin {
   /// The [http.BaseResponse] from `package:http` that this [Response] wraps.
@@ -30,6 +33,7 @@ base class Response<BodyType> with EquatableMixin {
   /// The body of the response if [isSuccessful] is false.
   final Object? error;
 
+  /// {@macro response}
   const Response(this.base, this.body, {this.error});
 
   /// Makes a copy of this Response, replacing original values with the given ones.
@@ -66,6 +70,29 @@ base class Response<BodyType> with EquatableMixin {
   /// call was successful, else this will be `null`.
   String get bodyString =>
       base is http.Response ? (base as http.Response).body : '';
+
+  /// Check if the response is an error and if the error is of type [ErrorType] and casts the error to [ErrorType]. Otherwise it returns null.
+  ErrorType? errorWhereType<ErrorType>() {
+    if (error != null && error is ErrorType) {
+      return error as ErrorType;
+    } else {
+      return null;
+    }
+  }
+
+  /// Returns the response body if [Response] [isSuccessful] and [body] is not null.
+  /// Otherwise it throws an [HttpException] with the response status code and error object.
+  /// If the error object is an [Exception], it will be thrown instead.
+  BodyType get bodyOrThrow {
+    if (isSuccessful && body != null) {
+      return body!;
+    } else {
+      if (error is Exception) {
+        throw error!;
+      }
+      throw ChopperHttpException(this);
+    }
+  }
 
   @override
   List<Object?> get props => [

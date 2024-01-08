@@ -6,7 +6,9 @@ import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
+/// {@template request}
 /// This class represents an HTTP request that can be made with Chopper.
+/// {@endtemplate}
 base class Request extends http.BaseRequest with EquatableMixin {
   final Uri uri;
   final Uri baseUri;
@@ -17,6 +19,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
   final bool useBrackets;
   final bool includeNullQueryVars;
 
+  /// {@macro request}
   Request(
     String method,
     this.uri,
