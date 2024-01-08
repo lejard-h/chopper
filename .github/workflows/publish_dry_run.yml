@@ -96,8 +96,7 @@ jobs:
         working-directory: ${{ matrix.package }}
         run: |
           set -e
-          yq -i 'del(.dependency_overrides)' pubspec.yaml
-          dart pub publish --dry-run --force
+          dart pub publish --dry-run
       - name: Skip publish (dry run)
         id: skip_publish_dry_run
         if: ${{ env.IS_VERSION_GREATER == 0 }}
