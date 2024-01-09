@@ -1,0 +1,3 @@
+class FooErrorType {
+  const FooErrorType();
+}
