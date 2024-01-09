@@ -60,6 +60,7 @@ enum Level {
   body,
 }
 
+/// {@template http_logging_interceptor}
 /// A [RequestInterceptor] and [ResponseInterceptor] implementation which logs
 /// HTTP request and response data.
 ///
@@ -70,8 +71,10 @@ enum Level {
 /// leak sensitive information, such as `Authorization` headers and user data
 /// in response bodies. This interceptor should only be used in a controlled way
 /// or in a non-production environment.
+/// {@endtemplate}
 @immutable
 class HttpLoggingInterceptor implements Interceptor {
+  /// {@macro http_logging_interceptor}
   HttpLoggingInterceptor({this.level = Level.body, Logger? logger})
       : _logger = logger ?? chopperLogger,
         _logBody = level == Level.body,

@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
+/// {@template response}
 /// A [http.BaseResponse] wrapper representing a response of a Chopper network call.
 ///
 /// ```dart
@@ -16,6 +17,7 @@ import 'package:meta/meta.dart';
 /// @Get(path: '/items/{id}')
 /// Future<Response<Item>> fetchItem();
 /// ```
+/// {@endtemplate}
 @immutable
 base class Response<BodyType> with EquatableMixin {
   /// The [http.BaseResponse] from `package:http` that this [Response] wraps.
@@ -31,6 +33,7 @@ base class Response<BodyType> with EquatableMixin {
   /// The body of the response if [isSuccessful] is false.
   final Object? error;
 
+  /// {@macro response}
   const Response(this.base, this.body, {this.error});
 
   /// Makes a copy of this Response, replacing original values with the given ones.

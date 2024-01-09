@@ -25,8 +25,7 @@ Run `pub get` to start using Chopper in your project.
 
 ### ChopperApi
 
-To define a client, use the `@
-ChopperApi` annotation on an abstract class that extends the `ChopperService` class.
+To define a client, use the `@ChopperApi` annotation on an abstract class that extends the `ChopperService` class.
 
 ```dart
 // YOUR_FILE.dart
@@ -66,7 +65,9 @@ Use one of the following annotations on abstract methods of a service class to d
 
 * `@Head`
 
-Request methods must return with values of the type `Future<Response>` or `Future<Response<SomeType>>`.
+Request methods must return with values of the type `Future<Response>`, `Future<Response<SomeType>>` or `Future<SomeType>`.
+The `Response` class is a wrapper around the HTTP response that contains the response body, the status code and the error (if any) of the request.
+This class can be omitted if only the response body is needed. When omitting the `Response` class, the request will throw an exception if the response status code is not in the range of `< 200` to ` > 300`.
 
 To define a `GET` request to the endpoint `/todos` in the service class above, add one of the following method declarations to the class:
 
@@ -80,6 +81,13 @@ or
 ```dart
 @Get()
 Future<Response<List<Todo>>> getTodos();
+```
+
+or
+
+```dart
+@Get()
+Future<List<Todo>> getTodos();
 ```
 
 URL manipulation with dynamic path, and query parameters is also supported. To learn more about URL manipulation with Chopper, have a look at the [Requests](requests.md) section of the documentation. 

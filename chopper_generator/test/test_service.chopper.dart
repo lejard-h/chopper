@@ -662,4 +662,30 @@ final class _$HttpTestService extends HttpTestService {
     );
     return client.send<String, String>($request);
   }
+
+  @override
+  Future<Response<void>> publish(
+    String reviewId,
+    List<int> negatives,
+    List<int> positives, [
+    String? signature,
+  ]) {
+    final Uri $url = Uri.parse('/test/publish');
+    final $body = <String, dynamic>{
+      'review_id': reviewId,
+      'negatives': negatives,
+      'positives': positives,
+      'signature': signature,
+    };
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<void, void>(
+      $request,
+      requestConverter: FormUrlEncodedConverter.requestFactory,
+    );
+  }
 }

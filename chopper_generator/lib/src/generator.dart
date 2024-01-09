@@ -470,9 +470,7 @@ final class ChopperGenerator
       // ignore: deprecated_member_use
       function.enclosingElement is ClassElement
           // ignore: deprecated_member_use
-          ? refer(function.enclosingElement!.name!)
-              .property(function.name!)
-              .toString()
+          ? '${function.enclosingElement!.name}.${function.name}'
           : function.name!;
 
   static Map<String, ConstantReader> _getAnnotation(
