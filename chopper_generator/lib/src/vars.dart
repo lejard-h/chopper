@@ -1,5 +1,6 @@
 enum Vars {
   client('client'),
+  response(r'$response'),
   baseUrl('baseUrl'),
   parameters(r'$params'),
   headers(r'$headers'),

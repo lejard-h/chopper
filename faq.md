@@ -172,7 +172,7 @@ The actual implementation of the algorithm above may vary based on how the backe
 ### Authorized HTTP requests using the special Authenticator interceptor
 
 Similar to OkHTTP's [authenticator](https://github.com/square/okhttp/blob/480c20e46bb1745e280e42607bbcc73b2c953d97/okhttp/src/main/kotlin/okhttp3/Authenticator.kt),
-the idea here is to provide a reactive authentication in the event that an auth challenge is raised. It returns a 
+the idea here is to provide a reactive authentication in the event that an auth challenge is raised. It returns a
 nullable Request that contains a possible update to the original Request to satisfy the authentication challenge.
 
 ```dart
@@ -223,7 +223,7 @@ final client = ChopperClient(
 ## Decoding JSON using Isolates
 
 Sometimes you want to decode JSON outside the main thread in order to reduce janking. In this example we're going to go
-even further and implement a Worker Pool using [Squadron](https://pub.dev/packages/squadron/install) which can 
+even further and implement a Worker Pool using [Squadron](https://pub.dev/packages/squadron/install) which can
 dynamically spawn a maximum number of Workers as they become needed.
 
 #### Install the dependencies
@@ -259,7 +259,7 @@ Extracted from the [full example here](example/lib/json_decode_service.dart).
 
 #### Write a custom JsonConverter
 
-Using [json_serializable](https://pub.dev/packages/json_serializable) we'll create a [JsonConverter](https://github.com/lejard-h/chopper/blob/master/chopper/lib/src/interceptor.dart#L228) 
+Using [json_serializable](https://pub.dev/packages/json_serializable) we'll create a [JsonConverter](https://github.com/lejard-h/chopper/blob/master/chopper/lib/src/interceptor.dart#L228)
 which works with or without a [WorkerPool](https://github.com/d-markey/squadron#features).
 
 ```dart
@@ -413,3 +413,39 @@ This barely scratches the surface. If you want to know more about [squadron](htt
 
 [David Markey](https://github.com/d-markey]), the author of squadron, was kind enough as to provide us with an [excellent Flutter example](https://github.com/d-markey/squadron_builder) using
 both packages.
+
+## How to use Chopper with [Injectable](https://pub.dev/packages/injectable)
+
+### Create a module for your ChopperClient
+
+Define a module for your ChopperClient. You can use the `@lazySingleton` (or other type if preferred) annotation to make sure that only one is created.
+
+```dart
+@module
+abstract class ChopperModule {
+
+  @lazySingleton
+  ChopperClient get chopperClient =>
+      ChopperClient(
+        baseUrl: 'https://base-url.com',
+        converter: JsonConverter(),
+      );
+}
+```
+
+### Create ChopperService with Injectable
+
+Define your ChopperService as usual. Annotate the class with `@lazySingleton` (or other type if preferred) and use the `@factoryMethod` annotation to specify the factory method for the service. This would normally be the static create method.
+
+```dart
+@lazySingleton
+@ChopperApi(baseUrl: '/todos')
+abstract class TodosListService extends ChopperService {
+
+  @factoryMethod
+  static TodosListService create(ChopperClient client) => _$TodosListService(client);
+
+  @Get()
+  Future<Response<List<Todo>>> getTodos();
+}
+```

@@ -513,14 +513,14 @@ final class _$HttpTestServiceVariable extends HttpTestServiceVariable {
   }
 
   @override
-  Future<dynamic> fullUrl() {
+  Future<Response<dynamic>> fullUrl() {
     final Uri $url = Uri.parse('https://test.com');
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
     );
-    return client.send($request);
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override

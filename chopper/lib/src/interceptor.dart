@@ -100,14 +100,17 @@ abstract interface class ErrorConverter {
   FutureOr<Response> convertError<BodyType, InnerType>(Response response);
 }
 
+/// {@template HeadersInterceptor}
 /// A [RequestInterceptor] that adds [headers] to every request.
 ///
 /// Note that this interceptor will overwrite existing headers having the same
 /// keys as [headers].
+/// {@endtemplate}
 @immutable
 class HeadersInterceptor implements RequestInterceptor {
   final Map<String, String> headers;
 
+  /// {@macro HeadersInterceptor}
   const HeadersInterceptor(this.headers);
 
   @override
@@ -163,6 +166,7 @@ class CurlInterceptor implements RequestInterceptor {
   }
 }
 
+/// {@template JsonConverter}
 /// A [Converter] implementation that calls [json.encode] on [Request]s and
 /// [json.decode] on [Response]s using the [dart:convert](https://api.dart.dev/stable/2.10.3/dart-convert/dart-convert-library.html)
 /// package's [utf8] and [json] utilities.
@@ -176,8 +180,10 @@ class CurlInterceptor implements RequestInterceptor {
 /// If content type header is modified (for example by using
 /// `@Post(headers: {'content-type': '...'})`), `JsonConverter` won't add the
 /// header and it won't call json.encode if content type is not JSON.
+/// {@endtemplate}
 @immutable
 class JsonConverter implements Converter, ErrorConverter {
+  /// {@macro JsonConverter}
   const JsonConverter();
 
   @override
@@ -270,13 +276,16 @@ class JsonConverter implements Converter, ErrorConverter {
   }
 }
 
+/// {@template FormUrlEncodedConverter}
 /// A [Converter] implementation that converts only [Request]s having a [Map] as their body.
 ///
 /// This `Converter` also adds the `content-type: application/x-www-form-urlencoded`
 /// header to each request, but only if the `content-type` header is not set in
 /// the original request.
+/// {@endtemplate}
 @immutable
 class FormUrlEncodedConverter implements Converter, ErrorConverter {
+  /// {@macro FormUrlEncodedConverter}
   const FormUrlEncodedConverter();
 
   @override
