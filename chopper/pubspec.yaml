@@ -25,7 +25,7 @@ dev_dependencies:
   lints: ">=2.1.1 <4.0.0"
   test: ^1.24.4
   transparent_image: ^2.0.1
-  chopper_generator: ^7.1.0
+  chopper_generator: ^7.0.0
 
 dependency_overrides:
   chopper_generator:
