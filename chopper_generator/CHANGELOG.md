@@ -1,7 +1,6 @@
 # Changelog
 
-
-## 7.0.8
+## 7.1.0
 
 - Add ability to omit `Response` in service ([#545](https://github.com/lejard-h/chopper/pull/545))
 - Fix `FactoryConverter` regression introduced in v7.0.7 ([#549](https://github.com/lejard-h/chopper/pull/549))

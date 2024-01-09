@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.0.11
+## 7.1.0
 
 - Add ability to omit `Response` in service ([#545](https://github.com/lejard-h/chopper/pull/545))
 - Add helper function for fetching errors of specific type ([#543](https://github.com/lejard-h/chopper/pull/543))
