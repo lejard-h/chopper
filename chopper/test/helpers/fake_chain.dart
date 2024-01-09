@@ -5,7 +5,7 @@ import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:http/http.dart' as http;
 
-class FakeChain implements Chain {
+class FakeChain<BodyType> implements Chain {
   FakeChain(this.request, {this.response});
 
   @override
@@ -13,7 +13,7 @@ class FakeChain implements Chain {
   final Response? response;
 
   @override
-  FutureOr<Response<BodyType>> proceed<BodyType, InnerType>(Request request) {
+  FutureOr<Response<BodyType>> proceed(Request request) {
     return response as Response<BodyType>? ??
         Response(http.Response('TestChain', 200), 'TestChain' as BodyType);
   }

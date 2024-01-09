@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/authenticator.dart';
-import 'package:chopper/src/chain/real_call.dart';
+import 'package:chopper/src/chain/call.dart';
 import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/request.dart';
@@ -166,9 +166,9 @@ base class ChopperClient {
   Future<Response<BodyType>> send<BodyType, InnerType>(
     Request request, {
     ConvertRequest? requestConverter,
-    ConvertResponse? responseConverter,
+    ConvertResponse<BodyType>? responseConverter,
   }) async {
-    final call = RealCall(request: request, client: this);
+    final call = Call(request: request, client: this);
 
     return call.execute<BodyType, InnerType>(
       requestConverter,

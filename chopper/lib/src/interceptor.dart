@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 abstract interface class Interceptor {
-  FutureOr<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain);
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain);
 }
 
 abstract interface class InternalInterceptor implements Interceptor {}
@@ -118,10 +118,10 @@ class HeadersInterceptor implements Interceptor {
   const HeadersInterceptor(this.headers);
 
   @override
-  Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
+  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
     final Request request = applyHeaders(chain.request, headers);
 
-    return chain.proceed<BodyType, InnerType>(request);
+    return chain.proceed(request);
   }
 }
 
@@ -132,7 +132,7 @@ class HeadersInterceptor implements Interceptor {
 @immutable
 class CurlInterceptor implements Interceptor {
   @override
-  Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
+  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
     final http.BaseRequest baseRequest = await chain.request.toBaseRequest();
     final List<String> curlParts = ['curl -v -X ${baseRequest.method}'];
     for (final MapEntry<String, String> header in baseRequest.headers.entries) {
@@ -156,7 +156,7 @@ class CurlInterceptor implements Interceptor {
     curlParts.add('"${baseRequest.url}"');
     chopperLogger.info(curlParts.join(' '));
 
-    return chain.proceed<BodyType, InnerType>(chain.request);
+    return chain.proceed(chain.request);
   }
 }
 

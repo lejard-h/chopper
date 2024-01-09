@@ -143,8 +143,8 @@ class ResponseIntercept implements Interceptor {
   static dynamic intercepted;
 
   @override
-  Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
-    final response = await chain.proceed<BodyType, InnerType>(chain.request);
+  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+    final response = await chain.proceed(chain.request);
 
     intercepted = _Intercepted(response.body);
 
@@ -154,7 +154,7 @@ class ResponseIntercept implements Interceptor {
 
 class RequestIntercept implements Interceptor {
   @override
-  Future<Response<BodyType>> intercept<BodyType, InnerType>(Chain chain) async {
+  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
     final request = chain.request;
     return chain.proceed(
       request.copyWith(

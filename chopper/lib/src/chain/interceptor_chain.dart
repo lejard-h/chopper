@@ -1,13 +1,13 @@
 import 'dart:async';
 
+import 'package:chopper/src/chain/call.dart';
 import 'package:chopper/src/chain/chain.dart';
-import 'package:chopper/src/chain/real_call.dart';
 import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 
-class RealInterceptorChain implements Chain {
-  RealInterceptorChain({
+class InterceptorChain<BodyType> implements Chain<BodyType> {
+  InterceptorChain({
     required this.interceptors,
     required this.request,
     required this.call,
@@ -16,7 +16,7 @@ class RealInterceptorChain implements Chain {
 
   @override
   final Request request;
-  final RealCall call;
+  final Call call;
   final List<Interceptor> interceptors;
   final int index;
 
@@ -26,14 +26,12 @@ class RealInterceptorChain implements Chain {
       index - 1 >= 0 && interceptors[index - 1] is InternalInterceptor;
 
   @override
-  FutureOr<Response<BodyType>> proceed<BodyType, InnerType>(
-    Request request,
-  ) async {
+  FutureOr<Response<BodyType>> proceed(Request request) async {
     assert(index < interceptors.length);
 
     calls++;
 
-    final next = copyWith(request: request, index: index + 1);
+    final next = copyWith<BodyType>(request: request, index: index + 1);
     final interceptor = interceptors[index];
 
     if (interceptor is! InternalInterceptor) {
@@ -49,7 +47,7 @@ class RealInterceptorChain implements Chain {
     }
 
     final Response<BodyType> response =
-        await interceptor.intercept<BodyType, InnerType>(next);
+        await interceptor.intercept<BodyType>(next);
 
     //TODO(Guldem): Hard to check if response has been modified.
     if (interceptor is! InternalInterceptor) {
@@ -62,11 +60,13 @@ class RealInterceptorChain implements Chain {
     return response;
   }
 
-  RealInterceptorChain copyWith({
+
+
+  InterceptorChain<T> copyWith<T>({
     Request? request,
     int? index,
   }) =>
-      RealInterceptorChain(
+      InterceptorChain<T>(
         request: request ?? this.request,
         index: index ?? this.index,
         interceptors: interceptors,

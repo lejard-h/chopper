@@ -1,12 +1,12 @@
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/chain/chain.dart';
-import 'package:chopper/src/chain/real_interceptor_chain.dart';
+import 'package:chopper/src/chain/interceptor_chain.dart';
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/interceptor.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
 
-class ResponseConverterInterceptor implements InternalInterceptor {
+class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
   ResponseConverterInterceptor({
     this.converter,
     this.errorConverter,
@@ -18,24 +18,21 @@ class ResponseConverterInterceptor implements InternalInterceptor {
   final ConvertResponse? responseConverter;
 
   @override
-  Future<Response<BodyType>> intercept<BodyType, InnerType>(
-    Chain chain,
-  ) async {
-    final realChain = chain as RealInterceptorChain;
-
-    final Response response = switch (isTypeOf<BodyType, Stream<List<int>>>()) {
-      true =>
-        await realChain.proceed<Stream<List<int>>, InnerType>(chain.request),
-      false => await realChain.proceed<String, InnerType>(chain.request),
+  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+    final realChain = chain as InterceptorChain<BodyType>;
+    final typedChain = switch (isTypeOf<BodyType, Stream<List<int>>>()) {
+      true => realChain,
+      false => realChain.copyWith<String>(),
     };
 
+    final response = await typedChain.proceed(chain.request);
+
     return response.statusCode.isSuccessfulStatusCode
-        ? _handleSuccessResponse<BodyType, InnerType>(
-            response, responseConverter)
+        ? _handleSuccessResponse<BodyType>(response, responseConverter)
         : _handleErrorResponse(response);
   }
 
-  Future<Response<BodyType>> _handleSuccessResponse<BodyType, InnerType>(
+  Future<Response<BodyType>> _handleSuccessResponse<BodyType>(
     Response response,
     ConvertResponse? responseConverter,
   ) async {
@@ -43,8 +40,7 @@ class ResponseConverterInterceptor implements InternalInterceptor {
     if (responseConverter != null) {
       newResponse = await responseConverter(response);
     } else if (converter != null) {
-      newResponse =
-          await _decodeResponse<BodyType, InnerType>(response, converter!);
+      newResponse = await _decodeResponse<BodyType>(response, converter!);
     }
 
     return Response<BodyType>(
@@ -53,13 +49,13 @@ class ResponseConverterInterceptor implements InternalInterceptor {
     );
   }
 
-  Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
+  Future<Response<BodyType>> _decodeResponse<BodyType>(
     Response response,
     Converter withConverter,
   ) async =>
       await withConverter.convertResponse<BodyType, InnerType>(response);
 
-  Future<Response<BodyType>> _handleErrorResponse<BodyType, InnerType>(
+  Future<Response<BodyType>> _handleErrorResponse<BodyType>(
     Response response,
   ) async {
     var error = response.body;

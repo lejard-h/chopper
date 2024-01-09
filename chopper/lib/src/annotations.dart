@@ -300,7 +300,7 @@ typedef ConvertRequest = FutureOr<Request> Function(Request request);
 
 /// A function that should convert the body of a [Response] from the HTTP
 /// representation to a Dart object.
-typedef ConvertResponse<T> = FutureOr<Response> Function(Response response);
+typedef ConvertResponse<T> = FutureOr<Response<T>> Function(Response response);
 
 /// Defines custom [Converter] methods for a single network API endpoint.
 /// See [ConvertRequest], [ConvertResponse].
