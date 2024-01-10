@@ -38,7 +38,6 @@ class Call {
     final interceptorChain = InterceptorChain<BodyType>(
       request: request,
       interceptors: interceptors,
-      call: this,
     );
 
     return await interceptorChain.proceed(request);
