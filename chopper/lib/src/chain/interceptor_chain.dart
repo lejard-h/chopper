@@ -16,6 +16,7 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
 
   @override
   final Request request;
+  Response<BodyType>? response;
   final Call call;
   final List<Interceptor> interceptors;
   final int index;
@@ -46,8 +47,7 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
       );
     }
 
-    final Response<BodyType> response =
-        await interceptor.intercept<BodyType>(next);
+    response = await interceptor.intercept<BodyType>(next);
 
     //TODO(Guldem): Hard to check if response has been modified.
     if (interceptor is! InternalInterceptor) {
@@ -55,12 +55,19 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
         index + 1 >= interceptors.length || next.calls == 1,
         'interceptor $interceptor must call proceed() exactly once',
       );
+      assert(
+        response?.body == next.response?.body,
+        'Interceptors should not transform the body of the response'
+        'Use Response converter instead',
+      );
     }
 
-    return response;
+    if (response == null) {
+      throw Exception('Response is null');
+    }
+
+    return response!;
   }
-
-
 
   InterceptorChain<T> copyWith<T>({
     Request? request,
