@@ -221,7 +221,7 @@ class MockInterceptor implements InternalInterceptor {
   FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) {
     called++;
     return response as Response<BodyType>? ??
-        Response(http.Response('TestChain', 200, request: chain.request),
+        Response(http.Response('TestResponse', 200, request: chain.request),
             'TestResponse' as BodyType);
   }
 }
