@@ -13,19 +13,26 @@ void main() {
 
   setUp(() {
     chain = MockChain<String>(
-      request, () => Response<String>(http.Response('', 200), '',),);
+      request,
+      () => Response<String>(
+        http.Response('', 200),
+        '',
+      ),
+    );
     authenticator = MockAuthenticator(() => null);
     authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
   });
 
-  test('Intercepted response is authenticated, chain.proceed called once', () async  {
+  test('Intercepted response is authenticated, chain.proceed called once',
+      () async {
     await authenticatorInterceptor.intercept(chain);
 
     expect(authenticator.authenticateCalled, 1);
     expect(chain.proceedCalled, 1);
   });
 
-  test('Intercepted response is not authenticated, chain.proceed called twice', () async {
+  test('Intercepted response is not authenticated, chain.proceed called twice',
+      () async {
     authenticator = MockAuthenticator(() => request);
     authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
 
@@ -35,7 +42,9 @@ void main() {
     expect(chain.proceedCalled, 2);
   });
 
-  test('Intercepted response is not authenticated, authentication is successful', () async {
+  test(
+      'Intercepted response is not authenticated, authentication is successful',
+      () async {
     authenticator = MockAuthenticator(() => request);
     authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
 
@@ -46,9 +55,15 @@ void main() {
     expect(authenticator.onAuthenticationSuccessfulCalled, 1);
   });
 
-  test('Intercepted response is not authenticated, authentication failed', () async {
+  test('Intercepted response is not authenticated, authentication failed',
+      () async {
     chain = MockChain<String>(
-      request, () => Response<String>(http.Response('', 400), '',),);
+      request,
+      () => Response<String>(
+        http.Response('', 400),
+        '',
+      ),
+    );
     authenticator = MockAuthenticator(() => request);
     authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
 
@@ -78,30 +93,31 @@ class MockChain<BodyType> implements Chain {
 }
 
 class MockAuthenticator implements Authenticator {
+  MockAuthenticator(this.onAuthenticate) {
+    onAuthenticationFailed = (
+      Request request,
+      Response response, [
+      Request? originalRequest,
+    ]) {
+      onAuthenticationFailedCalled++;
+      return;
+    };
 
-  MockAuthenticator(this.onAuthenticate){
-   onAuthenticationFailed = (Request request,
-       Response response, [
-         Request? originalRequest,
-       ]) {
-     onAuthenticationFailedCalled++;
-     return;
-   };
-
-   onAuthenticationSuccessful =  (Request request,
-       Response response, [
-     Request? originalRequest,
-   ]) {
-     onAuthenticationSuccessfulCalled++;
-     return;
-   };
+    onAuthenticationSuccessful = (
+      Request request,
+      Response response, [
+      Request? originalRequest,
+    ]) {
+      onAuthenticationSuccessfulCalled++;
+      return;
+    };
   }
 
   final Request? Function() onAuthenticate;
 
   int authenticateCalled = 0;
-   int onAuthenticationFailedCalled = 0;
-   int onAuthenticationSuccessfulCalled = 0;
+  int onAuthenticationFailedCalled = 0;
+  int onAuthenticationSuccessfulCalled = 0;
   @override
   AuthenticationCallback? onAuthenticationFailed;
 
@@ -109,12 +125,12 @@ class MockAuthenticator implements Authenticator {
   AuthenticationCallback? onAuthenticationSuccessful;
 
   @override
-  FutureOr<Request?> authenticate(Request request,
-      Response response, [
-        Request? originalRequest,
-      ]) async {
+  FutureOr<Request?> authenticate(
+    Request request,
+    Response response, [
+    Request? originalRequest,
+  ]) async {
     authenticateCalled++;
     return onAuthenticate();
   }
-
 }
