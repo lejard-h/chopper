@@ -148,7 +148,7 @@ abstract class HttpTestService extends ChopperService {
   });
 
   @Get(path: 'https://test.com')
-  Future fullUrl();
+  Future<Response> fullUrl();
 
   @Get(path: '/list/string')
   Future<Response<List<String>>> listString();
@@ -204,6 +204,15 @@ abstract class HttpTestService extends ChopperService {
     @Header('x-double') double? doubleHeader,
     @Header('x-enum') ExampleEnum? enumHeader,
   });
+
+  @Post(path: 'publish')
+  @FactoryConverter(request: FormUrlEncodedConverter.requestFactory)
+  Future<Response<void>> publish(
+    @Field('review_id') final String reviewId,
+    @Field() final List<int> negatives,
+    @Field() final List<int> positives, [
+    @Field() final String? signature,
+  ]);
 }
 
 Request customConvertRequest(Request req) {
