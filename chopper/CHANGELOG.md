@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.1.0
+
+- Add ability to omit `Response` in service ([#545](https://github.com/lejard-h/chopper/pull/545))
+- Add helper function for fetching errors of specific type ([#543](https://github.com/lejard-h/chopper/pull/543))
+- Improve documentation ([#548](https://github.com/lejard-h/chopper/pull/548))
+
 ## 7.0.10
 
 - Enable the user to specify non-String type header values by calling `.toString()` on any non-String Dart type. ([#538](https://github.com/lejard-h/chopper/pull/538))
