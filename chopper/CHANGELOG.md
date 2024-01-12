@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.1.0+1
+
+- Bump `chopper_generator` version requirement to 7.1.0
+
 ## 7.1.0
 
 - Add ability to omit `Response` in service ([#545](https://github.com/lejard-h/chopper/pull/545))
