@@ -347,6 +347,22 @@ It goes without saying that running the code generation is a pre-requisite at th
 flutter pub run build_runner build
 ```
 
+##### Changing the default extension of the generated files
+
+If you want to change the default extension of the generated files from `.chopper.dart` to
+something else, you can do so by adding the following to your `build.yaml` file:
+
+```yaml
+targets:
+  $default:
+    builders:
+      chopper_generator:
+        options:
+          # This assumes you want the files to end with `.chopper.g.dart`
+          # instead of the default `.chopper.dart`.
+          build_extensions: { ".dart": [ ".chopper.g.dart" ] }
+```
+
 #### Configure a WorkerPool and run the example
 
 ```dart
