@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.1.1
+
+- Add option to override build_extension via build.yaml ([#562](https://github.com/lejard-h/chopper/pull/562))
+
 ## 7.1.0
 
 - Add ability to omit `Response` in service ([#545](https://github.com/lejard-h/chopper/pull/545))
