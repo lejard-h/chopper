@@ -1,5 +1,14 @@
 # Changelog
 
+## 7.1.1
+
+- Add option to override build_extension via build.yaml ([#562](https://github.com/lejard-h/chopper/pull/562))
+
+## 7.1.0
+
+- Add ability to omit `Response` in service ([#545](https://github.com/lejard-h/chopper/pull/545))
+- Fix `FactoryConverter` regression introduced in v7.0.7 ([#549](https://github.com/lejard-h/chopper/pull/549))
+
 ## 7.0.7
 
 - Enable the user to specify non-String type header values by calling `.toString()` on any non-String Dart type. ([#538](https://github.com/lejard-h/chopper/pull/538))
