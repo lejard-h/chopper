@@ -23,12 +23,11 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
   @override
   FutureOr<Response<BodyType>> proceed(Request request) async {
     assert(index < interceptors.length, 'Interceptor index out of bounds');
-    if(index -1 >= 0 && interceptors[index -1] is! InternalInterceptor) {
+    if (index - 1 >= 0 && interceptors[index - 1] is! InternalInterceptor) {
       assert(
-      this.request.body == request.body,
-      'Interceptor [${interceptors[index - 1]
-          .runtimeType}] should not transform the body of the request, '
-          'Use Request converter instead',
+        this.request.body == request.body,
+        'Interceptor [${interceptors[index - 1].runtimeType}] should not transform the body of the request, '
+        'Use Request converter instead',
       );
     }
 
@@ -38,7 +37,8 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
     final next = copyWith<BodyType>(request: request, index: index + 1);
     response = await interceptor.intercept<BodyType>(next);
 
-    if (index + 1 < interceptors.length && interceptor is! InternalInterceptor) {
+    if (index + 1 < interceptors.length &&
+        interceptor is! InternalInterceptor) {
       if (response == null) {
         throw Exception('Response is null');
       }

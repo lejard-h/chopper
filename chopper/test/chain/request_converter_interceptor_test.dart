@@ -33,8 +33,11 @@ void main() {
     expect(converter.called, 0);
   });
 
-  test('request body is not null and parts is empty, requestConverter is not provided, request is converted by converter', () async {
-    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'), body: 'not converted');
+  test(
+      'request body is not null and parts is empty, requestConverter is not provided, request is converted by converter',
+      () async {
+    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'),
+        body: 'not converted');
     final converter = RequestConverter();
     interceptorChain = InterceptorChain(
       interceptors: [
@@ -54,8 +57,11 @@ void main() {
     expect(converter.called, 1);
   });
 
-  test('request body is null and parts is not empty, requestConverter is not provided, request is converted by converter', () async {
-    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'), parts: [PartValue('not converted', 1)]);
+  test(
+      'request body is null and parts is not empty, requestConverter is not provided, request is converted by converter',
+      () async {
+    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'),
+        parts: [PartValue('not converted', 1)]);
     final converter = RequestConverter();
     interceptorChain = InterceptorChain(
       interceptors: [
@@ -75,8 +81,11 @@ void main() {
     expect(converter.called, 1);
   });
 
-  test('request body is not null and parts is empty, requestConverter is provided, request is converted by requestConverter', () async {
-    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'), body: 'not converted');
+  test(
+      'request body is not null and parts is empty, requestConverter is provided, request is converted by requestConverter',
+      () async {
+    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'),
+        body: 'not converted');
     final converter = RequestConverter();
     int called = 0;
     interceptorChain = InterceptorChain(
@@ -102,6 +111,8 @@ void main() {
   });
 }
 
+// ignore mutability warning for test class.
+//ignore: must_be_immutable
 class RequestConverter implements Converter {
   int called = 0;
   @override
