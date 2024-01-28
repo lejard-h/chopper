@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.1.1
+
+- Add `Target` annotations ([#567](https://github.com/lejard-h/chopper/pull/567))
+
 ## 7.1.0+1
 
 - Bump `chopper_generator` version requirement to 7.1.0
