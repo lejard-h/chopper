@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.1.1+1
+
+- Export `ChopperHttpException` in library exports ([#570](https://github.com/lejard-h/chopper/pull/570))
+
 ## 7.1.1
 
 - Add `Target` annotations ([#567](https://github.com/lejard-h/chopper/pull/567))
