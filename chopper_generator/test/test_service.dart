@@ -113,6 +113,14 @@ abstract class HttpTestService extends ChopperService {
     @Part('2') Map b,
   );
 
+  @Post(path: 'formUrlEncoded')
+  @FormUrlEncoded()
+  Future<Response> postFormUrlEncode(
+    @Field('a') String a,
+    @Field('a1') String a2,
+    @FieldMap() Map<String, dynamic> b,
+  );
+
   @Post(path: 'file')
   @multipart
   Future<Response> postFile(

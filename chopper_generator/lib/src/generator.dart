@@ -150,6 +150,7 @@ final class ChopperGenerator
   ) {
     final ConstantReader? method = _getMethodAnnotation(m);
     final bool multipart = _hasAnnotation(m, chopper.Multipart);
+    final bool formUrlEncoded = _hasAnnotation(m, chopper.FormUrlEncoded);
     final ConstantReader? factoryConverter = _getFactoryConverterAnnotation(m);
 
     final Map<String, ConstantReader> body = _getAnnotation(m, chopper.Body);
@@ -172,7 +173,7 @@ final class ChopperGenerator
     final Map<String, ConstantReader> fileFieldMap =
         _getAnnotation(m, chopper.PartFileMap);
 
-    final Code? headers = _generateHeaders(m, method!);
+    final Code? headers = _generateHeaders(m, method!, formUrlEncoded);
     final Expression url = _generateUrl(
       method,
       paths,
@@ -288,6 +289,10 @@ final class ChopperGenerator
 
       final bool hasQuery = hasQueryMap || queries.isNotEmpty;
 
+      if (hasQuery) {
+        _filterNullValue(blocks, Vars.parameters.toString());
+      }
+
       if (headers != null) {
         blocks.add(headers);
       }
@@ -330,6 +335,11 @@ final class ChopperGenerator
       }
 
       hasBody = hasBody || hasFieldMap;
+
+      if (hasBody) {
+        _filterNullValue(blocks, Vars.body.toString(),
+            valueToString: formUrlEncoded);
+      }
 
       bool hasParts = multipart && (parts.isNotEmpty || fileFields.isNotEmpty);
       if (hasParts) {
@@ -464,6 +474,22 @@ final class ChopperGenerator
 
       methodBuilder.body = Block.of(blocks);
     });
+  }
+
+  static void _filterNullValue(List<Code> blocks, String refName,
+      {bool valueToString = false}) {
+    final filterName = '${refName}filter';
+    blocks.add(Code('if ($refName is Map) {'));
+    blocks.add(Code('final Map<String, dynamic> $filterName = {};'));
+    blocks.add(Code('($refName as Map).forEach((key, value) {'));
+    blocks.add(Code('if (value != null) {'));
+    blocks.add(Code(
+        "$filterName[key] = ${valueToString ? "value.toString()" : "value"};"));
+    blocks.add(Code('}'));
+    blocks.add(Code('});'));
+    blocks.add(Code('($refName as Map).clear();'));
+    blocks.add(Code('($refName as Map).addAll($filterName);'));
+    blocks.add(Code('}'));
   }
 
   static String _factoryForFunction(FunctionTypedElement function) =>
@@ -718,6 +744,7 @@ final class ChopperGenerator
   static Code? _generateHeaders(
     MethodElement methodElement,
     ConstantReader method,
+    bool formUrlEncoded,
   ) {
     final StringBuffer codeBuffer = StringBuffer('')..writeln('{');
 
@@ -755,6 +782,11 @@ final class ChopperGenerator
         );
       }
     });
+
+    if (formUrlEncoded) {
+      codeBuffer
+          .writeln("'content-type': 'application/x-www-form-urlencoded',");
+    }
 
     codeBuffer.writeln('}');
     final String code = codeBuffer.toString();

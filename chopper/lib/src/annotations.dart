@@ -533,6 +533,30 @@ final class PartFileMap {
   const PartFileMap();
 }
 
+/// {@template FormUrlEncoded}
+///
+///
+//  Denotes that the request body will use form URL encoding. Fields should be declared as parameters
+//  and annotated with [Field]/[FieldMap].
+//
+//  Requests made with this annotation will have application/x-www-form-urlencoded MIME
+//  type. Field names and values will be UTF-8 encoded before being URI-encoded in accordance to <a
+//  href="https://datatracker.ietf.org/doc/html/rfc3986">RFC-3986</a>.
+//
+///
+/// ```dart
+/// @Post(path: '/something')
+/// @FormUrlEncoded
+/// Future<Response> fetch(@Field("param") String? param);
+/// ```
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+final class FormUrlEncoded {
+  /// {@macro FormUrlEncoded}
+  const FormUrlEncoded();
+}
+
 /// {@macro ChopperApi}
 const chopperApi = ChopperApi();
 

@@ -102,6 +102,14 @@ final class _$HttpTestService extends HttpTestService {
       'int': number,
       'default_value': def,
     };
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -115,6 +123,14 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> getQueryMapTest(Map<String, dynamic> query) {
     final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = query;
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -132,6 +148,14 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = <String, dynamic>{'test': test};
     $params.addAll(query);
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -153,6 +177,14 @@ final class _$HttpTestService extends HttpTestService {
       'number': number,
     };
     $params.addAll(filters);
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -174,6 +206,14 @@ final class _$HttpTestService extends HttpTestService {
       'number': number,
     };
     $params.addAll(filters ?? const {});
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -187,6 +227,14 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> getQueryMapTest5({Map<String, dynamic>? filters}) {
     final Uri $url = Uri.parse('/test/query_map');
     final Map<String, dynamic> $params = filters ?? const {};
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -200,6 +248,16 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> getBody(dynamic body) {
     final Uri $url = Uri.parse('/test/get_body');
     final $body = body;
+    if ($body is Map) {
+      final Map<String, dynamic> $bodyfilter = {};
+      ($body).forEach((key, value) {
+        if (value != null) {
+          $bodyfilter[key] = value;
+        }
+      });
+      ($body).clear();
+      ($body).addAll($bodyfilter);
+    }
     final Request $request = Request(
       'GET',
       $url,
@@ -213,6 +271,16 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postTest(String data) {
     final Uri $url = Uri.parse('/test/post');
     final $body = data;
+    if ($body is Map) {
+      final Map<String, dynamic> $bodyfilter = {};
+      ($body as Map).forEach((key, value) {
+        if (value != null) {
+          $bodyfilter[key] = value;
+        }
+      });
+      ($body as Map).clear();
+      ($body as Map).addAll($bodyfilter);
+    }
     final Request $request = Request(
       'POST',
       $url,
@@ -226,6 +294,16 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postStreamTest(Stream<List<int>> byteStream) {
     final Uri $url = Uri.parse('/test/post');
     final $body = byteStream;
+    if ($body is Map) {
+      final Map<String, dynamic> $bodyfilter = {};
+      ($body as Map).forEach((key, value) {
+        if (value != null) {
+          $bodyfilter[key] = value;
+        }
+      });
+      ($body as Map).clear();
+      ($body as Map).addAll($bodyfilter);
+    }
     final Request $request = Request(
       'POST',
       $url,
@@ -242,6 +320,16 @@ final class _$HttpTestService extends HttpTestService {
   ) {
     final Uri $url = Uri.parse('/test/put/${test}');
     final $body = data;
+    if ($body is Map) {
+      final Map<String, dynamic> $bodyfilter = {};
+      ($body as Map).forEach((key, value) {
+        if (value != null) {
+          $bodyfilter[key] = value;
+        }
+      });
+      ($body as Map).clear();
+      ($body as Map).addAll($bodyfilter);
+    }
     final Request $request = Request(
       'PUT',
       $url,
@@ -273,6 +361,16 @@ final class _$HttpTestService extends HttpTestService {
   ) {
     final Uri $url = Uri.parse('/test/patch/${id}');
     final $body = data;
+    if ($body is Map) {
+      final Map<String, dynamic> $bodyfilter = {};
+      ($body as Map).forEach((key, value) {
+        if (value != null) {
+          $bodyfilter[key] = value;
+        }
+      });
+      ($body as Map).clear();
+      ($body as Map).addAll($bodyfilter);
+    }
     final Request $request = Request(
       'PATCH',
       $url,
@@ -286,6 +384,14 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> mapTest(Map<String, String> map) {
     final Uri $url = Uri.parse('/test/map');
     final $body = map;
+    final Map<String, dynamic> $bodyfilter = {};
+    ($body as Map).forEach((key, value) {
+      if (value != null) {
+        $bodyfilter[key] = value;
+      }
+    });
+    ($body as Map).clear();
+    ($body as Map).addAll($bodyfilter);
     final Request $request = Request(
       'POST',
       $url,
@@ -299,6 +405,14 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postForm(Map<String, String> fields) {
     final Uri $url = Uri.parse('/test/form/body');
     final $body = fields;
+    final Map<String, dynamic> $bodyfilter = {};
+    ($body as Map).forEach((key, value) {
+      if (value != null) {
+        $bodyfilter[key] = value;
+      }
+    });
+    ($body as Map).clear();
+    ($body as Map).addAll($bodyfilter);
     final Request $request = Request(
       'POST',
       $url,
@@ -318,6 +432,14 @@ final class _$HttpTestService extends HttpTestService {
       'content-type': 'application/x-www-form-urlencoded',
     };
     final $body = fields;
+    final Map<String, dynamic> $bodyfilter = {};
+    ($body as Map).forEach((key, value) {
+      if (value != null) {
+        $bodyfilter[key] = value;
+      }
+    });
+    ($body as Map).clear();
+    ($body as Map).addAll($bodyfilter);
     final Request $request = Request(
       'POST',
       $url,
@@ -338,6 +460,14 @@ final class _$HttpTestService extends HttpTestService {
       'foo': foo,
       'bar': bar,
     };
+    final Map<String, dynamic> $bodyfilter = {};
+    ($body as Map).forEach((key, value) {
+      if (value != null) {
+        $bodyfilter[key] = value;
+      }
+    });
+    ($body as Map).clear();
+    ($body as Map).addAll($bodyfilter);
     final Request $request = Request(
       'POST',
       $url,
@@ -354,6 +484,14 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> forceJsonTest(Map<dynamic, dynamic> map) {
     final Uri $url = Uri.parse('/test/map/json');
     final $body = map;
+    final Map<String, dynamic> $bodyfilter = {};
+    ($body).forEach((key, value) {
+      if (value != null) {
+        $bodyfilter[key] = value;
+      }
+    });
+    ($body).clear();
+    ($body).addAll($bodyfilter);
     final Request $request = Request(
       'POST',
       $url,
@@ -389,6 +527,39 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parts: $parts,
       multipart: true,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> postFormUrlEncode(
+    String a,
+    String a2,
+    Map<String, dynamic> b,
+  ) {
+    final Uri $url = Uri.parse('/test/formUrlEncoded');
+    final Map<String, String> $headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+    };
+    final $body = <String, dynamic>{
+      'a': a,
+      'a1': a2,
+    };
+    $body.addAll(b);
+    final Map<String, dynamic> $bodyfilter = {};
+    ($body as Map).forEach((key, value) {
+      if (value != null) {
+        $bodyfilter[key] = value.toString();
+      }
+    });
+    ($body as Map).clear();
+    ($body as Map).addAll($bodyfilter);
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
     );
     return client.send<dynamic, dynamic>($request);
   }
@@ -557,6 +728,14 @@ final class _$HttpTestService extends HttpTestService {
       'bar': bar,
       'baz': baz,
     };
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -571,6 +750,14 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<String>> getUsingListQueryParam(List<String> value) {
     final Uri $url = Uri.parse('/test/list_query_param');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -585,6 +772,14 @@ final class _$HttpTestService extends HttpTestService {
       List<String> value) {
     final Uri $url = Uri.parse('/test/list_query_param_with_brackets');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -599,6 +794,14 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<String>> getUsingMapQueryParam(Map<String, dynamic> value) {
     final Uri $url = Uri.parse('/test/map_query_param');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -613,6 +816,14 @@ final class _$HttpTestService extends HttpTestService {
       Map<String, dynamic> value) {
     final Uri $url = Uri.parse('/test/map_query_param_include_null_query_vars');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -628,6 +839,14 @@ final class _$HttpTestService extends HttpTestService {
       Map<String, dynamic> value) {
     final Uri $url = Uri.parse('/test/map_query_param_with_brackets');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Map<String, dynamic> $paramsfilter = {};
+    ($params as Map).forEach((key, value) {
+      if (value != null) {
+        $paramsfilter[key] = value;
+      }
+    });
+    ($params as Map).clear();
+    ($params as Map).addAll($paramsfilter);
     final Request $request = Request(
       'GET',
       $url,
@@ -677,6 +896,14 @@ final class _$HttpTestService extends HttpTestService {
       'positives': positives,
       'signature': signature,
     };
+    final Map<String, dynamic> $bodyfilter = {};
+    ($body as Map).forEach((key, value) {
+      if (value != null) {
+        $bodyfilter[key] = value;
+      }
+    });
+    ($body as Map).clear();
+    ($body as Map).addAll($bodyfilter);
     final Request $request = Request(
       'POST',
       $url,

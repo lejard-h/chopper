@@ -158,6 +158,13 @@ base class Request extends http.BaseRequest with EquatableMixin {
         request
           ..headers.addAll(headers)
           ..bodyFields = body;
+      } else if (body is Map<dynamic, dynamic> &&
+          headers['content-type'] == 'application/x-www-form-urlencoded') {
+        final newBody = (body as Map<dynamic, dynamic>).map<String, String>(
+            (key, value) => MapEntry(key.toString(), value.toString()));
+        request
+          ..headers.addAll(headers)
+          ..bodyFields = newBody;
       } else {
         throw ArgumentError.value('$body', 'body');
       }
