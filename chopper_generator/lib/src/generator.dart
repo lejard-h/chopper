@@ -150,6 +150,7 @@ final class ChopperGenerator
   ) {
     final ConstantReader? method = _getMethodAnnotation(m);
     final bool multipart = _hasAnnotation(m, chopper.Multipart);
+    final bool formUrlEncoded = _hasAnnotation(m, chopper.FormUrlEncoded);
     final ConstantReader? factoryConverter = _getFactoryConverterAnnotation(m);
 
     final Map<String, ConstantReader> body = _getAnnotation(m, chopper.Body);
@@ -172,7 +173,7 @@ final class ChopperGenerator
     final Map<String, ConstantReader> fileFieldMap =
         _getAnnotation(m, chopper.PartFileMap);
 
-    final Code? headers = _generateHeaders(m, method!);
+    final Code? headers = _generateHeaders(m, method!, formUrlEncoded);
     final Expression url = _generateUrl(
       method,
       paths,
@@ -298,15 +299,21 @@ final class ChopperGenerator
       bool hasBody = body.isNotEmpty || fields.isNotEmpty;
       if (hasBody) {
         if (body.isNotEmpty) {
+          final DartType bodyType = m.parameters
+              .firstWhere((p) => _typeChecker(chopper.Body).hasAnnotationOf(p))
+              .type;
+          final mapExpression = (formUrlEncoded &&
+                  _isMap(bodyType) &&
+                  !_isMapStringString(bodyType))
+              ? _generateMapToStringExpression(refer(body.keys.first))
+              : refer(body.keys.first);
           blocks.add(
-            declareFinal(Vars.body.toString())
-                .assign(refer(body.keys.first))
-                .statement,
+            declareFinal(Vars.body.toString()).assign(mapExpression).statement,
           );
         } else {
           blocks.add(
             declareFinal(Vars.body.toString())
-                .assign(_generateMap(fields))
+                .assign(_generateMap(fields, isStringValue: formUrlEncoded))
                 .statement,
           );
         }
@@ -314,17 +321,22 @@ final class ChopperGenerator
 
       final bool hasFieldMap = fieldMap.isNotEmpty;
       if (hasFieldMap) {
+        final DartType fieldMapType = m.parameters
+            .firstWhere(
+                (p) => _typeChecker(chopper.FieldMap).hasAnnotationOf(p))
+            .type;
+        final map = (formUrlEncoded && !_isMapStringString(fieldMapType))
+            ? _generateMapToStringExpression(refer(fieldMap.keys.first))
+            : refer(fieldMap.keys.first);
         if (hasBody) {
           blocks.add(
             refer(Vars.body.toString()).property('addAll').call(
-              [refer(fieldMap.keys.first)],
+              [map],
             ).statement,
           );
         } else {
           blocks.add(
-            declareFinal(Vars.body.toString())
-                .assign(refer(fieldMap.keys.first))
-                .statement,
+            declareFinal(Vars.body.toString()).assign(map).statement,
           );
         }
       }
@@ -466,6 +478,26 @@ final class ChopperGenerator
     });
   }
 
+  static Expression _generateMapToStringExpression(Reference map) {
+    return map.property('map<String, String>').call([
+      Method((b) => b
+        ..requiredParameters.add(
+          Parameter((b) => b..name = 'key'),
+        )
+        ..requiredParameters.add(
+          Parameter((b) => b..name = 'value'),
+        )
+        ..returns = refer('MapEntry', 'dart.core')
+        ..body = refer('MapEntry', 'dart.core')
+            .newInstance([
+              refer('key').property('toString').call([]),
+              refer('value').property('toString').call([]),
+            ])
+            .returned
+            .statement).closure
+    ]);
+  }
+
   static String _factoryForFunction(FunctionTypedElement function) =>
       // ignore: deprecated_member_use
       function.enclosingElement is ClassElement
@@ -546,6 +578,32 @@ final class ChopperGenerator
           ? type.typeArguments.first
           : null;
 
+  static bool _isMap(DartType type) {
+    return _typeChecker(Map).isExactlyType(type) ||
+        _typeChecker(Map).isAssignableFromType(type);
+  }
+
+  static bool _isMapStringString(DartType type) {
+    if (!_isMap(type)) {
+      return false;
+    }
+    final firsType = type is InterfaceType && type.typeArguments.isNotEmpty
+        ? type.typeArguments.first
+        : null;
+    final secondType = type is InterfaceType && type.typeArguments.length > 1
+        ? type.typeArguments[1]
+        : null;
+    if (firsType == null || secondType == null) {
+      return false;
+    }
+    return _isString(firsType) && _isString(secondType);
+  }
+
+  static bool _isString(DartType type) {
+    return _typeChecker(String).isExactlyType(type) ||
+        _typeChecker(String).isAssignableFromType(type);
+  }
+
   static bool _isResponse(DartType type) {
     final DartType? responseType = _genericOf(type);
     if (responseType == null) return false;
@@ -563,7 +621,7 @@ final class ChopperGenerator
         _typeChecker(Map).isExactlyType(type) ||
         _typeChecker(BuiltMap).isExactlyType(type)) return type;
 
-    // ignore: deprecated_member_use
+// ignore: deprecated_member_use
     if (generic.isDynamic) return null;
 
     if (_typeChecker(List).isExactlyType(type) ||
@@ -664,17 +722,20 @@ final class ChopperGenerator
       );
 
   static Expression _generateMap(
-    Map<ParameterElement, ConstantReader> queries,
-  ) =>
+    Map<ParameterElement, ConstantReader> queries, {
+    bool isStringValue = false,
+  }) =>
       literalMap(
         {
           for (final MapEntry<ParameterElement, ConstantReader> query
               in queries.entries)
             query.value.peek('name')?.stringValue ?? query.key.displayName:
-                refer(query.key.displayName),
+                isStringValue
+                    ? refer(query.key.displayName).property('toString').call([])
+                    : refer(query.key.displayName),
         },
         refer('String'),
-        refer('dynamic'),
+        refer(isStringValue ? 'String' : 'dynamic'),
       );
 
   static Expression _generateList(
@@ -718,6 +779,7 @@ final class ChopperGenerator
   static Code? _generateHeaders(
     MethodElement methodElement,
     ConstantReader method,
+    bool formUrlEncoded,
   ) {
     final StringBuffer codeBuffer = StringBuffer('')..writeln('{');
 
@@ -755,6 +817,11 @@ final class ChopperGenerator
         );
       }
     });
+
+    if (formUrlEncoded) {
+      codeBuffer
+          .writeln("'content-type': 'application/x-www-form-urlencoded',");
+    }
 
     codeBuffer.writeln('}');
     final String code = codeBuffer.toString();
