@@ -6,7 +6,7 @@ import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
 
 export 'package:chopper/src/interceptors/curl_interceptor.dart';
-export 'package:chopper/src/interceptors/header_interceptor.dart';
+export 'package:chopper/src/interceptors/headers_interceptor.dart';
 export 'package:chopper/src/interceptors/http_logging_interceptor.dart';
 
 /// The interface for implementing interceptors.

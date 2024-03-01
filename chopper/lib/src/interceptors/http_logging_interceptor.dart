@@ -61,7 +61,7 @@ enum Level {
 }
 
 /// {@template http_logging_interceptor}
-/// A [RequestInterceptor] and [ResponseInterceptor] implementation which logs
+/// A [Interceptor] implementation which logs
 /// HTTP request and response data.
 ///
 /// Log levels can be set by applying [level] for more fine grained control

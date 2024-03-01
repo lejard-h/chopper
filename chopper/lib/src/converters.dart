@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chopper/chopper.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
@@ -12,9 +13,9 @@ import 'constants.dart';
 ///
 /// [Converter]s convert objects to and from their representation in HTTP.
 ///
-/// [convertRequest] is called before [RequestInterceptor]s
+/// [convertRequest] is called before [Interceptor]s
 /// and [convertResponse] is called just after the HTTP response,
-/// before [ResponseInterceptor]s.
+/// before returning through the [Interceptor]s.
 ///
 /// See [JsonConverter] and [FormUrlEncodedConverter] for example implementations.
 @immutable
@@ -39,7 +40,7 @@ abstract interface class Converter {
 /// An interface for implementing error response converters.
 ///
 /// An `ErrorConverter` is called only on error responses
-/// (statusCode < 200 || statusCode >= 300) and before any [ResponseInterceptor]s.
+/// (statusCode < 200 || statusCode >= 300) and before returning to any [Interceptor]s.
 abstract interface class ErrorConverter {
   /// Converts the received [Response] to a [Response] which has a body with the
   /// HTTP representation of the original body.

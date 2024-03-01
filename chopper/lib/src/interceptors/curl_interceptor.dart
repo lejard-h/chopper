@@ -5,7 +5,7 @@ import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-/// A [RequestInterceptor] implementation that prints a curl request equivalent
+/// A [Interceptor] implementation that prints a curl request equivalent
 /// to the network call channeled through it for debugging purposes.
 ///
 /// Thanks, @edwardaux

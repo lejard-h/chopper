@@ -71,11 +71,10 @@ base class ChopperClient {
   /// );
   /// ```
   ///
-  /// [RequestInterceptor]s and [ResponseInterceptor]s can be added to the client
+  /// [Interceptor]s can be added to the client
   /// with the [interceptors] parameter.
   ///
-  /// See [RequestInterceptor], [ResponseInterceptor], [HttpLoggingInterceptor],
-  /// [HeadersInterceptor], [CurlInterceptor]
+  /// See [HttpLoggingInterceptor], [HeadersInterceptor], [CurlInterceptor]
   ///
   /// ```dart
   /// final chopper = ChopperClient(
@@ -333,11 +332,11 @@ base class ChopperClient {
   }
 
   /// A stream of processed [Request]s, as in after all [Converter]s, and
-  /// [RequestInterceptor]s have been run.
+  /// [Interceptor]s have been run.
   Stream<Request> get onRequest => _requestController.stream;
 
   /// A stream of processed [Response]s, as in after all [Converter]s and
-  /// [ResponseInterceptor]s have been run.
+  /// [Interceptor]s have been run.
   Stream<Response> get onResponse => _responseController.stream;
 }
 

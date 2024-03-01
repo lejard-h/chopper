@@ -30,8 +30,8 @@ class Call {
     ConvertResponse<BodyType>? responseConverter,
   ) async {
     final interceptors = <Interceptor>[
-      ...client.interceptors,
       RequestConverterInterceptor(client.converter, requestConverter),
+      ...client.interceptors,
       if (client.authenticator != null)
         AuthenticatorInterceptor(client.authenticator!),
       ResponseConverterInterceptor<InnerType>(

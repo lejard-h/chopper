@@ -32,7 +32,7 @@ main() async {
       // the generated service
       MyService.create(),
     ],
-    /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
+    /* Interceptors */
     interceptors: [authHeader],
   );
 

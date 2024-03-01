@@ -134,7 +134,7 @@ Future<void> main() async {
       // the generated service
       MyService.create(),
     ],
-    /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
+    /* Interceptor */
     interceptors: [authHeader],
   );
 

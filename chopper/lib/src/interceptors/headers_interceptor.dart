@@ -6,7 +6,7 @@ import 'package:chopper/src/utils.dart';
 import 'package:meta/meta.dart';
 
 /// {@template HeadersInterceptor}
-/// A [RequestInterceptor] that adds [headers] to every request.
+/// A [Interceptor] that adds [headers] to every request.
 ///
 /// Note that this interceptor will overwrite existing headers having the same
 /// keys as [headers].

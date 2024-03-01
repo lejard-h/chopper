@@ -36,11 +36,20 @@ final chopper = ChopperClient(
     interceptors: [_addQuery],
 );
 
-Request _addQuery(Request req) {
-  final params = Map<String, dynamic>.from(req.parameters);
-  params['key'] = '123';
+class QueryInterceptor implements Interceptor {
 
-  return req.copyWith(parameters: params);
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+    final request = _addQuery(chain.request);
+    return chain.proceed(request);
+  }
+
+  Request _addQuery(Request req) {
+    final params = Map<String, dynamic>.from(req.parameters);
+    params['key'] = '123';
+
+    return req.copyWith(parameters: params);
+  }
 }
 ```
 
@@ -67,13 +76,17 @@ Future<Response> postRequest(@Body() Map<String, String> data);
 You may need to change the base URL of your network calls during runtime, for example, if you have to use different servers or routes dynamically in your app in case of a "regular" or a "paid" user. You can store the current server base url in your SharedPreferences (encrypt/decrypt it if needed) and use it in an interceptor like this:
 
 ```dart
-...
-(Request request) async =>
-              SharedPreferences.containsKey('baseUrl')
-                  ? request.copyWith(
-                      baseUri: Uri.parse(SharedPreferences.getString('baseUrl'))
-                  ): request
-...
+class BaseUrlInterceptor implements Interceptor {
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+    final request = SharedPreferences.containsKey('baseUrl')
+        ? chain.request.copyWith(
+            baseUri: Uri.parse(SharedPreferences.getString('baseUrl')))
+        : chain.request;
+    
+    return chain.proceed(request);
+  }
+}
 ```
 
 ## Mock ChopperClient for testing
@@ -152,19 +165,31 @@ if the refresh token is not valid anymore, drop the session (and navigate to the
 Simple code example:
 
 ```dart
-interceptors: [
-  // Auth Interceptor
-  (Request request) async => applyHeader(request, 'authorization',
-      SharedPrefs.localStorage.getString(tokenHeader),
-      override: false),
-  (Response response) async {
+class AuthInterceptor implements Interceptor {
+
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+    final request = applyHeader(chain.request, 'authorization',
+        SharedPrefs.localStorage.getString(tokenHeader),
+        override: false);
+   
+    final response = await chain.proceed(request);
+   
     if (response?.statusCode == 401) {
       SharedPrefs.localStorage.remove(tokenHeader);
       // Navigate to some login page or just request new token
     }
+    
     return response;
-  },
-]
+  }
+}
+
+...
+interceptors: [
+    AuthInterceptor(),
+    // ... other interceptors
+    ]
+...
 ```
 
 The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and session handling - of your app looks like.
@@ -406,7 +431,7 @@ Future<void> main() async {
       // the generated service
       MyService.create(),
     ],
-    /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
+    /* Interceptor */
     interceptors: [authHeader],
   );
 
