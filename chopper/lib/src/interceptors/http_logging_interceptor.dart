@@ -133,8 +133,11 @@ class HttpLoggingInterceptor implements Interceptor {
         request: request,
       ));
     }
+    final stopWatch = Stopwatch()..start();
 
     final response = await chain.proceed(request);
+
+    stopWatch.stop();
 
     if (level == Level.none) return response;
     final baseResponse = response.base;
@@ -152,7 +155,7 @@ class HttpLoggingInterceptor implements Interceptor {
         bodyResponseMessage = baseResponse.body;
 
         if (!_logBody && !_logHeaders) {
-          bytes = ' (${response.bodyBytes.length}-byte body)';
+          bytes = ', ${response.bodyBytes.length}-byte body';
         }
       }
     }
@@ -160,7 +163,7 @@ class HttpLoggingInterceptor implements Interceptor {
     // Always start on a new line
     _logger.info(ChopperLogRecord('', response: response));
     _logger.info(ChopperLogRecord(
-      '<-- $reasonPhrase ${baseResponse.request?.method} ${baseResponse.request?.url.toString()}$bytes',
+      '<-- $reasonPhrase ${baseResponse.request?.method} ${baseResponse.request?.url.toString()} (${stopWatch.elapsedMilliseconds}ms$bytes)',
       response: response,
     ));
 

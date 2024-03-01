@@ -139,7 +139,7 @@ void main() {
         containsAll(
           [
             '',
-            '<-- 200 POST base/ (16-byte body)',
+            '<-- 200 POST base/ (0ms, 16-byte body)',
           ],
         ),
       );
@@ -157,7 +157,7 @@ void main() {
         containsAll(
           [
             '',
-            '<-- 200 POST base/',
+            '<-- 200 POST base/ (0ms)',
             'foo: bar',
             'content-length: 16',
             '<-- END HTTP',
@@ -178,7 +178,7 @@ void main() {
         containsAll(
           [
             '',
-            '<-- 200 POST base/',
+            '<-- 200 POST base/ (0ms)',
             'foo: bar',
             'content-length: 16',
             '',
@@ -270,7 +270,7 @@ void main() {
         containsAll(
           [
             '',
-            '<-- 200 POST base/',
+            '<-- 200 POST base/ (0ms)',
             'foo: bar',
             'content-length: 42',
             '<-- END HTTP',
@@ -290,7 +290,7 @@ void main() {
         containsAll(
           [
             '',
-            '<-- 200 POST base/',
+            '<-- 200 POST base/ (0ms)',
             'foo: bar',
             'content-length: 42',
             '',
