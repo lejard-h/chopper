@@ -211,6 +211,7 @@ class InternalModifierInterceptor implements InternalInterceptor {
   }
 }
 
+// ignore: must_be_immutable
 class MockInterceptor implements InternalInterceptor {
   MockInterceptor({this.response});
 

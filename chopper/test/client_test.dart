@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:chopper/chopper.dart';
+import 'package:chopper/src/base.dart';
 import 'package:chopper/src/converters.dart';
 import 'package:chopper/src/interceptors/headers_interceptor.dart';
 import 'package:http/http.dart' as http;

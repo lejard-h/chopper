@@ -13,7 +13,7 @@ import 'package:http/testing.dart';
 import 'package:squadron/squadron.dart';
 import 'package:http/http.dart' as http;
 
-import 'main_json_serializable.dart' show authHeader;
+import 'main_json_serializable.dart' show AuthInterceptor;
 
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
 
@@ -135,7 +135,7 @@ Future<void> main() async {
       MyService.create(),
     ],
     /* Interceptor */
-    interceptors: [authHeader],
+    interceptors: [AuthInterceptor()],
   );
 
   final myService = chopper.getService<MyService>();

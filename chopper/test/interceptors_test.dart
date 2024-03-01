@@ -1,8 +1,11 @@
 import 'dart:async';
 
-import 'package:chopper/chopper.dart';
-import 'package:chopper/src/interceptors/curl_interceptor.dart';
-import 'package:chopper/src/interceptors/headers_interceptor.dart';
+import 'package:chopper/src/base.dart';
+import 'package:chopper/src/chain/chain.dart';
+import 'package:chopper/src/interceptors/interceptor.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
+import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';

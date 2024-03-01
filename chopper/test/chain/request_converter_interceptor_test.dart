@@ -129,6 +129,7 @@ class RequestConverter implements Converter {
   }
 }
 
+// ignore: must_be_immutable
 class RequestInterceptor implements Interceptor {
   RequestInterceptor({this.onRequest});
 

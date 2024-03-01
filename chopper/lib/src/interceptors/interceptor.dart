@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
-import 'package:chopper/src/chain/interceptor_chain.dart';
-import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
 
 export 'package:chopper/src/interceptors/curl_interceptor.dart';
