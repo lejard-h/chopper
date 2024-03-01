@@ -7,6 +7,7 @@ export 'src/annotations.dart';
 export 'src/authenticator.dart';
 export 'src/base.dart';
 export 'src/chopper_http_exception.dart';
+export 'src/chopper_exception.dart';
 export 'src/chopper_log_record.dart';
 export 'src/constants.dart';
 export 'src/extensions.dart';

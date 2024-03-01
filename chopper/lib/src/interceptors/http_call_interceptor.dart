@@ -1,4 +1,5 @@
 import 'package:chopper/src/chain/chain.dart';
+import 'package:chopper/src/chopper_exception.dart';
 import 'package:chopper/src/interceptors/internal_interceptor.dart';
 import 'package:chopper/src/response.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +27,7 @@ class HttpCallInterceptor implements InternalInterceptor {
       final response = await http.Response.fromStream(streamRes);
       return Response(response, response.body as BodyType);
     } else {
-      throw Exception('Unsupported type');
+      throw ChopperException('Unsupported type', request: chain.request);
     }
   }
 }

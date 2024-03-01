@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/src/chain/chain.dart';
+import 'package:chopper/src/chopper_exception.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/interceptors/internal_interceptor.dart';
 import 'package:chopper/src/request.dart';
@@ -47,7 +48,7 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
     if (index + 1 < interceptors.length &&
         interceptor is! InternalInterceptor) {
       if (response == null) {
-        throw Exception('Response is null');
+        throw ChopperException('Response is null', request: request);
       }
 
       assert(

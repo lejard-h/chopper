@@ -1,11 +1,11 @@
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/base.dart';
+import 'package:chopper/src/chain/interceptor_chain.dart';
 import 'package:chopper/src/interceptors/authenticator_interceptor.dart';
 import 'package:chopper/src/interceptors/http_call_interceptor.dart';
-import 'package:chopper/src/chain/interceptor_chain.dart';
+import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/interceptors/request_converter_interceptor.dart';
 import 'package:chopper/src/interceptors/response_converter_interceptor.dart';
-import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 
