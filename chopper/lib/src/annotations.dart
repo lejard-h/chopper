@@ -4,6 +4,7 @@ import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
+import 'package:meta/meta_meta.dart';
 
 /// {@template ChopperApi}
 /// Defines a Chopper API.
@@ -22,6 +23,7 @@ import 'package:meta/meta.dart';
 /// See [Method] to define an HTTP request
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.classType})
 final class ChopperApi {
   /// A part of a URL that every request defined inside a class annotated with [ChopperApi] will be prefixed with.
   ///
@@ -49,6 +51,7 @@ final class ChopperApi {
 /// ```
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class Path {
   /// Name is used to bind a method parameter to
   /// a URL path parameter.
@@ -75,6 +78,7 @@ final class Path {
 /// See [QueryMap] to pass an [Map<String, dynamic>] as value
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class Query {
   /// Name is used to bind a method parameter to
   /// the query parameter.
@@ -103,6 +107,7 @@ final class Query {
 /// ```
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class QueryMap {
   /// {@macro QueryMap}
   const QueryMap();
@@ -120,6 +125,7 @@ final class QueryMap {
 /// See [Converter] to apply conversion to the body.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class Body {
   /// {@macro Body}
   const Body();
@@ -136,6 +142,7 @@ final class Body {
 /// ```
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class Header {
   /// Name is used to bind a method parameter to
   /// a header name.
@@ -169,6 +176,7 @@ final class Header {
 /// A [Converter] needs to be specified for conversion.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 sealed class Method {
   /// HTTP method for the request
   final String method;
@@ -232,6 +240,7 @@ sealed class Method {
 /// Defines a method as an HTTP GET request.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Get extends Method {
   /// {@macro Get}
   const Get({
@@ -249,6 +258,7 @@ final class Get extends Method {
 /// Use the [Body] annotation to pass data to send.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Post extends Method {
   /// {@macro Post}
   const Post({
@@ -264,6 +274,7 @@ final class Post extends Method {
 /// Defines a method as an HTTP DELETE request.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Delete extends Method {
   /// {@macro Delete}
   const Delete({
@@ -281,6 +292,7 @@ final class Delete extends Method {
 /// Use the [Body] annotation to pass data to send.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Put extends Method {
   /// {@macro Put}
   const Put({
@@ -297,6 +309,7 @@ final class Put extends Method {
 /// Use the [Body] annotation to pass data to send.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Patch extends Method {
   /// {@macro Patch}
   const Patch({
@@ -312,6 +325,7 @@ final class Patch extends Method {
 /// Defines a method as an HTTP HEAD request.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Head extends Method {
   /// {@macro Head}
   const Head({
@@ -327,6 +341,7 @@ final class Head extends Method {
 /// Defines a method as an HTTP OPTIONS request.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Options extends Method {
   /// {@macro Options}
   const Options({
@@ -377,6 +392,7 @@ typedef ConvertResponse<T> = FutureOr<Response<T>> Function(Response response);
 /// ```
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class FactoryConverter {
   final ConvertRequest? request;
   final ConvertResponse? response;
@@ -399,6 +415,7 @@ final class FactoryConverter {
 /// Will be converted to `{ 'name': value }`.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class Field {
   /// Name can be use to specify the name of the field
   /// ```dart
@@ -420,6 +437,7 @@ final class Field {
 /// ```
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class FieldMap {
   /// {@macro FieldMap}
   const FieldMap();
@@ -438,6 +456,7 @@ final class FieldMap {
 /// Use [PartFile] annotation to send `File` or `List<int>`.
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.method})
 final class Multipart {
   /// {@macro Multipart}
   const Multipart();
@@ -451,6 +470,7 @@ final class Multipart {
 /// Also accepts `MultipartFile` (from package:http).
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class Part {
   final String? name;
 
@@ -468,6 +488,7 @@ final class Part {
 /// ```
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class PartMap {
   /// {@macro PartMap}
   const PartMap();
@@ -488,6 +509,7 @@ final class PartMap {
 ///   - `MultipartFile` (from package:http)
 ///   {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class PartFile {
   final String? name;
 
@@ -505,6 +527,7 @@ final class PartFile {
 /// ```
 /// {@endtemplate}
 @immutable
+@Target({TargetKind.parameter})
 final class PartFileMap {
   /// {@macro PartFileMap}
   const PartFileMap();
