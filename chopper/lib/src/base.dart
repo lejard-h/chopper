@@ -38,8 +38,6 @@ base class ChopperClient {
 
   late final Map<Type, ChopperService> _services;
   late final List<Interceptor> interceptors;
-
-  //TODO(Guldem): Do something with stream controllers
   final StreamController<Request> _requestController =
       StreamController<Request>.broadcast();
   final StreamController<Response> _responseController =
@@ -168,12 +166,20 @@ base class ChopperClient {
     ConvertRequest? requestConverter,
     ConvertResponse<BodyType>? responseConverter,
   }) async {
-    final call = Call(request: request, client: this);
+    final call = Call(
+      request: request,
+      client: this,
+      requestCallback: _requestController.add,
+    );
 
-    return call.execute<BodyType, InnerType>(
+    final response = await call.execute<BodyType, InnerType>(
       requestConverter,
       responseConverter,
     );
+
+    _responseController.add(response);
+
+    return response;
   }
 
   /// Makes a HTTP GET request using the [send] function.

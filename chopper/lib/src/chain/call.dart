@@ -5,6 +5,7 @@ import 'package:chopper/src/interceptors/authenticator_interceptor.dart';
 import 'package:chopper/src/interceptors/http_call_interceptor.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/interceptors/request_converter_interceptor.dart';
+import 'package:chopper/src/interceptors/request_stream_interceptor.dart';
 import 'package:chopper/src/interceptors/response_converter_interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
@@ -17,6 +18,7 @@ class Call {
   Call({
     required this.request,
     required this.client,
+    required this.requestCallback,
   });
 
   /// Request to be executed.
@@ -25,6 +27,9 @@ class Call {
   /// Chopper client that created this call.
   final ChopperClient client;
 
+  /// Callback to send intercepted and converted request to the stream controller.
+  final void Function(Request event) requestCallback;
+
   Future<Response<BodyType>> execute<BodyType, InnerType>(
     ConvertRequest? requestConverter,
     ConvertResponse<BodyType>? responseConverter,
@@ -32,6 +37,7 @@ class Call {
     final interceptors = <Interceptor>[
       RequestConverterInterceptor(client.converter, requestConverter),
       ...client.interceptors,
+      RequestStreamInterceptor(requestCallback),
       if (client.authenticator != null)
         AuthenticatorInterceptor(client.authenticator!),
       ResponseConverterInterceptor<InnerType>(
