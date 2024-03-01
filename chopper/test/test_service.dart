@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
+import 'package:chopper/src/converters.dart';
 import 'package:http/http.dart' show MultipartFile;
 
 import 'fixtures/example_enum.dart';

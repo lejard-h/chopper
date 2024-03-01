@@ -1,11 +1,16 @@
 import 'dart:async';
 
 import 'package:chopper/src/chain/chain.dart';
-import 'package:chopper/src/interceptor.dart';
+import 'package:chopper/src/interceptors/interceptor.dart';
+import 'package:chopper/src/interceptors/internal_interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 
+/// {@template InterceptorChain}
+/// A chain of interceptors that are called in order to process requests and responses.
+/// {@endtemplate}
 class InterceptorChain<BodyType> implements Chain<BodyType> {
+  /// {@macro InterceptorChain}
   InterceptorChain({
     required this.interceptors,
     required this.request,
@@ -14,11 +19,15 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
 
   @override
   final Request request;
-  Response<BodyType>? response;
-  final List<Interceptor> interceptors;
-  final int index;
 
-  int calls = 0;
+  /// Response received from the next interceptor in the chain.
+  Response<BodyType>? response;
+
+  /// List of interceptors to be called in order.
+  final List<Interceptor> interceptors;
+
+  /// Index of the current interceptor in the chain.
+  final int index;
 
   @override
   FutureOr<Response<BodyType>> proceed(Request request) async {
@@ -30,8 +39,6 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
         'Use Request converter instead',
       );
     }
-
-    calls++;
 
     final interceptor = interceptors[index];
     final next = copyWith<BodyType>(request: request, index: index + 1);
@@ -53,6 +60,7 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
     return response!;
   }
 
+  /// Copy the current [InterceptorChain]. With updated [request] or [index].
   InterceptorChain<T> copyWith<T>({
     Request? request,
     int? index,

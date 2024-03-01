@@ -1,15 +1,19 @@
 import 'package:chopper/src/authenticator.dart';
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/extensions.dart';
-import 'package:chopper/src/interceptor.dart';
+import 'package:chopper/src/interceptors/internal_interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 
-/// Interceptor which uses Authenticator to authenticate requests.
+/// {@template AuthenticatorInterceptor}
+/// Internal interceptor that handles authentication provided by [authenticator].
+/// {@endtemplate}
 class AuthenticatorInterceptor implements InternalInterceptor {
-  AuthenticatorInterceptor(this.authenticator);
+  /// {@macro AuthenticatorInterceptor}
+  AuthenticatorInterceptor(this._authenticator);
 
-  final Authenticator authenticator;
+  /// Authenticator to be used for authentication.
+  final Authenticator _authenticator;
 
   @override
   Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
@@ -17,7 +21,7 @@ class AuthenticatorInterceptor implements InternalInterceptor {
 
     Response<BodyType> response = await chain.proceed(originalRequest);
 
-    final Request? updatedRequest = await authenticator.authenticate(
+    final Request? updatedRequest = await _authenticator.authenticate(
       originalRequest,
       response,
       originalRequest,
@@ -26,10 +30,10 @@ class AuthenticatorInterceptor implements InternalInterceptor {
     if (updatedRequest != null) {
       response = await chain.proceed(updatedRequest);
       if (response.statusCode.isSuccessfulStatusCode) {
-        await authenticator.onAuthenticationSuccessful
+        await _authenticator.onAuthenticationSuccessful
             ?.call(updatedRequest, response, originalRequest);
       } else {
-        await authenticator.onAuthenticationFailed
+        await _authenticator.onAuthenticationFailed
             ?.call(updatedRequest, response, originalRequest);
       }
     }

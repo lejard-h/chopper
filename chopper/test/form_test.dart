@@ -1,4 +1,5 @@
 import 'package:chopper/chopper.dart';
+import 'package:chopper/src/converters.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';

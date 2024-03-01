@@ -1,4 +1,4 @@
-import 'package:chopper/src/http_logging_interceptor.dart';
+import 'package:chopper/src/interceptors/http_logging_interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/chopper_log_record.dart';
-import 'package:chopper/src/interceptor.dart';
+import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;

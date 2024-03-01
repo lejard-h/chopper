@@ -1,73 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chopper/src/chain/chain.dart';
-import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-abstract interface class Interceptor {
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain);
-}
-
-abstract interface class InternalInterceptor implements Interceptor {}
-
-/// An interface for implementing response interceptors.
-///
-/// [ResponseInterceptor]s are called after [Converter.convertResponse].
-///
-/// While [ResponseInterceptor]s *can* modify the body of responses,
-/// converting (decoding) the response body should be handled by [Converter]s.
-///
-/// See built-in [HttpLoggingInterceptor] for a fully functional example implementation.
-///
-/// A short example for extracting a header value from a response:
-///
-/// ```dart
-/// class MyResponseInterceptor implements ResponseInterceptor {
-///   String _token;
-///
-///   @override
-///   FutureOr<Response> onResponse(Response response) {
-///     _token = response.headers['auth_token'];
-///     return response;
-///   }
-/// }
-/// ```
-// @immutable
-// abstract interface class ResponseInterceptor {
-//   FutureOr<Response> onResponse(Response response);
-// }
-
-/// An interface for implementing request interceptors.
-///
-/// [RequestInterceptor]s are called after [Converter.convertRequest].
-///
-/// While [RequestInterceptor]s *can* modify the body of requests,
-/// converting (encoding) the request body should be handled by [Converter]s.
-///
-/// See built-in [CurlInterceptor] and [HttpLoggingInterceptor] for fully
-/// functional example implementations.
-///
-/// A short example for adding an authentication token to every request:
-///
-/// ```dart
-/// class MyRequestInterceptor implements ResponseInterceptor {
-///   @override
-///   FutureOr<Request> onRequest(Request request) {
-///     return applyHeader(request, 'auth_token', 'Bearer $token');
-///   }
-/// }
-/// ```
-///
-/// (See [applyHeader(request, name, value)] and [applyHeaders(request, headers)].)
-// @immutable
-// abstract interface class RequestInterceptor {
-//   FutureOr<Request> onRequest(Request request);
-// }
+import 'constants.dart';
 
 /// An interface for implementing request and response converters.
 ///
@@ -105,62 +44,6 @@ abstract interface class ErrorConverter {
   /// Converts the received [Response] to a [Response] which has a body with the
   /// HTTP representation of the original body.
   FutureOr<Response> convertError<BodyType, InnerType>(Response response);
-}
-
-/// {@template HeadersInterceptor}
-/// A [RequestInterceptor] that adds [headers] to every request.
-///
-/// Note that this interceptor will overwrite existing headers having the same
-/// keys as [headers].
-/// {@endtemplate}
-@immutable
-class HeadersInterceptor implements Interceptor {
-  final Map<String, String> headers;
-
-  /// {@macro HeadersInterceptor}
-  const HeadersInterceptor(this.headers);
-
-  @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
-    final Request request = applyHeaders(chain.request, headers);
-
-    return chain.proceed(request);
-  }
-}
-
-/// A [RequestInterceptor] implementation that prints a curl request equivalent
-/// to the network call channeled through it for debugging purposes.
-///
-/// Thanks, @edwardaux
-@immutable
-class CurlInterceptor implements Interceptor {
-  @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
-    final http.BaseRequest baseRequest = await chain.request.toBaseRequest();
-    final List<String> curlParts = ['curl -v -X ${baseRequest.method}'];
-    for (final MapEntry<String, String> header in baseRequest.headers.entries) {
-      curlParts.add("-H '${header.key}: ${header.value}'");
-    }
-    // this is fairly naive, but it should cover most cases
-    if (baseRequest is http.Request) {
-      final String body = baseRequest.body;
-      if (body.isNotEmpty) {
-        curlParts.add("-d '$body'");
-      }
-    }
-    if (baseRequest is http.MultipartRequest) {
-      for (final MapEntry<String, String> field in baseRequest.fields.entries) {
-        curlParts.add("-f '${field.key}: ${field.value}'");
-      }
-      for (final http.MultipartFile file in baseRequest.files) {
-        curlParts.add("-f '${file.field}: ${file.filename ?? ''}'");
-      }
-    }
-    curlParts.add('"${baseRequest.url}"');
-    chopperLogger.info(curlParts.join(' '));
-
-    return chain.proceed(chain.request);
-  }
 }
 
 /// {@template JsonConverter}

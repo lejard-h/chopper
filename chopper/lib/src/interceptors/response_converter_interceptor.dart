@@ -1,21 +1,36 @@
+import 'dart:async';
+
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/chain/chain.dart';
+// import 'package:chopper/src/chain/interceptor_chain.dart';
 import 'package:chopper/src/chain/interceptor_chain.dart';
+import 'package:chopper/src/converters.dart';
 import 'package:chopper/src/extensions.dart';
-import 'package:chopper/src/interceptor.dart';
+import 'package:chopper/src/interceptors/internal_interceptor.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
 
+/// {@template ResponseConverterInterceptor}
+/// Internal interceptor that handles response conversion provided by [_converter], [_responseConverter] or converts error instead with provided [_errorConverter].
+/// {@endtemplate}
 class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
+  /// {@macro ResponseConverterInterceptor}
   ResponseConverterInterceptor({
-    this.converter,
-    this.errorConverter,
-    this.responseConverter,
-  });
+    Converter? converter,
+    ErrorConverter? errorConverter,
+    FutureOr<Response<dynamic>> Function(Response<dynamic>)? responseConverter,
+  })  : _responseConverter = responseConverter,
+        _errorConverter = errorConverter,
+        _converter = converter;
 
-  final Converter? converter;
-  final ErrorConverter? errorConverter;
-  final ConvertResponse? responseConverter;
+  /// Converter to be used for response conversion.
+  final Converter? _converter;
+
+  /// Error converter to be used for error conversion.
+  final ErrorConverter? _errorConverter;
+
+  /// Response converter to be used for response conversion.
+  final ConvertResponse? _responseConverter;
 
   @override
   Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
@@ -28,10 +43,11 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
     final response = await typedChain.proceed(chain.request);
 
     return response.statusCode.isSuccessfulStatusCode
-        ? _handleSuccessResponse<BodyType>(response, responseConverter)
+        ? _handleSuccessResponse<BodyType>(response, _responseConverter)
         : _handleErrorResponse(response);
   }
 
+  /// Handles the successful response by converting it using [_responseConverter] or [_converter].
   Future<Response<BodyType>> _handleSuccessResponse<BodyType>(
     Response response,
     ConvertResponse? responseConverter,
@@ -39,8 +55,8 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
     Response? newResponse;
     if (responseConverter != null) {
       newResponse = await responseConverter(response);
-    } else if (converter != null) {
-      newResponse = await _decodeResponse<BodyType>(response, converter!);
+    } else if (_converter != null) {
+      newResponse = await _decodeResponse<BodyType>(response, _converter!);
     }
 
     return Response<BodyType>(
@@ -49,18 +65,20 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
     );
   }
 
+  /// Converts the [response] using [_converter].
   Future<Response<BodyType>> _decodeResponse<BodyType>(
     Response response,
     Converter withConverter,
   ) async =>
       await withConverter.convertResponse<BodyType, InnerType>(response);
 
+  /// Handles the error response by converting it using [_errorConverter].
   Future<Response<BodyType>> _handleErrorResponse<BodyType>(
     Response response,
   ) async {
     var error = response.body;
-    if (errorConverter != null) {
-      final errorRes = await errorConverter?.convertError<BodyType, InnerType>(
+    if (_errorConverter != null) {
+      final errorRes = await _errorConverter?.convertError<BodyType, InnerType>(
         response,
       );
       error = errorRes?.error ?? errorRes?.body;

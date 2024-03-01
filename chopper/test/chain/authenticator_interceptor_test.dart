@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
-import 'package:chopper/src/chain/authenticator_interceptor.dart';
+import 'package:chopper/src/interceptors/authenticator_interceptor.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
