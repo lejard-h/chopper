@@ -313,7 +313,7 @@ final class ChopperGenerator
         } else {
           blocks.add(
             declareFinal(Vars.body.toString())
-                .assign(_generateMap(fields, isStringValue: formUrlEncoded))
+                .assign(_generateMap(fields, enableToString: formUrlEncoded))
                 .statement,
           );
         }
@@ -723,19 +723,19 @@ final class ChopperGenerator
 
   static Expression _generateMap(
     Map<ParameterElement, ConstantReader> queries, {
-    bool isStringValue = false,
+    bool enableToString = false,
   }) =>
       literalMap(
         {
           for (final MapEntry<ParameterElement, ConstantReader> query
               in queries.entries)
             query.value.peek('name')?.stringValue ?? query.key.displayName:
-                isStringValue
+                enableToString
                     ? refer(query.key.displayName).property('toString').call([])
                     : refer(query.key.displayName),
         },
         refer('String'),
-        refer(isStringValue ? 'String' : 'dynamic'),
+        refer(enableToString ? 'String' : 'dynamic'),
       );
 
   static Expression _generateList(
