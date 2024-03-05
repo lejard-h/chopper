@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/chain/chain.dart';
-// import 'package:chopper/src/chain/interceptor_chain.dart';
 import 'package:chopper/src/chain/interceptor_chain.dart';
 import 'package:chopper/src/converters.dart';
 import 'package:chopper/src/extensions.dart';
