@@ -302,13 +302,13 @@ final class ChopperGenerator
           final DartType bodyType = m.parameters
               .firstWhere((p) => _typeChecker(chopper.Body).hasAnnotationOf(p))
               .type;
-          final mapExpression = (formUrlEncoded &&
+          final map = (formUrlEncoded &&
                   _isMap(bodyType) &&
                   !_isMapStringString(bodyType))
               ? _generateMapToStringExpression(refer(body.keys.first))
               : refer(body.keys.first);
           blocks.add(
-            declareFinal(Vars.body.toString()).assign(mapExpression).statement,
+            declareFinal(Vars.body.toString()).assign(map).statement,
           );
         } else {
           blocks.add(
