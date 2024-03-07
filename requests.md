@@ -2,25 +2,26 @@
 
 ## Available Request annotations
 
-| Annotation                                 | HTTP verb | Description                                   |
-|--------------------------------------------|-----------|-----------------------------------------------|
-| `@Get()`, `@get`                           | `GET`     | Defines a `GET` request.                      |
-| `@Post()`, `@post`                         | `POST`    | Defines a `POST` request.                     |
-| `@Put()`, `@put`                           | `PUT`     | Defines a `PUT` request.                      |
-| `@Patch()`, `@patch`                       | `PATCH`   | Defines a `PATCH` request.                    |
-| `@Delete()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                   |
-| `@Head()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                     |
-| `@Body()`, `@body`                         | -         | Defines the request's body.                   |
-| `@Multipart()`, `@multipart`               | -         | Defines a `multipart/form-data` request.      |         
-| `@Query()`, `@query`                       | -         | Defines a query parameter.                    |             
-| `@QueryMap()`, `@queryMap`                 | -         | Defines a query parameter map.                |          
-| `@FactoryConverter()`, `@factoryConverter` | -         | Defines a request/response converter factory. |  
-| `@Field()`, `@field`                       | -         | Defines a form field.                         |             
-| `@FieldMap()`, `@fieldMap`                 | -         | Defines a form field map.                     |          
-| `@Part()`, `@part`                         | -         | Defines a multipart part.                     |              
-| `@PartMap()`, `@partMap`                   | -         | Defines a multipart part map.                 |           
-| `@PartFile()`, `@partFile`                 | -         | Defines a multipart file part.                |          
-| `@PartFileMap()`, `@partFileMap`           | -         | Defines a multipart file part map.            |
+| Annotation                                 | HTTP verb | Description                                            |
+|--------------------------------------------|-----------|--------------------------------------------------------|
+| `@Get()`, `@get`                           | `GET`     | Defines a `GET` request.                               |
+| `@Post()`, `@post`                         | `POST`    | Defines a `POST` request.                              |
+| `@Put()`, `@put`                           | `PUT`     | Defines a `PUT` request.                               |
+| `@Patch()`, `@patch`                       | `PATCH`   | Defines a `PATCH` request.                             |
+| `@Delete()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                            |
+| `@Head()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                              |
+| `@Body()`, `@body`                         | -         | Defines the request's body.                            |
+| `@FormUrlEncoded`, `@formUrlEncoded`       | -         | Defines a `application/x-www-form-urlencoded` request. |
+| `@Multipart()`, `@multipart`               | -         | Defines a `multipart/form-data` request.               |         
+| `@Query()`, `@query`                       | -         | Defines a query parameter.                             |             
+| `@QueryMap()`, `@queryMap`                 | -         | Defines a query parameter map.                         |          
+| `@FactoryConverter()`, `@factoryConverter` | -         | Defines a request/response converter factory.          |  
+| `@Field()`, `@field`                       | -         | Defines a form field.                                  |             
+| `@FieldMap()`, `@fieldMap`                 | -         | Defines a form field map.                              |          
+| `@Part()`, `@part`                         | -         | Defines a multipart part.                              |              
+| `@PartMap()`, `@partMap`                   | -         | Defines a multipart part map.                          |           
+| `@PartFile()`, `@partFile`                 | -         | Defines a multipart file part.                         |          
+| `@PartFileMap()`, `@partFileMap`           | -         | Defines a multipart file part map.                     |
 
 ## Path resolution
 
@@ -170,12 +171,27 @@ Future<Response> fetch(@Header("foo") String bar);
 
 ## Sending `application/x-www-form-urlencoded` data
 
-If no Converter is specified for a request (neither on a `ChopperClient` nor with the `@FactoryConverter` annotation)
+If no Converter (neither on a `ChopperClient` nor with the `@FactoryConverter` annotation) or formUrlEncoded (`@FormUrlEncoded` annotation) is specified for a request
 and the request body is of type `Map<String, String>`, the body will be sent as form URL encoded data.
 
 > This is the default behavior of the http package.
 
-You can also use `FormUrlEncodedConverter` that will add the correct `content-type` and convert a `Map`
+### FormUrlEncoded annotation
+
+We recommend annotation `@formUrlEncoded` on method that will add the correct `content-type` and convert a `Map`
+into `Map<String, String>` for requests.
+
+```dart
+@Post(
+  path: "form",
+)
+@formUrlEncoded
+Future<Response> postForm(@Body() Map<String, String> fields);
+```
+
+### FormUrlEncodedConverter
+
+you can also use `FormUrlEncodedConverter` that also will add the correct `content-type` and convert a `Map`
 into `Map<String, String>` for requests.
 
 ```dart
@@ -185,7 +201,6 @@ final chopper = ChopperClient(
 );
 ```
 
-### On a single method
 
 To do only a single type of request with form encoding in a service, use the provided `FormUrlEncodedConverter`'
 s `requestFactory` method with the `@FactoryConverter` annotation.
@@ -208,9 +223,7 @@ the parameter's name is used as the field's name.
 
 ```dart
 @Post(path: "form")
-@FactoryConverter(
-  request: FormUrlEncodedConverter.requestFactory,
-)
+@formUrlEncoded
 Future<Response> post(@Field() String foo, @Field("b") int bar);
 ```
 
