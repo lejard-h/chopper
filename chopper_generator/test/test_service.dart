@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
@@ -111,6 +112,32 @@ abstract class HttpTestService extends ChopperService {
   Future<Response> postResources(
     @Part('1') Map a,
     @Part('2') Map b,
+  );
+
+  @Post(path: 'formUrlEncoded')
+  @FormUrlEncoded()
+  Future<Response> postFormUrlEncodeBody(
+    @Body() HashMap hashMapBody,
+    @FieldMap() Map<String, String> map,
+  );
+
+  @Post(path: 'formUrlEncoded')
+  @FormUrlEncoded()
+  Future<Response> postFormUrlEncodeField(
+    @Field('a') String a,
+    @Field('a1') String a2,
+  );
+
+  @Post(path: 'formUrlEncoded')
+  @FormUrlEncoded()
+  Future<Response> postFormUrlEncodeFieldMap(
+    @FieldMap() Map<String, String> c,
+  );
+
+  @Post(path: 'formUrlEncoded')
+  @FormUrlEncoded()
+  Future<Response> postFormUrlEncodeFieldDynamicMap(
+    @FieldMap() Map<String, dynamic> c,
   );
 
   @Post(path: 'file')
