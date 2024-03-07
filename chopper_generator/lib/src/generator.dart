@@ -302,7 +302,7 @@ final class ChopperGenerator
           final DartType bodyType = m.parameters
               .firstWhere((p) => _typeChecker(chopper.Body).hasAnnotationOf(p))
               .type;
-          final map = (formUrlEncoded &&
+          final Expression map = (formUrlEncoded &&
                   _isMap(bodyType) &&
                   !_isMapStringString(bodyType))
               ? _generateMapToStringExpression(refer(body.keys.first))
@@ -325,9 +325,10 @@ final class ChopperGenerator
             .firstWhere(
                 (p) => _typeChecker(chopper.FieldMap).hasAnnotationOf(p))
             .type;
-        final map = (formUrlEncoded && !_isMapStringString(fieldMapType))
-            ? _generateMapToStringExpression(refer(fieldMap.keys.first))
-            : refer(fieldMap.keys.first);
+        final Expression map =
+            (formUrlEncoded && !_isMapStringString(fieldMapType))
+                ? _generateMapToStringExpression(refer(fieldMap.keys.first))
+                : refer(fieldMap.keys.first);
         if (hasBody) {
           blocks.add(
             refer(Vars.body.toString()).property('addAll').call(
@@ -621,7 +622,7 @@ final class ChopperGenerator
         _typeChecker(Map).isExactlyType(type) ||
         _typeChecker(BuiltMap).isExactlyType(type)) return type;
 
-// ignore: deprecated_member_use
+    // ignore: deprecated_member_use
     if (generic.isDynamic) return null;
 
     if (_typeChecker(List).isExactlyType(type) ||
