@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.2.0
+
+- Add support for `@FormUrlEncoded` annotation ([#579](https://github.com/lejard-h/chopper/pull/579))
+
 ## 7.1.1+1
 
 - Export `ChopperHttpException` in library exports ([#570](https://github.com/lejard-h/chopper/pull/570))
