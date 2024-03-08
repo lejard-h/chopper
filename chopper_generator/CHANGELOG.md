@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.2.0
+
+- Add support for `@FormUrlEncoded` annotation ([#579](https://github.com/lejard-h/chopper/pull/579))
+
 ## 7.1.1
 
 - Add option to override build_extension via build.yaml ([#562](https://github.com/lejard-h/chopper/pull/562))
