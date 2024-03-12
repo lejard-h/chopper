@@ -8,12 +8,12 @@ import 'package:chopper/src/response.dart';
 class RequestStreamInterceptor implements InternalInterceptor {
   const RequestStreamInterceptor(this.callback);
 
-  final void Function(Request event) callback;
+  final FutureOr<void> Function(Request event) callback;
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
       Chain<BodyType> chain) async {
-    callback(chain.request);
+    await callback(chain.request);
 
     return chain.proceed(chain.request);
   }
