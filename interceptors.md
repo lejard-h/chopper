@@ -46,6 +46,44 @@ class MyResponseInterceptor implements Interceptor {
 }
 ```
 
+## Breaking out of an interceptor
+
+In some cases you may run into a case where it's not possible to continue within an interceptor and want to break out/cancel the request. This can be achieved by throwing an exception.
+This will not return a response and the request will not be executed.
+
+>Keep in mind that when throwing an exception you also need to handle/catch the exception in calling code.
+
+For example if you want to stop the request if the token is expired:
+
+```dart
+class AuthInterceptor implements Interceptor {
+
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+    final request = applyHeader(chain.request, 'authorization',
+        SharedPrefs.localStorage.getString(tokenHeader),
+        override: false);
+   
+    final response = await chain.proceed(request);
+   
+    if (response?.statusCode == 401) {
+      // Refreshing fails
+      final bool isRefreshed = await _refreshToken();
+      if(!isRefreshed){
+        // Throw a exception to stop the request. 
+        throw Exception('Token expired');
+      }
+    }
+    
+    return response;
+  }
+}
+```
+
+It's not strictly needed to throw an exception in order to break out of the interceptor. 
+Other construction can also be used depending on how the project is structured.
+Another could be calling a service that is injected or providing a callback that handles the state of the app.
+
 ## Builtins
 * [CurlInterceptor](https://pub.dev/documentation/chopper/latest/chopper/CurlInterceptor-class.html): Interceptor that prints curl commands for each execute request
 * [HeadersInterceptor](https://pub.dev/documentation/chopper/latest/chopper/HeadersInterceptor-class.html): Interceptor that adds headers to each request
