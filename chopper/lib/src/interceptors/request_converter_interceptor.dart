@@ -19,14 +19,13 @@ class RequestConverterInterceptor implements InternalInterceptor {
   final ConvertRequest? _requestConverter;
 
   @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
-    final request =
-        await _handleRequestConverter(chain.request, _requestConverter);
-
-    final response = await chain.proceed(request);
-
-    return response;
-  }
+  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async =>
+      await chain.proceed(
+        await _handleRequestConverter(
+          chain.request,
+          _requestConverter,
+        ),
+      );
 
   /// Converts the [request] using [_requestConverter] if it is not null, otherwise uses [_converter].
   Future<Request> _handleRequestConverter(
