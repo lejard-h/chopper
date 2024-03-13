@@ -394,6 +394,101 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<dynamic>> postFormUrlEncodeBody(
+    HashMap<dynamic, dynamic> hashMapBody,
+    Map<String, String> map,
+  ) {
+    final Uri $url = Uri.parse('/test/formUrlEncoded');
+    final Map<String, String> $headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+    };
+    final $body = hashMapBody.map<String, String>((
+      key,
+      value,
+    ) {
+      return MapEntry(
+        key.toString(),
+        value.toString(),
+      );
+    });
+    $body.addAll(map);
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> postFormUrlEncodeField(
+    String a,
+    String a2,
+  ) {
+    final Uri $url = Uri.parse('/test/formUrlEncoded');
+    final Map<String, String> $headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+    };
+    final $body = <String, String>{
+      'a': a.toString(),
+      'a1': a2.toString(),
+    };
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> postFormUrlEncodeFieldMap(Map<String, String> c) {
+    final Uri $url = Uri.parse('/test/formUrlEncoded');
+    final Map<String, String> $headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+    };
+    final $body = c;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> postFormUrlEncodeFieldDynamicMap(
+      Map<String, dynamic> c) {
+    final Uri $url = Uri.parse('/test/formUrlEncoded');
+    final Map<String, String> $headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+    };
+    final $body = c.map<String, String>((
+      key,
+      value,
+    ) {
+      return MapEntry(
+        key.toString(),
+        value.toString(),
+      );
+    });
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> postFile(List<int> bytes) {
     final Uri $url = Uri.parse('/test/file');
     final List<PartValue> $parts = <PartValue>[
