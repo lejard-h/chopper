@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chopper/src/authenticator.dart';
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/extensions.dart';
@@ -16,7 +18,7 @@ class AuthenticatorInterceptor implements InternalInterceptor {
   final Authenticator _authenticator;
 
   @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
     final originalRequest = chain.request;
 
     Response<BodyType> response = await chain.proceed(originalRequest);

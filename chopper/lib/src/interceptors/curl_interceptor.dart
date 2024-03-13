@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/response.dart';
@@ -12,7 +14,7 @@ import 'package:meta/meta.dart';
 @immutable
 class CurlInterceptor implements Interceptor {
   @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
     final http.BaseRequest baseRequest = await chain.request.toBaseRequest();
     final List<String> curlParts = ['curl -v -X ${baseRequest.method}'];
     for (final MapEntry<String, String> header in baseRequest.headers.entries) {

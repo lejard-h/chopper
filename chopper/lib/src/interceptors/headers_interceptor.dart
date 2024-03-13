@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/response.dart';
@@ -18,7 +20,7 @@ class HeadersInterceptor implements Interceptor {
   const HeadersInterceptor(this.headers);
 
   @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async =>
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async =>
       chain.proceed(
         applyHeaders(
           chain.request,

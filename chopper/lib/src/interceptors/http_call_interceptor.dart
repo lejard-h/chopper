@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/chopper_exception.dart';
 import 'package:chopper/src/interceptors/internal_interceptor.dart';
@@ -17,7 +19,7 @@ class HttpCallInterceptor implements InternalInterceptor {
   final http.Client _httpClient;
 
   @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
     final finalRequest = await chain.request.toBaseRequest();
     final streamRes = await _httpClient.send(finalRequest);
 

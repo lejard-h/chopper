@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/converters.dart';
@@ -19,7 +21,7 @@ class RequestConverterInterceptor implements InternalInterceptor {
   final ConvertRequest? _requestConverter;
 
   @override
-  Future<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async =>
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async =>
       await chain.proceed(
         await _handleRequestConverter(
           chain.request,
