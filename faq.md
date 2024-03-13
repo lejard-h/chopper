@@ -193,6 +193,7 @@ interceptors: [
 ```
 
 The actual implementation of the algorithm above may vary based on how the backend API - more precisely the login and session handling - of your app looks like.
+Breaking out of the authentication flow/inteceptor can be achieved in multiple ways. For example by throwing an exception or by using a service handles navigation. See [interceptor](interceptors.md) for more info.
 
 ### Authorized HTTP requests using the special Authenticator interceptor
 
