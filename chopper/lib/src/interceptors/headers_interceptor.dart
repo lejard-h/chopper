@@ -20,7 +20,8 @@ class HeadersInterceptor implements Interceptor {
   const HeadersInterceptor(this.headers);
 
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async =>
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+          Chain<BodyType> chain) async =>
       chain.proceed(
         applyHeaders(
           chain.request,

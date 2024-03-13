@@ -32,7 +32,8 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
   final ConvertResponse? _responseConverter;
 
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
     final realChain = chain as InterceptorChain<BodyType>;
     final typedChain = switch (isTypeOf<BodyType, Stream<List<int>>>()) {
       true => realChain,

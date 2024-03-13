@@ -18,7 +18,8 @@ class AuthenticatorInterceptor implements InternalInterceptor {
   final Authenticator _authenticator;
 
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
     final originalRequest = chain.request;
 
     Response<BodyType> response = await chain.proceed(originalRequest);

@@ -19,7 +19,8 @@ class HttpCallInterceptor implements InternalInterceptor {
   final http.Client _httpClient;
 
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
     final finalRequest = await chain.request.toBaseRequest();
     final streamRes = await _httpClient.send(finalRequest);
 

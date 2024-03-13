@@ -86,7 +86,8 @@ class HttpLoggingInterceptor implements Interceptor {
   final bool _logHeaders;
 
   @override
-  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
     final request = chain.request;
     if (level == Level.none) return chain.proceed(request);
     final http.BaseRequest baseRequest = await request.toBaseRequest();
