@@ -120,14 +120,32 @@ Iterable<_Pair<String, String>> _iterableToQuery(
   String name,
   Iterable values, {
   bool useBrackets = false,
+  bool includeNullQueryVars = false,
 }) =>
-    values.where((value) => value?.toString().isNotEmpty ?? false).map(
-          (value) => _Pair(
-            name,
-            _normalizeValue(value),
-            useBrackets: useBrackets,
-          ),
-        );
+    [
+      for (final dynamic value in values)
+        if (value?.toString().isNotEmpty ?? false)
+          if (value is Iterable)
+            ..._iterableToQuery(
+              name,
+              value,
+              useBrackets: useBrackets,
+              includeNullQueryVars: includeNullQueryVars,
+            )
+          else if (value is Map<String, dynamic>)
+            ..._mapToQuery(
+              value,
+              prefix: name,
+              useBrackets: useBrackets,
+              includeNullQueryVars: includeNullQueryVars,
+            )
+          else
+            _Pair(
+              name,
+              _normalizeValue(value),
+              useBrackets: useBrackets,
+            )
+    ];
 
 String _normalizeValue(value) => Uri.encodeComponent(
       value is DateTime

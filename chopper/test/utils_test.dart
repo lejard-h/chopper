@@ -565,6 +565,44 @@ void main() {
     );
   });
 
+  group('mapToQuery Strapi query', () {
+    final Map<String, dynamic> strapiQuery = {
+      'filters': {
+        r'$or': [
+          {
+            'date': {
+              r'$eq': '2020-01-01',
+            }
+          },
+          {
+            'date': {
+              r'$eq': '2020-01-02',
+            }
+          }
+        ],
+        'author': {
+          'name': {
+            r'$eq': 'Kai doe',
+          },
+        }
+      }
+    };
+
+    test('mapToQuery', () {
+      expect(
+        mapToQuery(strapiQuery, useBrackets: false),
+        equals(r'filters.%24or.date.%24eq=2020-01-01&filters.%24or.date.%24eq=2020-01-02&filters.author.name.%24eq=Kai%20doe'),
+      );
+    });
+
+    test('mapToQuery with brackets', () {
+      expect(
+        mapToQuery(strapiQuery, useBrackets: true),
+        equals(r'filters%5B%24or%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe'),
+      );
+    });
+  });
+
   Request createRequest(Map<String, String> headers) => Request(
         'POST',
         Uri.parse('foo'),
