@@ -14,6 +14,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
   final Uri baseUri;
   final dynamic body;
   final Map<String, dynamic> parameters;
+  final Object? tag;
   final bool multipart;
   final List<PartValue> parts;
   final bool useBrackets;
@@ -29,6 +30,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     Map<String, String> headers = const {},
     this.multipart = false,
     this.parts = const [],
+    this.tag,
     this.useBrackets = false,
     this.includeNullQueryVars = false,
   })  : assert(
