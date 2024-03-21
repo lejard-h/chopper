@@ -64,6 +64,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     List<PartValue>? parts,
     bool? useBrackets,
     bool? includeNullQueryVars,
+    Object? tag,
   }) =>
       Request(
         method ?? this.method,
@@ -76,6 +77,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
         parts: parts ?? this.parts,
         useBrackets: useBrackets ?? this.useBrackets,
         includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
+        tag: tag ?? this.tag,
       );
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
