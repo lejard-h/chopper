@@ -172,6 +172,7 @@ final class ChopperGenerator
         _getAnnotations(m, chopper.PartFile);
     final Map<String, ConstantReader> fileFieldMap =
         _getAnnotation(m, chopper.PartFileMap);
+    final Map<String, ConstantReader> tag = _getAnnotation(m, chopper.Tag);
 
     final Code? headers = _generateHeaders(m, method!, formUrlEncoded);
     final Expression url = _generateUrl(
@@ -400,6 +401,8 @@ final class ChopperGenerator
         );
       }
 
+      final bool hasTag = tag.isNotEmpty;
+
       final bool useBrackets = Utils.getUseBrackets(method);
 
       final bool includeNullQueryVars = Utils.getIncludeNullQueryVars(method);
@@ -413,6 +416,7 @@ final class ChopperGenerator
                 useQueries: hasQuery,
                 useHeaders: headers != null,
                 hasParts: hasParts,
+                tagRefer: hasTag ? refer(tag.keys.first) : null,
                 useBrackets: useBrackets,
                 includeNullQueryVars: includeNullQueryVars,
               ),
@@ -701,6 +705,7 @@ final class ChopperGenerator
     bool useHeaders = false,
     bool useBrackets = false,
     bool includeNullQueryVars = false,
+    Reference? tagRefer,
   }) =>
       refer('Request').newInstance(
         [
@@ -716,6 +721,7 @@ final class ChopperGenerator
           },
           if (useQueries) 'parameters': refer(Vars.parameters.toString()),
           if (useHeaders) 'headers': refer(Vars.headers.toString()),
+          if (tagRefer != null) 'tag': tagRefer,
           if (useBrackets) 'useBrackets': literalBool(useBrackets),
           if (includeNullQueryVars)
             'includeNullQueryVars': literalBool(includeNullQueryVars),

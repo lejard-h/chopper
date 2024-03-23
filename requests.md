@@ -22,6 +22,8 @@
 | `@PartMap()`, `@partMap`                   | -         | Defines a multipart part map.                          |           
 | `@PartFile()`, `@partFile`                 | -         | Defines a multipart file part.                         |          
 | `@PartFileMap()`, `@partFileMap`           | -         | Defines a multipart file part map.                     |
+| `@Tag`, `@tag`                             | -         | Defines a tag parameter.                               |              
+
 
 ## Path resolution
 
@@ -276,4 +278,46 @@ Future<Response<MyClass>> fetch();
 Future<MyClass> fetch();
 ```
 
-> Note: Chopper doesn't convert response bodies by itself to dart object. You need to use a [Converter](converters/converters.md) for that. 
+> Note: Chopper doesn't convert response bodies by itself to dart object. You need to use a [Converter](converters/converters.md) for that.
+
+## Add tag
+`@Tag` parameter annotation for setting tag on the underlying Chopper `Request` object. These can be read
+in `Converter`s or `Interceptor`s for tracing, analytics, varying behavior, and more.
+
+
+if want to filter null value or empty String for some url. we can make an `IncludeBodyNullOrEmptyTag` Object as Tag.
+```dart
+class IncludeBodyNullOrEmptyTag {
+  bool includeNull = false;
+  bool includeEmpty = false;
+
+  IncludeBodyNullOrEmptyTag(this.includeNull, this.includeEmpty);
+}
+
+@get(path: '/include')
+Future<Response> includeBodyNullOrEmptyTag(
+    {@Tag()
+    IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag()});
+```
+
+get tag via `request.tag` in `Converter` or `Interceptor`:
+
+```dart
+class TagConverter extends JsonConverter {
+  FutureOr<Request> convertRequest(Request request) {
+    final tag = request.tag;
+    if (tag is IncludeBodyNullOrEmptyTag) {
+      if (request.body is Map) {
+        final Map body = request.body as Map;
+        final Map bodyCopy = {};
+        for (final MapEntry entry in body.entries) {
+          if (!tag.includeNull && entry.value == null) continue;
+          if (!tag.includeEmpty && entry.value == "") continue;
+          bodyCopy[entry.key] = entry.value;
+        }
+        request = request.copyWith(body: bodyCopy);
+      }
+    }
+  }
+}
+```

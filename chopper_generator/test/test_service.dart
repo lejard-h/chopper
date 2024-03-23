@@ -233,6 +233,12 @@ abstract class HttpTestService extends ChopperService {
     @Field() final List<int> positives, [
     @Field() final String? signature,
   ]);
+
+  @Post(path: 'tag')
+  Future<Response<void>> tag(
+    @Field('fool') final String foo,
+    @Tag() Object? t1,
+  );
 }
 
 Request customConvertRequest(Request req) {

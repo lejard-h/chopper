@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.3.0
+
+- Add support for `@Tag` annotation ([#586](https://github.com/lejard-h/chopper/pull/586))
+
 ## 7.2.0
 
 - Add support for `@FormUrlEncoded` annotation ([#579](https://github.com/lejard-h/chopper/pull/579))

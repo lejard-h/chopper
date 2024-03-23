@@ -27,7 +27,7 @@ jobs:
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.2
         with:
           fetch-depth: 2
       - run: git checkout HEAD^
@@ -53,7 +53,7 @@ jobs:
         with:
           sdk: stable
       - id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.2
       - name: Load this version
         id: load_this_version
         working-directory: ${{ matrix.package }}
@@ -111,7 +111,7 @@ jobs:
       - name: Github release
         id: github_release
         if: ${{ env.IS_VERSION_GREATER == 1 }}
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: ${{ format('{0}-v{1}', matrix.package, env.THIS_VERSION) }}
           tag_name: ${{ format('{0}-v{1}', matrix.package, env.THIS_VERSION) }}

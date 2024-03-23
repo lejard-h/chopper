@@ -557,6 +557,25 @@ final class FormUrlEncoded {
   const FormUrlEncoded();
 }
 
+///
+/// {@template Tag}
+/// Adds the argument instance as a request tag.
+///
+/// ```dart
+/// Future<Response> requestWithTag(
+///   @Tag() String t1,
+/// );
+/// ```
+/// get tag via `request.tags`
+///
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.parameter})
+final class Tag {
+  /// {@macro Tag}
+  const Tag();
+}
+
 /// {@macro ChopperApi}
 const chopperApi = ChopperApi();
 
@@ -622,3 +641,6 @@ const partFileMap = PartFileMap();
 
 /// {@macro FormUrlEncoded}
 const formUrlEncoded = FormUrlEncoded();
+
+/// {@macro Tag}
+const tag = Tag();
