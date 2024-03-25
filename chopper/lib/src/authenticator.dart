@@ -33,7 +33,7 @@ abstract class Authenticator {
   /// Returns a [Request] that includes credentials to satisfy
   /// an authentication challenge received in [response], based on
   /// the incoming [request] or optionally, the [originalRequest]
-  /// (which was not modified with any previous [RequestInterceptor]s).
+  /// (which was not modified with any previous [Interceptor]s).
   ///
   /// Otherwise, return `null` if the challenge cannot be satisfied.
   ///

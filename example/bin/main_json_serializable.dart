@@ -32,8 +32,8 @@ main() async {
       // the generated service
       MyService.create(),
     ],
-    /* ResponseInterceptorFunc | RequestInterceptorFunc | ResponseInterceptor | RequestInterceptor */
-    interceptors: [authHeader],
+    /* Interceptors */
+    interceptors: [AuthInterceptor()],
   );
 
   final myService = chopper.getService<MyService>();
@@ -57,11 +57,19 @@ main() async {
   }
 }
 
-Future<Request> authHeader(Request request) async => applyHeader(
-      request,
-      'Authorization',
-      '42',
+class AuthInterceptor implements Interceptor {
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
+    return chain.proceed(
+      applyHeader(
+        chain.request,
+        'Authorization',
+        '42',
+      ),
     );
+  }
+}
 
 typedef JsonFactory<T> = T Function(Map<String, dynamic> json);
 

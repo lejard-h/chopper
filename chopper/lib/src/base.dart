@@ -2,23 +2,14 @@ import 'dart:async';
 
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/authenticator.dart';
+import 'package:chopper/src/chain/call.dart';
 import 'package:chopper/src/constants.dart';
-import 'package:chopper/src/interceptor.dart';
+import 'package:chopper/src/converters.dart';
+import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
-import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-
-@visibleForTesting
-const List<Type> allowedInterceptorsType = [
-  RequestInterceptor,
-  RequestInterceptorFunc,
-  ResponseInterceptor,
-  ResponseInterceptorFunc1,
-  ResponseInterceptorFunc2,
-  DynamicResponseInterceptorFunc,
-];
 
 /// ChopperClient is the main class of the Chopper API.
 ///
@@ -46,8 +37,7 @@ base class ChopperClient {
   final ErrorConverter? errorConverter;
 
   late final Map<Type, ChopperService> _services;
-  late final List _requestInterceptors;
-  late final List _responseInterceptors;
+  late final List<Interceptor> interceptors;
   final StreamController<Request> _requestController =
       StreamController<Request>.broadcast();
   final StreamController<Response> _responseController =
@@ -79,11 +69,10 @@ base class ChopperClient {
   /// );
   /// ```
   ///
-  /// [RequestInterceptor]s and [ResponseInterceptor]s can be added to the client
+  /// [Interceptor]s can be added to the client
   /// with the [interceptors] parameter.
   ///
-  /// See [RequestInterceptor], [ResponseInterceptor], [HttpLoggingInterceptor],
-  /// [HeadersInterceptor], [CurlInterceptor]
+  /// See [HttpLoggingInterceptor], [HeadersInterceptor], [CurlInterceptor]
   ///
   /// ```dart
   /// final chopper = ChopperClient(
@@ -114,7 +103,7 @@ base class ChopperClient {
   ChopperClient({
     Uri? baseUrl,
     http.Client? client,
-    Iterable? interceptors,
+    this.interceptors = const [],
     this.authenticator,
     this.converter,
     this.errorConverter,
@@ -126,35 +115,12 @@ base class ChopperClient {
         ),
         baseUrl = baseUrl ?? Uri(),
         httpClient = client ?? http.Client(),
-        _clientIsInternal = client == null,
-        assert(
-          interceptors?.every(_isAnInterceptor) ?? true,
-          'Unsupported type for interceptors, it only support the following types:\n'
-          ' - ${allowedInterceptorsType.join('\n - ')}',
-        ),
-        _requestInterceptors = [
-          ...?interceptors?.where(_isRequestInterceptor),
-        ],
-        _responseInterceptors = [
-          ...?interceptors?.where(_isResponseInterceptor),
-        ] {
+        _clientIsInternal = client == null {
     _services = <Type, ChopperService>{
       for (final ChopperService service in services?.toSet() ?? [])
         service.definitionType: service..client = this
     };
   }
-
-  static bool _isRequestInterceptor(value) =>
-      value is RequestInterceptor || value is RequestInterceptorFunc;
-
-  static bool _isResponseInterceptor(value) =>
-      value is ResponseInterceptor ||
-      value is ResponseInterceptorFunc1 ||
-      value is ResponseInterceptorFunc2 ||
-      value is DynamicResponseInterceptorFunc;
-
-  static bool _isAnInterceptor(value) =>
-      _isResponseInterceptor(value) || _isRequestInterceptor(value);
 
   /// Retrieve any service included in the [ChopperClient]
   ///
@@ -183,100 +149,6 @@ base class ChopperClient {
     return service as ServiceType;
   }
 
-  Future<Request> _encodeRequest(Request request) async =>
-      converter?.convertRequest(request) ?? request;
-
-  static Future<Response<BodyType>> _decodeResponse<BodyType, InnerType>(
-    Response response,
-    Converter withConverter,
-  ) async =>
-      await withConverter.convertResponse<BodyType, InnerType>(response);
-
-  Future<Request> _interceptRequest(Request req) async {
-    final body = req.body;
-    for (final i in _requestInterceptors) {
-      if (i is RequestInterceptor) {
-        req = await i.onRequest(req);
-      } else if (i is RequestInterceptorFunc) {
-        req = await i(req);
-      }
-    }
-
-    assert(
-      body == req.body,
-      'Interceptors should not transform the body of the request'
-      'Use Request converter instead',
-    );
-
-    return req;
-  }
-
-  Future<Response<BodyType>> _interceptResponse<BodyType, InnerType>(
-    Response<BodyType> res,
-  ) async {
-    final body = res.body;
-    for (final i in _responseInterceptors) {
-      if (i is ResponseInterceptor) {
-        res = await i.onResponse(res) as Response<BodyType>;
-      } else if (i is ResponseInterceptorFunc1) {
-        res = await i<BodyType>(res);
-      } else if (i is ResponseInterceptorFunc2) {
-        res = await i<BodyType, InnerType>(res);
-      } else if (i is DynamicResponseInterceptorFunc) {
-        res = await i(res) as Response<BodyType>;
-      }
-    }
-
-    assert(
-      body == res.body,
-      'Interceptors should not transform the body of the response'
-      'Use Response converter instead',
-    );
-
-    return res;
-  }
-
-  Future<Response<BodyType>> _handleErrorResponse<BodyType, InnerType>(
-    Response response,
-  ) async {
-    var error = response.body;
-    if (errorConverter != null) {
-      final errorRes = await errorConverter?.convertError<BodyType, InnerType>(
-        response,
-      );
-      error = errorRes?.error ?? errorRes?.body;
-    }
-
-    return Response<BodyType>(response.base, null, error: error);
-  }
-
-  Future<Response<BodyType>> _handleSuccessResponse<BodyType, InnerType>(
-    Response response,
-    ConvertResponse? responseConverter,
-  ) async {
-    if (responseConverter != null) {
-      response = await responseConverter(response);
-    } else if (converter != null) {
-      response =
-          await _decodeResponse<BodyType, InnerType>(response, converter!);
-    }
-
-    return Response<BodyType>(
-      response.base,
-      response.body,
-    );
-  }
-
-  Future<Request> _handleRequestConverter(
-    Request request,
-    ConvertRequest? requestConverter,
-  ) async =>
-      request.body != null || request.parts.isNotEmpty
-          ? requestConverter != null
-              ? await requestConverter(request)
-              : await _encodeRequest(request)
-          : request;
-
   /// Sends a pre-build [Request], applying all provided [Interceptor]s and
   /// [Converter]s.
   ///
@@ -292,63 +164,22 @@ base class ChopperClient {
   Future<Response<BodyType>> send<BodyType, InnerType>(
     Request request, {
     ConvertRequest? requestConverter,
-    ConvertResponse? responseConverter,
+    ConvertResponse<BodyType>? responseConverter,
   }) async {
-    final Request req = await _interceptRequest(
-      await _handleRequestConverter(request, requestConverter),
+    final call = Call(
+      request: request,
+      client: this,
+      requestCallback: _requestController.add,
     );
 
-    _requestController.add(req);
+    final response = await call.execute<BodyType, InnerType>(
+      requestConverter,
+      responseConverter,
+    );
 
-    final streamRes = await httpClient.send(await req.toBaseRequest());
-    if (isTypeOf<BodyType, Stream<List<int>>>()) {
-      return Response(streamRes, (streamRes.stream) as BodyType);
-    }
+    _responseController.add(response);
 
-    final response = await http.Response.fromStream(streamRes);
-    dynamic res = Response(response, response.body);
-
-    if (authenticator != null) {
-      final Request? updatedRequest =
-          await authenticator!.authenticate(req, res, request);
-
-      if (updatedRequest != null) {
-        res = await send<BodyType, InnerType>(
-          updatedRequest,
-          requestConverter: requestConverter,
-          responseConverter: responseConverter,
-        );
-        // To prevent double call with typed response
-        if (_responseIsSuccessful(res.statusCode)) {
-          await authenticator!.onAuthenticationSuccessful
-              ?.call(updatedRequest, res, request);
-          return _processResponse(res);
-        } else {
-          res = await _handleErrorResponse<BodyType, InnerType>(res);
-          await authenticator!.onAuthenticationFailed
-              ?.call(updatedRequest, res, request);
-          return _processResponse(res);
-        }
-      }
-    }
-
-    res = _responseIsSuccessful(res.statusCode)
-        ? await _handleSuccessResponse<BodyType, InnerType>(
-            res,
-            responseConverter,
-          )
-        : await _handleErrorResponse<BodyType, InnerType>(res);
-
-    return _processResponse(res);
-  }
-
-  Future<Response<BodyType>> _processResponse<BodyType, InnerType>(
-    dynamic res,
-  ) async {
-    res = await _interceptResponse<BodyType, InnerType>(res);
-    _responseController.add(res);
-
-    return res;
+    return response;
   }
 
   /// Makes a HTTP GET request using the [send] function.
@@ -501,20 +332,17 @@ base class ChopperClient {
     _responseController.close();
     _services.clear();
 
-    _requestInterceptors.clear();
-    _responseInterceptors.clear();
-
     if (_clientIsInternal) {
       httpClient.close();
     }
   }
 
   /// A stream of processed [Request]s, as in after all [Converter]s, and
-  /// [RequestInterceptor]s have been run.
+  /// [Interceptor]s have been run.
   Stream<Request> get onRequest => _requestController.stream;
 
   /// A stream of processed [Response]s, as in after all [Converter]s and
-  /// [ResponseInterceptor]s have been run.
+  /// [Interceptor]s have been run.
   Stream<Response> get onResponse => _responseController.stream;
 }
 
@@ -548,6 +376,3 @@ abstract class ChopperService {
   // TODO: use runtimeType
   Type get definitionType;
 }
-
-bool _responseIsSuccessful(int statusCode) =>
-    statusCode >= 200 && statusCode < 300;

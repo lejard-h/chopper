@@ -1,74 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
-/// An interface for implementing response interceptors.
-///
-/// [ResponseInterceptor]s are called after [Converter.convertResponse].
-///
-/// While [ResponseInterceptor]s *can* modify the body of responses,
-/// converting (decoding) the response body should be handled by [Converter]s.
-///
-/// See built-in [HttpLoggingInterceptor] for a fully functional example implementation.
-///
-/// A short example for extracting a header value from a response:
-///
-/// ```dart
-/// class MyResponseInterceptor implements ResponseInterceptor {
-///   String _token;
-///
-///   @override
-///   FutureOr<Response> onResponse(Response response) {
-///     _token = response.headers['auth_token'];
-///     return response;
-///   }
-/// }
-/// ```
-@immutable
-abstract interface class ResponseInterceptor {
-  FutureOr<Response> onResponse(Response response);
-}
-
-/// An interface for implementing request interceptors.
-///
-/// [RequestInterceptor]s are called after [Converter.convertRequest].
-///
-/// While [RequestInterceptor]s *can* modify the body of requests,
-/// converting (encoding) the request body should be handled by [Converter]s.
-///
-/// See built-in [CurlInterceptor] and [HttpLoggingInterceptor] for fully
-/// functional example implementations.
-///
-/// A short example for adding an authentication token to every request:
-///
-/// ```dart
-/// class MyRequestInterceptor implements ResponseInterceptor {
-///   @override
-///   FutureOr<Request> onRequest(Request request) {
-///     return applyHeader(request, 'auth_token', 'Bearer $token');
-///   }
-/// }
-/// ```
-///
-/// (See [applyHeader(request, name, value)] and [applyHeaders(request, headers)].)
-@immutable
-abstract interface class RequestInterceptor {
-  FutureOr<Request> onRequest(Request request);
-}
+import 'constants.dart';
 
 /// An interface for implementing request and response converters.
 ///
 /// [Converter]s convert objects to and from their representation in HTTP.
 ///
-/// [convertRequest] is called before [RequestInterceptor]s
+/// [convertRequest] is called before [Interceptor]s
 /// and [convertResponse] is called just after the HTTP response,
-/// before [ResponseInterceptor]s.
+/// before returning through the [Interceptor]s.
 ///
 /// See [JsonConverter] and [FormUrlEncodedConverter] for example implementations.
 @immutable
@@ -93,77 +39,11 @@ abstract interface class Converter {
 /// An interface for implementing error response converters.
 ///
 /// An `ErrorConverter` is called only on error responses
-/// (statusCode < 200 || statusCode >= 300) and before any [ResponseInterceptor]s.
+/// (statusCode < 200 || statusCode >= 300) and before returning to any [Interceptor]s.
 abstract interface class ErrorConverter {
   /// Converts the received [Response] to a [Response] which has a body with the
   /// HTTP representation of the original body.
   FutureOr<Response> convertError<BodyType, InnerType>(Response response);
-}
-
-/// {@template HeadersInterceptor}
-/// A [RequestInterceptor] that adds [headers] to every request.
-///
-/// Note that this interceptor will overwrite existing headers having the same
-/// keys as [headers].
-/// {@endtemplate}
-@immutable
-class HeadersInterceptor implements RequestInterceptor {
-  final Map<String, String> headers;
-
-  /// {@macro HeadersInterceptor}
-  const HeadersInterceptor(this.headers);
-
-  @override
-  Future<Request> onRequest(Request request) async =>
-      applyHeaders(request, headers);
-}
-
-typedef ResponseInterceptorFunc1 = FutureOr<Response<BodyType>>
-    Function<BodyType>(
-  Response<BodyType> response,
-);
-typedef ResponseInterceptorFunc2 = FutureOr<Response<BodyType>>
-    Function<BodyType, InnerType>(
-  Response<BodyType> response,
-);
-typedef DynamicResponseInterceptorFunc = FutureOr<Response> Function(
-  Response response,
-);
-typedef RequestInterceptorFunc = FutureOr<Request> Function(Request request);
-
-/// A [RequestInterceptor] implementation that prints a curl request equivalent
-/// to the network call channeled through it for debugging purposes.
-///
-/// Thanks, @edwardaux
-@immutable
-class CurlInterceptor implements RequestInterceptor {
-  @override
-  Future<Request> onRequest(Request request) async {
-    final http.BaseRequest baseRequest = await request.toBaseRequest();
-    final List<String> curlParts = ['curl -v -X ${baseRequest.method}'];
-    for (final MapEntry<String, String> header in baseRequest.headers.entries) {
-      curlParts.add("-H '${header.key}: ${header.value}'");
-    }
-    // this is fairly naive, but it should cover most cases
-    if (baseRequest is http.Request) {
-      final String body = baseRequest.body;
-      if (body.isNotEmpty) {
-        curlParts.add("-d '$body'");
-      }
-    }
-    if (baseRequest is http.MultipartRequest) {
-      for (final MapEntry<String, String> field in baseRequest.fields.entries) {
-        curlParts.add("-f '${field.key}: ${field.value}'");
-      }
-      for (final http.MultipartFile file in baseRequest.files) {
-        curlParts.add("-f '${file.field}: ${file.filename ?? ''}'");
-      }
-    }
-    curlParts.add('"${baseRequest.url}"');
-    chopperLogger.info(curlParts.join(' '));
-
-    return request;
-  }
 }
 
 /// {@template JsonConverter}

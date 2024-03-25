@@ -1,6 +1,8 @@
 import 'dart:convert' show jsonEncode;
 
-import 'package:chopper/chopper.dart';
+import 'package:chopper/src/base.dart';
+import 'package:chopper/src/converters.dart';
+import 'package:chopper/src/interceptors/headers_interceptor.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
@@ -14,7 +16,7 @@ void main() async {
         baseUrl: baseUrl,
         client: httpClient,
         interceptors: [
-          (Request req) => applyHeader(req, 'foo', 'bar'),
+          HeadersInterceptor({'foo': 'bar'}),
         ],
         converter: JsonConverter(),
         authenticator: FakeAuthenticator(),
