@@ -649,6 +649,93 @@ void main() {
     );
   });
 
+  group('mapToQuery maps with brackets and nested lists', () {
+    <Map<String, dynamic>, String>{
+      {
+        'filters': {
+          r'$or': [
+            {
+              'date': {
+                r'$eq': '2020-01-01',
+              }
+            },
+            {
+              'date': {
+                r'$eq': '2020-01-02',
+              }
+            }
+          ],
+          'author': {
+            'name': {
+              r'$eq': 'Kai doe',
+            },
+          }
+        }
+      }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
+      {
+        'filters': {
+          'id': {
+            r'$in': [3, 6, 8],
+          },
+        }
+      }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=6&filters%5Bid%5D%5B%24in%5D%5B%5D=8'
+    }.forEach(
+      (map, query) => test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, useBrackets: true),
+          query,
+        ),
+      ),
+    );
+  });
+
+  group(
+      'mapToQuery maps with brackets with includeNullQueryVars and nested lists',
+      () {
+    <Map<String, dynamic>, String>{
+      {
+        'filters': {
+          r'$or': [
+            {
+              'date': {
+                r'$eq': '2020-01-01',
+              }
+            },
+            null,
+            {
+              'date': {
+                r'$eq': '2020-01-02',
+              }
+            }
+          ],
+          'author': {
+            'name': {
+              r'$eq': 'Kai doe',
+            },
+          }
+        }
+      }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D=&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
+      {
+        'filters': {
+          'id': {
+            r'$in': [3, null, 8],
+          },
+        }
+      }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=&filters%5Bid%5D%5B%24in%5D%5B%5D=8'
+    }.forEach(
+      (map, query) {
+        test(
+          '$map -> $query',
+          () => expect(
+            mapToQuery(map, useBrackets: true, includeNullQueryVars: true),
+            query,
+          ),
+        );
+      },
+    );
+  });
+
   Request createRequest(Map<String, String> headers) => Request(
         'POST',
         Uri.parse('foo'),
