@@ -74,7 +74,7 @@ String mapToQuery(
         encodeDotInKeys: !useBrackets,
         encodeValuesOnly: !useBrackets,
         skipNulls: !includeNullQueryVars,
-        strictNullHandling: true,
+        strictNullHandling: false,
         serializeDate: (DateTime date) => date.toUtc().toIso8601String(),
       ),
     );
