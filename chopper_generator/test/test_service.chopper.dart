@@ -783,4 +783,21 @@ final class _$HttpTestService extends HttpTestService {
       requestConverter: FormUrlEncodedConverter.requestFactory,
     );
   }
+
+  @override
+  Future<Response<void>> tag(
+    String foo,
+    Object? t1,
+  ) {
+    final Uri $url = Uri.parse('/test/tag');
+    final $body = <String, dynamic>{'fool': foo};
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      tag: t1,
+    );
+    return client.send<void, void>($request);
+  }
 }
