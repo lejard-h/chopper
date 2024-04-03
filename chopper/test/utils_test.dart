@@ -357,6 +357,27 @@ void main() {
           },
         },
       }: 'foo.bar=baz&foo.zap=abc&foo%2Eetc.abc=def&foo%2Eetc.ghi=jkl&foo%2Eetc%2Emno.opq=rst&foo%2Eetc%2Emno.uvw=xyz&foo%2Eetc%2Emno%2Eaab=bbc&foo%2Eetc%2Emno%2Eaab=ccd&foo%2Eetc%2Emno%2Eaab=eef',
+      {
+        'filters': {
+          r'$or': [
+            {
+              'date': {
+                r'$eq': '2020-01-01',
+              }
+            },
+            {
+              'date': {
+                r'$eq': '2020-01-02',
+              }
+            }
+          ],
+          'author': {
+            'name': {
+              r'$eq': 'John doe',
+            },
+          }
+        }
+      }: r'filters%2E$or%2Edate.$eq=2020-01-01&filters%2E$or%2Edate.$eq=2020-01-02&filters%2Eauthor%2Ename.$eq=John%20doe',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
@@ -419,6 +440,27 @@ void main() {
           },
         },
       }: 'foo.bar=baz&foo.zap=abc&foo%2Eetc.abc=def&foo%2Eetc.ghi=jkl&foo%2Eetc%2Emno.opq=rst&foo%2Eetc%2Emno.uvw=xyz&foo%2Eetc%2Emno%2Eaab=bbc&foo%2Eetc%2Emno%2Eaab=ccd&foo%2Eetc%2Emno%2Eaab=eef',
+      {
+        'filters': {
+          r'$or': [
+            {
+              'date': {
+                r'$eq': '2020-01-01',
+              }
+            },
+            {
+              'date': {
+                r'$eq': '2020-01-02',
+              }
+            }
+          ],
+          'author': {
+            'name': {
+              r'$eq': 'John doe',
+            },
+          }
+        }
+      }: r'filters%2E$or%2Edate.$eq=2020-01-01&filters%2E$or%2Edate.$eq=2020-01-02&filters%2Eauthor%2Ename.$eq=John%20doe',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
@@ -485,6 +527,27 @@ void main() {
           },
         },
       }: 'foo%5Bbar%5D=baz&foo%5Bzap%5D=abc&foo%5Betc%5D%5Babc%5D=def&foo%5Betc%5D%5Bghi%5D=jkl&foo%5Betc%5D%5Bmno%5D%5Bopq%5D=rst&foo%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=bbc&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=ccd&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=eef',
+      {
+        'filters': {
+          r'$or': [
+            {
+              'date': {
+                r'$eq': '2020-01-01',
+              }
+            },
+            {
+              'date': {
+                r'$eq': '2020-01-02',
+              }
+            }
+          ],
+          'author': {
+            'name': {
+              r'$eq': 'John doe',
+            },
+          }
+        }
+      }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
@@ -554,6 +617,27 @@ void main() {
           },
         },
       }: 'foo%5Bbar%5D=baz&foo%5Bzap%5D=abc&foo%5Betc%5D%5Babc%5D=def&foo%5Betc%5D%5Bghi%5D=jkl&foo%5Betc%5D%5Bmno%5D%5Bopq%5D=rst&foo%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=bbc&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=ccd&foo%5Betc%5D%5Bmno%5D%5Baab%5D%5B%5D=eef',
+      {
+        'filters': {
+          r'$or': [
+            {
+              'date': {
+                r'$eq': '2020-01-01',
+              }
+            },
+            {
+              'date': {
+                r'$eq': '2020-01-02',
+              }
+            }
+          ],
+          'author': {
+            'name': {
+              r'$eq': 'John doe',
+            },
+          }
+        }
+      }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
