@@ -6,7 +6,7 @@ void main() {
   group('mapToQuery single', () {
     <Map<String, dynamic>, String>{
       {'foo': null}: '',
-      {'foo': ''}: 'foo=',
+      {'foo': ''}: '',
       {'foo': ' '}: 'foo=%20',
       {'foo': '  '}: 'foo=%20%20',
       {'foo': '\t'}: 'foo=%09',
@@ -31,7 +31,7 @@ void main() {
 
   group('mapToQuery single with includeNullQueryVars', () {
     <Map<String, dynamic>, String>{
-      {'foo': null}: 'foo=',
+      {'foo': null}: 'foo',
       {'foo': ''}: 'foo=',
       {'foo': ' '}: 'foo=%20',
       {'foo': '  '}: 'foo=%20%20',
@@ -62,12 +62,12 @@ void main() {
   group('mapToQuery multiple', () {
     <Map<String, dynamic>, String>{
       {'foo': null, 'baz': null}: '',
-      {'foo': '', 'baz': ''}: 'foo=&baz=',
-      {'foo': null, 'baz': ''}: 'baz=',
-      {'foo': '', 'baz': null}: 'foo=',
-      {'foo': 'bar', 'baz': ''}: 'foo=bar&baz=',
+      {'foo': '', 'baz': ''}: '',
+      {'foo': null, 'baz': ''}: '',
+      {'foo': '', 'baz': null}: '',
+      {'foo': 'bar', 'baz': ''}: 'foo=bar',
       {'foo': null, 'baz': 'etc'}: 'baz=etc',
-      {'foo': '', 'baz': 'etc'}: 'foo=&baz=etc',
+      {'foo': '', 'baz': 'etc'}: 'baz=etc',
       {'foo': 'bar', 'baz': 'etc'}: 'foo=bar&baz=etc',
       {'foo': 'null', 'baz': 'null'}: 'foo=null&baz=null',
       {'foo': ' ', 'baz': ' '}: 'foo=%20&baz=%20',
@@ -86,12 +86,12 @@ void main() {
 
   group('mapToQuery multiple with includeNullQueryVars', () {
     <Map<String, dynamic>, String>{
-      {'foo': null, 'baz': null}: 'foo=&baz=',
+      {'foo': null, 'baz': null}: 'foo&baz',
       {'foo': '', 'baz': ''}: 'foo=&baz=',
-      {'foo': null, 'baz': ''}: 'foo=&baz=',
-      {'foo': '', 'baz': null}: 'foo=&baz=',
+      {'foo': null, 'baz': ''}: 'foo&baz=',
+      {'foo': '', 'baz': null}: 'foo=&baz',
       {'foo': 'bar', 'baz': ''}: 'foo=bar&baz=',
-      {'foo': null, 'baz': 'etc'}: 'foo=&baz=etc',
+      {'foo': null, 'baz': 'etc'}: 'foo&baz=etc',
       {'foo': '', 'baz': 'etc'}: 'foo=&baz=etc',
       {'foo': 'bar', 'baz': 'etc'}: 'foo=bar&baz=etc',
       {'foo': 'null', 'baz': 'null'}: 'foo=null&baz=null',
@@ -150,7 +150,7 @@ void main() {
         'bar': 'baz',
         'etc': '',
         'xyz': null,
-      }: 'foo=bar&foo=baz&foo=etc&bar=baz&etc=',
+      }: 'foo=bar&foo=baz&foo=etc&bar=baz',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
@@ -165,22 +165,22 @@ void main() {
       }: 'foo=bar&foo=123&foo=456.789&foo=0&foo=-123&foo=-456.789',
       {
         'foo': ['', 'baz', 'etc'],
-      }: 'foo=baz&foo=etc',
+      }: 'foo=&foo=baz&foo=etc',
       {
         'foo': ['bar', '', 'etc'],
-      }: 'foo=bar&foo=etc',
+      }: 'foo=bar&foo=&foo=etc',
       {
         'foo': ['bar', 'baz', ''],
-      }: 'foo=bar&foo=baz',
+      }: 'foo=bar&foo=baz&foo=',
       {
         'foo': [null, 'baz', 'etc'],
-      }: 'foo=baz&foo=etc',
+      }: 'foo&foo=baz&foo=etc',
       {
         'foo': ['bar', null, 'etc'],
-      }: 'foo=bar&foo=etc',
+      }: 'foo=bar&foo&foo=etc',
       {
         'foo': ['bar', 'baz', null],
-      }: 'foo=bar&foo=baz',
+      }: 'foo=bar&foo=baz&foo',
       {
         'foo': ['bar', 'baz', ' '],
       }: 'foo=bar&foo=baz&foo=%20',
@@ -192,7 +192,7 @@ void main() {
         'bar': 'baz',
         'etc': '',
         'xyz': null,
-      }: 'foo=bar&foo=baz&foo=etc&bar=baz&etc=&xyz=',
+      }: 'foo=bar&foo=baz&foo=etc&bar=baz&etc=&xyz',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
@@ -238,7 +238,7 @@ void main() {
         'bar': 'baz',
         'etc': '',
         'xyz': null,
-      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc&bar=baz&etc=',
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc&bar=baz',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
@@ -260,22 +260,22 @@ void main() {
       }: 'foo%5B%5D=bar&foo%5B%5D=123&foo%5B%5D=456.789&foo%5B%5D=0&foo%5B%5D=-123&foo%5B%5D=-456.789',
       {
         'foo': ['', 'baz', 'etc'],
-      }: 'foo%5B%5D=baz&foo%5B%5D=etc',
+      }: 'foo%5B%5D=&foo%5B%5D=baz&foo%5B%5D=etc',
       {
         'foo': ['bar', '', 'etc'],
-      }: 'foo%5B%5D=bar&foo%5B%5D=etc',
+      }: 'foo%5B%5D=bar&foo%5B%5D=&foo%5B%5D=etc',
       {
         'foo': ['bar', 'baz', ''],
-      }: 'foo%5B%5D=bar&foo%5B%5D=baz',
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=',
       {
         'foo': [null, 'baz', 'etc'],
-      }: 'foo%5B%5D=baz&foo%5B%5D=etc',
+      }: 'foo%5B%5D&foo%5B%5D=baz&foo%5B%5D=etc',
       {
         'foo': ['bar', null, 'etc'],
-      }: 'foo%5B%5D=bar&foo%5B%5D=etc',
+      }: 'foo%5B%5D=bar&foo%5B%5D&foo%5B%5D=etc',
       {
         'foo': ['bar', 'baz', null],
-      }: 'foo%5B%5D=bar&foo%5B%5D=baz',
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D',
       {
         'foo': ['bar', 'baz', ' '],
       }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=%20',
@@ -287,7 +287,7 @@ void main() {
         'bar': 'baz',
         'etc': '',
         'xyz': null,
-      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc&bar=baz&etc=&xyz=',
+      }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc&bar=baz&etc=&xyz',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
@@ -306,7 +306,7 @@ void main() {
       }: 'foo.bar=baz',
       {
         'foo': {'bar': ''},
-      }: 'foo.bar=',
+      }: '',
       {
         'foo': {'bar': null},
       }: '',
@@ -333,7 +333,7 @@ void main() {
           'tab': '\t',
           'list': ['a', 123, false],
         },
-      }: 'foo.bar=baz&foo.int=123&foo.double=456.789&foo.zero=0&foo.negInt=-123&foo.negDouble=-456.789&foo.emptyString=&foo.space=%20&foo.tab=%09&foo.list=a&foo.list=123&foo.list=false',
+      }: 'foo.bar=baz&foo.int=123&foo.double=456.789&foo.zero=0&foo.negInt=-123&foo.negDouble=-456.789&foo.space=%20&foo.tab=%09&foo%2Elist=a&foo%2Elist=123&foo%2Elist=false',
       {
         'foo': {'bar': 'baz'},
         'etc': 'xyz',
@@ -356,7 +356,7 @@ void main() {
             },
           },
         },
-      }: 'foo.bar=baz&foo.zap=abc&foo.etc.abc=def&foo.etc.ghi=jkl&foo.etc.mno.opq=rst&foo.etc.mno.uvw=xyz&foo.etc.mno.aab=bbc&foo.etc.mno.aab=ccd&foo.etc.mno.aab=eef',
+      }: 'foo.bar=baz&foo.zap=abc&foo%2Eetc.abc=def&foo%2Eetc.ghi=jkl&foo%2Eetc%2Emno.opq=rst&foo%2Eetc%2Emno.uvw=xyz&foo%2Eetc%2Emno%2Eaab=bbc&foo%2Eetc%2Emno%2Eaab=ccd&foo%2Eetc%2Emno%2Eaab=eef',
     }.forEach((map, query) =>
         test('$map -> $query', () => expect(mapToQuery(map), query)));
   });
@@ -371,7 +371,7 @@ void main() {
       }: 'foo.bar=',
       {
         'foo': {'bar': null},
-      }: 'foo.bar=',
+      }: 'foo.bar',
       {
         'foo': {'bar': ' '},
       }: 'foo.bar=%20',
@@ -395,7 +395,7 @@ void main() {
           'tab': '\t',
           'list': ['a', 123, false],
         },
-      }: 'foo.bar=baz&foo.int=123&foo.double=456.789&foo.zero=0&foo.negInt=-123&foo.negDouble=-456.789&foo.emptyString=&foo.nullValue=&foo.space=%20&foo.tab=%09&foo.list=a&foo.list=123&foo.list=false',
+      }: 'foo.bar=baz&foo.int=123&foo.double=456.789&foo.zero=0&foo.negInt=-123&foo.negDouble=-456.789&foo.emptyString=&foo.nullValue&foo.space=%20&foo.tab=%09&foo%2Elist=a&foo%2Elist=123&foo%2Elist=false',
       {
         'foo': {'bar': 'baz'},
         'etc': 'xyz',
@@ -418,7 +418,7 @@ void main() {
             },
           },
         },
-      }: 'foo.bar=baz&foo.zap=abc&foo.etc.abc=def&foo.etc.ghi=jkl&foo.etc.mno.opq=rst&foo.etc.mno.uvw=xyz&foo.etc.mno.aab=bbc&foo.etc.mno.aab=ccd&foo.etc.mno.aab=eef',
+      }: 'foo.bar=baz&foo.zap=abc&foo%2Eetc.abc=def&foo%2Eetc.ghi=jkl&foo%2Eetc%2Emno.opq=rst&foo%2Eetc%2Emno.uvw=xyz&foo%2Eetc%2Emno%2Eaab=bbc&foo%2Eetc%2Emno%2Eaab=ccd&foo%2Eetc%2Emno%2Eaab=eef',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
@@ -434,7 +434,7 @@ void main() {
       }: 'foo%5Bbar%5D=baz',
       {
         'foo': {'bar': ''},
-      }: 'foo%5Bbar%5D=',
+      }: '',
       {
         'foo': {'bar': null},
       }: '',
@@ -461,7 +461,7 @@ void main() {
           'tab': '\t',
           'list': ['a', 123, false],
         },
-      }: 'foo%5Bbar%5D=baz&foo%5Bint%5D=123&foo%5Bdouble%5D=456.789&foo%5Bzero%5D=0&foo%5BnegInt%5D=-123&foo%5BnegDouble%5D=-456.789&foo%5BemptyString%5D=&foo%5Bspace%5D=%20&foo%5Btab%5D=%09&foo%5Blist%5D%5B%5D=a&foo%5Blist%5D%5B%5D=123&foo%5Blist%5D%5B%5D=false',
+      }: 'foo%5Bbar%5D=baz&foo%5Bint%5D=123&foo%5Bdouble%5D=456.789&foo%5Bzero%5D=0&foo%5BnegInt%5D=-123&foo%5BnegDouble%5D=-456.789&foo%5Bspace%5D=%20&foo%5Btab%5D=%09&foo%5Blist%5D%5B%5D=a&foo%5Blist%5D%5B%5D=123&foo%5Blist%5D%5B%5D=false',
       {
         'foo': {'bar': 'baz'},
         'etc': 'xyz',
@@ -506,7 +506,7 @@ void main() {
       }: 'foo%5Bbar%5D=',
       {
         'foo': {'bar': null},
-      }: 'foo%5Bbar%5D=',
+      }: 'foo%5Bbar%5D',
       {
         'foo': {'bar': ' '},
       }: 'foo%5Bbar%5D=%20',
@@ -530,7 +530,7 @@ void main() {
           'tab': '\t',
           'list': ['a', 123, false],
         },
-      }: 'foo%5Bbar%5D=baz&foo%5Bint%5D=123&foo%5Bdouble%5D=456.789&foo%5Bzero%5D=0&foo%5BnegInt%5D=-123&foo%5BnegDouble%5D=-456.789&foo%5BemptyString%5D=&foo%5BnullValue%5D=&foo%5Bspace%5D=%20&foo%5Btab%5D=%09&foo%5Blist%5D%5B%5D=a&foo%5Blist%5D%5B%5D=123&foo%5Blist%5D%5B%5D=false',
+      }: 'foo%5Bbar%5D=baz&foo%5Bint%5D=123&foo%5Bdouble%5D=456.789&foo%5Bzero%5D=0&foo%5BnegInt%5D=-123&foo%5BnegDouble%5D=-456.789&foo%5BemptyString%5D=&foo%5BnullValue%5D&foo%5Bspace%5D=%20&foo%5Btab%5D=%09&foo%5Blist%5D%5B%5D=a&foo%5Blist%5D%5B%5D=123&foo%5Blist%5D%5B%5D=false',
       {
         'foo': {'bar': 'baz'},
         'etc': 'xyz',

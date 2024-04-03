@@ -154,7 +154,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name='),
+          equals('$baseUrl/test/query'),
         );
         expect(request.method, equals('GET'));
 
@@ -176,7 +176,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name=&default_value=42'),
+          equals('$baseUrl/test/query?default_value=42'),
         );
         expect(request.method, equals('GET'));
 
@@ -1248,7 +1248,7 @@ void main() {
         request.url.toString(),
         equals('$baseUrl/test/query_param_include_null_query_vars'
             '?foo=foo_val'
-            '&bar='
+            '&bar'
             '&baz=baz_val'),
       );
       expect(request.method, equals('GET'));
@@ -1475,11 +1475,11 @@ void main() {
         request.url.toString(),
         equals('$baseUrl/test/map_query_param_include_null_query_vars'
             '?value.bar=baz'
-            '&value.zap='
+            '&value.zap'
             '&value.etc.abc=def'
-            '&value.etc.ghi='
+            '&value.etc.ghi'
             '&value.etc.mno.opq=rst'
-            '&value.etc.mno.uvw='
+            '&value.etc.mno.uvw'
             '&value.etc.mno.list=a'
             '&value.etc.mno.list=123'
             '&value.etc.mno.list=false'
