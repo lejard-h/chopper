@@ -63,21 +63,25 @@ final chopperLogger = Logger('Chopper');
 /// E.g., `{'foo': 'bar', 'ints': [ 1337, 42 ] }` will become 'foo=bar&ints=1337&ints=42'.
 String mapToQuery(
   Map<String, dynamic> map, {
-  bool useBrackets = false,
-  bool includeNullQueryVars = false,
-}) =>
-    QS.encode(
-      map,
-      EncodeOptions(
-        listFormat: useBrackets ? ListFormat.brackets : ListFormat.repeat,
-        allowDots: !useBrackets,
-        encodeDotInKeys: !useBrackets,
-        encodeValuesOnly: !useBrackets,
-        skipNulls: !includeNullQueryVars,
-        strictNullHandling: false,
-        serializeDate: (DateTime date) => date.toUtc().toIso8601String(),
-      ),
-    );
+  ListFormat? listFormat,
+  @Deprecated('Use listFormat instead') bool? useBrackets,
+  bool? includeNullQueryVars,
+}) {
+  listFormat ??= useBrackets == true ? ListFormat.brackets : ListFormat.repeat;
+
+  return QS.encode(
+    map,
+    EncodeOptions(
+      listFormat: listFormat,
+      allowDots: listFormat == ListFormat.repeat,
+      encodeDotInKeys: listFormat == ListFormat.repeat,
+      encodeValuesOnly: listFormat == ListFormat.repeat,
+      skipNulls: includeNullQueryVars != true,
+      strictNullHandling: false,
+      serializeDate: (DateTime date) => date.toUtc().toIso8601String(),
+    ),
+  );
+}
 
 bool isTypeOf<ThisType, OfType>() => _Instance<ThisType>() is _Instance<OfType>;
 
