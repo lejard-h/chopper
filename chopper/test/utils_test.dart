@@ -5,6 +5,8 @@ import 'package:chopper/src/request.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:test/test.dart';
 
+import 'fixtures/example_enum.dart';
+
 void main() {
   group('mapToQuery single', () {
     <Map<String, dynamic>, String>{
@@ -1795,6 +1797,20 @@ void main() {
           ),
         ),
       );
+
+      test('mapToQuery maps with enums', () {
+        final map = {
+          'filters': {
+            'name': 'foo',
+            'example': ExampleEnum.bar,
+          }
+        };
+
+        expect(
+          mapToQuery(map),
+          equals('filters.name=foo&filters.example=bar'),
+        );
+      });
     },
   );
 
