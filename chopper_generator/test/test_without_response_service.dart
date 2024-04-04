@@ -166,8 +166,28 @@ abstract class HttpTestService extends ChopperService {
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_brackets', useBrackets: true)
+  @Get(path: '/list_query_param_with_brackets_legacy', useBrackets: true)
+  Future<String> getUsingListQueryParamWithBracketsLegacy(
+    @Query('value') List<String> value,
+  );
+
+  @Get(path: '/list_query_param_with_brackets', listFormat: ListFormat.brackets)
   Future<String> getUsingListQueryParamWithBrackets(
+    @Query('value') List<String> value,
+  );
+
+  @Get(path: '/list_query_param_with_indices', listFormat: ListFormat.indices)
+  Future<String> getUsingListQueryParamWithIndices(
+    @Query('value') List<String> value,
+  );
+
+  @Get(path: '/list_query_param_with_repeat', listFormat: ListFormat.repeat)
+  Future<String> getUsingListQueryParamWithRepeat(
+    @Query('value') List<String> value,
+  );
+
+  @Get(path: '/list_query_param_with_comma', listFormat: ListFormat.comma)
+  Future<String> getUsingListQueryParamWithComma(
     @Query('value') List<String> value,
   );
 
@@ -184,8 +204,28 @@ abstract class HttpTestService extends ChopperService {
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_brackets', useBrackets: true)
+  @Get(path: '/map_query_param_with_brackets_legacy', useBrackets: true)
+  Future<String> getUsingMapQueryParamWithBracketsLegacy(
+    @Query('value') Map<String, dynamic> value,
+  );
+
+  @Get(path: '/map_query_param_with_brackets', listFormat: ListFormat.brackets)
   Future<String> getUsingMapQueryParamWithBrackets(
+    @Query('value') Map<String, dynamic> value,
+  );
+
+  @Get(path: '/map_query_param_with_indices', listFormat: ListFormat.indices)
+  Future<String> getUsingMapQueryParamWithIndices(
+    @Query('value') Map<String, dynamic> value,
+  );
+
+  @Get(path: '/map_query_param_with_repeat', listFormat: ListFormat.repeat)
+  Future<String> getUsingMapQueryParamWithRepeat(
+    @Query('value') Map<String, dynamic> value,
+  );
+
+  @Get(path: '/map_query_param_with_comma', listFormat: ListFormat.comma)
+  Future<String> getUsingMapQueryParamWithComma(
     @Query('value') Map<String, dynamic> value,
   );
 

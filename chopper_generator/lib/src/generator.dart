@@ -12,6 +12,7 @@ import 'package:chopper_generator/src/vars.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:logging/logging.dart';
+import 'package:qs_dart/qs_dart.dart' show ListFormat;
 import 'package:source_gen/source_gen.dart';
 
 /// Code generator for [chopper.ChopperApi] annotated classes.
@@ -403,9 +404,11 @@ final class ChopperGenerator
 
       final bool hasTag = tag.isNotEmpty;
 
-      final bool useBrackets = Utils.getUseBrackets(method);
+      final ListFormat? listFormat = Utils.getListFormat(method);
 
-      final bool includeNullQueryVars = Utils.getIncludeNullQueryVars(method);
+      final bool? useBrackets = Utils.getUseBrackets(method);
+
+      final bool? includeNullQueryVars = Utils.getIncludeNullQueryVars(method);
 
       blocks.add(
         declareFinal(Vars.request.toString(), type: refer('Request'))
@@ -417,6 +420,8 @@ final class ChopperGenerator
                 useHeaders: headers != null,
                 hasParts: hasParts,
                 tagRefer: hasTag ? refer(tag.keys.first) : null,
+                listFormat: listFormat,
+                // ignore: deprecated_member_use_from_same_package
                 useBrackets: useBrackets,
                 includeNullQueryVars: includeNullQueryVars,
               ),
@@ -703,8 +708,9 @@ final class ChopperGenerator
     bool hasParts = false,
     bool useQueries = false,
     bool useHeaders = false,
-    bool useBrackets = false,
-    bool includeNullQueryVars = false,
+    ListFormat? listFormat,
+    @Deprecated('Use listFormat instead') bool? useBrackets,
+    bool? includeNullQueryVars,
     Reference? tagRefer,
   }) =>
       refer('Request').newInstance(
@@ -722,8 +728,10 @@ final class ChopperGenerator
           if (useQueries) 'parameters': refer(Vars.parameters.toString()),
           if (useHeaders) 'headers': refer(Vars.headers.toString()),
           if (tagRefer != null) 'tag': tagRefer,
-          if (useBrackets) 'useBrackets': literalBool(useBrackets),
-          if (includeNullQueryVars)
+          if (listFormat != null)
+            'listFormat': refer('ListFormat').type.property(listFormat.name),
+          if (useBrackets != null) 'useBrackets': literalBool(useBrackets),
+          if (includeNullQueryVars != null)
             'includeNullQueryVars': literalBool(includeNullQueryVars),
         },
       );

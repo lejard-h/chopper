@@ -1,6 +1,8 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
+import 'package:collection/collection.dart';
+import 'package:qs_dart/qs_dart.dart' show ListFormat;
 import 'package:source_gen/source_gen.dart';
 
 final class Utils {
@@ -13,11 +15,23 @@ final class Utils {
   static String getMethodName(ConstantReader method) =>
       method.read('method').stringValue;
 
-  static bool getUseBrackets(ConstantReader method) =>
-      method.peek('useBrackets')?.boolValue ?? false;
+  static ListFormat? getListFormat(ConstantReader method) {
+    return ListFormat.values.firstWhereOrNull(
+      (listFormat) =>
+          listFormat.name ==
+          method
+              .peek('listFormat')
+              ?.objectValue
+              .getField('_name')
+              ?.toStringValue(),
+    );
+  }
 
-  static bool getIncludeNullQueryVars(ConstantReader method) =>
-      method.peek('includeNullQueryVars')?.boolValue ?? false;
+  static bool? getUseBrackets(ConstantReader method) =>
+      method.peek('useBrackets')?.boolValue;
+
+  static bool? getIncludeNullQueryVars(ConstantReader method) =>
+      method.peek('includeNullQueryVars')?.boolValue;
 
   /// All positional required params must support nullability
   static Parameter buildRequiredPositionalParam(ParameterElement p) =>

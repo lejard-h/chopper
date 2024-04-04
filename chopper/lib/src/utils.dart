@@ -1,8 +1,8 @@
 import 'dart:collection';
 
 import 'package:chopper/chopper.dart';
-import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:logging/logging.dart';
+import 'package:qs_dart/qs_dart.dart' as qs;
 
 /// Creates a new [Request] by copying [request] and adding a header with the
 /// provided key [name] and value [value] to the result.
@@ -63,99 +63,24 @@ final chopperLogger = Logger('Chopper');
 /// E.g., `{'foo': 'bar', 'ints': [ 1337, 42 ] }` will become 'foo=bar&ints=1337&ints=42'.
 String mapToQuery(
   Map<String, dynamic> map, {
-  bool useBrackets = false,
-  bool includeNullQueryVars = false,
-}) =>
-    _mapToQuery(
-      map,
-      useBrackets: useBrackets,
-      includeNullQueryVars: includeNullQueryVars,
-    ).join('&');
-
-Iterable<_Pair<String, String>> _mapToQuery(
-  Map<String, dynamic> map, {
-  String? prefix,
-  bool useBrackets = false,
-  bool includeNullQueryVars = false,
+  ListFormat? listFormat,
+  @Deprecated('Use listFormat instead') bool? useBrackets,
+  bool? includeNullQueryVars,
 }) {
-  final Set<_Pair<String, String>> pairs = {};
+  listFormat ??= useBrackets == true ? ListFormat.brackets : ListFormat.repeat;
 
-  map.forEach((key, value) {
-    String name = Uri.encodeQueryComponent(key);
-
-    if (prefix != null) {
-      name = useBrackets
-          ? '$prefix${Uri.encodeQueryComponent('[')}$name${Uri.encodeQueryComponent(']')}'
-          : '$prefix.$name';
-    }
-
-    if (value != null) {
-      if (value is Iterable) {
-        pairs.addAll(_iterableToQuery(name, value, useBrackets: useBrackets));
-      } else if (value is Map<String, dynamic>) {
-        pairs.addAll(
-          _mapToQuery(
-            value,
-            prefix: name,
-            useBrackets: useBrackets,
-            includeNullQueryVars: includeNullQueryVars,
-          ),
-        );
-      } else {
-        pairs.add(
-          _Pair<String, String>(name, _normalizeValue(value)),
-        );
-      }
-    } else {
-      if (includeNullQueryVars) {
-        pairs.add(_Pair<String, String>(name, ''));
-      }
-    }
-  });
-
-  return pairs;
-}
-
-Iterable<_Pair<String, String>> _iterableToQuery(
-  String name,
-  Iterable values, {
-  bool useBrackets = false,
-}) =>
-    values.where((value) => value?.toString().isNotEmpty ?? false).map(
-          (value) => _Pair(
-            name,
-            _normalizeValue(value),
-            useBrackets: useBrackets,
-          ),
-        );
-
-String _normalizeValue(value) => Uri.encodeComponent(
-      value is DateTime
-          ? value.toUtc().toIso8601String()
-          : value?.toString() ?? '',
-    );
-
-final class _Pair<A, B> with EquatableMixin {
-  final A first;
-  final B second;
-  final bool useBrackets;
-
-  const _Pair(
-    this.first,
-    this.second, {
-    this.useBrackets = false,
-  });
-
-  @override
-  String toString() => useBrackets
-      ? '$first${Uri.encodeQueryComponent('[]')}=$second'
-      : '$first=$second';
-
-  @override
-  List<Object?> get props => [
-        first,
-        second,
-      ];
+  return qs.encode(
+    map,
+    qs.EncodeOptions(
+      listFormat: listFormat.qsListFormat,
+      allowDots: listFormat == ListFormat.repeat,
+      encodeDotInKeys: listFormat == ListFormat.repeat,
+      encodeValuesOnly: listFormat == ListFormat.repeat,
+      skipNulls: includeNullQueryVars != true,
+      strictNullHandling: false,
+      serializeDate: (DateTime date) => date.toUtc().toIso8601String(),
+    ),
+  );
 }
 
 bool isTypeOf<ThisType, OfType>() => _Instance<ThisType>() is _Instance<OfType>;
