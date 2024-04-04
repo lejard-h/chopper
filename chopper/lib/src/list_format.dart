@@ -25,5 +25,5 @@ enum ListFormat {
   final qs.ListFormat qsListFormat;
 
   @override
-  String toString() => qsListFormat.name;
+  String toString() => name;
 }
