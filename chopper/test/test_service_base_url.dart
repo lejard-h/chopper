@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:qs_dart/qs_dart.dart';
 
 part 'test_service_base_url.chopper.dart';
 

@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' show MultipartFile;
-import 'package:qs_dart/qs_dart.dart';
 
 part 'test_service.chopper.dart';
 

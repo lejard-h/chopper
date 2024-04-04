@@ -1,11 +1,11 @@
-import 'dart:async';
+import 'dart:async' show Stream;
 
 import 'package:chopper/src/extensions.dart';
+import 'package:chopper/src/list_format.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
-import 'package:qs_dart/qs_dart.dart';
 
 /// {@template request}
 /// This class represents an HTTP request that can be made with Chopper.
