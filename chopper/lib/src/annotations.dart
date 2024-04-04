@@ -193,19 +193,19 @@ sealed class Method {
 
   /// List format to use when encoding lists
   ///
-  /// - [ListFormat.repeat] (default) hxxp://path/to/script?foo=123&foo=456&foo=789
-  /// - [ListFormat.brackets] hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789
-  /// - [ListFormat.indices] hxxp://path/to/script?foo[0]=123&foo[1]=456&foo[2]=789
-  /// - [ListFormat.comma] hxxp://path/to/script?foo=123,456,789
+  /// - [ListFormat.repeat] `hxxp://path/to/script?foo=123&foo=456&foo=789` (default)
+  /// - [ListFormat.brackets] `hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789`
+  /// - [ListFormat.indices] `hxxp://path/to/script?foo[0]=123&foo[1]=456&foo[2]=789`
+  /// - [ListFormat.comma] `hxxp://path/to/script?foo=123,456,789`
   final ListFormat? listFormat;
 
-  /// Use brackets [ ] to when encoding
+  /// Use brackets `[ ]` to when encoding
   ///
   /// - lists
-  /// hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789
+  /// `hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789`
   ///
   /// - maps
-  /// hxxp://path/to/script?user[name]=john&user[surname]=doe&user[age]=21
+  /// `hxxp://path/to/script?user[name]=john&user[surname]=doe&user[age]=21`
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
 
