@@ -3,6 +3,7 @@ include: package:lints/recommended.yaml
 analyzer:
   exclude:
     - "**.g.dart"
+    - "**.chopper.dart"
     - "**.mocks.dart"
 
 linter:
