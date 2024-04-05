@@ -26,7 +26,7 @@ dev_dependencies:
   lints: ^3.0.0
   test: ^1.25.2
   transparent_image: ^2.0.1
-  chopper_generator: ">=7.4.0 <9.0.0" # will be replaced by ^8.0.0 in next rc
+  #chopper_generator: ^8.0.0 # commented out for publishing rc to pub.dev
 
 dependency_overrides:
   chopper_generator:
