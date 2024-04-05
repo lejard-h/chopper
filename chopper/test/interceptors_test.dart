@@ -1,10 +1,16 @@
 import 'dart:async';
 
-import 'package:chopper/chopper.dart';
+import 'package:chopper/src/base.dart';
+import 'package:chopper/src/chain/chain.dart';
+import 'package:chopper/src/interceptors/interceptor.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
+import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
 
+import 'helpers/fake_chain.dart';
 import 'test_service.dart';
 
 void main() {
@@ -44,25 +50,6 @@ void main() {
           );
     });
 
-    test('RequestInterceptorFunc', () async {
-      final chopper = ChopperClient(
-        interceptors: [
-          (Request request) => request.copyWith(
-                uri: request.uri.replace(path: '${request.uri.path}/intercept'),
-              ),
-        ],
-        services: [
-          HttpTestService.create(),
-        ],
-        client: requestClient,
-      );
-
-      await chopper.getService<HttpTestService>().getTest(
-            '1234',
-            dynamicHeader: '',
-          );
-    });
-
     test('ResponseInterceptor', () async {
       final chopper = ChopperClient(
         interceptors: [ResponseIntercept()],
@@ -78,85 +65,6 @@ void main() {
           );
 
       expect(ResponseIntercept.intercepted, isA<_Intercepted>());
-    });
-
-    test('ResponseInterceptorFunc', () async {
-      dynamic intercepted;
-
-      final chopper = ChopperClient(
-        interceptors: [
-          (Response response) {
-            intercepted = _Intercepted(response.body);
-
-            return response;
-          },
-        ],
-        services: [
-          HttpTestService.create(),
-        ],
-        client: responseClient,
-      );
-
-      await chopper.getService<HttpTestService>().getTest(
-            '1234',
-            dynamicHeader: '',
-          );
-
-      expect(intercepted, isA<_Intercepted<dynamic>>());
-    });
-
-    test('TypedResponseInterceptorFunc1', () async {
-      dynamic intercepted;
-
-      final chopper = ChopperClient(
-        interceptors: [
-          <BodyType>(Response<BodyType> response) {
-            intercepted = _Intercepted(response.body);
-
-            return response;
-          },
-        ],
-        services: [
-          HttpTestService.create(),
-        ],
-        client: responseClient,
-      );
-
-      await chopper.getService<HttpTestService>().getTest(
-            '1234',
-            dynamicHeader: '',
-          );
-
-      expect(intercepted, isA<_Intercepted<String?>>());
-    });
-
-    test('TypedResponseInterceptorFunc2', () async {
-      final client = MockClient((http.Request req) async {
-        return http.Response('["1","2"]', 200);
-      });
-
-      dynamic intercepted;
-
-      final chopper = ChopperClient(
-        client: client,
-        converter: JsonConverter(),
-        interceptors: [
-          <BodyType, InnerType>(Response<BodyType> response) {
-            expect(isTypeOf<String, InnerType>(), isTrue);
-            expect(isTypeOf<BodyType, List<String>>(), isTrue);
-            intercepted = _Intercepted<BodyType>(response.body as BodyType);
-
-            return response;
-          },
-        ],
-        services: [
-          HttpTestService.create(),
-        ],
-      );
-
-      await chopper.getService<HttpTestService>().listString();
-
-      expect(intercepted, isA<_Intercepted<List<String>>>());
     });
 
     test('headers', () async {
@@ -195,7 +103,7 @@ void main() {
       final curl = CurlInterceptor();
       var log = '';
       chopperLogger.onRecord.listen((r) => log = r.message);
-      await curl.onRequest(fakeRequest);
+      await curl.intercept(FakeChain(fakeRequest));
 
       expect(
         log,
@@ -224,7 +132,7 @@ void main() {
       final curl = CurlInterceptor();
       var log = '';
       chopperLogger.onRecord.listen((r) => log = r.message);
-      await curl.onRequest(fakeRequestMultipart);
+      await curl.intercept(FakeChain(fakeRequestMultipart));
 
       expect(
         log,
@@ -236,22 +144,31 @@ void main() {
   });
 }
 
-class ResponseIntercept implements ResponseInterceptor {
+class ResponseIntercept implements Interceptor {
   static dynamic intercepted;
 
   @override
-  FutureOr<Response> onResponse(Response response) {
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
+    final response = await chain.proceed(chain.request);
+
     intercepted = _Intercepted(response.body);
 
     return response;
   }
 }
 
-class RequestIntercept implements RequestInterceptor {
+class RequestIntercept implements Interceptor {
   @override
-  FutureOr<Request> onRequest(Request request) => request.copyWith(
+  FutureOr<Response<BodyType>> intercept<BodyType>(
+      Chain<BodyType> chain) async {
+    final request = chain.request;
+    return chain.proceed(
+      request.copyWith(
         uri: request.uri.replace(path: '${request.uri}/intercept'),
-      );
+      ),
+    );
+  }
 }
 
 class _Intercepted<BodyType> {

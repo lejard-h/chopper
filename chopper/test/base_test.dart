@@ -3,7 +3,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chopper/chopper.dart';
+import 'package:chopper/src/base.dart';
+import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/converters.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
@@ -809,52 +813,6 @@ void main() {
         expect(e.toString(), equals('Invalid argument (body): "{foo: 42}"'));
       }
     });
-
-    test('wrong type for interceptor', () {
-      expect(
-        () => ChopperClient(interceptors: [(bool foo) => 'bar']),
-        throwsA(isA<AssertionError>()),
-      );
-
-      try {
-        ChopperClient(
-          interceptors: [
-            (bool foo) => 'bar',
-          ],
-        );
-      } on AssertionError catch (error) {
-        expect(
-          error.toString(),
-          contains(
-            'Unsupported type for interceptors, it only support the following types:\n'
-            ' - ${allowedInterceptorsType.join('\n - ')}',
-          ),
-        );
-      }
-    }, testOn: 'vm');
-
-    test('wrong type for interceptor', () {
-      expect(
-        () => ChopperClient(interceptors: [(bool foo) => 'bar']),
-        throwsA(isA<AssertionError>()),
-      );
-
-      try {
-        ChopperClient(
-          interceptors: [
-            (bool foo) => 'bar',
-          ],
-        );
-      } on AssertionError catch (error) {
-        expect(
-          error.toString(),
-          contains(
-            'Unsupported type for interceptors, it only support the following types:\\n'
-            ' - ${allowedInterceptorsType.join('\\n - ')}',
-          ),
-        );
-      }
-    }, testOn: 'browser');
 
     test('Query Map 1', () async {
       final httpClient = MockClient((request) async {
