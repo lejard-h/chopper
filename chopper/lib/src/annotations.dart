@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/list_format.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
@@ -190,14 +191,23 @@ sealed class Method {
   /// Mark the body as optional to suppress warnings during code generation
   final bool optionalBody;
 
-  /// Use brackets [ ] to when encoding
+  /// List format to use when encoding lists
+  ///
+  /// - [ListFormat.repeat] `hxxp://path/to/script?foo=123&foo=456&foo=789` (default)
+  /// - [ListFormat.brackets] `hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789`
+  /// - [ListFormat.indices] `hxxp://path/to/script?foo[0]=123&foo[1]=456&foo[2]=789`
+  /// - [ListFormat.comma] `hxxp://path/to/script?foo=123,456,789`
+  final ListFormat? listFormat;
+
+  /// Use brackets `[ ]` to when encoding
   ///
   /// - lists
-  /// hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789
+  /// `hxxp://path/to/script?foo[]=123&foo[]=456&foo[]=789`
   ///
   /// - maps
-  /// hxxp://path/to/script?user[name]=john&user[surname]=doe&user[age]=21
-  final bool useBrackets;
+  /// `hxxp://path/to/script?user[name]=john&user[surname]=doe&user[age]=21`
+  @Deprecated('Use listFormat instead')
+  final bool? useBrackets;
 
   /// Set to [true] to include query variables with null values. This includes nested maps.
   /// The default is to exclude them.
@@ -223,7 +233,7 @@ sealed class Method {
   /// ```
   ///
   /// The above code produces hxxp://path/to/script&foo=foo_var&bar=&baz=baz_var
-  final bool includeNullQueryVars;
+  final bool? includeNullQueryVars;
 
   /// {@macro Method}
   const Method(
@@ -231,8 +241,9 @@ sealed class Method {
     this.optionalBody = false,
     this.path = '',
     this.headers = const {},
-    this.useBrackets = false,
-    this.includeNullQueryVars = false,
+    this.listFormat,
+    @Deprecated('Use listFormat instead') this.useBrackets,
+    this.includeNullQueryVars,
   });
 }
 
@@ -247,6 +258,7 @@ final class Get extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
   }) : super(HttpMethod.Get);
@@ -265,6 +277,7 @@ final class Post extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
   }) : super(HttpMethod.Post);
@@ -281,6 +294,7 @@ final class Delete extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
   }) : super(HttpMethod.Delete);
@@ -299,6 +313,7 @@ final class Put extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
   }) : super(HttpMethod.Put);
@@ -316,6 +331,7 @@ final class Patch extends Method {
     super.optionalBody,
     super.path,
     super.headers,
+    super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
   }) : super(HttpMethod.Patch);
@@ -332,6 +348,7 @@ final class Head extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
   }) : super(HttpMethod.Head);
@@ -348,6 +365,7 @@ final class Options extends Method {
     super.optionalBody = true,
     super.path,
     super.headers,
+    super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
   }) : super(HttpMethod.Options);
@@ -557,6 +575,25 @@ final class FormUrlEncoded {
   const FormUrlEncoded();
 }
 
+///
+/// {@template Tag}
+/// Adds the argument instance as a request tag.
+///
+/// ```dart
+/// Future<Response> requestWithTag(
+///   @Tag() String t1,
+/// );
+/// ```
+/// get tag via `request.tags`
+///
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.parameter})
+final class Tag {
+  /// {@macro Tag}
+  const Tag();
+}
+
 /// {@macro ChopperApi}
 const chopperApi = ChopperApi();
 
@@ -622,3 +659,6 @@ const partFileMap = PartFileMap();
 
 /// {@macro FormUrlEncoded}
 const formUrlEncoded = FormUrlEncoded();
+
+/// {@macro Tag}
+const tag = Tag();

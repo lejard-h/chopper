@@ -582,6 +582,22 @@ final class _$HttpTestServiceVariable extends HttpTestServiceVariable {
   }
 
   @override
+  Future<Response<String>> getUsingListQueryParamWithBracketsLegacy(
+      List<String> value) {
+    final Uri $url =
+        Uri.parse('${service}/list_query_param_with_brackets_legacy');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      useBrackets: true,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
   Future<Response<String>> getUsingListQueryParamWithBrackets(
       List<String> value) {
     final Uri $url = Uri.parse('${service}/list_query_param_with_brackets');
@@ -591,7 +607,51 @@ final class _$HttpTestServiceVariable extends HttpTestServiceVariable {
       $url,
       client.baseUrl,
       parameters: $params,
-      useBrackets: true,
+      listFormat: ListFormat.brackets,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingListQueryParamWithIndices(
+      List<String> value) {
+    final Uri $url = Uri.parse('${service}/list_query_param_with_indices');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.indices,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingListQueryParamWithRepeat(
+      List<String> value) {
+    final Uri $url = Uri.parse('${service}/list_query_param_with_repeat');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.repeat,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingListQueryParamWithComma(List<String> value) {
+    final Uri $url = Uri.parse('${service}/list_query_param_with_comma');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.comma,
     );
     return client.send<String, String>($request);
   }
@@ -626,6 +686,22 @@ final class _$HttpTestServiceVariable extends HttpTestServiceVariable {
   }
 
   @override
+  Future<Response<String>> getUsingMapQueryParamWithBracketsLegacy(
+      Map<String, dynamic> value) {
+    final Uri $url =
+        Uri.parse('${service}/map_query_param_with_brackets_legacy');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      useBrackets: true,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
       Map<String, dynamic> value) {
     final Uri $url = Uri.parse('${service}/map_query_param_with_brackets');
@@ -635,7 +711,52 @@ final class _$HttpTestServiceVariable extends HttpTestServiceVariable {
       $url,
       client.baseUrl,
       parameters: $params,
-      useBrackets: true,
+      listFormat: ListFormat.brackets,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingMapQueryParamWithIndices(
+      Map<String, dynamic> value) {
+    final Uri $url = Uri.parse('${service}/map_query_param_with_indices');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.indices,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingMapQueryParamWithRepeat(
+      Map<String, dynamic> value) {
+    final Uri $url = Uri.parse('${service}/map_query_param_with_repeat');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.repeat,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getUsingMapQueryParamWithComma(
+      Map<String, dynamic> value) {
+    final Uri $url = Uri.parse('${service}/map_query_param_with_comma');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.comma,
     );
     return client.send<String, String>($request);
   }

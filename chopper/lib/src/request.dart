@@ -1,6 +1,7 @@
-import 'dart:async';
+import 'dart:async' show Stream;
 
 import 'package:chopper/src/extensions.dart';
+import 'package:chopper/src/list_format.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
 import 'package:http/http.dart' as http;
@@ -14,10 +15,13 @@ base class Request extends http.BaseRequest with EquatableMixin {
   final Uri baseUri;
   final dynamic body;
   final Map<String, dynamic> parameters;
+  final Object? tag;
   final bool multipart;
   final List<PartValue> parts;
-  final bool useBrackets;
-  final bool includeNullQueryVars;
+  final ListFormat? listFormat;
+  @Deprecated('Use listFormat instead')
+  final bool? useBrackets;
+  final bool? includeNullQueryVars;
 
   /// {@macro request}
   Request(
@@ -29,8 +33,10 @@ base class Request extends http.BaseRequest with EquatableMixin {
     Map<String, String> headers = const {},
     this.multipart = false,
     this.parts = const [],
-    this.useBrackets = false,
-    this.includeNullQueryVars = false,
+    this.tag,
+    this.listFormat,
+    @Deprecated('Use listFormat instead') this.useBrackets,
+    this.includeNullQueryVars,
   })  : assert(
             !baseUri.hasQuery,
             'baseUri should not contain query parameters.'
@@ -43,6 +49,8 @@ base class Request extends http.BaseRequest with EquatableMixin {
             baseUri,
             uri,
             {...uri.queryParametersAll, ...?parameters},
+            listFormat: listFormat,
+            // ignore: deprecated_member_use_from_same_package
             useBrackets: useBrackets,
             includeNullQueryVars: includeNullQueryVars,
           ),
@@ -60,8 +68,10 @@ base class Request extends http.BaseRequest with EquatableMixin {
     Map<String, String>? headers,
     bool? multipart,
     List<PartValue>? parts,
-    bool? useBrackets,
+    ListFormat? listFormat,
+    @Deprecated('Use listFormat instead') bool? useBrackets,
     bool? includeNullQueryVars,
+    Object? tag,
   }) =>
       Request(
         method ?? this.method,
@@ -72,8 +82,11 @@ base class Request extends http.BaseRequest with EquatableMixin {
         headers: headers ?? this.headers,
         multipart: multipart ?? this.multipart,
         parts: parts ?? this.parts,
+        listFormat: listFormat ?? this.listFormat,
+        // ignore: deprecated_member_use_from_same_package
         useBrackets: useBrackets ?? this.useBrackets,
         includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
+        tag: tag ?? this.tag,
       );
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
@@ -84,8 +97,9 @@ base class Request extends http.BaseRequest with EquatableMixin {
     Uri baseUrl,
     Uri url,
     Map<String, dynamic> parameters, {
-    bool useBrackets = false,
-    bool includeNullQueryVars = false,
+    ListFormat? listFormat,
+    @Deprecated('Use listFormat instead') bool? useBrackets,
+    bool? includeNullQueryVars,
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
@@ -102,6 +116,8 @@ base class Request extends http.BaseRequest with EquatableMixin {
 
     final String query = mapToQuery(
       allParameters,
+      listFormat: listFormat,
+      // ignore: deprecated_member_use_from_same_package
       useBrackets: useBrackets,
       includeNullQueryVars: includeNullQueryVars,
     );
@@ -235,6 +251,8 @@ base class Request extends http.BaseRequest with EquatableMixin {
         headers,
         multipart,
         parts,
+        listFormat,
+        // ignore: deprecated_member_use_from_same_package
         useBrackets,
         includeNullQueryVars,
       ];

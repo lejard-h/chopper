@@ -158,7 +158,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name='),
+          equals('$baseUrl/test/query'),
         );
         expect(request.method, equals('GET'));
 
@@ -180,7 +180,7 @@ void main() {
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
-          equals('$baseUrl/test/query?name=&default_value=42'),
+          equals('$baseUrl/test/query?default_value=42'),
         );
         expect(request.method, equals('GET'));
 
@@ -1286,6 +1286,122 @@ void main() {
     httpClient.close();
   });
 
+  test('List query param with brackets (legacy)', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/list_query_param_with_brackets_legacy'
+            '?value%5B%5D=foo'
+            '&value%5B%5D=bar'
+            '&value%5B%5D=baz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingListQueryParamWithBracketsLegacy([
+      'foo',
+      'bar',
+      'baz',
+    ]);
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('List query param with indices', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/list_query_param_with_indices'
+            '?value%5B0%5D=foo'
+            '&value%5B1%5D=bar'
+            '&value%5B2%5D=baz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingListQueryParamWithIndices([
+      'foo',
+      'bar',
+      'baz',
+    ]);
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('List query param with repeat', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/list_query_param_with_repeat'
+            '?value=foo'
+            '&value=bar'
+            '&value=baz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingListQueryParamWithRepeat([
+      'foo',
+      'bar',
+      'baz',
+    ]);
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('List query param with comma', () async {
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/list_query_param_with_comma'
+            '?value=foo'
+            '%2Cbar'
+            '%2Cbaz'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response = await service.getUsingListQueryParamWithComma([
+      'foo',
+      'bar',
+      'baz',
+    ]);
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
   test('Map query param using default dot QueryMapSeparator', () async {
     final DateTime now = DateTime.now();
 
@@ -1361,6 +1477,196 @@ void main() {
 
     final response =
         await service.getUsingMapQueryParamWithBrackets(<String, dynamic>{
+      'bar': 'baz',
+      'zap': 'abc',
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': 'jkl',
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': 'xyz',
+          'list': ['a', 123, false],
+        },
+        'dt': now,
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param with brackets (legacy) QueryMapSeparator', () async {
+    final DateTime now = DateTime.now();
+
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param_with_brackets_legacy'
+            '?value%5Bbar%5D=baz'
+            '&value%5Bzap%5D=abc'
+            '&value%5Betc%5D%5Babc%5D=def'
+            '&value%5Betc%5D%5Bghi%5D=jkl'
+            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=a'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=123'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'
+            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response =
+        await service.getUsingMapQueryParamWithBracketsLegacy(<String, dynamic>{
+      'bar': 'baz',
+      'zap': 'abc',
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': 'jkl',
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': 'xyz',
+          'list': ['a', 123, false],
+        },
+        'dt': now,
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param with indices QueryMapSeparator', () async {
+    final DateTime now = DateTime.now();
+
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param_with_indices'
+            '?value%5Bbar%5D=baz'
+            '&value%5Bzap%5D=abc'
+            '&value%5Betc%5D%5Babc%5D=def'
+            '&value%5Betc%5D%5Bghi%5D=jkl'
+            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B0%5D=a'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B1%5D=123'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B2%5D=false'
+            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response =
+        await service.getUsingMapQueryParamWithIndices(<String, dynamic>{
+      'bar': 'baz',
+      'zap': 'abc',
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': 'jkl',
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': 'xyz',
+          'list': ['a', 123, false],
+        },
+        'dt': now,
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param with repeat QueryMapSeparator', () async {
+    final DateTime now = DateTime.now();
+
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param_with_repeat'
+            '?value.bar=baz'
+            '&value.zap=abc'
+            '&value.etc.abc=def'
+            '&value.etc.ghi=jkl'
+            '&value.etc.mno.opq=rst'
+            '&value.etc.mno.uvw=xyz'
+            '&value.etc.mno.list=a'
+            '&value.etc.mno.list=123'
+            '&value.etc.mno.list=false'
+            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response =
+        await service.getUsingMapQueryParamWithRepeat(<String, dynamic>{
+      'bar': 'baz',
+      'zap': 'abc',
+      'etc': <String, dynamic>{
+        'abc': 'def',
+        'ghi': 'jkl',
+        'mno': <String, dynamic>{
+          'opq': 'rst',
+          'uvw': 'xyz',
+          'list': ['a', 123, false],
+        },
+        'dt': now,
+      },
+    });
+
+    expect(response.body, equals('get response'));
+    expect(response.statusCode, equals(200));
+
+    httpClient.close();
+  });
+
+  test('Map query param with comma QueryMapSeparator', () async {
+    final DateTime now = DateTime.now();
+
+    final httpClient = MockClient((request) async {
+      expect(
+        request.url.toString(),
+        equals('$baseUrl/test/map_query_param_with_comma'
+            '?value%5Bbar%5D=baz'
+            '&value%5Bzap%5D=abc'
+            '&value%5Betc%5D%5Babc%5D=def'
+            '&value%5Betc%5D%5Bghi%5D=jkl'
+            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+            '&value%5Betc%5D%5Bmno%5D%5Blist%5D=a%2C123%2Cfalse'
+            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+      );
+      expect(request.method, equals('GET'));
+
+      return http.Response('get response', 200);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    final response =
+        await service.getUsingMapQueryParamWithComma(<String, dynamic>{
       'bar': 'baz',
       'zap': 'abc',
       'etc': <String, dynamic>{

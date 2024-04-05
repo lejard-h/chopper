@@ -14,6 +14,7 @@ export 'src/extensions.dart';
 export 'src/chain/chain.dart';
 export 'src/interceptors/interceptor.dart';
 export 'src/converters.dart';
+export 'src/list_format.dart';
 export 'src/request.dart';
 export 'src/response.dart';
 export 'src/utils.dart' hide mapToQuery;
