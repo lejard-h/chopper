@@ -617,6 +617,22 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<String> getUsingListQueryParamWithBracketsLegacy(
+      List<String> value) async {
+    final Uri $url = Uri.parse('/test/list_query_param_with_brackets_legacy');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      useBrackets: true,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
   Future<String> getUsingListQueryParamWithBrackets(List<String> value) async {
     final Uri $url = Uri.parse('/test/list_query_param_with_brackets');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
@@ -625,7 +641,52 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
       parameters: $params,
-      useBrackets: true,
+      listFormat: ListFormat.brackets,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
+  Future<String> getUsingListQueryParamWithIndices(List<String> value) async {
+    final Uri $url = Uri.parse('/test/list_query_param_with_indices');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.indices,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
+  Future<String> getUsingListQueryParamWithRepeat(List<String> value) async {
+    final Uri $url = Uri.parse('/test/list_query_param_with_repeat');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.repeat,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
+  Future<String> getUsingListQueryParamWithComma(List<String> value) async {
+    final Uri $url = Uri.parse('/test/list_query_param_with_comma');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.comma,
     );
     final Response $response = await client.send<String, String>($request);
     return $response.bodyOrThrow;
@@ -662,6 +723,22 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<String> getUsingMapQueryParamWithBracketsLegacy(
+      Map<String, dynamic> value) async {
+    final Uri $url = Uri.parse('/test/map_query_param_with_brackets_legacy');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      useBrackets: true,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
   Future<String> getUsingMapQueryParamWithBrackets(
       Map<String, dynamic> value) async {
     final Uri $url = Uri.parse('/test/map_query_param_with_brackets');
@@ -671,7 +748,55 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
       parameters: $params,
-      useBrackets: true,
+      listFormat: ListFormat.brackets,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
+  Future<String> getUsingMapQueryParamWithIndices(
+      Map<String, dynamic> value) async {
+    final Uri $url = Uri.parse('/test/map_query_param_with_indices');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.indices,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
+  Future<String> getUsingMapQueryParamWithRepeat(
+      Map<String, dynamic> value) async {
+    final Uri $url = Uri.parse('/test/map_query_param_with_repeat');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.repeat,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
+
+  @override
+  Future<String> getUsingMapQueryParamWithComma(
+      Map<String, dynamic> value) async {
+    final Uri $url = Uri.parse('/test/map_query_param_with_comma');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      listFormat: ListFormat.comma,
     );
     final Response $response = await client.send<String, String>($request);
     return $response.bodyOrThrow;
