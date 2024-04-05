@@ -1,6 +1,9 @@
 import 'dart:convert' as dart_convert;
 
-import 'package:chopper/chopper.dart';
+import 'package:chopper/src/base.dart';
+import 'package:chopper/src/converters.dart';
+import 'package:chopper/src/request.dart';
+import 'package:chopper/src/response.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';

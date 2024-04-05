@@ -1,9 +1,13 @@
 import 'package:chopper/src/response.dart';
 
+/// {@template ChopperHttpException}
 /// An exception thrown when a [Response] is unsuccessful < 200 or > 300.
+/// {@endtemplate}
 class ChopperHttpException implements Exception {
+  /// {@macro ChopperHttpException}
   ChopperHttpException(this.response);
 
+  /// The response that caused the exception.
   final Response response;
 
   @override
