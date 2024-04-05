@@ -1,5 +1,9 @@
 # Changelog
 
+## 7.4.0
+
+- Use [qs_dart](https://pub.dev/packages/qs_dart) for query string encoding for query string encoding in order to support complex query objects ([#592](https://github.com/lejard-h/chopper/pull/592))
+
 ## 7.3.0
 
 - Add support for `@Tag` annotation ([#586](https://github.com/lejard-h/chopper/pull/586))
