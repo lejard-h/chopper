@@ -4,6 +4,8 @@ import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/chain/interceptor_chain.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/interceptors/internal_interceptor.dart';
+import 'package:chopper/src/interceptors/request_converter_interceptor.dart';
+import 'package:chopper/src/interceptors/response_converter_interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:http/http.dart' as http;
@@ -153,6 +155,50 @@ void main() {
       );
     });
   });
+
+  group('Chain exception tests', () {
+    late Request mockRequest;
+    late InterceptorChain interceptorChain;
+    setUp(() {
+      mockRequest = Request(
+        'GET',
+        Uri.parse('bar'),
+        Uri.parse('http://localhost'),
+        body: 'Test',
+      );
+    });
+
+    test('Exception thrown inside the interceptor chain will be passed up',
+        () async {
+      interceptorChain = InterceptorChain(
+        interceptors: [
+          RequestConverterInterceptor(null, null),
+          PassthroughInterceptor(),
+          PassthroughInterceptor(),
+          ResponseConverterInterceptor(
+            converter: null,
+            errorConverter: null,
+            responseConverter: null,
+          ),
+          ExceptionThrowingInterceptor(),
+        ],
+        request: mockRequest,
+      );
+
+      expect(
+        () => interceptorChain.proceed(mockRequest),
+        throwsA(isA<Exception>().having(
+            (e) => e.toString(), 'message', 'Exception: Test exception')),
+      );
+    });
+  });
+}
+
+class ExceptionThrowingInterceptor implements Interceptor {
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) {
+    throw Exception('Test exception');
+  }
 }
 
 class RequestModifierInterceptor implements Interceptor {
