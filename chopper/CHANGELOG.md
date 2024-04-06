@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.0-rc.1
+
+- Restructure interceptors ([#547](https://github.com/lejard-h/chopper/pull/547))
+
 ## 7.4.0
 
 - Use [qs_dart](https://pub.dev/packages/qs_dart) for query string encoding for query string encoding in order to support complex query objects ([#592](https://github.com/lejard-h/chopper/pull/592))
