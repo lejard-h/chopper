@@ -279,6 +279,15 @@ abstract class HttpTestService extends ChopperService {
     @Field('fool') final String foo,
     @Tag() Object? t1,
   );
+
+  @Get(path: 'get_timeout', timeout: Duration(seconds: 42))
+  Future<Response<String>> getTimeoutTest();
+
+  @Get(path: 'get_timeout_zero', timeout: Duration(seconds: 0))
+  Future<Response<String>> getTimeoutTestZero();
+
+  @Get(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
+  Future<Response<String>> getTimeoutTestNeg();
 }
 
 Request customConvertRequest(Request req) {
