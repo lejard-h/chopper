@@ -1,3 +1,5 @@
+import 'dart:math' show max;
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
@@ -32,6 +34,19 @@ final class Utils {
 
   static bool? getIncludeNullQueryVars(ConstantReader method) =>
       method.peek('includeNullQueryVars')?.boolValue;
+
+  static Duration? getTimeout(ConstantReader method) {
+    final ConstantReader? timeout = method.peek('timeout');
+    if (timeout != null) {
+      final int? microseconds =
+          timeout.objectValue.getField('_duration')?.toIntValue();
+      if (microseconds != null) {
+        return Duration(microseconds: max(microseconds, 0));
+      }
+    }
+
+    return null;
+  }
 
   /// All positional required params must support nullability
   static Parameter buildRequiredPositionalParam(ParameterElement p) =>
