@@ -410,6 +410,8 @@ final class ChopperGenerator
 
       final bool? includeNullQueryVars = Utils.getIncludeNullQueryVars(method);
 
+      final Duration? timeout = Utils.getTimeout(method);
+
       blocks.add(
         declareFinal(Vars.request.toString(), type: refer('Request'))
             .assign(
@@ -454,12 +456,19 @@ final class ChopperGenerator
         ]);
       }
 
-      final returnStatement =
+      Expression returnStatement =
           refer(Vars.client.toString()).property('send').call(
         [refer(Vars.request.toString())],
         namedArguments,
         typeArguments,
       );
+      if (timeout != null) {
+        returnStatement = returnStatement.property('timeout').call([
+          refer('Duration').constInstance([], {
+            'microseconds': literalNum(timeout.inMicroseconds),
+          }),
+        ]);
+      }
 
       if (isResponseObject) {
         // Return the response object directly from chopper.send
