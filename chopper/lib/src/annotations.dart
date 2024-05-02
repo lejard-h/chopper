@@ -235,6 +235,9 @@ sealed class Method {
   /// The above code produces hxxp://path/to/script&foo=foo_var&bar=&baz=baz_var
   final bool? includeNullQueryVars;
 
+  /// Set a timeout for the request
+  final Duration? timeout;
+
   /// {@macro Method}
   const Method(
     this.method, {
@@ -244,6 +247,7 @@ sealed class Method {
     this.listFormat,
     @Deprecated('Use listFormat instead') this.useBrackets,
     this.includeNullQueryVars,
+    this.timeout,
   });
 }
 
@@ -261,6 +265,7 @@ final class Get extends Method {
     super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
+    super.timeout,
   }) : super(HttpMethod.Get);
 }
 
@@ -280,6 +285,7 @@ final class Post extends Method {
     super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
+    super.timeout,
   }) : super(HttpMethod.Post);
 }
 
@@ -297,6 +303,7 @@ final class Delete extends Method {
     super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
+    super.timeout,
   }) : super(HttpMethod.Delete);
 }
 
@@ -316,6 +323,7 @@ final class Put extends Method {
     super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
+    super.timeout,
   }) : super(HttpMethod.Put);
 }
 
@@ -334,6 +342,7 @@ final class Patch extends Method {
     super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
+    super.timeout,
   }) : super(HttpMethod.Patch);
 }
 
@@ -351,6 +360,7 @@ final class Head extends Method {
     super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
+    super.timeout,
   }) : super(HttpMethod.Head);
 }
 
@@ -368,6 +378,7 @@ final class Options extends Method {
     super.listFormat,
     super.useBrackets,
     super.includeNullQueryVars,
+    super.timeout,
   }) : super(HttpMethod.Options);
 }
 

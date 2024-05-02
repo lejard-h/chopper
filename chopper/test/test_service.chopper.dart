@@ -820,4 +820,43 @@ final class _$HttpTestService extends HttpTestService {
       requestConverter: FormUrlEncodedConverter.requestFactory,
     );
   }
+
+  @override
+  Future<Response<String>> getTimeoutTest() {
+    final Uri $url = Uri.parse('/test/get_timeout');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client
+        .send<String, String>($request)
+        .timeout(const Duration(microseconds: 42000000));
+  }
+
+  @override
+  Future<Response<String>> getTimeoutTestZero() {
+    final Uri $url = Uri.parse('/test/get_timeout_zero');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client
+        .send<String, String>($request)
+        .timeout(const Duration(microseconds: 0));
+  }
+
+  @override
+  Future<Response<String>> getTimeoutTestNeg() {
+    final Uri $url = Uri.parse('/test/get_timeout_neg');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+    );
+    return client
+        .send<String, String>($request)
+        .timeout(const Duration(microseconds: 0));
+  }
 }
