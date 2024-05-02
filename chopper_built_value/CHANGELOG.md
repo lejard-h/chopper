@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0-rc.1
+
+- Require Chopper ^8.0.0
+
 ## 2.0.1+2
 
 - Fix Github release workflow permissions ([#512](https://github.com/lejard-h/chopper/pull/512))
