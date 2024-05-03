@@ -3,7 +3,7 @@
 part of 'json_decode_service.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 2.4.1
+// Generator: WorkerGenerator 2.4.2
 // **************************************************************************
 
 /// WorkerService class for JsonDecodeService
@@ -14,9 +14,10 @@ class _$JsonDecodeServiceWorkerService extends JsonDecodeService
   @override
   Map<int, CommandHandler> get operations => _operations;
 
-  late final Map<int, CommandHandler> _operations = {
-    _$jsonDecodeId: ($) => jsonDecode($.args[0])
-  };
+  late final Map<int, CommandHandler> _operations =
+      Map.unmodifiable(<int, CommandHandler>{
+    _$jsonDecodeId: ($) => jsonDecode($.args[0]),
+  });
 
   static const int _$jsonDecodeId = 1;
 }
