@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.0-rc.2
+
+- Add per-request timeout ([#604](https://github.com/lejard-h/chopper/pull/604))
+
 ## 8.0.0-rc.1
 
 - Restructure interceptors ([#547](https://github.com/lejard-h/chopper/pull/547))
