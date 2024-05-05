@@ -2,8 +2,12 @@
 
 ## 8.0.0
 
-- Restructure interceptors ([#547](https://github.com/lejard-h/chopper/pull/547))
 - Add per-request timeout ([#604](https://github.com/lejard-h/chopper/pull/604))
+- **BREAKING CHANGE**:
+  - Restructure interceptors ([#547](https://github.com/lejard-h/chopper/pull/547))
+    - `RequestInterceptor` and Function `RequestInterceptor`s are removed 
+    - `ResponseInterceptor` and Function `ResponseInterceptor`s are removed
+    - See [Migrating to 8.0.0](https://docs.google.com/document/d/e/2PACX-1vQFoUDisnSJBzzXCMaf53ffUD1Bvpu-1GZ_stzfaaCa0Xd3WKIegbd1mmavEQcMT6r6v8z02UqloKuC/pub) for more information and examples
 
 ## 7.4.0
 
