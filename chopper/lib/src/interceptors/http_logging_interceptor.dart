@@ -160,7 +160,7 @@ class HttpLoggingInterceptor implements Interceptor {
       );
     }
 
-    if (level == Level.none) {
+    if (level == Level.none || (onlyErrors && response.statusCode < 400)) {
       return response;
     }
 
