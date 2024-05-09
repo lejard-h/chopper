@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0-rc.1
+## 3.0.0
 
 - Require Chopper ^8.0.0
 
