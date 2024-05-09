@@ -6,6 +6,7 @@ part of 'built_value_resource.dart';
 // ChopperGenerator
 // **************************************************************************
 
+// coverage:ignore-file
 // ignore_for_file: type=lint
 final class _$MyService extends MyService {
   _$MyService([ChopperClient? client]) {
@@ -14,7 +15,7 @@ final class _$MyService extends MyService {
   }
 
   @override
-  final definitionType = MyService;
+  final Type definitionType = MyService;
 
   @override
   Future<Response<dynamic>> getResource(String id) {
