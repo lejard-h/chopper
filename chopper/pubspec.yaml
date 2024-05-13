@@ -23,7 +23,7 @@ dev_dependencies:
   data_fixture_dart: ^2.2.0
   faker: ^2.1.0
   http_parser: ^4.0.2
-  lints: ^3.0.0
+  lints: ">=3.0.0 <5.0.0"
   test: ^1.25.4
   transparent_image: ^2.0.1
   chopper_generator: ">=8.0.0-rc.2 <9.0.0" # will be replaced by ^8.0.0 in the next release
