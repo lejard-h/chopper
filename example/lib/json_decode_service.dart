@@ -1,4 +1,4 @@
-/// This example uses https://github.com/d-markey/squadron_builder
+// This example uses https://github.com/d-markey/squadron_builder
 
 import 'dart:async';
 import 'dart:convert' show json;
