@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async' show FutureOr;
 
 import 'package:analyzer/dart/constant/value.dart';
@@ -518,9 +520,7 @@ final class ChopperGenerator
   }
 
   static String _factoryForFunction(FunctionTypedElement function) =>
-      // ignore: deprecated_member_use
       function.enclosingElement is ClassElement
-          // ignore: deprecated_member_use
           ? '${function.enclosingElement!.name}.${function.name}'
           : function.name!;
 
@@ -640,7 +640,6 @@ final class ChopperGenerator
         _typeChecker(Map).isExactlyType(type) ||
         _typeChecker(BuiltMap).isExactlyType(type)) return type;
 
-    // ignore: deprecated_member_use
     if (generic.isDynamic) return null;
 
     if (_typeChecker(List).isExactlyType(type) ||

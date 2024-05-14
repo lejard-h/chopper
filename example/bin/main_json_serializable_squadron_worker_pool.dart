@@ -1,7 +1,7 @@
-/// This example uses
-/// - https://github.com/google/json_serializable.dart
-/// - https://github.com/d-markey/squadron
-/// - https://github.com/d-markey/squadron_builder
+// This example uses
+// - https://github.com/google/json_serializable.dart
+// - https://github.com/d-markey/squadron
+// - https://github.com/d-markey/squadron_builder
 
 import 'dart:async' show FutureOr;
 import 'dart:convert' show jsonDecode;
