@@ -1,7 +1,7 @@
 # Chopper
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![pub package](https://img.shields.io/pub/v/chopper.svg)](https://pub.dartlang.org/packages/chopper)
 [![Dart CI](https://github.com/lejard-h/chopper/workflows/Dart%20CI/badge.svg)](https://github.com/lejard-h/chopper/actions?query=workflow%3A%22Dart+CI%22)
