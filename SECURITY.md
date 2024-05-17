@@ -22,7 +22,8 @@ to us as described below.
 
 **DO NOT CREATE A GITHUB ISSUE** reporting the vulnerability.
 
-Instead, send an email to [techouse@gmail.com](mailto:techouse@gmail.com).
+Instead, send an email to either [techouse@gmail.com](mailto:techouse@gmail.com) or
+[i.terhin@gmail.com](mailto:i.terhin@gmail.com).
 
 In the report, please include the following:
 
