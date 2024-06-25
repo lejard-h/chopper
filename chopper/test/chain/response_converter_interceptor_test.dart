@@ -71,6 +71,44 @@ void main() {
     });
 
     test(
+        'response is successful converter is not null and response converter is null, response is converted with null body',
+        () async {
+      final converter = ResponseNullBodyConverter();
+      interceptorChain = InterceptorChain(
+        interceptors: [
+          ResponseConverterInterceptor(converter: converter),
+          ResponseInterceptor(),
+        ],
+        request: testRequest,
+      );
+
+      final response = await interceptorChain.proceed(testRequest);
+
+      expect(response.body, null);
+      expect(converter.called, 1);
+    });
+
+    test(
+        'response is successful converter is not null and response converter is not null, response is converted by response converter with null body',
+        () async {
+      final converter = ResponseNullBodyConverter();
+      interceptorChain = InterceptorChain(
+        interceptors: [
+          ResponseConverterInterceptor(
+              converter: converter,
+              responseConverter: (response) => Response(response.base, null)),
+          ResponseInterceptor(),
+        ],
+        request: testRequest,
+      );
+
+      final response = await interceptorChain.proceed(testRequest);
+
+      expect(response.body, null);
+      expect(converter.called, 0);
+    });
+
+    test(
         'response is unsuccessful converter is not null and response converter is not null, response is not converted',
         () async {
       final converter = ResponseConverter();
@@ -153,6 +191,8 @@ void main() {
       expect(converter.called, 0);
     });
   });
+
+  group('response converter returns converted response tests', () {});
 }
 
 // ignore mutability warning for test class.
@@ -170,6 +210,24 @@ class ResponseConverter implements Converter {
       Response response) {
     called++;
     return response.copyWith(body: 'converted' as BodyType);
+  }
+}
+
+// ignore mutability warning for test class.
+//ignore: must_be_immutable
+class ResponseNullBodyConverter implements Converter {
+  int called = 0;
+
+  @override
+  FutureOr<Request> convertRequest(Request request) {
+    return request;
+  }
+
+  @override
+  FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
+      Response response) {
+    called++;
+    return Response(response.base, null as BodyType);
   }
 }
 
