@@ -52,17 +52,13 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
     Response response,
     ConvertResponse? responseConverter,
   ) async {
-    Response? newResponse;
     if (responseConverter != null) {
-      newResponse = await responseConverter(response);
+      response = await responseConverter(response);
     } else if (_converter != null) {
-      newResponse = await _decodeResponse<BodyType>(response, _converter!);
+      response = await _decodeResponse<BodyType>(response, _converter!);
     }
 
-    return Response<BodyType>(
-      newResponse?.base ?? response.base,
-      newResponse?.body ?? response.body,
-    );
+    return Response<BodyType>(response.base, response.body);
   }
 
   /// Converts the [response] using [_converter].

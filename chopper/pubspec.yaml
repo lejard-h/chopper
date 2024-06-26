@@ -12,21 +12,21 @@ dependencies:
   http: ^1.1.0
   logging: ^1.2.0
   meta: ^1.9.1
-  qs_dart: ^1.0.10
+  qs_dart: ^1.2.0
 
 dev_dependencies:
   build_runner: ^2.4.9
   build_test: ^2.2.2
   build_verify: ^3.1.0
   collection: ^1.18.0
-  coverage: ^1.7.2
+  coverage: ^1.8.0
   data_fixture_dart: ^2.2.0
   faker: ^2.1.0
   http_parser: ^4.0.2
-  lints: ^3.0.0
-  test: ^1.25.4
+  lints: ^4.0.0
+  test: ^1.25.5
   transparent_image: ^2.0.1
-  chopper_generator: ">=8.0.0-rc.2 <9.0.0" # will be replaced by ^8.0.0 in the next release
+  chopper_generator: ^8.0.0
 
 dependency_overrides:
   chopper_generator:
