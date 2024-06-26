@@ -14,7 +14,6 @@ import 'package:chopper_generator/src/vars.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:logging/logging.dart';
-import 'package:qs_dart/qs_dart.dart' show ListFormat;
 import 'package:source_gen/source_gen.dart';
 
 /// Code generator for [chopper.ChopperApi] annotated classes.
@@ -406,7 +405,7 @@ final class ChopperGenerator
 
       final bool hasTag = tag.isNotEmpty;
 
-      final ListFormat? listFormat = Utils.getListFormat(method);
+      final chopper.ListFormat? listFormat = Utils.getListFormat(method);
 
       final bool? useBrackets = Utils.getUseBrackets(method);
 
@@ -716,7 +715,7 @@ final class ChopperGenerator
     bool hasParts = false,
     bool useQueries = false,
     bool useHeaders = false,
-    ListFormat? listFormat,
+    chopper.ListFormat? listFormat,
     @Deprecated('Use listFormat instead') bool? useBrackets,
     bool? includeNullQueryVars,
     Reference? tagRefer,

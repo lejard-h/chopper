@@ -3,10 +3,10 @@
 import 'dart:math' show max;
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:chopper/chopper.dart' show ListFormat;
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
-import 'package:qs_dart/qs_dart.dart' show ListFormat;
 import 'package:source_gen/source_gen.dart';
 
 final class Utils {

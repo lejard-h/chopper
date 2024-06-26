@@ -1,8 +1,8 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-import 'package:chopper/src/list_format.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/utils.dart';
+import 'package:qs_dart/qs_dart.dart' show ListFormat;
 import 'package:test/test.dart';
 
 import 'fixtures/example_enum.dart';
