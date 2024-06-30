@@ -21,7 +21,7 @@ dev_dependencies:
   chopper_generator:
   json_serializable: ^6.8.0
   built_value_generator: ^8.9.2
-  lints: ^3.0.0
+  lints: ^4.0.0
   squadron_builder: ^2.4.5
 
 dependency_overrides:

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async' show FutureOr;
 
 import 'package:analyzer/dart/constant/value.dart';
@@ -12,7 +14,6 @@ import 'package:chopper_generator/src/vars.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:logging/logging.dart';
-import 'package:qs_dart/qs_dart.dart' show ListFormat;
 import 'package:source_gen/source_gen.dart';
 
 /// Code generator for [chopper.ChopperApi] annotated classes.
@@ -404,7 +405,7 @@ final class ChopperGenerator
 
       final bool hasTag = tag.isNotEmpty;
 
-      final ListFormat? listFormat = Utils.getListFormat(method);
+      final chopper.ListFormat? listFormat = Utils.getListFormat(method);
 
       final bool? useBrackets = Utils.getUseBrackets(method);
 
@@ -518,9 +519,7 @@ final class ChopperGenerator
   }
 
   static String _factoryForFunction(FunctionTypedElement function) =>
-      // ignore: deprecated_member_use
       function.enclosingElement is ClassElement
-          // ignore: deprecated_member_use
           ? '${function.enclosingElement!.name}.${function.name}'
           : function.name!;
 
@@ -640,7 +639,6 @@ final class ChopperGenerator
         _typeChecker(Map).isExactlyType(type) ||
         _typeChecker(BuiltMap).isExactlyType(type)) return type;
 
-    // ignore: deprecated_member_use
     if (generic.isDynamic) return null;
 
     if (_typeChecker(List).isExactlyType(type) ||
@@ -717,7 +715,7 @@ final class ChopperGenerator
     bool hasParts = false,
     bool useQueries = false,
     bool useHeaders = false,
-    ListFormat? listFormat,
+    chopper.ListFormat? listFormat,
     @Deprecated('Use listFormat instead') bool? useBrackets,
     bool? includeNullQueryVars,
     Reference? tagRefer,

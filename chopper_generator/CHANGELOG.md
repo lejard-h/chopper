@@ -1,5 +1,10 @@
 # Changelog
 
+## 8.0.1
+
+- Directly export `qs.ListFormat` instead of internal wrapper ([#624](https://github.com/lejard-h/chopper/pull/624))
+- Update dependencies and linters ([#615](https://github.com/lejard-h/chopper/pull/615))
+
 ## 8.0.0
 
 - Add per-request timeout ([#604](https://github.com/lejard-h/chopper/pull/604))

@@ -1,8 +1,8 @@
 import 'dart:collection';
 
-import 'package:chopper/chopper.dart';
+import 'package:chopper/src/request.dart';
 import 'package:logging/logging.dart';
-import 'package:qs_dart/qs_dart.dart' as qs;
+import 'package:qs_dart/qs_dart.dart' show encode, EncodeOptions, ListFormat;
 
 /// Creates a new [Request] by copying [request] and adding a header with the
 /// provided key [name] and value [value] to the result.
@@ -69,10 +69,10 @@ String mapToQuery(
 }) {
   listFormat ??= useBrackets == true ? ListFormat.brackets : ListFormat.repeat;
 
-  return qs.encode(
+  return encode(
     map,
-    qs.EncodeOptions(
-      listFormat: listFormat.qsListFormat,
+    EncodeOptions(
+      listFormat: listFormat,
       allowDots: listFormat == ListFormat.repeat,
       encodeDotInKeys: listFormat == ListFormat.repeat,
       encodeValuesOnly: listFormat == ListFormat.repeat,

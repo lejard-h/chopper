@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1
+
+- Update dependencies and linters ([#615](https://github.com/lejard-h/chopper/pull/615))
+
 ## 3.0.0
 
 - Require Chopper ^8.0.0
