@@ -2,7 +2,7 @@
 
 ## 8.0.1+1
 
-- Remove instead of internal `qs.ListFormat` wrapper
+- Re-remove internal `qs.ListFormat` wrapper
 
 ## 8.0.1
 
