@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.1+1
+
+- Re-remove internal `qs.ListFormat` wrapper
+
 ## 8.0.1
 
 - Fix null body converter ([#623](https://github.com/lejard-h/chopper/pull/623))
