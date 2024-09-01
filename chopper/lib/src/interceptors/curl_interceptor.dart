@@ -25,7 +25,7 @@ class CurlInterceptor implements Interceptor {
     if (baseRequest is http.Request) {
       final String body = baseRequest.body;
       if (body.isNotEmpty) {
-        curlParts.add("-d '$body'");
+        curlParts.add("-d '${body.replaceAll("'", r"'\''")}'");
       }
     }
     if (baseRequest is http.MultipartRequest) {
@@ -36,7 +36,7 @@ class CurlInterceptor implements Interceptor {
         curlParts.add("-f '${file.field}: ${file.filename ?? ''}'");
       }
     }
-    curlParts.add('"${baseRequest.url}"');
+    curlParts.add("'${baseRequest.url}'");
     chopperLogger.info(curlParts.join(' '));
 
     return chain.proceed(chain.request);
