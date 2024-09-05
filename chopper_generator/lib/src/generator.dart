@@ -193,9 +193,8 @@ final class ChopperGenerator
 
     // Set Response with generic types
     final Reference responseTypeReference = refer(
-        responseType?.getDisplayString(withNullability: false) ??
-            responseType?.getDisplayString(withNullability: false) ??
-            'dynamic');
+      responseType?.getDisplayString(withNullability: false) ?? 'dynamic',
+    );
     // Set the return type
     final returnType = isResponseObject
         ? refer(m.returnType.getDisplayString(withNullability: false))

@@ -91,15 +91,15 @@ void main() {
           );
     });
 
-    final fakeRequest = Request(
-      'POST',
-      Uri.parse('/'),
-      Uri.parse('base'),
-      body: 'test',
-      headers: {'foo': 'bar'},
-    );
-
     test('Curl interceptors', () async {
+      final fakeRequest = Request(
+        'POST',
+        Uri.parse('/'),
+        Uri.parse('base'),
+        body: 'test',
+        headers: {'foo': 'bar'},
+      );
+
       final curl = CurlInterceptor();
       var log = '';
       chopperLogger.onRecord.listen((r) => log = r.message);
@@ -108,27 +108,48 @@ void main() {
       expect(
         log,
         equals(
-          "curl -v -X POST -H 'foo: bar' -H 'content-type: text/plain; charset=utf-8' -d 'test' \"base/\"",
+          r"curl -v -X POST -H 'foo: bar' -H 'content-type: text/plain; charset=utf-8' -d 'test' 'base/'",
         ),
       );
     });
 
-    final fakeRequestMultipart = Request(
-      'POST',
-      Uri.parse('/'),
-      Uri.parse('base'),
-      headers: {'foo': 'bar'},
-      parts: [
-        PartValue<int>('p1', 123),
-        PartValueFile<http.MultipartFile>(
-          'p2',
-          http.MultipartFile.fromBytes('file', [0], filename: 'filename'),
+    test('Curl interceptor with escaped text', () async {
+      final fakeRequest = Request(
+        'POST',
+        Uri.parse('/'),
+        Uri.parse('base'),
+        body: r"""Lorem's ipsum "dolor" sit amet""",
+      );
+
+      final curl = CurlInterceptor();
+      var log = '';
+      chopperLogger.onRecord.listen((r) => log = r.message);
+      await curl.intercept(FakeChain(fakeRequest));
+
+      expect(
+        log,
+        equals(
+          r"""curl -v -X POST -H 'content-type: text/plain; charset=utf-8' -d 'Lorem'\''s ipsum "dolor" sit amet' 'base/'""",
         ),
-      ],
-      multipart: true,
-    );
+      );
+    });
 
     test('Curl interceptors Multipart', () async {
+      final fakeRequestMultipart = Request(
+        'POST',
+        Uri.parse('/'),
+        Uri.parse('base'),
+        headers: {'foo': 'bar'},
+        parts: [
+          PartValue<int>('p1', 123),
+          PartValueFile<http.MultipartFile>(
+            'p2',
+            http.MultipartFile.fromBytes('file', [0], filename: 'filename'),
+          ),
+        ],
+        multipart: true,
+      );
+
       final curl = CurlInterceptor();
       var log = '';
       chopperLogger.onRecord.listen((r) => log = r.message);
@@ -137,7 +158,7 @@ void main() {
       expect(
         log,
         equals(
-          "curl -v -X POST -H 'foo: bar' -f 'p1: 123' -f 'file: filename' \"base/\"",
+          r"curl -v -X POST -H 'foo: bar' -f 'p1: 123' -f 'file: filename' 'base/'",
         ),
       );
     });
