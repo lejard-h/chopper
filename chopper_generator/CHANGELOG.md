@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.2
+
+- Remove duplicate null-coalescing `responseTypeReference` ([#634](https://github.com/lejard-h/chopper/pull/634))
+
 ## 8.0.1
 
 - Directly export `qs.ListFormat` instead of internal wrapper ([#624](https://github.com/lejard-h/chopper/pull/624))
