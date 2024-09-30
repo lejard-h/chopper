@@ -1,7 +1,7 @@
 /// Chopper is an http client generator using source_gen and inspired by Retrofit.
 ///
 /// [Getting Started](https://hadrien-lejard.gitbook.io/chopper)
-library chopper;
+library;
 
 export 'package:qs_dart/qs_dart.dart' show ListFormat;
 export 'src/annotations.dart';
