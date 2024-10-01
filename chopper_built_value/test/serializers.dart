@@ -1,4 +1,4 @@
-library serializers;
+library;
 
 import 'package:built_value/serializer.dart';
 

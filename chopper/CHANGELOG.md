@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.3
+
+- Remove unnecessary library name
+
 ## 8.0.2
 
 - Properly escape single quote in cURL interceptor output ([#635](https://github.com/lejard-h/chopper/pull/635))

@@ -1,6 +1,6 @@
 name: chopper_built_value
 description: A built_value based Converter for Chopper.
-version: 3.0.1
+version: 3.0.2
 documentation: https://hadrien-lejard.gitbook.io/chopper/converters/built-value-converter
 repository: https://github.com/lejard-h/chopper
 
@@ -10,7 +10,7 @@ environment:
 dependencies:
   built_value: ^8.9.2
   built_collection: ^5.1.1
-  chopper: ^8.0.0
+  chopper: ^8.0.2
   http: ^1.1.0
 
 dev_dependencies:
@@ -18,7 +18,7 @@ dev_dependencies:
   build_runner: ^2.4.9
   build_test: ^2.2.2
   built_value_generator: ^8.9.2
-  lints: ^4.0.0
+  lints: ">=4.0.0 <6.0.0"
 
 dependency_overrides:
   chopper:

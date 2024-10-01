@@ -1,3 +1,3 @@
-library chopper_generator.dart;
+library;
 
 export 'src/builder_factory.dart';
