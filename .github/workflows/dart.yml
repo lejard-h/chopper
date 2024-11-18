@@ -134,7 +134,7 @@ jobs:
         if: "always() && steps.chopper_pub_upgrade.conclusion == 'success'"
         working-directory: chopper
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: chopper/coverage/lcov.info
           fail_ci_if_error: true
@@ -149,7 +149,7 @@ jobs:
         if: "always() && steps.chopper_built_value_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_built_value
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: chopper_built_value/coverage/lcov.info
           fail_ci_if_error: true
@@ -164,7 +164,7 @@ jobs:
         if: "always() && steps.chopper_generator_pub_upgrade.conclusion == 'success'"
         working-directory: chopper_generator
       - name: Upload coverage to codecov.io
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: chopper_generator/coverage/lcov.info
           fail_ci_if_error: true
