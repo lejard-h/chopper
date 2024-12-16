@@ -1,4 +1,4 @@
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 
 extension HttpResponseExtension on http.Response {
   http.Response copyWith({

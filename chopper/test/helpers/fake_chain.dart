@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 
 class FakeChain<BodyType> implements Chain {
   FakeChain(this.request, {this.response});

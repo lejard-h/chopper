@@ -8,7 +8,7 @@ import 'package:chopper/src/converters.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// ChopperClient is the main class of the Chopper API.
@@ -44,6 +44,8 @@ base class ChopperClient {
       StreamController<Response>.broadcast();
 
   final bool _clientIsInternal;
+
+  final http.CancellationToken? cancellationToken;
 
   /// Creates and configures a [ChopperClient].
   ///
@@ -107,6 +109,7 @@ base class ChopperClient {
     this.authenticator,
     this.converter,
     this.errorConverter,
+    this.cancellationToken,
     Iterable<ChopperService>? services,
   })  : assert(
           baseUrl == null || !baseUrl.hasQuery,
@@ -145,7 +148,6 @@ base class ChopperClient {
     if (service == null) {
       throw Exception("Service of type '$ServiceType' not found.");
     }
-
     return service as ServiceType;
   }
 
@@ -165,11 +167,13 @@ base class ChopperClient {
     Request request, {
     ConvertRequest? requestConverter,
     ConvertResponse<BodyType>? responseConverter,
+    http.CancellationToken? cancellationToken
   }) async {
     final call = Call(
       request: request,
       client: this,
       requestCallback: _requestController.add,
+      cancellationToken: cancellationToken,
     );
 
     final response = await call.execute<BodyType, InnerType>(

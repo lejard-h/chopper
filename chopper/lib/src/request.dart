@@ -3,7 +3,7 @@ import 'dart:async' show Stream;
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:qs_dart/qs_dart.dart' show ListFormat;
 

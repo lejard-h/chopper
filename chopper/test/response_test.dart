@@ -1,6 +1,6 @@
 import 'package:chopper/src/chopper_http_exception.dart';
 import 'package:chopper/src/response.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:test/test.dart';
 
 import 'fixtures/error_fixtures.dart';

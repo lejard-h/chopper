@@ -431,22 +431,9 @@ final class ChopperGenerator
             .statement,
       );
 
-      final Map<String, Expression> namedArguments = {};
-
-      final ConstantReader? requestFactory = factoryConverter?.peek('request');
-      if (requestFactory != null) {
-        final ExecutableElement? func =
-            requestFactory.objectValue.toFunctionValue();
-        namedArguments['requestConverter'] = refer(_factoryForFunction(func!));
-      }
-
-      final ConstantReader? responseFactory =
-          factoryConverter?.peek('response');
-      if (responseFactory != null) {
-        final ExecutableElement? func =
-            responseFactory.objectValue.toFunctionValue();
-        namedArguments['responseConverter'] = refer(_factoryForFunction(func!));
-      }
+      final Map<String, Expression> namedArguments = {
+        'cancellationToken': refer('client.cancellationToken'), // Add the cancellationToken argument
+      };
 
       final List<Reference> typeArguments = [];
       if (responseType != null) {
@@ -480,7 +467,7 @@ final class ChopperGenerator
           declareFinal(
             Vars.response.toString(),
             type: TypeReference(
-              (b) => b
+                  (b) => b
                 ..symbol = 'Response'
                 ..types.add(responseTypeReference),
             ),

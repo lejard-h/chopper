@@ -7,7 +7,7 @@ import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/interceptors/response_converter_interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:test/test.dart';
 
 void main() {

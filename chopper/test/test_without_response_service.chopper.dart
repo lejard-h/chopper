@@ -32,7 +32,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -44,7 +47,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -56,7 +62,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -68,8 +77,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response =
-        await client.send<Stream<List<int>>, int>($request);
+    final Response $response = await client.send<Stream<List<int>>, int>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -81,7 +92,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -93,7 +107,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -115,7 +132,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -129,7 +149,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -147,7 +170,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -169,7 +195,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -191,7 +220,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -205,7 +237,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -219,7 +254,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -233,7 +271,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -247,7 +288,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -264,7 +308,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -280,7 +327,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    final Response $response = await client.send<void, void>($request);
+    final Response $response = await client.send<void, void>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -297,7 +347,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -311,7 +364,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -327,7 +383,7 @@ final class _$HttpTestService extends HttpTestService {
     );
     final Response $response = await client.send<dynamic, dynamic>(
       $request,
-      requestConverter: convertForm,
+      cancellationToken: client.cancellationToken,
     );
     return $response.bodyOrThrow;
   }
@@ -346,7 +402,10 @@ final class _$HttpTestService extends HttpTestService {
       body: $body,
       headers: $headers,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -368,7 +427,7 @@ final class _$HttpTestService extends HttpTestService {
     );
     final Response $response = await client.send<dynamic, dynamic>(
       $request,
-      requestConverter: convertForm,
+      cancellationToken: client.cancellationToken,
     );
     return $response.bodyOrThrow;
   }
@@ -385,8 +444,7 @@ final class _$HttpTestService extends HttpTestService {
     );
     final Response $response = await client.send<dynamic, dynamic>(
       $request,
-      requestConverter: customConvertRequest,
-      responseConverter: customConvertResponse,
+      cancellationToken: client.cancellationToken,
     );
     return $response.bodyOrThrow;
   }
@@ -414,7 +472,10 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -434,7 +495,10 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -454,7 +518,10 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -481,7 +548,10 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -501,7 +571,10 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -538,7 +611,10 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -550,7 +626,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -562,8 +641,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response =
-        await client.send<List<String>, String>($request);
+    final Response $response = await client.send<List<String>, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -575,7 +656,10 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response $response = await client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -598,7 +682,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -612,7 +699,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -628,7 +718,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       useBrackets: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -643,7 +736,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -658,7 +754,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -673,7 +772,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -688,7 +790,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -702,7 +807,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -718,7 +826,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -734,7 +845,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       useBrackets: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -750,7 +864,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -766,7 +883,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -782,7 +902,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -798,7 +921,10 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -824,7 +950,10 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response $response = await client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
     return $response.bodyOrThrow;
   }
 }

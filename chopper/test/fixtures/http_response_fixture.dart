@@ -1,7 +1,7 @@
 import 'dart:convert' show jsonEncode;
 
 import 'package:data_fixture_dart/data_fixture_dart.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 import '../helpers/http_response_extension.dart';

@@ -1,7 +1,7 @@
 import 'package:chopper/src/base.dart';
 import 'package:chopper/src/converters.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
+import 'package:cancellation_token_http/http.dart' as http;
+import 'package:cancellation_token_http/testing.dart';
 import 'package:test/test.dart';
 
 import 'test_service.dart';

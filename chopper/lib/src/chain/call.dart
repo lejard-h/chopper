@@ -1,3 +1,4 @@
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/base.dart';
 import 'package:chopper/src/chain/interceptor_chain.dart';
@@ -19,6 +20,7 @@ class Call {
     required this.request,
     required this.client,
     required this.requestCallback,
+    this.cancellationToken,
   });
 
   /// Request to be executed.
@@ -29,6 +31,8 @@ class Call {
 
   /// Callback to send intercepted and converted request to the stream controller.
   final void Function(Request event) requestCallback;
+
+  final http.CancellationToken? cancellationToken;
 
   Future<Response<BodyType>> execute<BodyType, InnerType>(
     ConvertRequest? requestConverter,
@@ -45,7 +49,7 @@ class Call {
         errorConverter: client.errorConverter,
         responseConverter: responseConverter,
       ),
-      HttpCallInterceptor(client.httpClient),
+      HttpCallInterceptor(client.httpClient, cancellationToken: cancellationToken),
     ];
 
     final interceptorChain = InterceptorChain<BodyType>(

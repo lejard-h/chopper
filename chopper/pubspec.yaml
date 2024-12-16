@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   equatable: ^2.0.5
-  http: ^1.1.0
+  cancellation_token_http: ^2.1.0
   logging: ^1.2.0
   meta: ^1.9.1
   qs_dart: ^1.2.4

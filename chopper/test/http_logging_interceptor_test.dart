@@ -2,7 +2,7 @@ import 'package:chopper/src/interceptors/http_logging_interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:test/test.dart';
 
 import 'helpers/fake_chain.dart';

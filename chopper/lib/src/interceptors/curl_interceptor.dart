@@ -4,7 +4,7 @@ import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/response.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// A [Interceptor] implementation that prints a curl request equivalent
