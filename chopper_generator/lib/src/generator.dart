@@ -431,9 +431,7 @@ final class ChopperGenerator
             .statement,
       );
 
-      final Map<String, Expression> namedArguments = {
-        'cancellationToken': refer('client.cancellationToken'), // Add the cancellationToken argument
-      };
+      final Map<String, Expression> namedArguments = {};
 
       final List<Reference> typeArguments = [];
       if (responseType != null) {
