@@ -45,7 +45,7 @@ base class ChopperClient {
 
   final bool _clientIsInternal;
 
-  final http.CancellationToken? cancellationToken;
+  http.CancellationToken? _cancellationToken;
 
   /// Creates and configures a [ChopperClient].
   ///
@@ -109,7 +109,7 @@ base class ChopperClient {
     this.authenticator,
     this.converter,
     this.errorConverter,
-    this.cancellationToken,
+    http.CancellationToken? cancellationToken,
     Iterable<ChopperService>? services,
   })  : assert(
           baseUrl == null || !baseUrl.hasQuery,
@@ -118,6 +118,7 @@ base class ChopperClient {
         ),
         baseUrl = baseUrl ?? Uri(),
         httpClient = client ?? http.Client(),
+        _cancellationToken = cancellationToken,
         _clientIsInternal = client == null {
     _services = <Type, ChopperService>{
       for (final ChopperService service in services?.toSet() ?? [])
@@ -167,21 +168,28 @@ base class ChopperClient {
     Request request, {
     ConvertRequest? requestConverter,
     ConvertResponse<BodyType>? responseConverter,
-    http.CancellationToken? cancellationToken
   }) async {
     final call = Call(
       request: request,
       client: this,
       requestCallback: _requestController.add,
-      cancellationToken: cancellationToken,
     );
 
-    final response = await call.execute<BodyType, InnerType>(
-      requestConverter,
-      responseConverter,
-    );
+    Response<BodyType> response;
+    try {
+      response = await call.execute<BodyType, InnerType>(
+          requestConverter,
+          responseConverter,
+          cancellationToken: _cancellationToken
+      );
 
-    _responseController.add(response);
+      _responseController.add(response);
+
+    }
+    on http.CancelledException {
+      _cancellationToken = http.CancellationToken();
+      rethrow;
+    }
 
     return response;
   }
@@ -324,6 +332,11 @@ base class ChopperClient {
           parameters: parameters,
         ),
       );
+
+  /// Cancels any requests by the cancellation token (if exists)
+  void cancelRequests(){
+    _cancellationToken?.cancel();
+  }
 
   /// Disposes this [ChopperClient] to clean up memory.
   ///

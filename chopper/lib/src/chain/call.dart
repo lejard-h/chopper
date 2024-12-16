@@ -20,7 +20,6 @@ class Call {
     required this.request,
     required this.client,
     required this.requestCallback,
-    this.cancellationToken,
   });
 
   /// Request to be executed.
@@ -32,11 +31,10 @@ class Call {
   /// Callback to send intercepted and converted request to the stream controller.
   final void Function(Request event) requestCallback;
 
-  final http.CancellationToken? cancellationToken;
-
   Future<Response<BodyType>> execute<BodyType, InnerType>(
     ConvertRequest? requestConverter,
     ConvertResponse<BodyType>? responseConverter,
+    {http.CancellationToken? cancellationToken}
   ) async {
     final interceptors = <Interceptor>[
       RequestConverterInterceptor(client.converter, requestConverter),

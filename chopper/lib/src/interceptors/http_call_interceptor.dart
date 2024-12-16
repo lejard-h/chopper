@@ -24,7 +24,7 @@ class HttpCallInterceptor implements InternalInterceptor {
   FutureOr<Response<BodyType>> intercept<BodyType>(
       Chain<BodyType> chain) async {
     final finalRequest = await chain.request.toBaseRequest();
-    final   streamRes = await _httpClient.send(
+    final  streamRes = await _httpClient.send(
         finalRequest, cancellationToken: cancellationToken);
 
     if (isTypeOf<BodyType, Stream<List<int>>>()) {
