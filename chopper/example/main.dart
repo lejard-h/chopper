@@ -1,14 +1,10 @@
 import 'package:chopper/chopper.dart';
-import 'package:cancellation_token/cancellation_token.dart';
 
 import 'definition.dart';
 
 Future<void> main() async {
-  var token = CancellationToken();
-
   final chopper = ChopperClient(
-    cancellationToken: token,
-    baseUrl: Uri.parse('https://tipster-backend-pr-11.onrender.com'),
+    baseUrl: Uri.parse('http://localhost:8000'),
     services: [
       // the generated service
       MyService.create(ChopperClient()),
@@ -18,23 +14,11 @@ Future<void> main() async {
 
   final myService = chopper.getService<MyService>();
 
-  Future.delayed(Duration(seconds: 2), () {
-    token.cancel();
-  });
+  final response = await myService.getMapResource('1');
+  print(response.body);
 
-  try {
-    final response = await myService.getLongTimeTest();
-    print(response.body);
-  }
-  on CancelledException {
-    print('cancelled by user!!!!!');
-  }
-
-
-
-
-  // final list = await myService.getListResources();
-  // print(list.body);
+  final list = await myService.getListResources();
+  print(list.body);
 
   chopper.dispose();
 }
