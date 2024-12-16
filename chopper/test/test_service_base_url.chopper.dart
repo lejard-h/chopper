@@ -25,7 +25,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>($request);
+    return client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -36,7 +39,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>($request);
+    return client.send<dynamic, dynamic>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -47,7 +53,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       $url,
       client.baseUrl,
     );
-    return client.send<List<String>, String>($request);
+    return client.send<List<String>, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -70,7 +79,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -83,7 +95,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -99,7 +114,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       useBrackets: true,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -115,7 +133,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -131,7 +152,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -147,7 +171,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -162,7 +189,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -175,7 +205,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -191,7 +224,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -207,7 +243,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       useBrackets: true,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -223,7 +262,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -239,7 +281,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -255,7 +300,10 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 
   @override
@@ -271,6 +319,9 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    return client.send<String, String>($request);
+    return client.send<String, String>(
+      $request,
+      cancellationToken: client.cancellationToken,
+    );
   }
 }

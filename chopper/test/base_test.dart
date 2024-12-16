@@ -8,8 +8,8 @@ import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/converters.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
+import 'package:cancellation_token_http/http.dart' as http;
+import 'package:cancellation_token_http/testing.dart';
 import 'package:test/test.dart';
 import 'package:transparent_image/transparent_image.dart';
 

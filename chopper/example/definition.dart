@@ -4,28 +4,12 @@ import 'package:chopper/chopper.dart';
 
 part 'definition.chopper.dart';
 
-@ChopperApi(baseUrl: '/resources')
+@ChopperApi(baseUrl: '/')
 abstract class MyService extends ChopperService {
   static MyService create(ChopperClient client) => _$MyService(client);
 
-  @Get(path: '/{id}')
-  Future<Response> getResource(
-    @Path() String id,
-  );
-
-  @Get(path: '/', headers: {'foo': 'bar'})
-  Future<Response<Map>> getMapResource(
-    @Query() String id,
-  );
-
-  @Get(path: '/resources')
-  Future<Response<List<Map>>> getListResources();
-
-  @Post(path: '/')
-  Future<Response> postResourceUrlEncoded(
-    @Field('a') String toto,
-    @Field() String b,
-  );
+  @Get(path: '/abc')
+  Future<Response<Map>> getLongTimeTest();
 
   @Post(path: '/multi')
   @multipart

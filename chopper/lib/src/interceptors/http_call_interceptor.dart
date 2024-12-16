@@ -4,7 +4,7 @@ import 'package:chopper/src/chain/chain.dart';
 import 'package:chopper/src/chopper_exception.dart';
 import 'package:chopper/src/interceptors/internal_interceptor.dart';
 import 'package:chopper/src/response.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 
 import '../utils.dart';
 
@@ -13,7 +13,9 @@ import '../utils.dart';
 /// {@endtemplate}
 class HttpCallInterceptor implements InternalInterceptor {
   /// {@macro HttpCallInterceptor}
-  const HttpCallInterceptor(this._httpClient);
+  const HttpCallInterceptor(this._httpClient, {this.cancellationToken});
+
+  final http.CancellationToken? cancellationToken;
 
   /// HTTP client to be used for making the actual HTTP calls.
   final http.Client _httpClient;
@@ -22,7 +24,8 @@ class HttpCallInterceptor implements InternalInterceptor {
   FutureOr<Response<BodyType>> intercept<BodyType>(
       Chain<BodyType> chain) async {
     final finalRequest = await chain.request.toBaseRequest();
-    final streamRes = await _httpClient.send(finalRequest);
+    final  streamRes = await _httpClient.send(
+        finalRequest, cancellationToken: cancellationToken);
 
     if (isTypeOf<BodyType, Stream<List<int>>>()) {
       return Response(streamRes, (streamRes.stream) as BodyType);

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:chopper/src/chopper_http_exception.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// {@template response}

@@ -8,7 +8,7 @@ import 'package:chopper/src/converters.dart';
 import 'package:chopper/src/interceptors/interceptor.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
-import 'package:http/http.dart' as http;
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 /// ChopperClient is the main class of the Chopper API.
@@ -44,6 +44,8 @@ base class ChopperClient {
       StreamController<Response>.broadcast();
 
   final bool _clientIsInternal;
+
+  http.CancellationToken? _cancellationToken;
 
   /// Creates and configures a [ChopperClient].
   ///
@@ -107,6 +109,7 @@ base class ChopperClient {
     this.authenticator,
     this.converter,
     this.errorConverter,
+    http.CancellationToken? cancellationToken,
     Iterable<ChopperService>? services,
   })  : assert(
           baseUrl == null || !baseUrl.hasQuery,
@@ -115,6 +118,7 @@ base class ChopperClient {
         ),
         baseUrl = baseUrl ?? Uri(),
         httpClient = client ?? http.Client(),
+        _cancellationToken = cancellationToken,
         _clientIsInternal = client == null {
     _services = <Type, ChopperService>{
       for (final ChopperService service in services?.toSet() ?? [])
@@ -145,7 +149,6 @@ base class ChopperClient {
     if (service == null) {
       throw Exception("Service of type '$ServiceType' not found.");
     }
-
     return service as ServiceType;
   }
 
@@ -172,12 +175,21 @@ base class ChopperClient {
       requestCallback: _requestController.add,
     );
 
-    final response = await call.execute<BodyType, InnerType>(
-      requestConverter,
-      responseConverter,
-    );
+    Response<BodyType> response;
+    try {
+      response = await call.execute<BodyType, InnerType>(
+          requestConverter,
+          responseConverter,
+          cancellationToken: _cancellationToken
+      );
 
-    _responseController.add(response);
+      _responseController.add(response);
+
+    }
+    on http.CancelledException {
+      _cancellationToken = http.CancellationToken();
+      rethrow;
+    }
 
     return response;
   }
@@ -320,6 +332,11 @@ base class ChopperClient {
           parameters: parameters,
         ),
       );
+
+  /// Cancels any requests by the cancellation token (if exists)
+  void cancelRequests(){
+    _cancellationToken?.cancel();
+  }
 
   /// Disposes this [ChopperClient] to clean up memory.
   ///

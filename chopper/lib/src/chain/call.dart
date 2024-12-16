@@ -1,3 +1,4 @@
+import 'package:cancellation_token_http/http.dart' as http;
 import 'package:chopper/src/annotations.dart';
 import 'package:chopper/src/base.dart';
 import 'package:chopper/src/chain/interceptor_chain.dart';
@@ -33,6 +34,7 @@ class Call {
   Future<Response<BodyType>> execute<BodyType, InnerType>(
     ConvertRequest? requestConverter,
     ConvertResponse<BodyType>? responseConverter,
+    {http.CancellationToken? cancellationToken}
   ) async {
     final interceptors = <Interceptor>[
       RequestConverterInterceptor(client.converter, requestConverter),
@@ -45,7 +47,7 @@ class Call {
         errorConverter: client.errorConverter,
         responseConverter: responseConverter,
       ),
-      HttpCallInterceptor(client.httpClient),
+      HttpCallInterceptor(client.httpClient, cancellationToken: cancellationToken),
     ];
 
     final interceptorChain = InterceptorChain<BodyType>(

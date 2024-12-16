@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:http/http.dart' show MultipartFile;
+import 'package:cancellation_token_http/http.dart' show MultipartFile;
 
 part 'test_without_response_service.chopper.dart';
 
