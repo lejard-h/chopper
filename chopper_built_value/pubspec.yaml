@@ -10,7 +10,7 @@ environment:
 dependencies:
   built_value: ^8.9.2
   built_collection: ^5.1.1
-  chopper: ^8.0.2
+  chopper: ^8.0.0
   http: ^1.1.0
 
 dev_dependencies:
