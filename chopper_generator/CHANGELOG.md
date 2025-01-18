@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.3
+
+- Remove unnecessary library name
+
 ## 8.0.2
 
 - Remove duplicate null-coalescing `responseTypeReference` ([#634](https://github.com/lejard-h/chopper/pull/634))
