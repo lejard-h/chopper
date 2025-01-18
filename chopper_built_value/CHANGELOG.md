@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.2
+
+- Remove unnecessary library name
+
 ## 3.0.1
 
 - Update dependencies and linters ([#615](https://github.com/lejard-h/chopper/pull/615))
