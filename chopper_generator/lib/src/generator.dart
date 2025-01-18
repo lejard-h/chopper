@@ -12,7 +12,6 @@ import 'package:chopper_generator/src/extensions.dart';
 import 'package:chopper_generator/src/utils.dart';
 import 'package:chopper_generator/src/vars.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:dart_style/dart_style.dart';
 import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -101,7 +100,7 @@ final class ChopperGenerator
         '// ignore_for_file: type=lint';
     final DartEmitter emitter = DartEmitter(useNullSafetySyntax: true);
 
-    return DartFormatter().format('$ignore\n${classBuilder.accept(emitter)}');
+    return '$ignore\n${classBuilder.accept(emitter)}';
   }
 
   static Constructor _generateConstructor() => Constructor(
@@ -518,8 +517,8 @@ final class ChopperGenerator
   }
 
   static String _factoryForFunction(FunctionTypedElement function) =>
-      function.enclosingElement is ClassElement
-          ? '${function.enclosingElement!.name}.${function.name}'
+      function.enclosingElement3 is ClassElement
+          ? '${function.enclosingElement3!.name}.${function.name}'
           : function.name!;
 
   static Map<String, ConstantReader> _getAnnotation(
@@ -636,12 +635,16 @@ final class ChopperGenerator
 
     if (generic == null ||
         _typeChecker(Map).isExactlyType(type) ||
-        _typeChecker(BuiltMap).isExactlyType(type)) return type;
+        _typeChecker(BuiltMap).isExactlyType(type)) {
+      return type;
+    }
 
-    if (generic.isDynamic) return null;
+    if (generic is DynamicType) return null;
 
     if (_typeChecker(List).isExactlyType(type) ||
-        _typeChecker(BuiltList).isExactlyType(type)) return generic;
+        _typeChecker(BuiltList).isExactlyType(type)) {
+      return generic;
+    }
 
     return _getResponseInnerType(generic);
   }
