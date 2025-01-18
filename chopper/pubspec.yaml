@@ -28,10 +28,6 @@ dev_dependencies:
   transparent_image: ^2.0.1
   chopper_generator: ^8.0.3
 
-dependency_overrides:
-  chopper_generator:
-    path: ../chopper_generator
-
 topics:
   - api
   - client

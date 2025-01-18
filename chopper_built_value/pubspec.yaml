@@ -20,10 +20,6 @@ dev_dependencies:
   built_value_generator: ^8.9.2
   lints: ">=4.0.0 <6.0.0"
 
-dependency_overrides:
-  chopper:
-    path: ../chopper
-
 topics:
   - codegen
   - converter
