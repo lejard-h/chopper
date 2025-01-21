@@ -10,6 +10,7 @@ import 'package:qs_dart/qs_dart.dart' show ListFormat;
 /// {@template request}
 /// This class represents an HTTP request that can be made with Chopper.
 /// {@endtemplate}
+// ignore: must_be_immutable
 base class Request extends http.BaseRequest with EquatableMixin {
   final Uri uri;
   final Uri baseUri;

@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.3
+
+- Update dependencies
+
 ## 3.0.2
 
 - Remove unnecessary library name
