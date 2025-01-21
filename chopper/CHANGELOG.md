@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.4
+
+- Update dependencies
+
 ## 8.0.3
 
 - Remove unnecessary library name

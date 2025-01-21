@@ -1,0 +1,4 @@
+# Development-only path for chopper
+dependency_overrides:
+  chopper:
+    path: ../chopper
