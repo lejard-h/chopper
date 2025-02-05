@@ -10,58 +10,58 @@ abstract class HttpTestServiceBaseUrl extends ChopperService {
   static HttpTestServiceBaseUrl create([ChopperClient? client]) =>
       _$HttpTestServiceBaseUrl(client);
 
-  @Get(path: '')
+  @GET(path: '')
   Future<Response> getAll();
 
-  @Get(path: '/')
+  @GET(path: '/')
   Future<Response> getAllWithTrailingSlash();
 
-  @Get(path: '/list/string')
+  @GET(path: '/list/string')
   Future<Response<List<String>>> listString();
 
-  @Get(path: '/query_param_include_null_query_vars', includeNullQueryVars: true)
+  @GET(path: '/query_param_include_null_query_vars', includeNullQueryVars: true)
   Future<Response<String>> getUsingQueryParamIncludeNullQueryVars({
     @Query('foo') String? foo,
     @Query('bar') String? bar,
     @Query('baz') String? baz,
   });
 
-  @Get(path: '/list_query_param')
+  @GET(path: '/list_query_param')
   Future<Response<String>> getUsingListQueryParam(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_brackets_legacy', useBrackets: true)
+  @GET(path: '/list_query_param_with_brackets_legacy', useBrackets: true)
   Future<Response<String>> getUsingListQueryParamWithBracketsLegacy(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_brackets', listFormat: ListFormat.brackets)
+  @GET(path: '/list_query_param_with_brackets', listFormat: ListFormat.brackets)
   Future<Response<String>> getUsingListQueryParamWithBrackets(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_indices', listFormat: ListFormat.indices)
+  @GET(path: '/list_query_param_with_indices', listFormat: ListFormat.indices)
   Future<Response<String>> getUsingListQueryParamWithIndices(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_repeat', listFormat: ListFormat.repeat)
+  @GET(path: '/list_query_param_with_repeat', listFormat: ListFormat.repeat)
   Future<Response<String>> getUsingListQueryParamWithRepeat(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_comma', listFormat: ListFormat.comma)
+  @GET(path: '/list_query_param_with_comma', listFormat: ListFormat.comma)
   Future<Response<String>> getUsingListQueryParamWithComma(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/map_query_param')
+  @GET(path: '/map_query_param')
   Future<Response<String>> getUsingMapQueryParam(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(
+  @GET(
     path: '/map_query_param_include_null_query_vars',
     includeNullQueryVars: true,
   )
@@ -69,27 +69,27 @@ abstract class HttpTestServiceBaseUrl extends ChopperService {
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_brackets_legacy', useBrackets: true)
+  @GET(path: '/map_query_param_with_brackets_legacy', useBrackets: true)
   Future<Response<String>> getUsingMapQueryParamWithBracketsLegacy(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_brackets', listFormat: ListFormat.brackets)
+  @GET(path: '/map_query_param_with_brackets', listFormat: ListFormat.brackets)
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_indices', listFormat: ListFormat.indices)
+  @GET(path: '/map_query_param_with_indices', listFormat: ListFormat.indices)
   Future<Response<String>> getUsingMapQueryParamWithIndices(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_repeat', listFormat: ListFormat.repeat)
+  @GET(path: '/map_query_param_with_repeat', listFormat: ListFormat.repeat)
   Future<Response<String>> getUsingMapQueryParamWithRepeat(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_comma', listFormat: ListFormat.comma)
+  @GET(path: '/map_query_param_with_comma', listFormat: ListFormat.comma)
   Future<Response<String>> getUsingMapQueryParamWithComa(
     @Query('value') Map<String, dynamic> value,
   );

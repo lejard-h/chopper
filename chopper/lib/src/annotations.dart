@@ -115,10 +115,10 @@ final class QueryMap {
 }
 
 /// {@template Body}
-/// Declares the Body of [Post], [Put], and [Patch] requests
+/// Declares the Body of [POST], [PUT], and [PATCH] requests
 ///
 /// ```dart
-/// @Post()
+/// @POST()
 /// Future<Response> post(@Body() Map<String, dynamic> body);
 /// ```
 ///
@@ -163,7 +163,7 @@ final class Header {
 /// Must be used inside a [ChopperApi] definition.
 ///
 /// Recommended:
-/// [Get], [Post], [Put], [Delete], [Patch], or [Head] should be used instead.
+/// [GET], [POST], [PUT], [DELETE], [PATCH], or [HEAD] should be used instead.
 ///
 /// ```dart
 /// @Get(headers: const {'foo': 'bar' })
@@ -251,14 +251,14 @@ sealed class Method {
   });
 }
 
-/// {@template Get}
+/// {@template GET}
 /// Defines a method as an HTTP GET request.
 /// {@endtemplate}
 @immutable
 @Target({TargetKind.method})
-final class Get extends Method {
-  /// {@macro Get}
-  const Get({
+final class GET extends Method {
+  /// {@macro GET}
+  const GET({
     super.optionalBody = true,
     super.path,
     super.headers,
@@ -269,16 +269,35 @@ final class Get extends Method {
   }) : super(HttpMethod.Get);
 }
 
-/// {@template Post}
+/// {@template Get}
+/// Defines a method as an HTTP GET request.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+@Deprecated('Use GET instead')
+final class Get extends GET {
+  /// {@macro Get}
+  const Get({
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.includeNullQueryVars,
+    super.timeout,
+  });
+}
+
+/// {@template POST}
 /// Defines a method as an HTTP POST request.
 ///
 /// Use the [Body] annotation to pass data to send.
 /// {@endtemplate}
 @immutable
 @Target({TargetKind.method})
-final class Post extends Method {
-  /// {@macro Post}
-  const Post({
+final class POST extends Method {
+  /// {@macro POST}
+  const POST({
     super.optionalBody,
     super.path,
     super.headers,
@@ -289,14 +308,35 @@ final class Post extends Method {
   }) : super(HttpMethod.Post);
 }
 
-/// {@template Delete}
+/// {@template Post}
+/// Defines a method as an HTTP POST request.
+///
+/// Use the [Body] annotation to pass data to send.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+@Deprecated('Use POST instead')
+final class Post extends POST {
+  /// {@macro Post}
+  const Post({
+    super.optionalBody,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.includeNullQueryVars,
+    super.timeout,
+  });
+}
+
+/// {@template DELETE}
 /// Defines a method as an HTTP DELETE request.
 /// {@endtemplate}
 @immutable
 @Target({TargetKind.method})
-final class Delete extends Method {
-  /// {@macro Delete}
-  const Delete({
+final class DELETE extends Method {
+  /// {@macro DELETE}
+  const DELETE({
     super.optionalBody = true,
     super.path,
     super.headers,
@@ -307,16 +347,35 @@ final class Delete extends Method {
   }) : super(HttpMethod.Delete);
 }
 
-/// {@template Put}
+/// {@template Delete}
+/// Defines a method as an HTTP DELETE request.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+@Deprecated('Use DELETE instead')
+final class Delete extends DELETE {
+  /// {@macro Delete}
+  const Delete({
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.includeNullQueryVars,
+    super.timeout,
+  });
+}
+
+/// {@template PUT}
 /// Defines a method as an HTTP PUT request.
 ///
 /// Use the [Body] annotation to pass data to send.
 /// {@endtemplate}
 @immutable
 @Target({TargetKind.method})
-final class Put extends Method {
-  /// {@macro Put}
-  const Put({
+final class PUT extends Method {
+  /// {@macro PUT}
+  const PUT({
     super.optionalBody,
     super.path,
     super.headers,
@@ -327,15 +386,36 @@ final class Put extends Method {
   }) : super(HttpMethod.Put);
 }
 
-/// {@template Patch}
+/// {@template Put}
+/// Defines a method as an HTTP PUT request.
+///
+/// Use the [Body] annotation to pass data to send.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+@Deprecated('Use PUT instead')
+final class Put extends PUT {
+  /// {@macro Put}
+  const Put({
+    super.optionalBody,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.includeNullQueryVars,
+    super.timeout,
+  });
+}
+
+/// {@template PATCH}
 /// Defines a method as an HTTP PATCH request.
 /// Use the [Body] annotation to pass data to send.
 /// {@endtemplate}
 @immutable
 @Target({TargetKind.method})
-final class Patch extends Method {
-  /// {@macro Patch}
-  const Patch({
+final class PATCH extends Method {
+  /// {@macro PATCH}
+  const PATCH({
     super.optionalBody,
     super.path,
     super.headers,
@@ -346,14 +426,34 @@ final class Patch extends Method {
   }) : super(HttpMethod.Patch);
 }
 
-/// {@template Head}
+/// {@template Patch}
+/// Defines a method as an HTTP PATCH request.
+/// Use the [Body] annotation to pass data to send.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+@Deprecated('Use PATCH instead')
+final class Patch extends PATCH {
+  /// {@macro Patch}
+  const Patch({
+    super.optionalBody,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.includeNullQueryVars,
+    super.timeout,
+  });
+}
+
+/// {@template HEAD}
 /// Defines a method as an HTTP HEAD request.
 /// {@endtemplate}
 @immutable
 @Target({TargetKind.method})
-final class Head extends Method {
-  /// {@macro Head}
-  const Head({
+final class HEAD extends Method {
+  /// {@macro HEAD}
+  const HEAD({
     super.optionalBody = true,
     super.path,
     super.headers,
@@ -364,12 +464,50 @@ final class Head extends Method {
   }) : super(HttpMethod.Head);
 }
 
+/// {@template Head}
+/// Defines a method as an HTTP HEAD request.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+@Deprecated('Use HEAD instead')
+final class Head extends HEAD {
+  /// {@macro Head}
+  const Head({
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.includeNullQueryVars,
+    super.timeout,
+  });
+}
+
+/// {@template OPTIONS}
+/// Defines a method as an HTTP OPTIONS request.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+final class OPTIONS extends Method {
+  /// {@macro OPTIONS}
+  const OPTIONS({
+    super.optionalBody = true,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.includeNullQueryVars,
+    super.timeout,
+  }) : super(HttpMethod.Options);
+}
+
 /// {@template Options}
 /// Defines a method as an HTTP OPTIONS request.
 /// {@endtemplate}
 @immutable
 @Target({TargetKind.method})
-final class Options extends Method {
+@Deprecated('Use OPTIONS instead')
+final class Options extends OPTIONS {
   /// {@macro Options}
   const Options({
     super.optionalBody = true,
@@ -379,7 +517,7 @@ final class Options extends Method {
     super.useBrackets,
     super.includeNullQueryVars,
     super.timeout,
-  }) : super(HttpMethod.Options);
+  });
 }
 
 /// A function that should convert the body of a [Request] to the HTTP representation.
@@ -626,26 +764,26 @@ const queryMap = QueryMap();
 /// {@macro Header}
 const header = Header();
 
-/// {@macro Get}
-const get = Get();
+/// {@macro GET}
+const get = GET();
 
-/// {@macro Post}
-const post = Post();
+/// {@macro POST}
+const post = POST();
 
-/// {@macro Delete}
-const delete = Delete();
+/// {@macro DELETE}
+const delete = DELETE();
 
-/// {@macro Put}
-const put = Put();
+/// {@macro PUT}
+const put = PUT();
 
-/// {@macro Patch}
-const patch = Patch();
+/// {@macro PATCH}
+const patch = PATCH();
 
-/// {@macro Head}
-const head = Head();
+/// {@macro HEAD}
+const head = HEAD();
 
-/// {@macro Options}
-const options = Options();
+/// {@macro OPTIONS}
+const options = OPTIONS();
 
 /// {@macro FactoryConverter}
 const factoryConverter = FactoryConverter();
