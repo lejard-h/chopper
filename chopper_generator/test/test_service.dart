@@ -12,158 +12,158 @@ abstract class HttpTestService extends ChopperService {
   static HttpTestService create([ChopperClient? client]) =>
       _$HttpTestService(client);
 
-  @Get(path: 'get/{id}')
+  @GET(path: 'get/{id}')
   Future<Response<String>> getTest(
     @Path() String id, {
     @Header('test') required String dynamicHeader,
   });
 
-  @Head(path: 'head')
+  @HEAD(path: 'head')
   Future<Response> headTest();
 
-  @Options(path: 'options')
+  @OPTIONS(path: 'options')
   Future<Response> optionsTest();
 
-  @Get(path: 'get')
+  @GET(path: 'get')
   Future<Response<Stream<List<int>>>> getStreamTest();
 
-  @Get(path: '')
+  @GET(path: '')
   Future<Response> getAll();
 
-  @Get(path: '/')
+  @GET(path: '/')
   Future<Response> getAllWithTrailingSlash();
 
-  @Get(path: 'query')
+  @GET(path: 'query')
   Future<Response> getQueryTest({
     @Query('name') String name = '',
     @Query('int') int? number,
     @Query('default_value') int? def = 42,
   });
 
-  @Get(path: 'query_map')
+  @GET(path: 'query_map')
   Future<Response> getQueryMapTest(@QueryMap() Map<String, dynamic> query);
 
-  @Get(path: 'query_map')
+  @GET(path: 'query_map')
   Future<Response> getQueryMapTest2(
     @QueryMap() Map<String, dynamic> query, {
     @Query('test') bool? test,
   });
 
-  @Get(path: 'query_map')
+  @GET(path: 'query_map')
   Future<Response> getQueryMapTest3({
     @Query('name') String name = '',
     @Query('number') int? number,
     @QueryMap() Map<String, dynamic> filters = const {},
   });
 
-  @Get(path: 'query_map')
+  @GET(path: 'query_map')
   Future<Response> getQueryMapTest4({
     @Query('name') String name = '',
     @Query('number') int? number,
     @QueryMap() Map<String, dynamic>? filters,
   });
 
-  @Get(path: 'query_map')
+  @GET(path: 'query_map')
   Future<Response> getQueryMapTest5({
     @QueryMap() Map<String, dynamic>? filters,
   });
 
-  @Get(path: 'get_body')
+  @GET(path: 'get_body')
   Future<Response> getBody(@Body() dynamic body);
 
-  @Post(path: 'post')
+  @POST(path: 'post')
   Future<Response> postTest(@Body() String data);
 
-  @Post(path: 'post')
+  @POST(path: 'post')
   Future<Response> postStreamTest(@Body() Stream<List<int>> byteStream);
 
-  @Put(path: 'put/{id}')
+  @PUT(path: 'put/{id}')
   Future<Response> putTest(@Path('id') String test, @Body() String data);
 
-  @Delete(path: 'delete/{id}', headers: {'foo': 'bar'})
+  @DELETE(path: 'delete/{id}', headers: {'foo': 'bar'})
   Future<Response> deleteTest(@Path() String id);
 
-  @Patch(path: 'patch/{id}')
+  @PATCH(path: 'patch/{id}')
   Future<Response> patchTest(@Path() String id, @Body() String data);
 
-  @Post(path: 'map')
+  @POST(path: 'map')
   Future<Response> mapTest(@Body() Map<String, String> map);
 
   @FactoryConverter(request: convertForm)
-  @Post(path: 'form/body')
+  @POST(path: 'form/body')
   Future<Response> postForm(@Body() Map<String, String> fields);
 
-  @Post(path: 'form/body', headers: {contentTypeKey: formEncodedHeaders})
+  @POST(path: 'form/body', headers: {contentTypeKey: formEncodedHeaders})
   Future<Response> postFormUsingHeaders(@Body() Map<String, String> fields);
 
   @FactoryConverter(request: convertForm)
-  @Post(path: 'form/body/fields')
+  @POST(path: 'form/body/fields')
   Future<Response> postFormFields(@Field() String foo, @Field() int bar);
 
-  @Post(path: 'map/json')
+  @POST(path: 'map/json')
   @FactoryConverter(
     request: customConvertRequest,
     response: customConvertResponse,
   )
   Future<Response> forceJsonTest(@Body() Map map);
 
-  @Post(path: 'multi')
+  @POST(path: 'multi')
   @multipart
   Future<Response> postResources(
     @Part('1') Map a,
     @Part('2') Map b,
   );
 
-  @Post(path: 'formUrlEncoded')
+  @POST(path: 'formUrlEncoded')
   @FormUrlEncoded()
   Future<Response> postFormUrlEncodeBody(
     @Body() HashMap hashMapBody,
     @FieldMap() Map<String, String> map,
   );
 
-  @Post(path: 'formUrlEncoded')
+  @POST(path: 'formUrlEncoded')
   @FormUrlEncoded()
   Future<Response> postFormUrlEncodeField(
     @Field('a') String a,
     @Field('a1') String a2,
   );
 
-  @Post(path: 'formUrlEncoded')
+  @POST(path: 'formUrlEncoded')
   @FormUrlEncoded()
   Future<Response> postFormUrlEncodeFieldMap(
     @FieldMap() Map<String, String> c,
   );
 
-  @Post(path: 'formUrlEncoded')
+  @POST(path: 'formUrlEncoded')
   @FormUrlEncoded()
   Future<Response> postFormUrlEncodeFieldDynamicMap(
     @FieldMap() Map<String, dynamic> c,
   );
 
-  @Post(path: 'file')
+  @POST(path: 'file')
   @multipart
   Future<Response> postFile(
     @PartFile('file') List<int> bytes,
   );
 
-  @Post(path: 'image')
+  @POST(path: 'image')
   @multipart
   Future<Response> postImage(
     @PartFile('image') List<int> imageData,
   );
 
-  @Post(path: 'file')
+  @POST(path: 'file')
   @multipart
   Future<Response> postMultipartFile(
     @PartFile() MultipartFile file, {
     @Part() String? id,
   });
 
-  @Post(path: 'files')
+  @POST(path: 'files')
   @multipart
   Future<Response> postListFiles(@PartFile() List<MultipartFile> files);
 
-  @Post(path: 'multipart_list')
+  @POST(path: 'multipart_list')
   @multipart
   Future<Response> postMultipartList({
     @Part('ints') required List<int> ints,
@@ -172,58 +172,58 @@ abstract class HttpTestService extends ChopperService {
     @Part('strings') required List<String> strings,
   });
 
-  @Get(path: 'https://test.com')
+  @GET(path: 'https://test.com')
   Future<Response> fullUrl();
 
-  @Get(path: '/list/string')
+  @GET(path: '/list/string')
   Future<Response<List<String>>> listString();
 
-  @Post(path: 'no-body')
+  @POST(path: 'no-body')
   Future<Response> noBody();
 
-  @Get(path: '/query_param_include_null_query_vars', includeNullQueryVars: true)
+  @GET(path: '/query_param_include_null_query_vars', includeNullQueryVars: true)
   Future<Response<String>> getUsingQueryParamIncludeNullQueryVars({
     @Query('foo') String? foo,
     @Query('bar') String? bar,
     @Query('baz') String? baz,
   });
 
-  @Get(path: '/list_query_param')
+  @GET(path: '/list_query_param')
   Future<Response<String>> getUsingListQueryParam(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_brackets_legacy', useBrackets: true)
+  @GET(path: '/list_query_param_with_brackets_legacy', useBrackets: true)
   Future<Response<String>> getUsingListQueryParamWithBracketsLegacy(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_brackets', listFormat: ListFormat.brackets)
+  @GET(path: '/list_query_param_with_brackets', listFormat: ListFormat.brackets)
   Future<Response<String>> getUsingListQueryParamWithBrackets(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_indices', listFormat: ListFormat.indices)
+  @GET(path: '/list_query_param_with_indices', listFormat: ListFormat.indices)
   Future<Response<String>> getUsingListQueryParamWithIndices(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_repeat', listFormat: ListFormat.repeat)
+  @GET(path: '/list_query_param_with_repeat', listFormat: ListFormat.repeat)
   Future<Response<String>> getUsingListQueryParamWithRepeat(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/list_query_param_with_comma', listFormat: ListFormat.comma)
+  @GET(path: '/list_query_param_with_comma', listFormat: ListFormat.comma)
   Future<Response<String>> getUsingListQueryParamWithComma(
     @Query('value') List<String> value,
   );
 
-  @Get(path: '/map_query_param')
+  @GET(path: '/map_query_param')
   Future<Response<String>> getUsingMapQueryParam(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(
+  @GET(
     path: '/map_query_param_include_null_query_vars',
     includeNullQueryVars: true,
   )
@@ -231,32 +231,32 @@ abstract class HttpTestService extends ChopperService {
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_brackets_legacy', useBrackets: true)
+  @GET(path: '/map_query_param_with_brackets_legacy', useBrackets: true)
   Future<Response<String>> getUsingMapQueryParamWithBracketsLegacy(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_brackets', listFormat: ListFormat.brackets)
+  @GET(path: '/map_query_param_with_brackets', listFormat: ListFormat.brackets)
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_indices', listFormat: ListFormat.indices)
+  @GET(path: '/map_query_param_with_indices', listFormat: ListFormat.indices)
   Future<Response<String>> getUsingMapQueryParamWithIndices(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_repeat', listFormat: ListFormat.repeat)
+  @GET(path: '/map_query_param_with_repeat', listFormat: ListFormat.repeat)
   Future<Response<String>> getUsingMapQueryParamWithRepeat(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: '/map_query_param_with_comma', listFormat: ListFormat.comma)
+  @GET(path: '/map_query_param_with_comma', listFormat: ListFormat.comma)
   Future<Response<String>> getUsingMapQueryParamWithComma(
     @Query('value') Map<String, dynamic> value,
   );
 
-  @Get(path: 'headers')
+  @GET(path: 'headers')
   Future<Response<String>> getHeaders({
     @Header('x-string') required String stringHeader,
     @Header('x-boolean') bool? boolHeader,
@@ -265,7 +265,7 @@ abstract class HttpTestService extends ChopperService {
     @Header('x-enum') ExampleEnum? enumHeader,
   });
 
-  @Post(path: 'publish')
+  @POST(path: 'publish')
   @FactoryConverter(request: FormUrlEncodedConverter.requestFactory)
   Future<Response<void>> publish(
     @Field('review_id') final String reviewId,
@@ -274,19 +274,19 @@ abstract class HttpTestService extends ChopperService {
     @Field() final String? signature,
   ]);
 
-  @Post(path: 'tag')
+  @POST(path: 'tag')
   Future<Response<void>> tag(
     @Field('fool') final String foo,
     @Tag() Object? t1,
   );
 
-  @Get(path: 'get_timeout', timeout: Duration(seconds: 42))
+  @GET(path: 'get_timeout', timeout: Duration(seconds: 42))
   Future<Response<String>> getTimeoutTest();
 
-  @Get(path: 'get_timeout_zero', timeout: Duration(seconds: 0))
+  @GET(path: 'get_timeout_zero', timeout: Duration(seconds: 0))
   Future<Response<String>> getTimeoutTestZero();
 
-  @Get(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
+  @GET(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
   Future<Response<String>> getTimeoutTestNeg();
 }
 

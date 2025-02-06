@@ -37,19 +37,19 @@ class ResourceError {
 abstract class MyService extends ChopperService {
   static MyService create([ChopperClient? client]) => _$MyService(client);
 
-  @Get(path: '/{id}/')
+  @GET(path: '/{id}/')
   Future<Response> getResource(@Path() String id);
 
-  @Get(path: '/all', headers: {'test': 'list'})
+  @GET(path: '/all', headers: {'test': 'list'})
   Future<Response<List<Resource>>> getResources();
 
-  @Get(path: '/')
+  @GET(path: '/')
   Future<Response<Map>> getMapResource(@Query() String id);
 
-  @Get(path: '/', headers: {'foo': 'bar'})
+  @GET(path: '/', headers: {'foo': 'bar'})
   Future<Response<Resource>> getTypedResource();
 
-  @Post()
+  @POST()
   Future<Response<Resource>> newResource(
     @Body() Resource resource, {
     @Header() String? name,
