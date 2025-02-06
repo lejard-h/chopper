@@ -42,12 +42,12 @@ final class ChopperApi {
 ///
 /// Declared as follows inside the path String:
 /// ```dart
-/// @Get(path: '/{param}')
+/// @GET(path: '/{param}')
 /// ```
 ///
 /// Available inside method declaration:
 /// ```dart
-/// @Get(path: '/{param}')
+/// @GET(path: '/{param}')
 /// Future<Response> fetch(@Path() String param);
 /// ```
 /// {@endtemplate}
@@ -57,7 +57,7 @@ final class Path {
   /// Name is used to bind a method parameter to
   /// a URL path parameter.
   /// ```dart
-  /// @Get(path: '/{param}')
+  /// @GET(path: '/{param}')
   /// Future<Response> fetch(@Path('param') String hello);
   /// ```
   final String? name;
@@ -72,7 +72,7 @@ final class Path {
 /// [Query] is used to add query parameters after the request url.
 /// Example: /something?id=42
 /// ```dart
-/// @Get(path: '/something')
+/// @GET(path: '/something')
 /// Future<Response> fetch({@Query() String id});
 /// ```
 ///
@@ -84,7 +84,7 @@ final class Query {
   /// Name is used to bind a method parameter to
   /// the query parameter.
   /// ```dart
-  /// @Get(path: '/something')
+  /// @GET(path: '/something')
   /// Future<Response> fetch({@Query('id') String mySuperId});
   /// ```
   final String? name;
@@ -97,7 +97,7 @@ final class Query {
 /// Provides query parameters of a request as [Map<String, dynamic>].
 ///
 /// ```dart
-/// @Get(path: '/something')
+/// @GET(path: '/something')
 /// Future<Response> fetch(@QueryMap() Map<String, dynamic> query);
 /// ```
 ///
@@ -138,7 +138,7 @@ final class Body {
 /// Use the name of the method parameter or the name specified in the annotation.
 ///
 /// ```dart
-/// @Get()
+/// @GET()
 /// Future<Response> fetch(@Header() String foo);
 /// ```
 /// {@endtemplate}
@@ -148,7 +148,7 @@ final class Header {
   /// Name is used to bind a method parameter to
   /// a header name.
   /// ```dart
-  /// @Get()
+  /// @GET()
   /// Future<Response> fetch(@Header('foo') String headerFoo);
   /// ```
   final String? name;
@@ -166,7 +166,7 @@ final class Header {
 /// [GET], [POST], [PUT], [DELETE], [PATCH], or [HEAD] should be used instead.
 ///
 /// ```dart
-/// @Get(headers: const {'foo': 'bar' })
+/// @GET(headers: const {'foo': 'bar' })
 /// Future<Response> myGetRequest();
 /// ```
 ///
@@ -215,7 +215,7 @@ sealed class Method {
   /// NOTE: Empty strings are always included.
   ///
   /// ```dart
-  /// @Get(
+  /// @GET(
   ///   path: '/script',
   ///   includeNullQueryVars: true,
   /// )
@@ -549,7 +549,7 @@ typedef ConvertResponse<T> = FutureOr<Response<T>> Function(Response response);
 ///     );
 ///   }
 ///
-///   @Get(path: "/{id}")
+///   @GET(path: "/{id}")
 ///   @FactoryConverter(
 ///     request: customRequestConverter,
 ///     response: customResponseConverter
@@ -576,7 +576,7 @@ final class FactoryConverter {
 /// Automatically binds to the name of the method parameter.
 ///
 /// ```dart
-/// @Post(path: '/')
+/// @POST(path: '/')
 /// Future<Response> create(@Field() String name);
 /// ```
 /// Will be converted to `{ 'name': value }`.
@@ -586,7 +586,7 @@ final class FactoryConverter {
 final class Field {
   /// Name can be use to specify the name of the field
   /// ```dart
-  /// @Post(path: '/')
+  /// @POST(path: '/')
   /// Future<Response> create(@Field('id') String myId);
   /// ```
   final String? name;
@@ -599,7 +599,7 @@ final class Field {
 /// Provides field parameters of a request as [Map<String, dynamic>].
 ///
 /// ```dart
-/// @Post(path: '/something')
+/// @POST(path: '/something')
 /// Future<Response> fetch(@FieldMap Map<String, dynamic> query);
 /// ```
 /// {@endtemplate}
@@ -614,7 +614,7 @@ final class FieldMap {
 /// Defines a multipart request.
 ///
 /// ```dart
-/// @Post(path: '/')
+/// @POST(path: '/')
 /// @Multipart()
 /// Future<Response> create(@Part() String name);
 /// ```
@@ -649,7 +649,7 @@ final class Part {
 /// Provides part parameters of a request as [PartValue].
 ///
 /// ```dart
-/// @Post(path: '/something')
+/// @POST(path: '/something')
 /// @Multipart
 /// Future<Response> fetch(@PartMap() List<PartValue> query);
 /// ```
@@ -665,7 +665,7 @@ final class PartMap {
 /// Use [PartFile] to define a file field for a [Multipart] request.
 ///
 /// ```dart
-/// @Post(path: 'file')
+/// @POST(path: 'file')
 /// @multipart
 /// Future<Response> postFile(@PartFile('file') List<int> bytes);
 /// ```
@@ -688,7 +688,7 @@ final class PartFile {
 /// Provides partFile parameters of a request as [PartValueFile].
 ///
 /// ```dart
-/// @Post(path: '/something')
+/// @POST(path: '/something')
 /// @Multipart
 /// Future<Response> fetch(@PartFileMap() List<PartValueFile> query);
 /// ```
@@ -712,7 +712,7 @@ final class PartFileMap {
 ///
 ///
 /// ```dart
-/// @Post(path: '/something')
+/// @POST(path: '/something')
 /// @FormUrlEncoded
 /// Future<Response> fetch(@Field("param") String? param);
 /// ```
