@@ -58,7 +58,7 @@ abstract interface class ErrorConverter {
 /// This `Converter` also adds the `content-type: application/json` header to each request.
 ///
 /// If content type header is modified (for example by using
-/// `@Post(headers: {'content-type': '...'})`), `JsonConverter` won't add the
+/// `@POST(headers: {'content-type': '...'})`), `JsonConverter` won't add the
 /// header and it won't call json.encode if content type is not JSON.
 /// {@endtemplate}
 @immutable

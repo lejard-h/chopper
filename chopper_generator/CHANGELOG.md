@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.1.0
+
+- Deprecate all lower-case method annotations ([#651](https://github.com/lejard-h/chopper/pull/651))
+
 ## 8.0.4
 
 - Update dependencies

@@ -9,12 +9,12 @@ import 'package:meta/meta.dart';
 /// A [http.BaseResponse] wrapper representing a response of a Chopper network call.
 ///
 /// ```dart
-/// @Get(path: '/something')
+/// @GET(path: '/something')
 /// Future<Response> fetchSomething();
 /// ```
 ///
 /// ```dart
-/// @Get(path: '/items/{id}')
+/// @GET(path: '/items/{id}')
 /// Future<Response<Item>> fetchItem();
 /// ```
 /// {@endtemplate}
