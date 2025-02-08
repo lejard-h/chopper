@@ -40,16 +40,16 @@ abstract class ResourceError
 abstract class MyService extends ChopperService {
   static MyService create([ChopperClient? client]) => _$MyService(client);
 
-  @Get(path: '/{id}/')
+  @GET(path: '/{id}/')
   Future<Response> getResource(@Path() String id);
 
-  @Get(path: '/list')
+  @GET(path: '/list')
   Future<Response<BuiltList<Resource>>> getBuiltListResources();
 
-  @Get(path: '/', headers: {'foo': 'bar'})
+  @GET(path: '/', headers: {'foo': 'bar'})
   Future<Response<Resource>> getTypedResource();
 
-  @Post()
+  @POST()
   Future<Response<Resource>> newResource(
     @Body() Resource resource, {
     @Header() String? name,
