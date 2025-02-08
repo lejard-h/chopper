@@ -4,12 +4,12 @@
 
 | Annotation                                 | HTTP verb | Description                                            |
 |--------------------------------------------|-----------|--------------------------------------------------------|
-| `@Get()`, `@get`                           | `GET`     | Defines a `GET` request.                               |
-| `@Post()`, `@post`                         | `POST`    | Defines a `POST` request.                              |
-| `@Put()`, `@put`                           | `PUT`     | Defines a `PUT` request.                               |
-| `@Patch()`, `@patch`                       | `PATCH`   | Defines a `PATCH` request.                             |
-| `@Delete()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                            |
-| `@Head()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                              |
+| `@GET()`, `@get`                           | `GET`     | Defines a `GET` request.                               |
+| `@POST()`, `@post`                         | `POST`    | Defines a `POST` request.                              |
+| `@PUT()`, `@put`                           | `PUT`     | Defines a `PUT` request.                               |
+| `@PATCH()`, `@patch`                       | `PATCH`   | Defines a `PATCH` request.                             |
+| `@DELETE()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                            |
+| `@HEAD()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                              |
 | `@Body()`, `@body`                         | -         | Defines the request's body.                            |
 | `@FormUrlEncoded`, `@formUrlEncoded`       | -         | Defines a `application/x-www-form-urlencoded` request. |
 | `@Multipart()`, `@multipart`               | -         | Defines a `multipart/form-data` request.               |         
@@ -90,14 +90,14 @@ Dynamic path parameters can be defined in the URL with replacement blocks. A rep
 substring of the path surrounded by `{` and `}`. In the following example `{id}` is a replacement block.
 
 ```dart
-@Get(path: "/{id}")
+@GET(path: "/{id}")
 ```
 
 Use the `@Path()` annotation to bind a parameter to a replacement block. This way the parameter's name must match a
 replacement block's string.
 
 ```dart
-@Get(path: "/{id}")
+@GET(path: "/{id}")
 Future<Response> getItemById(@Path() String id);
 ```
 
@@ -105,7 +105,7 @@ As an alternative, you can set the `@Path` annotation's `name` parameter to matc
 using a different parameter name, like in the following example:
 
 ```dart
-@Get(path: "/{id}")
+@GET(path: "/{id}")
 Future<Response> getItemById(@Path("id") int itemId);
 ```
 
@@ -137,7 +137,7 @@ Future<Response> search(@QueryMap() Map<String, dynamic> query);
 Use the `@Body` annotation on a request method parameter to specify data that will be sent as the request's body.
 
 ```dart
-@Post(path: "todo/create")
+@POST(path: "todo/create")
 Future<Response> postData(@Body() String data);
 ```
 
@@ -154,22 +154,22 @@ Request headers can be set by providing a `Map<String, String>` object to the `h
 annotations have.
 
 ```dart
-@Get(path: "/", headers: {"foo": "bar"})
+@GET(path: "/", headers: {"foo": "bar"})
 Future<Response> fetch();
 ```
 
-The `@Header` annotation can be used on method parameters to set headers dynamically for each request call.
+The `@HEADer` annotation can be used on method parameters to set headers dynamically for each request call.
 
 ```dart
-@Get(path: "/")
-Future<Response> fetch(@Header("foo") String bar);
+@GET(path: "/")
+Future<Response> fetch(@HEADer("foo") String bar);
 ```
 
 > Setting request headers dynamically is also supported by [Interceptors](interceptors.md)
 > and [Converters](converters/converters.md).
 >
 > As Chopper invokes Interceptors and Converter(s) *after* creating a Request, Interceptors and Converters *can*
-> override headers set with the `headers` parameter or `@Header` annotations.
+> override headers set with the `headers` parameter or `@HEADer` annotations.
 
 ## Sending `application/x-www-form-urlencoded` data
 
@@ -184,7 +184,7 @@ We recommend annotation `@formUrlEncoded` on method that will add the correct `c
 into `Map<String, String>` for requests.
 
 ```dart
-@Post(
+@POST(
   path: "form",
 )
 @formUrlEncoded
@@ -208,7 +208,7 @@ To do only a single type of request with form encoding in a service, use the pro
 s `requestFactory` method with the `@FactoryConverter` annotation.
 
 ```dart
-@Post(
+@POST(
   path: "form",
   headers: {contentTypeKey: formEncodedHeaders},
 )
@@ -224,7 +224,7 @@ To specify fields individually, use the `@Field` annotation on method parameters
 the parameter's name is used as the field's name.
 
 ```dart
-@Post(path: "form")
+@POST(path: "form")
 @formUrlEncoded
 Future<Response> post(@Field() String foo, @Field("b") int bar);
 ```
@@ -234,7 +234,7 @@ Future<Response> post(@Field() String foo, @Field("b") int bar);
 ### Sending a file in bytes as `List<int>` using `@PartFile`
 
 ```dart
-@Post(path: 'file')
+@POST(path: 'file')
 @multipart
 Future<Response> postFile(@PartFile('file') List<int> bytes,);
 ```
@@ -242,7 +242,7 @@ Future<Response> postFile(@PartFile('file') List<int> bytes,);
 ### Sending a file as `MultipartFile` using `@PartFile` with extra parameters via `@Part`
 
 ```dart
-@Post(path: 'file')
+@POST(path: 'file')
 @multipart
 Future<Response> postMultipartFile(@PartFile() MultipartFile file, {
   @Part() String? id,
@@ -252,7 +252,7 @@ Future<Response> postMultipartFile(@PartFile() MultipartFile file, {
 ### Sending multiple files as `List<MultipartFile>` using `@PartFile`
 
 ```dart
-@Post(path: 'files')
+@POST(path: 'files')
 @multipart
 Future<Response> postListFiles(@PartFile() List<MultipartFile> files);
 ```
@@ -266,15 +266,15 @@ Chopper will generate a client which will return the specified return type. When
 
 ```dart
 // Returns a Response<dynamic>
-@Get(path: "/")
+@GET(path: "/")
 Future<Response> fetch();
 
 // Returns a Response<MyClass>
-@Get(path: "/")
+@GET(path: "/")
 Future<Response<MyClass>> fetch();
 
 // Returns a MyClass
-@Get(path: "/")
+@GET(path: "/")
 Future<MyClass> fetch();
 ```
 
