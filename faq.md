@@ -67,7 +67,7 @@ Request compressRequest(Request request) {
 ...
 
 @FactoryConverter(request: compressRequest)
-@Post()
+@POST()
 Future<Response> postRequest(@Body() Map<String, String> data);
 ```
 
@@ -131,7 +131,7 @@ abstract class ApiService extends ChopperService {
     return _$ApiService(client);
   }
 
-  @Get(path: "/get")
+  @GET(path: "/get")
   Future<Response> get(@Query() String url);
 }
 ```
@@ -487,7 +487,7 @@ abstract class TodosListService extends ChopperService {
   @factoryMethod
   static TodosListService create(ChopperClient client) => _$TodosListService(client);
 
-  @Get()
+  @GET()
   Future<Response<List<Todo>>> getTodos();
 }
 ```
