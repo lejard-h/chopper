@@ -18,3 +18,4 @@ export 'src/converters.dart';
 export 'src/request.dart';
 export 'src/response.dart';
 export 'src/utils.dart' hide mapToQuery;
+export 'src/date_serializer.dart';

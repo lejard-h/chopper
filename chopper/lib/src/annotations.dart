@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/date_serializer.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
@@ -209,6 +210,9 @@ sealed class Method {
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
 
+  /// Date serializer
+  final DateSerializer? dateSerializer;
+
   /// Set to [true] to include query variables with null values. This includes nested maps.
   /// The default is to exclude them.
   ///
@@ -246,6 +250,7 @@ sealed class Method {
     this.headers = const {},
     this.listFormat,
     @Deprecated('Use listFormat instead') this.useBrackets,
+    this.dateSerializer,
     this.includeNullQueryVars,
     this.timeout,
   });
@@ -264,6 +269,7 @@ final class GET extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   }) : super(HttpMethod.Get);
@@ -283,6 +289,7 @@ final class Get extends GET {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -303,6 +310,7 @@ final class POST extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   }) : super(HttpMethod.Post);
@@ -324,6 +332,7 @@ final class Post extends POST {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -342,6 +351,7 @@ final class DELETE extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   }) : super(HttpMethod.Delete);
@@ -361,6 +371,7 @@ final class Delete extends DELETE {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -381,6 +392,7 @@ final class PUT extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   }) : super(HttpMethod.Put);
@@ -402,6 +414,7 @@ final class Put extends PUT {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -421,6 +434,7 @@ final class PATCH extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   }) : super(HttpMethod.Patch);
@@ -441,6 +455,7 @@ final class Patch extends PATCH {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -459,6 +474,7 @@ final class HEAD extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   }) : super(HttpMethod.Head);
@@ -478,6 +494,7 @@ final class Head extends HEAD {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -496,6 +513,7 @@ final class OPTIONS extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   }) : super(HttpMethod.Options);
@@ -515,6 +533,7 @@ final class Options extends OPTIONS {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateSerializer,
     super.includeNullQueryVars,
     super.timeout,
   });
