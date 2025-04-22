@@ -26,10 +26,7 @@ final class _$TagService extends TagService {
       client.baseUrl,
       tag: tag,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -42,9 +39,6 @@ final class _$TagService extends TagService {
       client.baseUrl,
       tag: tag,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 }

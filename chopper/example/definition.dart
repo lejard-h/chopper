@@ -9,19 +9,19 @@ abstract class MyService extends ChopperService {
   static MyService create(ChopperClient client) => _$MyService(client);
 
   @Get(path: '/abc')
-  Future<Response<Map>> getLongTimeTest();
+  Future<Response<String>> getLongTimeTest();
 
   @Post(path: '/multi')
   @multipart
   Future<Response> postResources(
-    @Part('1') Map a,
-    @Part('2') Map b,
-    @Part('3') String c,
-  );
+      @Part('1') Map a,
+      @Part('2') Map b,
+      @Part('3') String c,
+      );
 
   @Post(path: '/file')
   @multipart
   Future<Response> postFile(
-    @Part('file') List<int> bytes,
-  );
+      @Part('file') List<int> bytes,
+      );
 }
