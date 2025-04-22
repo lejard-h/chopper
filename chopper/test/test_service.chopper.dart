@@ -32,10 +32,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -46,10 +43,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -60,10 +54,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -74,10 +65,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<Stream<List<int>>, int>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<Stream<List<int>>, int>($request);
   }
 
   @override
@@ -88,10 +76,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -102,10 +87,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -126,10 +108,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -142,10 +121,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -162,10 +138,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -186,10 +159,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -210,10 +180,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -226,10 +193,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -242,10 +206,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -258,10 +219,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -274,10 +232,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -293,10 +248,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -311,10 +263,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -330,10 +279,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -346,10 +292,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -362,10 +305,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -382,10 +322,7 @@ final class _$HttpTestService extends HttpTestService {
       body: $body,
       headers: $headers,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -404,10 +341,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -420,10 +354,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -449,10 +380,7 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -471,10 +399,7 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -493,10 +418,7 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -522,10 +444,7 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -544,10 +463,7 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -583,10 +499,7 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -597,10 +510,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -611,10 +521,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<List<String>, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<List<String>, String>($request);
   }
 
   @override
@@ -625,10 +532,7 @@ final class _$HttpTestService extends HttpTestService {
       $url,
       client.baseUrl,
     );
-    return client.send<dynamic, dynamic>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override
@@ -650,10 +554,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -666,10 +567,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -684,10 +582,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       useBrackets: true,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -702,10 +597,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -720,10 +612,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -738,10 +627,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -755,10 +641,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -771,10 +654,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -789,10 +669,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -807,10 +684,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       useBrackets: true,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -825,10 +699,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -843,10 +714,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -861,10 +729,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -879,10 +744,7 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -895,10 +757,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -923,10 +782,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    return client.send<String, String>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<String, String>($request);
   }
 
   @override
@@ -949,10 +805,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    return client.send<void, void>(
-      $request,
-      cancellationToken: client.cancellationToken,
-    );
+    return client.send<void, void>($request);
   }
 
   @override
@@ -964,10 +817,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
     );
     return client
-        .send<String, String>(
-          $request,
-          cancellationToken: client.cancellationToken,
-        )
+        .send<String, String>($request)
         .timeout(const Duration(microseconds: 42000000));
   }
 
@@ -980,10 +830,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
     );
     return client
-        .send<String, String>(
-          $request,
-          cancellationToken: client.cancellationToken,
-        )
+        .send<String, String>($request)
         .timeout(const Duration(microseconds: 0));
   }
 
@@ -996,10 +843,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
     );
     return client
-        .send<String, String>(
-          $request,
-          cancellationToken: client.cancellationToken,
-        )
+        .send<String, String>($request)
         .timeout(const Duration(microseconds: 0));
   }
 }
