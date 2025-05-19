@@ -116,7 +116,11 @@ void main() {
     final baseResponse = http.Response('Base response body', 200);
     final initialBody = {'key': 'value'};
     final initialError = 'Initial Error';
-    final initialResponse = Response(baseResponse, initialBody, error: initialError);
+    final initialResponse = Response(
+      baseResponse,
+      initialBody,
+      error: initialError,
+    );
 
     test('copyWith no parameters uses existing values', () {
       final copiedResponse = initialResponse.copyWith();
@@ -157,7 +161,8 @@ void main() {
 
     test('copyWith changes body type', () {
       final newBody = 'New body string';
-      final Response<String> copiedResponse = initialResponse.copyWith<String>(body: newBody);
+      final Response<String> copiedResponse =
+          initialResponse.copyWith<String>(body: newBody);
 
       expect(copiedResponse.base, baseResponse);
       expect(copiedResponse.body, newBody);
