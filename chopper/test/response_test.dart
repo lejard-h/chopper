@@ -111,4 +111,74 @@ void main() {
       expect(() => response.bodyOrThrow, returnsNormally);
     });
   });
+
+  group('copyWith tests', () {
+    final baseResponse = http.Response('Base response body', 200);
+    final initialBody = {'key': 'value'};
+    final initialError = 'Initial Error';
+    final initialResponse = Response(baseResponse, initialBody, error: initialError);
+
+    test('copyWith no parameters uses existing values', () {
+      final copiedResponse = initialResponse.copyWith();
+
+      expect(copiedResponse.base, baseResponse);
+      expect(copiedResponse.body, initialBody);
+      expect(copiedResponse.error, initialError);
+      expect(copiedResponse.statusCode, 200);
+    });
+
+    test('copyWith changes base response', () {
+      final newBaseResponse = http.Response('New base response body', 201);
+      final copiedResponse = initialResponse.copyWith(base: newBaseResponse);
+
+      expect(copiedResponse.base, newBaseResponse);
+      expect(copiedResponse.body, initialBody);
+      expect(copiedResponse.error, initialError);
+      expect(copiedResponse.statusCode, 201);
+    });
+
+    test('copyWith changes body', () {
+      final newBody = {'newKey': 'newValue'};
+      final copiedResponse = initialResponse.copyWith(body: newBody);
+
+      expect(copiedResponse.base, baseResponse);
+      expect(copiedResponse.body, newBody);
+      expect(copiedResponse.error, initialError);
+    });
+
+    test('copyWith changes error', () {
+      final newError = 'New Error';
+      final copiedResponse = initialResponse.copyWith(bodyError: newError);
+
+      expect(copiedResponse.base, baseResponse);
+      expect(copiedResponse.body, initialBody);
+      expect(copiedResponse.error, newError);
+    });
+
+    test('copyWith changes body type', () {
+      final newBody = 'New body string';
+      final Response<String> copiedResponse = initialResponse.copyWith<String>(body: newBody);
+
+      expect(copiedResponse.base, baseResponse);
+      expect(copiedResponse.body, newBody);
+      expect(copiedResponse.error, initialError);
+      expect(copiedResponse.body, isA<String>());
+    });
+
+    test('copyWith with all parameters', () {
+      final newBaseResponse = http.Response('New base response body', 202);
+      final newBody = {'newKey': 'newValue'};
+      final newError = 'New Error';
+      final copiedResponse = initialResponse.copyWith(
+        base: newBaseResponse,
+        body: newBody,
+        bodyError: newError,
+      );
+
+      expect(copiedResponse.base, newBaseResponse);
+      expect(copiedResponse.body, newBody);
+      expect(copiedResponse.error, newError);
+      expect(copiedResponse.statusCode, 202);
+    });
+  });
 }
