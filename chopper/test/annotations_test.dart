@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:chopper/chopper.dart';
 import 'package:test/test.dart';
 
+part 'annotations_test.chopper.dart';
+
 @ChopperApi(baseUrl: '/test')
 abstract class DeprecatedAnnotationService extends ChopperService {
   @Get(path: '/get')
@@ -181,6 +183,18 @@ void main() {
       expect(annotation.timeout, const Duration(milliseconds: 500));
     });
 
+    test('Method (GET) with default arguments', () {
+      const annotation = GET();
+      expect(annotation.path, '');
+      expect(annotation.optionalBody, true);
+      expect(annotation.headers, const {});
+      expect(annotation.listFormat, null);
+      expect(annotation.useBrackets, null); // Changed from false to null
+      expect(
+          annotation.includeNullQueryVars, null); // Changed from false to null
+      expect(annotation.timeout, null);
+    });
+
     test('Path with name', () {
       const p = Path('id');
       expect(p.name, 'id');
@@ -201,14 +215,29 @@ void main() {
       expect(f.name, 'dataField');
     });
 
+    test('Field with default name', () {
+      const f = Field();
+      expect(f.name, null);
+    });
+
     test('Part with name', () {
       const p = Part('filePart');
       expect(p.name, 'filePart');
     });
 
+    test('Part with default name', () {
+      const p = Part();
+      expect(p.name, null);
+    });
+
     test('PartFile with name', () {
       const pf = PartFile('imageFile');
       expect(pf.name, 'imageFile');
+    });
+
+    test('PartFile with default name', () {
+      const pf = PartFile();
+      expect(pf.name, null);
     });
 
     test('FactoryConverter with request and response', () {
