@@ -186,4 +186,30 @@ void main() {
       expect(copiedResponse.statusCode, 202);
     });
   });
+
+  group('bodyBytes and bodyString tests', () {
+    test('bodyBytes returns Uint8List(0) when base is not http.Response', () {
+      final base = http.StreamedResponse(Stream.fromIterable([]), 200);
+      final response = Response(base, null);
+      expect(response.bodyBytes, []);
+    });
+
+    test('bodyString returns empty string when base is not http.Response', () {
+      final base = http.StreamedResponse(Stream.fromIterable([]), 200);
+      final response = Response(base, null);
+      expect(response.bodyString, '');
+    });
+
+    test('bodyBytes returns correct bytes when base is http.Response', () {
+      final base = http.Response.bytes([1, 2, 3], 200);
+      final response = Response(base, null);
+      expect(response.bodyBytes, [1, 2, 3]);
+    });
+
+    test('bodyString returns correct string when base is http.Response', () {
+      final base = http.Response('test body', 200);
+      final response = Response(base, null);
+      expect(response.bodyString, 'test body');
+    });
+  });
 }
