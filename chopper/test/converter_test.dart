@@ -261,6 +261,132 @@ void main() {
     });
   });
 
+  group('FormUrlEncodedConverter', () {
+    final formConverter = FormUrlEncodedConverter();
+
+    test(
+        'convertRequest should return request as is if body is already Map<String, String>',
+        () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: {'key': 'value'},
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+      );
+      final converted = formConverter.convertRequest(request);
+      expect(converted.body, equals({'key': 'value'}));
+      expect(converted.headers['content-type'],
+          'application/x-www-form-urlencoded');
+    });
+
+    test(
+        'convertRequest should convert Map<String, dynamic> body to Map<String, String>',
+        () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: {'key': 'value', 'number': 123, 'bool': true, 'nullVal': null},
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+      );
+      final converted = formConverter.convertRequest(request);
+      expect(converted.body,
+          equals({'key': 'value', 'number': '123', 'bool': 'true'}));
+      expect(converted.headers['content-type'],
+          'application/x-www-form-urlencoded');
+    });
+
+    test('convertRequest should return request as is if body is not a Map', () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: 'Just a string body',
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+      );
+      final converted = formConverter.convertRequest(request);
+      expect(converted.body, 'Just a string body');
+      expect(converted.headers['content-type'],
+          'application/x-www-form-urlencoded');
+    });
+
+    test('convertResponse returns response as is', () async {
+      final response = Response(http.Response('foo=bar', 200), 'foo=bar');
+      final converted =
+          await formConverter.convertResponse<String, String>(response);
+      expect(converted.body, 'foo=bar');
+      expect(converted.base.statusCode, 200);
+    });
+
+    test('convertError returns response as is', () async {
+      final response = Response(http.Response('error=true', 400), 'error=true');
+      final converted =
+          await formConverter.convertError<String, String>(response);
+      expect(converted.body, 'error=true');
+      expect(converted.base.statusCode, 400);
+    });
+  });
+
+  group('JsonConverter encodeJson specific tests', () {
+    final jsonConverter = JsonConverter();
+    test(
+        'encodeJson should not encode if content-type does not contain application/json',
+        () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: {'key': 'value'},
+        headers: {'content-type': 'text/plain'},
+      );
+      final converted = jsonConverter.encodeJson(request);
+      expect(converted.body, equals({'key': 'value'})); // Not encoded
+    });
+
+    test('encodeJson should not encode if body is already a valid JSON string',
+        () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: '{"key":"value"}',
+        headers: {'content-type': 'application/json'},
+      );
+      final converted = jsonConverter.encodeJson(request);
+      expect(converted.body, equals('{"key":"value"}')); // Not double encoded
+    });
+
+    test(
+        'encodeJson should encode if body is a string but not valid JSON and content type is JSON',
+        () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: 'Just a string', // Not a valid JSON
+        headers: {'content-type': 'application/json'},
+      );
+      final converted = jsonConverter.encodeJson(request);
+      // It should be JSON encoded, meaning the string itself becomes a JSON string literal
+      expect(converted.body, equals('"Just a string"'));
+    });
+
+    test('encodeJson should encode non-string body if content type is JSON',
+        () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: {'key': 'value', 'number': 123},
+        headers: {'content-type': 'application/json'},
+      );
+      final converted = jsonConverter.encodeJson(request);
+      expect(converted.body,
+          equals(dart_convert.jsonEncode({'key': 'value', 'number': 123})));
+    });
+  });
+
   test('respects content-type headers', () {
     final jsonConverter = JsonConverter();
     final testRequest = Request(
