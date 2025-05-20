@@ -1,6 +1,7 @@
 import 'dart:convert' as dart_convert;
 
 import 'package:chopper/src/base.dart';
+import 'package:chopper/src/constants.dart';
 import 'package:chopper/src/converters.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
@@ -115,26 +116,28 @@ void main() {
       expect(converted.body, equals({'foo': 'bar'}));
     });
 
-    test('decodeJson with bodyBytes and application/json content type',
-        () async {
-      final jsonData = {'key': 'value'};
-      final jsonString = dart_convert.jsonEncode(jsonData);
-      final bodyBytes = dart_convert.utf8.encode(jsonString);
+    test(
+      'decodeJson with bodyBytes and application/json content type',
+      () async {
+        final jsonData = {'key': 'value'};
+        final jsonString = dart_convert.jsonEncode(jsonData);
+        final bodyBytes = dart_convert.utf8.encode(jsonString);
 
-      final httpResponse = http.Response.bytes(
-        bodyBytes,
-        200,
-        headers: {'content-type': 'application/json'},
-      );
-      // When using http.Response.bytes, Chopper's Response.body (String getter) might be empty or misinterpret bytes.
-      // We pass the original httpResponse so converter can access bodyBytes.
-      final chopperResponse = Response(
-          httpResponse, null /* httpResponse.body could be wrong here */);
+        final httpResponse = http.Response.bytes(
+          bodyBytes,
+          200,
+          headers: {'content-type': 'application/json'},
+        );
+        // When using http.Response.bytes, Chopper's Response.body (String getter) might be empty or misinterpret bytes.
+        // We pass the original httpResponse so converter can access bodyBytes.
+        final chopperResponse = Response(
+            httpResponse, null /* httpResponse.body could be wrong here */);
 
-      final converted = await jsonConverter
-          .convertResponse<Map<String, dynamic>, dynamic>(chopperResponse);
-      expect(converted.body, equals(jsonData));
-    });
+        final converted = await jsonConverter
+            .convertResponse<Map<String, dynamic>, dynamic>(chopperResponse);
+        expect(converted.body, equals(jsonData));
+      },
+    );
 
     test('decodeJson with bodyBytes and application/vnd.api+json content type',
         () async {
@@ -226,20 +229,21 @@ void main() {
     });
 
     test(
-        'requestFactory does not double encode already JSON string with json header',
-        () {
-      final requestBodyJsonString = '{"item":"test data"}';
-      final request = Request(
-        'POST',
-        Uri.parse('/items'),
-        baseUrl,
-        body: requestBodyJsonString,
-        headers: {'content-type': 'application/json'},
-      );
+      'requestFactory does not double encode already JSON string with json header',
+      () {
+        final requestBodyJsonString = '{"item":"test data"}';
+        final request = Request(
+          'POST',
+          Uri.parse('/items'),
+          baseUrl,
+          body: requestBodyJsonString,
+          headers: {'content-type': 'application/json'},
+        );
 
-      final converted = JsonConverter.requestFactory(request);
-      expect(converted.body, requestBodyJsonString);
-    });
+        final converted = JsonConverter.requestFactory(request);
+        expect(converted.body, requestBodyJsonString);
+      },
+    );
 
     test('JsonConverter.isJson', () {
       expect(JsonConverter.isJson('{"foo":"bar"}'), isTrue);
@@ -331,46 +335,50 @@ void main() {
   group('JsonConverter encodeJson specific tests', () {
     final jsonConverter = JsonConverter();
     test(
-        'encodeJson should not encode if content-type does not contain application/json',
-        () {
-      final request = Request(
-        'POST',
-        Uri.parse('/test'),
-        baseUrl,
-        body: {'key': 'value'},
-        headers: {'content-type': 'text/plain'},
-      );
-      final converted = jsonConverter.encodeJson(request);
-      expect(converted.body, equals({'key': 'value'})); // Not encoded
-    });
-
-    test('encodeJson should not encode if body is already a valid JSON string',
-        () {
-      final request = Request(
-        'POST',
-        Uri.parse('/test'),
-        baseUrl,
-        body: '{"key":"value"}',
-        headers: {'content-type': 'application/json'},
-      );
-      final converted = jsonConverter.encodeJson(request);
-      expect(converted.body, equals('{"key":"value"}')); // Not double encoded
-    });
+      'encodeJson should not encode if content-type does not contain application/json',
+      () {
+        final request = Request(
+          'POST',
+          Uri.parse('/test'),
+          baseUrl,
+          body: {'key': 'value'},
+          headers: {'content-type': 'text/plain'},
+        );
+        final converted = jsonConverter.encodeJson(request);
+        expect(converted.body, equals({'key': 'value'})); // Not encoded
+      },
+    );
 
     test(
-        'encodeJson should encode if body is a string but not valid JSON and content type is JSON',
-        () {
-      final request = Request(
-        'POST',
-        Uri.parse('/test'),
-        baseUrl,
-        body: 'Just a string', // Not a valid JSON
-        headers: {'content-type': 'application/json'},
-      );
-      final converted = jsonConverter.encodeJson(request);
-      // It should be JSON encoded, meaning the string itself becomes a JSON string literal
-      expect(converted.body, equals('"Just a string"'));
-    });
+      'encodeJson should not encode if body is already a valid JSON string',
+      () {
+        final request = Request(
+          'POST',
+          Uri.parse('/test'),
+          baseUrl,
+          body: '{"key":"value"}',
+          headers: {'content-type': 'application/json'},
+        );
+        final converted = jsonConverter.encodeJson(request);
+        expect(converted.body, equals('{"key":"value"}')); // Not double encoded
+      },
+    );
+
+    test(
+      'encodeJson should encode if body is a string but not valid JSON and content type is JSON',
+      () {
+        final request = Request(
+          'POST',
+          Uri.parse('/test'),
+          baseUrl,
+          body: 'Just a string', // Not a valid JSON
+          headers: {'content-type': 'application/json'},
+        );
+        final converted = jsonConverter.encodeJson(request);
+        // It should be JSON encoded, meaning the string itself becomes a JSON string literal
+        expect(converted.body, equals('"Just a string"'));
+      },
+    );
 
     test('encodeJson should encode non-string body if content type is JSON',
         () {
@@ -384,6 +392,166 @@ void main() {
       final converted = jsonConverter.encodeJson(request);
       expect(converted.body,
           equals(dart_convert.jsonEncode({'key': 'value', 'number': 123})));
+    });
+
+    test(
+      'encodeJson should not encode if content-type is null, even if body could be JSON',
+      () {
+        final request = Request(
+          'POST',
+          Uri.parse('/test'),
+          baseUrl,
+          body: {'key': 'value'},
+          headers: {}, // No content-type header
+        );
+        final converted = jsonConverter.encodeJson(request);
+        expect(converted.body, equals({'key': 'value'})); // Not encoded
+      },
+    );
+
+    test(
+      'encodeJson should encode if content-type contains json and other params (e.g. charset)',
+      () {
+        final request = Request(
+          'POST',
+          Uri.parse('/test'),
+          baseUrl,
+          body: {'key': 'value'},
+          headers: {'content-type': 'application/json; charset=utf-8'},
+        );
+        final converted = jsonConverter.encodeJson(request);
+        expect(converted.body, dart_convert.jsonEncode({'key': 'value'}));
+      },
+    );
+  });
+
+  group('JsonConverter specific decodeJson tests', () {
+    final jsonConverter = JsonConverter();
+
+    test(
+        'decodeJson with Iterable<Map<String, dynamic>> and application/json content type',
+        () async {
+      final listMapData = [
+        {'id': 1, 'name': 'item1'},
+        {'id': 2, 'name': 'item2'}
+      ];
+      final jsonString = dart_convert.jsonEncode(listMapData);
+      final bodyBytes = dart_convert.utf8.encode(jsonString);
+      final httpResponse = http.Response.bytes(bodyBytes, 200,
+          headers: {'content-type': 'application/json'});
+      final chopperResponse = Response(httpResponse, null);
+
+      final converted = await jsonConverter.decodeJson<
+          Iterable<Map<String, dynamic>>,
+          Map<String, dynamic>>(chopperResponse);
+      expect(converted.body, isA<Iterable<Map<String, dynamic>>>());
+      expect(converted.body.first['name'], 'item1');
+    });
+
+    test(
+        'decodeJson with Map<String, Map<String, dynamic>> and application/json content type',
+        () async {
+      final mapMapData = {
+        'item1': {'value': 100},
+        'item2': {'value': 200}
+      };
+      final jsonString = dart_convert.jsonEncode(mapMapData);
+      final bodyBytes = dart_convert.utf8.encode(jsonString);
+      final httpResponse = http.Response.bytes(bodyBytes, 200,
+          headers: {'content-type': 'application/json'});
+      final chopperResponse = Response(httpResponse, null);
+
+      final converted = await jsonConverter.decodeJson<
+          Map<String, Map<String, dynamic>>,
+          Map<String, dynamic>>(chopperResponse);
+      expect(converted.body, isA<Map<String, Map<String, dynamic>>>());
+      expect(converted.body['item1']!['value'], 100);
+    });
+  });
+
+  group('JsonConverter specific tryDecodeJson tests', () {
+    final jsonConverter = JsonConverter();
+
+    test('tryDecodeJson with valid JSON string', () {
+      final data = '{"message":"success"}';
+      final decoded = jsonConverter.tryDecodeJson(data);
+      expect(decoded, equals({'message': 'success'}));
+    });
+
+    test('tryDecodeJson with array JSON string', () {
+      final data = '[1, 2, "test"]';
+      final decoded = jsonConverter.tryDecodeJson(data);
+      expect(decoded, equals([1, 2, 'test']));
+    });
+
+    test('tryDecodeJson with invalid JSON (truncated)', () {
+      final data =
+          r"""'{"message":"success''"""; // Missing closing brace and quote
+      // Logger test would go here if we could mock/intercept chopperLogger.warning
+      final result = jsonConverter.tryDecodeJson(data);
+      expect(result, equals(data)); // Returns original data on failure
+    });
+
+    test('tryDecodeJson with invalid JSON (syntax error)', () {
+      final data = '{"message":success}'; // Value not in quotes
+      final result = jsonConverter.tryDecodeJson(data);
+      expect(result, equals(data));
+    });
+
+    test('tryDecodeJson with empty string', () {
+      final data = '';
+      final result = jsonConverter.tryDecodeJson(data);
+      expect(result, equals(data)); // Returns original data on failure
+    });
+  });
+
+  group('FormUrlEncodedConverter specific tests', () {
+    final formConverter = FormUrlEncodedConverter();
+
+    test('requestFactory uses FormUrlEncodedConverter correctly', () {
+      final requestBody = {'param1': 'value1', 'param2': 'value2'};
+      final request = Request(
+        'POST',
+        Uri.parse('/submit'),
+        baseUrl,
+        body: requestBody,
+      );
+      // requestFactory in FormUrlEncodedConverter adds the header if not present
+      final converted = FormUrlEncodedConverter.requestFactory(request);
+      expect(converted.headers[contentTypeKey], formEncodedHeaders);
+      expect(
+        converted.body,
+        equals(requestBody), // Body type is Map<String, String>
+      );
+    });
+
+    test('convertRequest with empty map body', () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: {},
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+      );
+      final converted = formConverter.convertRequest(request);
+      expect(converted.body, equals({}));
+    });
+
+    test('convertRequest with map containing null or empty string values', () {
+      final request = Request(
+        'POST',
+        Uri.parse('/test'),
+        baseUrl,
+        body: {'key1': 'value1', 'key2': null, 'key3': '', 'key4': 'value4'},
+        headers: {'content-type': 'application/x-www-form-urlencoded'},
+      );
+      final converted = formConverter.convertRequest(request);
+      // Null values are removed, empty strings are kept if that's the Map behavior (it is for Map<String,String>)
+      // The converter specifically filters out null values in its loop.
+      expect(
+        converted.body,
+        equals({'key1': 'value1', 'key3': '', 'key4': 'value4'}),
+      );
     });
   });
 
