@@ -20,7 +20,7 @@ class FakeChain<BodyType> implements Chain<BodyType> {
   final Request request;
 
   /// The fake response to be returned by the chain.
-  final Response? response;
+  final Response<BodyType>? response;
 
   /// The fake exception to be returned by the chain.
   final Exception? exception;
@@ -32,7 +32,7 @@ class FakeChain<BodyType> implements Chain<BodyType> {
     }
 
     if (response != null) {
-      return response as Response<BodyType>;
+      return response!;
     }
 
     return Response<BodyType>(
