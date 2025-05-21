@@ -3,11 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chopper/src/base.dart';
-import 'package:chopper/src/constants.dart';
-import 'package:chopper/src/converters.dart';
-import 'package:chopper/src/request.dart';
-import 'package:chopper/src/utils.dart';
+import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
@@ -37,6 +33,34 @@ void main() {
         client: httpClient,
         errorConverter: errorConverter,
       );
+
+  group('ChopperClient constructor defaults', () {
+    test('uses default Uri() if baseUrl is null', () {
+      final chopper = ChopperClient();
+      expect(chopper.baseUrl, Uri());
+      chopper.dispose();
+    });
+
+    test('uses default http.Client() if client is null', () {
+      final chopper = ChopperClient();
+      // Can't directly assert the client type without exposing it or using mockito
+      // but we can ensure it doesn't throw and dispose works (which closes internal client)
+      expect(() => chopper.dispose(), returnsNormally);
+    });
+
+    test('uses empty list if services is null', () {
+      final chopper = ChopperClient(services: null);
+      expect(
+        () => chopper.getService<HttpTestService>(),
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(),
+          'toString()',
+          contains("Service of type 'HttpTestService' not found."),
+        )),
+      );
+      chopper.dispose();
+    });
+  });
 
   group('Base', () {
     test('getService', () async {
@@ -1088,6 +1112,32 @@ void main() {
 
     client.close();
     chopper.dispose();
+  });
+
+  test(
+      'Response.bodyOrThrow throws ChopperHttpException for non-Exception error',
+      () {
+    final baseHttpResponse = http.Response('Error content', 400);
+    final chopperResponse =
+        Response<String>(baseHttpResponse, null, error: 'Error string object');
+    expect(
+      () => chopperResponse.bodyOrThrow,
+      throwsA(isA<ChopperHttpException>()),
+    );
+  });
+
+  test(
+      'Response.bodyOrThrow throws original Exception if error is an Exception',
+      () {
+    final customException = Exception('Custom error');
+    final baseHttpResponse = http.Response('Error content', 500);
+    final chopperResponse =
+        Response<String>(baseHttpResponse, null, error: customException);
+    expect(
+      () => chopperResponse.bodyOrThrow,
+      throwsA(isA<Exception>()
+          .having((e) => e.toString(), 'toString', customException.toString())),
+    );
   });
 
   test('error Converter', () async {

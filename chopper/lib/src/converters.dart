@@ -121,6 +121,7 @@ class JsonConverter implements Converter, ErrorConverter {
       (await decodeJson<BodyType, InnerType>(response)) as Response<BodyType>;
 
   @protected
+  @visibleForTesting
   FutureOr<dynamic> tryDecodeJson(String data) {
     try {
       return json.decode(data);
