@@ -30,7 +30,11 @@ class HttpCallInterceptor implements InternalInterceptor {
       final response = await http.Response.fromStream(streamRes);
       return Response(response, response.body as BodyType);
     } else {
-      throw ChopperException('Unsupported type', request: chain.request);
+      throw ChopperException(
+        request: chain.request,
+        type: ChopperExceptionType.unknown,
+        error: 'Unsupported response type: ${BodyType.runtimeType}',
+      );
     }
   }
 }
