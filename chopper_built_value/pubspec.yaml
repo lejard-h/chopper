@@ -16,7 +16,7 @@ dependencies:
 dev_dependencies:
   test: ^1.25.5
   build_runner: ^2.4.9
-  build_test: ^2.2.2
+  build_test: ">=2.2.2 <4.0.0"
   built_value_generator: ^8.9.2
   lints: ">=4.0.0 <7.0.0"
 
