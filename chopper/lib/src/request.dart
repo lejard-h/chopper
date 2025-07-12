@@ -21,8 +21,8 @@ base class Request extends http.BaseRequest with EquatableMixin {
   final bool multipart;
   final List<PartValue> parts;
   final ListFormat? listFormat;
-  @Deprecated('Use listFormat instead')
   final DateSerializer? dateSerializer;
+  @Deprecated('Use listFormat instead')
   final bool? useBrackets;
   final bool? includeNullQueryVars;
 
