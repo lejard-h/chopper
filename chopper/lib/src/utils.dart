@@ -80,8 +80,7 @@ String mapToQuery(
       encodeValuesOnly: listFormat == ListFormat.repeat,
       skipNulls: includeNullQueryVars != true,
       strictNullHandling: false,
-      serializeDate: dateSerializer?.serializer ??
-          (DateTime date) => date.toUtc().toIso8601String(),
+      serializeDate: (dateSerializer ?? DateSerializer.utcIso8601).serializer,
     ),
   );
 }
