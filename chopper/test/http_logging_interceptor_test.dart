@@ -683,4 +683,111 @@ void main() {
       });
     });
   });
+
+  group('onlyErrors parameter tests', () {
+    late Response successResponse;
+    late Response errorResponse;
+
+    setUp(() async {
+      successResponse = Response<String>(
+        http.Response(
+          'responseBodyBase',
+          200,
+          headers: {'foo': 'bar'},
+          request: await fakeRequest.toBaseRequest(),
+        ),
+        'responseBody',
+      );
+
+      errorResponse = Response<String>(
+        http.Response(
+          'error response',
+          404,
+          headers: {'foo': 'bar'},
+          request: await fakeRequest.toBaseRequest(),
+        ),
+        'error body',
+      );
+    });
+
+    test('only logs error responses when onlyErrors=true', () async {
+      final logger = HttpLoggingInterceptor(
+        level: Level.body,
+        onlyErrors: true,
+      );
+
+      final logs = [];
+      chopperLogger.onRecord.listen((r) => logs.add(r.message));
+
+      // Success response - should not log
+      await logger.intercept(FakeChain(fakeRequest, response: successResponse));
+      expect(logs, isEmpty);
+
+      // Error response - should log
+      await logger.intercept(FakeChain(fakeRequest, response: errorResponse));
+      expect(
+        logs,
+        containsAll([
+          '',
+          '<-- 404 POST base/ (0ms)',
+          'foo: bar',
+          'content-length: 14',
+          '',
+          'error response',
+          '<-- END HTTP',
+        ]),
+      );
+    });
+
+    test('logs all responses when onlyErrors=false', () async {
+      final logger = HttpLoggingInterceptor(
+        level: Level.body,
+        onlyErrors: false,
+      );
+
+      final logs = [];
+      chopperLogger.onRecord.listen((r) => logs.add(r.message));
+
+      // Reset logs after each response
+      await logger.intercept(FakeChain(fakeRequest, response: successResponse));
+      expect(logs, isNotEmpty);
+
+      logs.clear();
+
+      await logger.intercept(FakeChain(fakeRequest, response: errorResponse));
+      expect(logs, isNotEmpty);
+    });
+  });
+
+  test('logs response with custom reason phrase', () async {
+    final logger = HttpLoggingInterceptor(level: Level.basic);
+
+    // Create a custom response with a reason phrase different from the status code
+    final responseWithCustomReason = Response<String>(
+      http.Response(
+        'test body',
+        200,
+        headers: {'content-type': 'text/plain'},
+        reasonPhrase: 'Custom Reason',
+        // Custom reason phrase different from "200"
+        request: await fakeRequest.toBaseRequest(),
+      ),
+      'test body',
+    );
+
+    final logs = [];
+    chopperLogger.onRecord.listen((r) => logs.add(r.message));
+
+    await logger
+        .intercept(FakeChain(fakeRequest, response: responseWithCustomReason));
+
+    // Verify the log includes the custom reason phrase
+    expect(
+      logs,
+      containsAll([
+        '',
+        '<-- 200 Custom Reason POST base/ (0ms, 9-byte body)',
+      ]),
+    );
+  });
 }

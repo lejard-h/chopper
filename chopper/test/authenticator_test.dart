@@ -1,13 +1,36 @@
+import 'dart:async';
 import 'dart:convert' show jsonEncode;
 
-import 'package:chopper/src/base.dart';
-import 'package:chopper/src/converters.dart';
-import 'package:chopper/src/interceptors/headers_interceptor.dart';
+import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
 
 import 'fake_authenticator.dart';
+
+/// A minimal authenticator that only implements the authenticate method
+/// and relies on the default null implementations for callbacks.
+class MinimalAuthenticator extends Authenticator {
+  bool authenticateCalled = false;
+
+  @override
+  FutureOr<Request?> authenticate(
+    Request request,
+    Response response, [
+    Request? originalRequest,
+  ]) async {
+    authenticateCalled = true;
+    if (response.statusCode == 401) {
+      return request.copyWith(
+        headers: <String, String>{
+          ...request.headers,
+          'authorization': 'some_minimal_token',
+        },
+      );
+    }
+    return null;
+  }
+}
 
 void main() async {
   final Uri baseUrl = Uri.parse('http://localhost:8000');
@@ -642,6 +665,79 @@ void main() async {
       expect(authenticator.capturedOriginalRequest,
           authenticator.capturedAuthenticateOriginalRequest);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
+
+      httpClient.close();
+    });
+  });
+
+  group('MinimalAuthenticator', () {
+    ChopperClient buildMinimalClient([http.Client? httpClient]) =>
+        ChopperClient(
+          baseUrl: baseUrl,
+          client: httpClient,
+          interceptors: [
+            HeadersInterceptor({'foo': 'bar'}),
+          ],
+          converter: JsonConverter(),
+          authenticator: MinimalAuthenticator(),
+        );
+
+    test('unauthorized with minimal authenticator - success', () async {
+      bool initialRequestMade = false;
+      final httpClient = MockClient((request) async {
+        if (!initialRequestMade) {
+          initialRequestMade = true;
+          return http.Response('unauthorized', 401);
+        } else {
+          // This is the retried request after authentication
+          expect(
+              request.headers['authorization'], equals('some_minimal_token'));
+          return http.Response('ok_minimal', 200);
+        }
+      });
+
+      final chopper = buildMinimalClient(httpClient);
+      final authenticator = chopper.authenticator as MinimalAuthenticator;
+      final response = await chopper.get(
+        Uri(path: '/test/get'),
+      );
+
+      expect(response.body, equals('ok_minimal'));
+      expect(response.statusCode, equals(200));
+      expect(authenticator.authenticateCalled, isTrue);
+      // We expect onAuthenticationSuccessful to be null and not called,
+      // and onAuthenticationFailed to be null and not called.
+      // The coverage will show if these getters were accessed.
+
+      httpClient.close();
+    });
+
+    test('unauthorized with minimal authenticator - failure', () async {
+      bool initialRequestMade = false;
+      final httpClient = MockClient((request) async {
+        if (!initialRequestMade) {
+          initialRequestMade = true;
+          return http.Response('unauthorized', 401);
+        } else {
+          // This is the retried request after authentication, still failing
+          expect(
+              request.headers['authorization'], equals('some_minimal_token'));
+          return http.Response('still_unauthorized', 403);
+        }
+      });
+
+      final chopper = buildMinimalClient(httpClient);
+      final authenticator = chopper.authenticator as MinimalAuthenticator;
+      final response = await chopper.get(
+        Uri(path: '/test/get'),
+      );
+
+      expect(response.body, anyOf(isNull, isEmpty));
+      expect(response.statusCode, equals(403));
+      expect(authenticator.authenticateCalled, isTrue);
+      // We expect onAuthenticationSuccessful to be null and not called,
+      // and onAuthenticationFailed to be null and not called.
+      // The coverage will show if these getters were accessed.
 
       httpClient.close();
     });
