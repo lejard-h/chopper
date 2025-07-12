@@ -405,7 +405,8 @@ final class ChopperGenerator
 
       final chopper.ListFormat? listFormat = Utils.getListFormat(method);
 
-      final chopper.DateSerializer? dateSerializer = Utils.getDateSerializer(method);
+      final chopper.DateSerializer? dateSerializer =
+          Utils.getDateSerializer(method);
 
       final bool? useBrackets = Utils.getUseBrackets(method);
 
@@ -745,7 +746,8 @@ final class ChopperGenerator
             'listFormat': refer('ListFormat').type.property(listFormat.name),
           if (useBrackets != null) 'useBrackets': literalBool(useBrackets),
           if (dateSerializer != null)
-            'dateSerializer': refer('DateSerializer').type.property(dateSerializer.name),
+            'dateSerializer':
+                refer('DateSerializer').type.property(dateSerializer.name),
           if (includeNullQueryVars != null)
             'includeNullQueryVars': literalBool(includeNullQueryVars),
         },

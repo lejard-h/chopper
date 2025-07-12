@@ -21,7 +21,7 @@ final class Utils {
 
   static ListFormat? getListFormat(ConstantReader method) {
     return ListFormat.values.firstWhereOrNull(
-      (listFormat) =>
+      (ListFormat listFormat) =>
           listFormat.name ==
           method
               .peek('listFormat')
@@ -33,7 +33,7 @@ final class Utils {
 
   static DateSerializer? getDateSerializer(ConstantReader method) {
     return DateSerializer.values.firstWhereOrNull(
-          (serializer) =>
+      (DateSerializer serializer) =>
           serializer.name ==
           method
               .peek('dateSerializer')
