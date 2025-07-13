@@ -31,12 +31,12 @@ final class Utils {
     );
   }
 
-  static DateFormat? getDateSerializer(ConstantReader method) {
+  static DateFormat? getDateFormat(ConstantReader method) {
     return DateFormat.values.firstWhereOrNull(
-      (DateFormat serializer) =>
-          serializer.name ==
+      (DateFormat fmt) =>
+          fmt.name ==
           method
-              .peek('dateSerializer')
+              .peek('dateFormat')
               ?.objectValue
               .getField('_name')
               ?.toStringValue(),

@@ -405,8 +405,7 @@ final class ChopperGenerator
 
       final chopper.ListFormat? listFormat = Utils.getListFormat(method);
 
-      final chopper.DateFormat? dateSerializer =
-          Utils.getDateSerializer(method);
+      final chopper.DateFormat? dateFormat = Utils.getDateFormat(method);
 
       final bool? useBrackets = Utils.getUseBrackets(method);
 
@@ -427,7 +426,7 @@ final class ChopperGenerator
                 listFormat: listFormat,
                 // ignore: deprecated_member_use_from_same_package
                 useBrackets: useBrackets,
-                dateSerializer: dateSerializer,
+                dateFormat: dateFormat,
                 includeNullQueryVars: includeNullQueryVars,
               ),
             )
@@ -723,7 +722,7 @@ final class ChopperGenerator
     bool useHeaders = false,
     chopper.ListFormat? listFormat,
     @Deprecated('Use listFormat instead') bool? useBrackets,
-    chopper.DateFormat? dateSerializer,
+    chopper.DateFormat? dateFormat,
     bool? includeNullQueryVars,
     Reference? tagRefer,
   }) =>
@@ -745,9 +744,8 @@ final class ChopperGenerator
           if (listFormat != null)
             'listFormat': refer('ListFormat').type.property(listFormat.name),
           if (useBrackets != null) 'useBrackets': literalBool(useBrackets),
-          if (dateSerializer != null)
-            'dateSerializer':
-                refer('DateSerializer').type.property(dateSerializer.name),
+          if (dateFormat != null)
+            'dateFormat': refer('DateFormat').type.property(dateFormat.name),
           if (includeNullQueryVars != null)
             'includeNullQueryVars': literalBool(includeNullQueryVars),
         },

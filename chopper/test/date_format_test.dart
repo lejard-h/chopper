@@ -2,7 +2,7 @@ import 'package:chopper/chopper.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('DateSerializer', () {
+  group('DateFormat', () {
     final testDateTime = DateTime.utc(2023, 1, 1, 12, 30, 45, 500);
 
     test('enum values have correct names', () {
@@ -109,51 +109,51 @@ void main() {
     });
   });
 
-  group('Request with DateSerializer', () {
+  group('Request with DateFormat', () {
     final testDateTime = DateTime.utc(2023, 1, 1, 12, 30, 45, 500);
 
-    test('can be constructed with a DateSerializer', () {
+    test('can be constructed with a DateFormat', () {
       final request = Request(
         'GET',
         Uri.parse('/test'),
         Uri.parse('https://example.com'),
         parameters: {'date': testDateTime},
-        dateSerializer: DateFormat.seconds,
+        dateFormat: DateFormat.seconds,
       );
 
-      expect(request.dateSerializer, equals(DateFormat.seconds));
+      expect(request.dateFormat, equals(DateFormat.seconds));
     });
 
-    test('preserves DateSerializer in copyWith', () {
+    test('preserves DateFormat in copyWith', () {
       final request = Request(
         'GET',
         Uri.parse('/test'),
         Uri.parse('https://example.com'),
         parameters: {'date': testDateTime},
-        dateSerializer: DateFormat.seconds,
+        dateFormat: DateFormat.seconds,
       );
 
       final copiedRequest = request.copyWith(
         method: 'POST',
       );
 
-      expect(copiedRequest.dateSerializer, equals(DateFormat.seconds));
+      expect(copiedRequest.dateFormat, equals(DateFormat.seconds));
     });
 
-    test('can override DateSerializer in copyWith', () {
+    test('can override DateFormat in copyWith', () {
       final request = Request(
         'GET',
         Uri.parse('/test'),
         Uri.parse('https://example.com'),
         parameters: {'date': testDateTime},
-        dateSerializer: DateFormat.seconds,
+        dateFormat: DateFormat.seconds,
       );
 
       final copiedRequest = request.copyWith(
-        dateSerializer: DateFormat.milliseconds,
+        dateFormat: DateFormat.milliseconds,
       );
 
-      expect(copiedRequest.dateSerializer, equals(DateFormat.milliseconds));
+      expect(copiedRequest.dateFormat, equals(DateFormat.milliseconds));
     });
   });
 }
