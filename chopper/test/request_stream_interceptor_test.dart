@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:chopper/chopper.dart';
-import 'package:http/http.dart' as http;
 import 'package:chopper/src/interceptors/request_stream_interceptor.dart';
+import 'package:http/http.dart' as http;
 import 'package:test/test.dart';
 
 void main() {

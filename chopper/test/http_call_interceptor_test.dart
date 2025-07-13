@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:chopper/src/chopper_exception.dart';
 import 'package:chopper/src/interceptors/http_call_interceptor.dart';
 import 'package:chopper/src/request.dart';
-import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
+import 'package:test/test.dart';
 
 import 'helpers/fake_chain.dart';
 

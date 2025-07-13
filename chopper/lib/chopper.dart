@@ -4,6 +4,7 @@
 library;
 
 export 'package:qs_dart/qs_dart.dart' show ListFormat;
+
 export 'src/annotations.dart';
 export 'src/authenticator.dart';
 export 'src/base.dart';
