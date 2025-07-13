@@ -772,6 +772,160 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<String>> getDateTimeFormatIso8601(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_iso8601');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.iso8601,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatUtcIso8601(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_utcIso8601');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.utcIso8601,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatLocalIso8601(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_localIso8601');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.localIso8601,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatSeconds(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_seconds');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.seconds,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatUnix(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_unix');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.unix,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatMilliseconds(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_milliseconds');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.milliseconds,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatMicroseconds(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_microseconds');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.microseconds,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatRfc2822(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_rfc2822');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.rfc2822,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatDate(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_date');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.date,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatTime(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_time');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.time,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getDateTimeFormatString(DateTime value) {
+    final Uri $url = Uri.parse('/test/date_time_format_string');
+    final Map<String, dynamic> $params = <String, dynamic>{'value': value};
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      dateFormat: DateFormat.string,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
   Future<Response<String>> getHeaders({
     required String stringHeader,
     bool? boolHeader,
