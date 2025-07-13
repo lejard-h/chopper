@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:chopper/src/date_serializer.dart';
+import 'package:chopper/src/date_format.dart';
 import 'package:chopper/src/request.dart';
 import 'package:logging/logging.dart';
 import 'package:qs_dart/qs_dart.dart' show encode, EncodeOptions, ListFormat;
@@ -66,7 +66,7 @@ String mapToQuery(
   Map<String, dynamic> map, {
   ListFormat? listFormat,
   @Deprecated('Use listFormat instead') bool? useBrackets,
-  DateSerializer? dateSerializer,
+  DateFormat? dateSerializer,
   bool? includeNullQueryVars,
 }) {
   listFormat ??= useBrackets == true ? ListFormat.brackets : ListFormat.repeat;
@@ -80,7 +80,7 @@ String mapToQuery(
       encodeValuesOnly: listFormat == ListFormat.repeat,
       skipNulls: includeNullQueryVars != true,
       strictNullHandling: false,
-      serializeDate: (dateSerializer ?? DateSerializer.utcIso8601).serializer,
+      serializeDate: (dateSerializer ?? DateFormat.utcIso8601).serializer,
     ),
   );
 }

@@ -3,7 +3,7 @@
 import 'dart:math' show max;
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:chopper/chopper.dart' show DateSerializer, ListFormat;
+import 'package:chopper/chopper.dart' show DateFormat, ListFormat;
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
@@ -31,9 +31,9 @@ final class Utils {
     );
   }
 
-  static DateSerializer? getDateSerializer(ConstantReader method) {
-    return DateSerializer.values.firstWhereOrNull(
-      (DateSerializer serializer) =>
+  static DateFormat? getDateSerializer(ConstantReader method) {
+    return DateFormat.values.firstWhereOrNull(
+      (DateFormat serializer) =>
           serializer.name ==
           method
               .peek('dateSerializer')

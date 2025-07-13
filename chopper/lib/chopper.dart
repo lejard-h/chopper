@@ -13,7 +13,7 @@ export 'src/chopper_http_exception.dart';
 export 'src/chopper_log_record.dart';
 export 'src/constants.dart';
 export 'src/converters.dart';
-export 'src/date_serializer.dart';
+export 'src/date_format.dart';
 export 'src/extensions.dart';
 export 'src/interceptors/interceptor.dart';
 export 'src/request.dart';

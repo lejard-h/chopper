@@ -1,6 +1,6 @@
 import 'dart:async' show Stream;
 
-import 'package:chopper/src/date_serializer.dart';
+import 'package:chopper/src/date_format.dart';
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
@@ -21,7 +21,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
   final bool multipart;
   final List<PartValue> parts;
   final ListFormat? listFormat;
-  final DateSerializer? dateSerializer;
+  final DateFormat? dateSerializer;
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
   final bool? includeNullQueryVars;
@@ -75,7 +75,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     List<PartValue>? parts,
     ListFormat? listFormat,
     @Deprecated('Use listFormat instead') bool? useBrackets,
-    DateSerializer? dateSerializer,
+    DateFormat? dateSerializer,
     bool? includeNullQueryVars,
     Object? tag,
   }) =>
@@ -106,7 +106,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     Map<String, dynamic> parameters, {
     ListFormat? listFormat,
     @Deprecated('Use listFormat instead') bool? useBrackets,
-    DateSerializer? dateSerializer,
+    DateFormat? dateSerializer,
     bool? includeNullQueryVars,
   }) {
     // If the request's url is already a fully qualified URL, we can use it

@@ -4,7 +4,19 @@ import 'package:qs_dart/qs_dart.dart' as qs show DateSerializer;
 ///
 /// Each serializer converts a DateTime to a string representation suitable
 /// for different use cases (APIs, databases, etc.).
-enum DateSerializer {
+enum DateFormat {
+  /// Converts DateTime to ISO8601 string in current timezone.
+  /// Example: DateTime(2023, 1, 1) -> "2023-01-01T00:00:00.000"
+  iso8601,
+
+  /// Converts DateTime to UTC ISO8601 string.
+  /// Example: DateTime(2023, 1, 1) -> "2023-01-01T00:00:00.000Z"
+  utcIso8601,
+
+  /// Converts DateTime to local ISO8601 string.
+  /// Example: DateTime(2023, 1, 1) -> "2023-01-01T00:00:00.000"
+  localIso8601,
+
   /// Converts DateTime to seconds since epoch as a string.
   /// Example: DateTime(2023, 1, 1) -> "1672531200"
   seconds,
@@ -17,18 +29,6 @@ enum DateSerializer {
   /// Converts DateTime to microseconds since epoch as a string.
   /// Example: DateTime(2023, 1, 1) -> "1672531200000000"
   microseconds,
-
-  /// Converts DateTime to UTC ISO8601 string.
-  /// Example: DateTime(2023, 1, 1) -> "2023-01-01T00:00:00.000Z"
-  utcIso8601,
-
-  /// Converts DateTime to local ISO8601 string.
-  /// Example: DateTime(2023, 1, 1) -> "2023-01-01T00:00:00.000"
-  localIso8601,
-
-  /// Converts DateTime to ISO8601 string in current timezone.
-  /// Example: DateTime(2023, 1, 1) -> "2023-01-01T00:00:00.000"
-  iso8601,
 
   /// Converts DateTime to RFC 2822 format (email/HTTP headers).
   /// Example: DateTime(2023, 1, 1) -> "Sun, 01 Jan 2023 00:00:00 GMT"
@@ -46,9 +46,9 @@ enum DateSerializer {
   /// Example: DateTime(2023, 1, 1) -> "2023-01-01 00:00:00.000"
   string;
 
-  const DateSerializer();
+  const DateFormat();
 
-  /// Let you call the enum directly: e.g. `DateSerializer.date(dt)`.
+  /// Call the enum directly: e.g. `DateSerializer.date(dt)`.
   String call(DateTime dt) => format(dt);
 
   /// If you need to pass it as a [qs.DateSerializer]:
