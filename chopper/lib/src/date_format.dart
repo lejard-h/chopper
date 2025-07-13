@@ -46,8 +46,6 @@ enum DateFormat {
   /// Example: DateTime(2023, 1, 1) -> "2023-01-01 00:00:00.000"
   string;
 
-  const DateFormat();
-
   /// Call the enum directly: e.g. `DateSerializer.date(dt)`.
   String call(DateTime dt) => format(dt);
 
