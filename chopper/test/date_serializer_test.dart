@@ -28,48 +28,34 @@ void main() {
     test('serializers produce expected format', () {
       // Test that seconds serializer produces a numeric string
       final secondsResult = DateSerializer.seconds.serializer(testDateTime);
-      if (secondsResult != null) {
-        expect(secondsResult, matches(r'^\d+$'));
-      }
+      expect(secondsResult, matches(r'^\d+$'));
 
       // Test that milliseconds serializer produces a numeric string
       final msResult = DateSerializer.milliseconds.serializer(testDateTime);
-      if (msResult != null) {
-        expect(msResult, matches(r'^\d+$'));
-      }
+      expect(msResult, matches(r'^\d+$'));
 
       // Test that microseconds serializer produces a numeric string
       final usResult = DateSerializer.microseconds.serializer(testDateTime);
-      if (usResult != null) {
-        expect(usResult, matches(r'^\d+$'));
-      }
+      expect(usResult, matches(r'^\d+$'));
 
       // Test that utcIso8601 serializer produces an ISO8601 string with Z
       final utcResult = DateSerializer.utcIso8601.serializer(testDateTime);
-      if (utcResult != null) {
-        expect(utcResult,
-            matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'));
-      }
+      expect(
+          utcResult, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'));
 
       // Test that localIso8601 serializer produces an ISO8601 string
       final localResult = DateSerializer.localIso8601.serializer(testDateTime);
-      if (localResult != null) {
-        expect(localResult,
-            matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}'));
-      }
+      expect(
+          localResult, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}'));
 
       // Test that iso8601 serializer produces an ISO8601 string
       final isoResult = DateSerializer.iso8601.serializer(testDateTime);
-      if (isoResult != null) {
-        expect(
-            isoResult, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}'));
-      }
+      expect(
+          isoResult, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}'));
 
       // Test that string serializer produces a string
       final stringResult = DateSerializer.string.serializer(testDateTime);
-      if (stringResult != null) {
-        expect(stringResult, isA<String>());
-      }
+      expect(stringResult, isA<String>());
     });
   });
 
