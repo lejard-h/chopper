@@ -27,34 +27,34 @@ void main() {
 
     test('serializers produce expected format', () {
       // Test that seconds serializer produces a numeric string
-      final secondsResult = DateSerializer.seconds.serializer(testDateTime);
+      final secondsResult = DateSerializer.seconds(testDateTime);
       expect(secondsResult, matches(r'^\d+$'));
 
       // Test that milliseconds serializer produces a numeric string
-      final msResult = DateSerializer.milliseconds.serializer(testDateTime);
+      final msResult = DateSerializer.milliseconds(testDateTime);
       expect(msResult, matches(r'^\d+$'));
 
       // Test that microseconds serializer produces a numeric string
-      final usResult = DateSerializer.microseconds.serializer(testDateTime);
+      final usResult = DateSerializer.microseconds(testDateTime);
       expect(usResult, matches(r'^\d+$'));
 
       // Test that utcIso8601 serializer produces an ISO8601 string with Z
-      final utcResult = DateSerializer.utcIso8601.serializer(testDateTime);
+      final utcResult = DateSerializer.utcIso8601(testDateTime);
       expect(
           utcResult, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$'));
 
       // Test that localIso8601 serializer produces an ISO8601 string
-      final localResult = DateSerializer.localIso8601.serializer(testDateTime);
+      final localResult = DateSerializer.localIso8601(testDateTime);
       expect(
           localResult, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}'));
 
       // Test that iso8601 serializer produces an ISO8601 string
-      final isoResult = DateSerializer.iso8601.serializer(testDateTime);
+      final isoResult = DateSerializer.iso8601(testDateTime);
       expect(
           isoResult, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}'));
 
       // Test that string serializer produces a string
-      final stringResult = DateSerializer.string.serializer(testDateTime);
+      final stringResult = DateSerializer.string(testDateTime);
       expect(stringResult, isA<String>());
     });
   });
