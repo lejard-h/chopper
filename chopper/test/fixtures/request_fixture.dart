@@ -16,7 +16,7 @@ final class RequestFixtureFactory extends FixtureFactory<Request> {
         faker.randomGenerator.element(['GET', 'POST', 'PUT', 'DELETE']);
 
     return define(
-      (Faker faker) => Request(
+      (Faker faker, [int index = 0]) => Request(
         method,
         Uri.parse('/${faker.lorem.word()}'),
         Uri.https(faker.internet.domainName()),

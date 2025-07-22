@@ -40,7 +40,7 @@ class BuiltValueConverter implements Converter, ErrorConverter {
     return BuiltList<InnerType>(deserialized.toList(growable: false));
   }
 
-  BodyType? deserialize<BodyType, InnerType>(entity) {
+  BodyType? deserialize<BodyType, InnerType>(dynamic entity) {
     if (entity is BodyType) return entity;
     if (entity is Iterable) {
       return _deserializeListOf<InnerType>(entity) as BodyType;

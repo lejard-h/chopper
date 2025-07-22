@@ -1,5 +1,6 @@
 import 'dart:async' show Stream;
 
+import 'package:chopper/src/date_format.dart';
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/utils.dart';
 import 'package:equatable/equatable.dart' show EquatableMixin;
@@ -20,6 +21,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
   final bool multipart;
   final List<PartValue> parts;
   final ListFormat? listFormat;
+  final DateFormat? dateFormat;
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
   final bool? includeNullQueryVars;
@@ -37,6 +39,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     this.tag,
     this.listFormat,
     @Deprecated('Use listFormat instead') this.useBrackets,
+    this.dateFormat,
     this.includeNullQueryVars,
   })  : assert(
             !baseUri.hasQuery,
@@ -53,6 +56,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
             listFormat: listFormat,
             // ignore: deprecated_member_use_from_same_package
             useBrackets: useBrackets,
+            dateFormat: dateFormat,
             includeNullQueryVars: includeNullQueryVars,
           ),
         ) {
@@ -71,6 +75,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     List<PartValue>? parts,
     ListFormat? listFormat,
     @Deprecated('Use listFormat instead') bool? useBrackets,
+    DateFormat? dateFormat,
     bool? includeNullQueryVars,
     Object? tag,
   }) =>
@@ -86,6 +91,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
         listFormat: listFormat ?? this.listFormat,
         // ignore: deprecated_member_use_from_same_package
         useBrackets: useBrackets ?? this.useBrackets,
+        dateFormat: dateFormat ?? this.dateFormat,
         includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
         tag: tag ?? this.tag,
       );
@@ -100,6 +106,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     Map<String, dynamic> parameters, {
     ListFormat? listFormat,
     @Deprecated('Use listFormat instead') bool? useBrackets,
+    DateFormat? dateFormat,
     bool? includeNullQueryVars,
   }) {
     // If the request's url is already a fully qualified URL, we can use it
@@ -120,6 +127,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
       listFormat: listFormat,
       // ignore: deprecated_member_use_from_same_package
       useBrackets: useBrackets,
+      dateSerializer: dateFormat,
       includeNullQueryVars: includeNullQueryVars,
     );
 
@@ -255,6 +263,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
         listFormat,
         // ignore: deprecated_member_use_from_same_package
         useBrackets,
+        dateFormat,
         includeNullQueryVars,
       ];
 }

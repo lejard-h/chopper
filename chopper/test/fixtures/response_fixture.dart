@@ -17,13 +17,14 @@ final class ResponseFixtureFactory<T> extends FixtureFactory<Response<T>> {
         http_fixture.ResponseFixture.factory.makeSingle();
 
     return define(
-      (Faker faker) => Response<T>(base, null),
+      (Faker faker, [int index = 0]) => Response<T>(base, null),
     );
   }
 
   FixtureRedefinitionBuilder<Response<T>> body(T? body) =>
-      (Response<T> response) => response.copyWith(body: body);
+      (Response<T> response, [int index = 0]) => response.copyWith(body: body);
 
   FixtureRedefinitionBuilder<Response<T>> error(Object? value) =>
-      (Response<T> response) => response.copyWith(bodyError: value);
+      (Response<T> response, [int index = 0]) =>
+          response.copyWith(bodyError: value);
 }
