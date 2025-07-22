@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.2.0
+
+- Add `DateFormat` to enhance date serialization options ([#668](https://github.com/lejard-h/chopper/pull/668))
+
 ## 8.1.0
 
 - Deprecate all lower-case method annotations ([#651](https://github.com/lejard-h/chopper/pull/651))
