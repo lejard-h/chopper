@@ -53,17 +53,17 @@ The `@ChopperApi` annotation takes one optional parameter - the `baseUrl` - that
 
 Use one of the following annotations on abstract methods of a service class to define requests:
 
-* `@Get` 
+* `@GET` 
 
-* `@Post` 
+* `@POST` 
 
-* `@Put`
+* `@PUT`
 
-* `@Patch`
+* `@PATCH`
 
-* `@Delete`
+* `@DELETE`
 
-* `@Head`
+* `@HEAD`
 
 Request methods must return with values of the type `Future<Response>`, `Future<Response<SomeType>>` or `Future<SomeType>`.
 The `Response` class is a wrapper around the HTTP response that contains the response body, the status code and the error (if any) of the request.
@@ -72,21 +72,21 @@ This class can be omitted if only the response body is needed. When omitting the
 To define a `GET` request to the endpoint `/todos` in the service class above, add one of the following method declarations to the class:
 
 ```dart
-@Get()
+@GET()
 Future<Response> getTodos();
 ```
 
 or
 
 ```dart
-@Get()
+@GET()
 Future<Response<List<Todo>>> getTodos();
 ```
 
 or
 
 ```dart
-@Get()
+@GET()
 Future<List<Todo>> getTodos();
 ```
 

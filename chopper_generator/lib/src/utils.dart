@@ -3,7 +3,7 @@
 import 'dart:math' show max;
 
 import 'package:analyzer/dart/element/element.dart';
-import 'package:chopper/chopper.dart' show ListFormat;
+import 'package:chopper/chopper.dart' show DateFormat, ListFormat;
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
@@ -21,10 +21,22 @@ final class Utils {
 
   static ListFormat? getListFormat(ConstantReader method) {
     return ListFormat.values.firstWhereOrNull(
-      (listFormat) =>
+      (ListFormat listFormat) =>
           listFormat.name ==
           method
               .peek('listFormat')
+              ?.objectValue
+              .getField('_name')
+              ?.toStringValue(),
+    );
+  }
+
+  static DateFormat? getDateFormat(ConstantReader method) {
+    return DateFormat.values.firstWhereOrNull(
+      (DateFormat fmt) =>
+          fmt.name ==
+          method
+              .peek('dateFormat')
               ?.objectValue
               .getField('_name')
               ?.toStringValue(),

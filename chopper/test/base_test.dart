@@ -3,11 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chopper/src/base.dart';
-import 'package:chopper/src/constants.dart';
-import 'package:chopper/src/converters.dart';
-import 'package:chopper/src/request.dart';
-import 'package:chopper/src/utils.dart';
+import 'package:chopper/chopper.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:test/test.dart';
@@ -37,6 +33,34 @@ void main() {
         client: httpClient,
         errorConverter: errorConverter,
       );
+
+  group('ChopperClient constructor defaults', () {
+    test('uses default Uri() if baseUrl is null', () {
+      final chopper = ChopperClient();
+      expect(chopper.baseUrl, Uri());
+      chopper.dispose();
+    });
+
+    test('uses default http.Client() if client is null', () {
+      final chopper = ChopperClient();
+      // Can't directly assert the client type without exposing it or using mockito
+      // but we can ensure it doesn't throw and dispose works (which closes internal client)
+      expect(() => chopper.dispose(), returnsNormally);
+    });
+
+    test('uses empty list if services is null', () {
+      final chopper = ChopperClient(services: null);
+      expect(
+        () => chopper.getService<HttpTestService>(),
+        throwsA(isA<Exception>().having(
+          (e) => e.toString(),
+          'toString()',
+          contains("Service of type 'HttpTestService' not found."),
+        )),
+      );
+      chopper.dispose();
+    });
+  });
 
   group('Base', () {
     test('getService', () async {
@@ -1090,6 +1114,32 @@ void main() {
     chopper.dispose();
   });
 
+  test(
+      'Response.bodyOrThrow throws ChopperHttpException for non-Exception error',
+      () {
+    final baseHttpResponse = http.Response('Error content', 400);
+    final chopperResponse =
+        Response<String>(baseHttpResponse, null, error: 'Error string object');
+    expect(
+      () => chopperResponse.bodyOrThrow,
+      throwsA(isA<ChopperHttpException>()),
+    );
+  });
+
+  test(
+      'Response.bodyOrThrow throws original Exception if error is an Exception',
+      () {
+    final customException = Exception('Custom error');
+    final baseHttpResponse = http.Response('Error content', 500);
+    final chopperResponse =
+        Response<String>(baseHttpResponse, null, error: customException);
+    expect(
+      () => chopperResponse.bodyOrThrow,
+      throwsA(isA<Exception>()
+          .having((e) => e.toString(), 'toString', customException.toString())),
+    );
+  });
+
   test('error Converter', () async {
     final client = MockClient((http.Request req) async {
       return http.Response('{"error":true}', 400);
@@ -1828,12 +1878,112 @@ void main() {
     );
   });
 
-  <DateTime, String>{
-    DateTime.utc(2023, 1, 1): '2023-01-01T00%3A00%3A00.000Z',
-    DateTime.utc(2023, 1, 1, 12, 34, 56): '2023-01-01T12%3A34%3A56.000Z',
-    DateTime.utc(2023, 1, 1, 12, 34, 56, 789): '2023-01-01T12%3A34%3A56.789Z',
-  }.forEach((DateTime dateTime, String expected) {
-    test('DateTime is encoded as ISO8601', () async {
+  group('DateTime encoding tests', () {
+    final dateTime = DateTime.utc(2023, 1, 1, 12, 34, 56);
+
+    test('DateFormat.seconds encodes DateTime as seconds since epoch', () {
+      final formatted = DateFormat.seconds.format(dateTime);
+      final expected = (dateTime.millisecondsSinceEpoch ~/ 1000).toString();
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.unix encodes DateTime as seconds since epoch', () {
+      final formatted = DateFormat.unix.format(dateTime);
+      final expected = (dateTime.millisecondsSinceEpoch ~/ 1000).toString();
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.milliseconds encodes DateTime as milliseconds since epoch',
+        () {
+      final formatted = DateFormat.milliseconds.format(dateTime);
+      final expected = dateTime.millisecondsSinceEpoch.toString();
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.microseconds encodes DateTime as microseconds since epoch',
+        () {
+      final formatted = DateFormat.microseconds.format(dateTime);
+      final expected = dateTime.microsecondsSinceEpoch.toString();
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.utcIso8601 encodes DateTime as UTC ISO8601', () {
+      final formatted = DateFormat.utcIso8601.format(dateTime);
+      final expected = dateTime.toUtc().toIso8601String();
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.localIso8601 encodes DateTime as local ISO8601', () {
+      final formatted = DateFormat.localIso8601.format(dateTime);
+      // Since this converts to local timezone, we can't test exact value
+      // but we can verify it follows the ISO8601 format without Z suffix
+      expect(
+          formatted, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}$'));
+    });
+
+    test('DateFormat.iso8601 encodes DateTime as ISO8601', () {
+      final formatted = DateFormat.iso8601.format(dateTime);
+      final expected = dateTime.toIso8601String();
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.rfc2822 encodes DateTime as RFC 2822', () {
+      final formatted = DateFormat.rfc2822.format(dateTime);
+      final expected = 'Sun, 01 Jan 2023 12:34:56 GMT';
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.date encodes DateTime as date-only format', () {
+      final formatted = DateFormat.date.format(dateTime);
+      final expected = '2023-01-01';
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.time encodes DateTime as time-only format', () {
+      final formatted = DateFormat.time.format(dateTime);
+      final expected = '12:34:56';
+      expect(formatted, equals(expected));
+    });
+
+    test('DateFormat.string encodes DateTime as string representation', () {
+      final formatted = DateFormat.string.format(dateTime);
+      final expected = dateTime.toString();
+      expect(formatted, equals(expected));
+    });
+
+    <DateTime, String>{
+      DateTime.utc(2023, 1, 1): '2023-01-01T00%3A00%3A00.000Z',
+      DateTime.utc(2023, 1, 1, 12, 34, 56): '2023-01-01T12%3A34%3A56.000Z',
+      DateTime.utc(2023, 1, 1, 12, 34, 56, 789): '2023-01-01T12%3A34%3A56.789Z',
+    }.forEach((DateTime dateTime, String expected) {
+      test('DateTime is encoded as ISO8601 by default', () async {
+        final httpClient = MockClient((request) async {
+          expect(
+            request.url.toString(),
+            equals('$baseUrl/test/date_time?value=$expected'),
+          );
+          expect(request.method, equals('GET'));
+
+          return http.Response('get response', 200);
+        });
+
+        final chopper = buildClient(httpClient, JsonConverter());
+        final service = chopper.getService<HttpTestService>();
+
+        final response = await service.getDateTime(dateTime);
+
+        expect(response.body, equals('get response'));
+        expect(response.statusCode, equals(200));
+
+        httpClient.close();
+      });
+    });
+
+    test('Local DateTime is encoded as UTC ISO8601 by default', () async {
+      final DateTime dateTime = DateTime.now();
+      final String expected =
+          Uri.encodeComponent(dateTime.toUtc().toIso8601String());
+
       final httpClient = MockClient((request) async {
         expect(
           request.url.toString(),
@@ -1854,32 +2004,141 @@ void main() {
 
       httpClient.close();
     });
-  });
 
-  test('Local DateTime is encoded as UTC ISO8601', () async {
-    final DateTime dateTime = DateTime.now();
-    final String expected =
-        Uri.encodeComponent(dateTime.toUtc().toIso8601String());
+    test('DateTime is encoded in URL query parameters', () async {
+      final DateTime dateTime = DateTime.utc(2023, 1, 1, 12, 34, 56);
+      final String expected =
+          Uri.encodeComponent(dateTime.toUtc().toIso8601String());
 
-    final httpClient = MockClient((request) async {
-      expect(
-        request.url.toString(),
-        equals('$baseUrl/test/date_time?value=$expected'),
-      );
-      expect(request.method, equals('GET'));
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/date_time?value=$expected'),
+        );
+        expect(request.method, equals('GET'));
 
-      return http.Response('get response', 200);
+        return http.Response('get response', 200);
+      });
+
+      final chopper = buildClient(httpClient, JsonConverter());
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.getDateTime(dateTime);
+
+      expect(response.body, equals('get response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
     });
 
-    final chopper = buildClient(httpClient, JsonConverter());
-    final service = chopper.getService<HttpTestService>();
+    for (final ({DateTime dt, String expected, DateFormat fmt}) testCase
+        in <({DateTime dt, DateFormat fmt, String expected})>[
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.seconds,
+        expected:
+            '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch ~/ 1000}',
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.unix,
+        expected:
+            '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch ~/ 1000}',
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.milliseconds,
+        expected:
+            '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch}',
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.microseconds,
+        expected:
+            '${DateTime.utc(2023, 1, 1, 12, 34, 56).microsecondsSinceEpoch}',
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.utcIso8601,
+        expected: '2023-01-01T12%3A34%3A56.000Z'
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.localIso8601,
+        expected: '2023-01-01T12%3A34%3A56.000'
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.iso8601,
+        expected: '2023-01-01T12%3A34%3A56.000Z'
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.rfc2822,
+        expected: 'Sun%2C%2001%20Jan%202023%2012%3A34%3A56%20GMT'
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1),
+        fmt: DateFormat.date,
+        expected: '2023-01-01'
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1),
+        fmt: DateFormat.time,
+        expected: '00%3A00%3A00'
+      ),
+      (
+        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+        fmt: DateFormat.string,
+        expected: '2023-01-01%2012%3A34%3A56.000Z'
+      ),
+    ]) {
+      test(
+          'DateTime is encoded in URL query parameters using DateFormat.${testCase.fmt.name}',
+          () async {
+        final httpClient = MockClient((request) async {
+          expect(
+            request.url.toString(),
+            equals(
+              '$baseUrl/test/date_time_format_${testCase.fmt.name}?value=${testCase.expected}',
+            ),
+          );
+          expect(request.method, equals('GET'));
 
-    final response = await service.getDateTime(dateTime);
+          return http.Response('get response', 200);
+        });
 
-    expect(response.body, equals('get response'));
-    expect(response.statusCode, equals(200));
+        final chopper = buildClient(httpClient, JsonConverter());
+        final service = chopper.getService<HttpTestService>();
 
-    httpClient.close();
+        final Response<String> response = switch (testCase.fmt) {
+          DateFormat.seconds =>
+            await service.getDateTimeFormatSeconds(testCase.dt),
+          DateFormat.unix => await service.getDateTimeFormatUnix(testCase.dt),
+          DateFormat.milliseconds =>
+            await service.getDateTimeFormatMilliseconds(testCase.dt),
+          DateFormat.microseconds =>
+            await service.getDateTimeFormatMicroseconds(testCase.dt),
+          DateFormat.utcIso8601 =>
+            await service.getDateTimeFormatUtcIso8601(testCase.dt),
+          DateFormat.localIso8601 =>
+            await service.getDateTimeFormatLocalIso8601(testCase.dt),
+          DateFormat.iso8601 =>
+            await service.getDateTimeFormatIso8601(testCase.dt),
+          DateFormat.rfc2822 =>
+            await service.getDateTimeFormatRfc2822(testCase.dt),
+          DateFormat.date => await service.getDateTimeFormatDate(testCase.dt),
+          DateFormat.time => await service.getDateTimeFormatTime(testCase.dt),
+          DateFormat.string =>
+            await service.getDateTimeFormatString(testCase.dt),
+        };
+
+        expect(response.body, equals('get response'));
+        expect(response.statusCode, equals(200));
+
+        httpClient.close();
+      });
+    }
   });
 
   test('headers are always stringified', () async {

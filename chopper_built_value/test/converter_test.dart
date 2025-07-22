@@ -97,5 +97,25 @@ void main() {
 
       expect(convertedResponse.body.message, equals('Error message'));
     });
+
+    test('convert error falls back to raw body when deserialization fails',
+        () async {
+      // Create a converter without an errorType specified to trigger the fallback path
+      final converterWithoutErrorType = BuiltValueConverter(jsonSerializers);
+
+      // JSON object that doesn't match any model and has no wireName
+      final string =
+          '{"unknown":"structure", "that": "wont", "match": "any model"}';
+      final response = Response(http.Response(string, 400), string);
+
+      final convertedResponse =
+          await converterWithoutErrorType.convertError(response);
+
+      // Check that the body is the raw JSON object (fallback path was taken)
+      expect(convertedResponse.body, isA<Map<String, dynamic>>());
+      expect(convertedResponse.body['unknown'], equals('structure'));
+      expect(convertedResponse.body['that'], equals('wont'));
+      expect(convertedResponse.body['match'], equals('any model'));
+    });
   });
 }
