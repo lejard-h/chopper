@@ -256,6 +256,87 @@ abstract class HttpTestService extends ChopperService {
     @Query('value') Map<String, dynamic> value,
   );
 
+  /// Default [DateFormat]
+  @GET(path: '/date_time')
+  Future<Response<String>> getDateTime(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.iso8601]
+  @GET(path: '/date_time_format_iso8601', dateFormat: DateFormat.iso8601)
+  Future<Response<String>> getDateTimeFormatIso8601(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.utcIso8601]
+  @GET(path: '/date_time_format_utcIso8601', dateFormat: DateFormat.utcIso8601)
+  Future<Response<String>> getDateTimeFormatUtcIso8601(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.localIso8601]
+  @GET(
+    path: '/date_time_format_localIso8601',
+    dateFormat: DateFormat.localIso8601,
+  )
+  Future<Response<String>> getDateTimeFormatLocalIso8601(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.seconds]
+  @GET(path: '/date_time_format_seconds', dateFormat: DateFormat.seconds)
+  Future<Response<String>> getDateTimeFormatSeconds(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.unix]
+  @GET(path: '/date_time_format_unix', dateFormat: DateFormat.unix)
+  Future<Response<String>> getDateTimeFormatUnix(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.milliseconds]
+  @GET(
+    path: '/date_time_format_milliseconds',
+    dateFormat: DateFormat.milliseconds,
+  )
+  Future<Response<String>> getDateTimeFormatMilliseconds(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.microseconds]
+  @GET(
+    path: '/date_time_format_microseconds',
+    dateFormat: DateFormat.microseconds,
+  )
+  Future<Response<String>> getDateTimeFormatMicroseconds(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.rfc2822]
+  @GET(path: '/date_time_format_rfc2822', dateFormat: DateFormat.rfc2822)
+  Future<Response<String>> getDateTimeFormatRfc2822(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.date]
+  @GET(path: '/date_time_format_date', dateFormat: DateFormat.date)
+  Future<Response<String>> getDateTimeFormatDate(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.time]
+  @GET(path: '/date_time_format_time', dateFormat: DateFormat.time)
+  Future<Response<String>> getDateTimeFormatTime(
+    @Query('value') DateTime value,
+  );
+
+  /// [DateFormat.string]
+  @GET(path: '/date_time_format_string', dateFormat: DateFormat.string)
+  Future<Response<String>> getDateTimeFormatString(
+    @Query('value') DateTime value,
+  );
+
   @GET(path: 'headers')
   Future<Response<String>> getHeaders({
     @Header('x-string') required String stringHeader,

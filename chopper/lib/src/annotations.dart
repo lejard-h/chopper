@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chopper/src/constants.dart';
+import 'package:chopper/src/date_format.dart';
 import 'package:chopper/src/request.dart';
 import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
@@ -209,6 +210,21 @@ sealed class Method {
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
 
+  /// Date format to use when encoding dates
+  ///
+  ///  - [DateFormat.iso8601] `hxxp://path/to/script?dt=2023-10-01T12:00:00.000`
+  ///  - [DateFormat.utcIso8601] `hxxp://path/to/script?dt=2023-10-01T12:00:00Z` (default)
+  ///  - [DateFormat.localIso8601] `hxxp://path/to/script?dt=2023-10-01T12:00:00`
+  ///  - [DateFormat.seconds] `hxxp://path/to/script?dt=1234567890`
+  ///  - [DateFormat.unix] `hxxp://path/to/script?dt=1234567890`
+  ///  - [DateFormat.milliseconds] `hxxp://path/to/script?dt=1234567890000`
+  ///  - [DateFormat.microseconds] `hxxp://path/to/script?dt=1234567890000000`
+  ///  - [DateFormat.rfc2822] `hxxp://path/to/script?dt=Sun, 01 Oct 2023 12:00:00 GMT`
+  ///  - [DateFormat.date] `hxxp://path/to/script?dt=2023-10-01`
+  ///  - [DateFormat.time] `hxxp://path/to/script?dt=12:00:00`
+  ///  - [DateFormat.string] `hxxp://path/to/script?dt=2023-10-01 12:00:00.000`
+  final DateFormat? dateFormat;
+
   /// Set to [true] to include query variables with null values. This includes nested maps.
   /// The default is to exclude them.
   ///
@@ -246,6 +262,7 @@ sealed class Method {
     this.headers = const {},
     this.listFormat,
     @Deprecated('Use listFormat instead') this.useBrackets,
+    this.dateFormat,
     this.includeNullQueryVars,
     this.timeout,
   });
@@ -264,6 +281,7 @@ final class GET extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   })
@@ -286,6 +304,7 @@ final class Get extends GET {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -306,6 +325,7 @@ final class POST extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   })
@@ -330,6 +350,7 @@ final class Post extends POST {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -348,6 +369,7 @@ final class DELETE extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   })
@@ -370,6 +392,7 @@ final class Delete extends DELETE {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -390,6 +413,7 @@ final class PUT extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   })
@@ -414,6 +438,7 @@ final class Put extends PUT {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -433,6 +458,7 @@ final class PATCH extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   })
@@ -456,6 +482,7 @@ final class Patch extends PATCH {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -474,6 +501,7 @@ final class HEAD extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   })
@@ -496,6 +524,7 @@ final class Head extends HEAD {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   });
@@ -514,6 +543,7 @@ final class OPTIONS extends Method {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   })
@@ -536,6 +566,7 @@ final class Options extends OPTIONS {
     super.headers,
     super.listFormat,
     super.useBrackets,
+    super.dateFormat,
     super.includeNullQueryVars,
     super.timeout,
   });
