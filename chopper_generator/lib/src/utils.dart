@@ -2,7 +2,7 @@
 
 import 'dart:math' show max;
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:chopper/chopper.dart' show DateFormat, ListFormat;
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
@@ -63,20 +63,20 @@ final class Utils {
   }
 
   /// All positional required params must support nullability
-  static Parameter buildRequiredPositionalParam(ParameterElement p) =>
+  static Parameter buildRequiredPositionalParam(FormalParameterElement p) =>
       Parameter(
         (ParameterBuilder pb) => pb
-          ..name = p.name
+          ..name = p.name3!
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
           ),
       );
 
   /// All optional positional params must support nullability
-  static Parameter buildOptionalPositionalParam(ParameterElement p) =>
+  static Parameter buildOptionalPositionalParam(FormalParameterElement p) =>
       Parameter((ParameterBuilder pb) {
         pb
-          ..name = p.name
+          ..name = p.name3!
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
           );
@@ -87,11 +87,11 @@ final class Utils {
       });
 
   /// Named params can be optional or required, they also need to support nullability
-  static Parameter buildNamedParam(ParameterElement p) =>
+  static Parameter buildNamedParam(FormalParameterElement p) =>
       Parameter((ParameterBuilder pb) {
         pb
           ..named = true
-          ..name = p.name
+          ..name = p.name3!
           ..required = p.isRequiredNamed
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
