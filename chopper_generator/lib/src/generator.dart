@@ -3,7 +3,7 @@
 import 'dart:async' show FutureOr;
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:built_collection/built_collection.dart';
@@ -16,6 +16,9 @@ import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Code generator for [chopper.ChopperApi] annotated classes.
+///
+/// Will throw an [InvalidGenerationSourceError] if the annotated
+/// element is not a [ClassElement2].
 final class ChopperGenerator
     extends GeneratorForAnnotation<chopper.ChopperApi> {
   const ChopperGenerator();
@@ -24,11 +27,11 @@ final class ChopperGenerator
 
   @override
   FutureOr<String> generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    if (element is! ClassElement) {
+    if (element is! ClassElement2) {
       throw InvalidGenerationSourceError(
         'Generator cannot target `${element.displayName}`.',
         todo:
@@ -53,7 +56,7 @@ final class ChopperGenerator
 
   static String _buildChopperApiImplementationClass(
     ConstantReader annotation,
-    ClassElement element,
+    ClassElement2 element,
   ) {
     if (!element.allSupertypes.any(_extendsChopperService)) {
       final String friendlyName = element.displayName;
@@ -63,18 +66,18 @@ final class ChopperGenerator
       );
     }
 
-    final String friendlyName = element.name;
+    final String friendlyName = element.name3!;
     final String name = '_\$$friendlyName';
 
     final ConstantReader? baseUrlReader =
         annotation.peek(Vars.baseUrl.toString());
 
-    TopLevelVariableElement? baseUrlVariableElement;
+    TopLevelVariableElement2? baseUrlVariableElement;
 
-    final VariableElement? possibleBaseUrl =
-        baseUrlReader?.objectValue.variable;
+    final VariableElement2? possibleBaseUrl =
+        baseUrlReader?.objectValue.variable2;
 
-    if (possibleBaseUrl is TopLevelVariableElement &&
+    if (possibleBaseUrl is TopLevelVariableElement2 &&
         possibleBaseUrl.type.isDartCoreString &&
         possibleBaseUrl.isConst) {
       baseUrlVariableElement = possibleBaseUrl;
@@ -125,19 +128,19 @@ final class ChopperGenerator
       );
 
   static Iterable<Method> _parseMethods(
-    ClassElement element,
+    ClassElement2 element,
     String baseUrl,
-    TopLevelVariableElement? baseUrlVariableElement,
+    TopLevelVariableElement2? baseUrlVariableElement,
   ) =>
-      element.methods
+      element.methods2
           .where(
-            (MethodElement method) =>
+            (MethodElement2 method) =>
                 _getMethodAnnotation(method) != null &&
                 method.isAbstract &&
                 method.returnType.isDartAsyncFuture,
           )
           .map(
-            (MethodElement m) => _generateMethod(
+            (MethodElement2 m) => _generateMethod(
               m,
               baseUrl,
               baseUrlVariableElement,
@@ -145,9 +148,9 @@ final class ChopperGenerator
           );
 
   static Method _generateMethod(
-    MethodElement m,
+    MethodElement2 m,
     String baseUrl,
-    TopLevelVariableElement? baseUrlVariableElement,
+    TopLevelVariableElement2? baseUrlVariableElement,
   ) {
     final ConstantReader? method = _getMethodAnnotation(m);
     final bool multipart = _hasAnnotation(m, chopper.Multipart);
@@ -155,21 +158,21 @@ final class ChopperGenerator
     final ConstantReader? factoryConverter = _getFactoryConverterAnnotation(m);
 
     final Map<String, ConstantReader> body = _getAnnotation(m, chopper.Body);
-    final Map<ParameterElement, ConstantReader> paths =
+    final Map<FormalParameterElement, ConstantReader> paths =
         _getAnnotations(m, chopper.Path);
-    final Map<ParameterElement, ConstantReader> queries =
+    final Map<FormalParameterElement, ConstantReader> queries =
         _getAnnotations(m, chopper.Query);
     final Map<String, ConstantReader> queryMap =
         _getAnnotation(m, chopper.QueryMap);
-    final Map<ParameterElement, ConstantReader> fields =
+    final Map<FormalParameterElement, ConstantReader> fields =
         _getAnnotations(m, chopper.Field);
     final Map<String, ConstantReader> fieldMap =
         _getAnnotation(m, chopper.FieldMap);
-    final Map<ParameterElement, ConstantReader> parts =
+    final Map<FormalParameterElement, ConstantReader> parts =
         _getAnnotations(m, chopper.Part);
     final Map<String, ConstantReader> partMap =
         _getAnnotation(m, chopper.PartMap);
-    final Map<ParameterElement, ConstantReader> fileFields =
+    final Map<FormalParameterElement, ConstantReader> fileFields =
         _getAnnotations(m, chopper.PartFile);
     final Map<String, ConstantReader> fileFieldMap =
         _getAnnotation(m, chopper.PartFileMap);
@@ -211,22 +214,24 @@ final class ChopperGenerator
         ..returns = returnType
         // And null Typed parameters
         ..types.addAll(
-          m.typeParameters.map(
-            (t) => refer(t.getDisplayString(withNullability: false)),
+          m.typeParameters2.map(
+            (TypeParameterElement2 t) => refer(
+              t.bound!.getDisplayString(withNullability: false),
+            ),
           ),
         )
         ..requiredParameters.addAll(
-          m.parameters
+          m.formalParameters
               .where((p) => p.isRequiredPositional)
               .map(Utils.buildRequiredPositionalParam),
         )
         ..optionalParameters.addAll(
-          m.parameters
+          m.formalParameters
               .where((p) => p.isOptionalPositional)
               .map(Utils.buildOptionalPositionalParam),
         )
         ..optionalParameters.addAll(
-          m.parameters.where((p) => p.isNamed).map(Utils.buildNamedParam),
+          m.formalParameters.where((p) => p.isNamed).map(Utils.buildNamedParam),
         );
 
       // Make method async if Response is omitted.
@@ -252,9 +257,9 @@ final class ChopperGenerator
 
       /// Build an iterable of all the parameters that are nullable
       final Iterable<String> optionalNullableParameters = [
-        ...m.parameters.where((p) => p.isOptionalPositional),
-        ...m.parameters.where((p) => p.isNamed),
-      ].where((el) => el.type.isNullable).map((el) => el.name);
+        ...m.formalParameters.where((p) => p.isOptionalPositional),
+        ...m.formalParameters.where((p) => p.isNamed),
+      ].where((el) => el.type.isNullable).map((el) => el.name3!);
 
       final bool hasQueryMap = queryMap.isNotEmpty;
       if (hasQueryMap) {
@@ -300,7 +305,7 @@ final class ChopperGenerator
       bool hasBody = body.isNotEmpty || fields.isNotEmpty;
       if (hasBody) {
         if (body.isNotEmpty) {
-          final DartType bodyType = m.parameters
+          final DartType bodyType = m.formalParameters
               .firstWhere((p) => _typeChecker(chopper.Body).hasAnnotationOf(p))
               .type;
           final Expression map = (formUrlEncoded &&
@@ -322,7 +327,7 @@ final class ChopperGenerator
 
       final bool hasFieldMap = fieldMap.isNotEmpty;
       if (hasFieldMap) {
-        final DartType fieldMapType = m.parameters
+        final DartType fieldMapType = m.formalParameters
             .firstWhere(
                 (p) => _typeChecker(chopper.FieldMap).hasAnnotationOf(p))
             .type;
@@ -437,16 +442,16 @@ final class ChopperGenerator
 
       final ConstantReader? requestFactory = factoryConverter?.peek('request');
       if (requestFactory != null) {
-        final ExecutableElement? func =
-            requestFactory.objectValue.toFunctionValue();
+        final ExecutableElement2? func =
+            requestFactory.objectValue.toFunctionValue2();
         namedArguments['requestConverter'] = refer(_factoryForFunction(func!));
       }
 
       final ConstantReader? responseFactory =
           factoryConverter?.peek('response');
       if (responseFactory != null) {
-        final ExecutableElement? func =
-            responseFactory.objectValue.toFunctionValue();
+        final ExecutableElement2? func =
+            responseFactory.objectValue.toFunctionValue2();
         namedArguments['responseConverter'] = refer(_factoryForFunction(func!));
       }
 
@@ -519,19 +524,19 @@ final class ChopperGenerator
     ]);
   }
 
-  static String _factoryForFunction(FunctionTypedElement function) =>
-      function.enclosingElement3 is ClassElement
-          ? '${function.enclosingElement3!.name}.${function.name}'
-          : function.name!;
+  static String _factoryForFunction(FunctionTypedElement2 function) =>
+      function.enclosingElement2 is ClassElement2
+          ? '${function.enclosingElement2!.name3}.${function.name3}'
+          : function.name3!;
 
   static Map<String, ConstantReader> _getAnnotation(
-    MethodElement method,
+    MethodElement2 method,
     Type type,
   ) {
     DartObject? annotation;
     String name = '';
 
-    for (final ParameterElement p in method.parameters) {
+    for (final FormalParameterElement p in method.formalParameters) {
       final DartObject? a = _typeChecker(type).firstAnnotationOf(p);
       if (annotation != null && a != null) {
         throw Exception(
@@ -546,19 +551,19 @@ final class ChopperGenerator
     return annotation == null ? {} : {name: ConstantReader(annotation)};
   }
 
-  static Map<ParameterElement, ConstantReader> _getAnnotations(
-    MethodElement m,
+  static Map<FormalParameterElement, ConstantReader> _getAnnotations(
+    MethodElement2 m,
     Type type,
   ) =>
       {
-        for (final ParameterElement p in m.parameters)
+        for (final FormalParameterElement p in m.formalParameters)
           if (_typeChecker(type).hasAnnotationOf(p))
             p: ConstantReader(_typeChecker(type).firstAnnotationOf(p)),
       };
 
   static TypeChecker _typeChecker(Type type) => TypeChecker.fromRuntime(type);
 
-  static ConstantReader? _getMethodAnnotation(MethodElement method) {
+  static ConstantReader? _getMethodAnnotation(MethodElement2 method) {
     for (final Type type in _methodsAnnotations) {
       final DartObject? annotation = _typeChecker(type)
           .firstAnnotationOf(method, throwOnUnresolved: false);
@@ -570,14 +575,14 @@ final class ChopperGenerator
     return null;
   }
 
-  static ConstantReader? _getFactoryConverterAnnotation(MethodElement method) {
+  static ConstantReader? _getFactoryConverterAnnotation(MethodElement2 method) {
     final DartObject? annotation = _typeChecker(chopper.FactoryConverter)
         .firstAnnotationOf(method, throwOnUnresolved: false);
 
     return annotation != null ? ConstantReader(annotation) : null;
   }
 
-  static bool _hasAnnotation(MethodElement method, Type type) =>
+  static bool _hasAnnotation(MethodElement2 method, Type type) =>
       _typeChecker(type).firstAnnotationOf(method, throwOnUnresolved: false) !=
       null;
 
@@ -654,9 +659,9 @@ final class ChopperGenerator
 
   static Expression _generateUrl(
     ConstantReader method,
-    Map<ParameterElement, ConstantReader> paths,
+    Map<FormalParameterElement, ConstantReader> paths,
     String baseUrl,
-    TopLevelVariableElement? baseUrlVariableElement,
+    TopLevelVariableElement2? baseUrlVariableElement,
   ) {
     String path = Utils.getMethodPath(method);
     paths.forEach((p, ConstantReader r) {
@@ -752,12 +757,12 @@ final class ChopperGenerator
       );
 
   static Expression _generateMap(
-    Map<ParameterElement, ConstantReader> queries, {
+    Map<FormalParameterElement, ConstantReader> queries, {
     bool enableToString = false,
   }) =>
       literalMap(
         {
-          for (final MapEntry<ParameterElement, ConstantReader> query
+          for (final MapEntry<FormalParameterElement, ConstantReader> query
               in queries.entries)
             query.value.peek('name')?.stringValue ?? query.key.displayName:
                 enableToString
@@ -769,8 +774,8 @@ final class ChopperGenerator
       );
 
   static Expression _generateList(
-    Map<ParameterElement, ConstantReader> parts,
-    Map<ParameterElement, ConstantReader> fileFields,
+    Map<FormalParameterElement, ConstantReader> parts,
+    Map<FormalParameterElement, ConstantReader> fileFields,
   ) {
     final List list = [];
 
@@ -807,18 +812,18 @@ final class ChopperGenerator
   }
 
   static Code? _generateHeaders(
-    MethodElement methodElement,
+    MethodElement2 methodElement,
     ConstantReader method,
     bool formUrlEncoded,
   ) {
     final StringBuffer codeBuffer = StringBuffer('')..writeln('{');
 
     /// Search for @Header annotation in method parameters
-    final Map<ParameterElement, ConstantReader> annotations =
+    final Map<FormalParameterElement, ConstantReader> annotations =
         _getAnnotations(methodElement, chopper.Header);
 
     annotations.forEach((
-      ParameterElement parameter,
+      FormalParameterElement parameter,
       ConstantReader annotation,
     ) {
       final String paramName = parameter.displayName;

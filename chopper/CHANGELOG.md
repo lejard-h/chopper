@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.3.0
+
+- Update analyzer and dependencies to use Element2 API ([#671](https://github.com/lejard-h/chopper/pull/671))
+
 ## 8.2.0
 
 - Add `DateFormat` to enhance date serialization options ([#668](https://github.com/lejard-h/chopper/pull/668))
