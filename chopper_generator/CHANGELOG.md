@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.3.1
+
+- Update analyzer dependency to `>=7.4.0 <9.0.0`
+
 ## 8.3.0
 
 - Update analyzer and dependencies to use Element2 API ([#671](https://github.com/lejard-h/chopper/pull/671))
