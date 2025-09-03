@@ -572,10 +572,7 @@ final class ChopperGenerator
               })
               .property('whenComplete')
               .call([
-                Method((b) => b
-                  ..body = refer('_\$chopperTimeoutTimer')
-                      .property('cancel')
-                      .call(const []).statement).closure,
+                refer('_\$chopperTimeoutTimer').property('cancel'),
               ]);
         }
       }
@@ -644,14 +641,9 @@ final class ChopperGenerator
                 },
               )
               .property('whenComplete')
-              .call(
-                [
-                  Method((b) => b
-                    ..body = refer('_\$chopperTimeoutTimer')
-                        .property('cancel')
-                        .call(const []).statement).closure,
-                ],
-              );
+              .call([
+                refer('_\$chopperTimeoutTimer').property('cancel'),
+              ]);
 
           blocks.add(chained.returned.statement);
         } else {

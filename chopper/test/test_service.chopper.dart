@@ -1001,9 +1001,7 @@ final class _$HttpTestService extends HttpTestService {
               TimeoutException('Request timed out after 42 seconds')),
           test: (_) => _$chopperAutoAbort.isCompleted,
         )
-        .whenComplete(() {
-      _$chopperTimeoutTimer.cancel();
-    });
+        .whenComplete(_$chopperTimeoutTimer.cancel);
   }
 
   @override
@@ -1031,9 +1029,7 @@ final class _$HttpTestService extends HttpTestService {
               TimeoutException('Request timed out after 0 seconds')),
           test: (_) => _$chopperAutoAbort.isCompleted,
         )
-        .whenComplete(() {
-      _$chopperTimeoutTimer.cancel();
-    });
+        .whenComplete(_$chopperTimeoutTimer.cancel);
   }
 
   @override
@@ -1061,9 +1057,7 @@ final class _$HttpTestService extends HttpTestService {
               TimeoutException('Request timed out after 0 seconds')),
           test: (_) => _$chopperAutoAbort.isCompleted,
         )
-        .whenComplete(() {
-      _$chopperTimeoutTimer.cancel();
-    });
+        .whenComplete(_$chopperTimeoutTimer.cancel);
   }
 
   @override
