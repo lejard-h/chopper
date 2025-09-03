@@ -435,9 +435,9 @@ final class ChopperGenerator
       // If a timeout is configured, create an auto-abort that fires at the deadline.
       Expression? abortTriggerExpr;
       if (timeout != null) {
-        // _$chopperAutoAbort: Completer<void>()
+        // _$autoAbort: Completer<void>()
         blocks.add(
-          declareFinal('_\$chopperAutoAbort',
+          declareFinal('_\$autoAbort',
                   type: TypeReference((t) => t
                     ..symbol = 'Completer'
                     ..url = 'dart:async'
@@ -449,7 +449,7 @@ final class ChopperGenerator
               .statement,
         );
 
-        // _$chopperTimeoutTimer: triggers auto-abort after `timeout`
+        // _$timeout: triggers auto-abort after `timeout`
         final durationExpr = refer('Duration').constInstance(
           const [],
           {
@@ -458,7 +458,7 @@ final class ChopperGenerator
         );
 
         blocks.add(
-          declareFinal('_\$chopperTimeoutTimer',
+          declareFinal('_\$timeout',
                   type: TypeReference((t) => t
                     ..symbol = 'Timer'
                     ..url = 'dart:async'))
@@ -467,9 +467,7 @@ final class ChopperGenerator
                   durationExpr,
                   Method((b) => b
                     ..body = Code(
-                      'if (!_\$chopperAutoAbort.isCompleted) { '
-                      '_\$chopperAutoAbort.complete(); '
-                      '}',
+                      'if (!_\$autoAbort.isCompleted) _\$autoAbort.complete();',
                     )).closure,
                 ]),
               )
@@ -477,7 +475,7 @@ final class ChopperGenerator
         );
 
         // Use the auto-abort future directly
-        abortTriggerExpr = refer('_\$chopperAutoAbort').property('future');
+        abortTriggerExpr = refer('_\$autoAbort').property('future');
       } else if (abortParamName != null) {
         // No timeout: pass through the caller-provided abort future if present
         abortTriggerExpr = refer(abortParamName);
@@ -565,14 +563,13 @@ final class ChopperGenerator
               ], {
                 // test: only handle errors when our auto-abort fired
                 'test': Method((b) => b
-                      ..requiredParameters.add(Parameter((p) => p..name = '_'))
-                      ..lambda = true
-                      ..body = const Code('_\$chopperAutoAbort.isCompleted'))
-                    .closure,
+                  ..requiredParameters.add(Parameter((p) => p..name = '_'))
+                  ..lambda = true
+                  ..body = const Code('_\$autoAbort.isCompleted')).closure,
               })
               .property('whenComplete')
               .call([
-                refer('_\$chopperTimeoutTimer').property('cancel'),
+                refer('_\$timeout').property('cancel'),
               ]);
         }
       }
@@ -632,17 +629,16 @@ final class ChopperGenerator
                 ],
                 {
                   'test': Method((b) => b
-                        ..requiredParameters.add(Parameter((p) => p
-                          ..name = 'err'
-                          ..type = refer('Object')))
-                        ..lambda = true
-                        ..body = const Code('_\$chopperAutoAbort.isCompleted'))
-                      .closure,
+                    ..requiredParameters.add(Parameter((p) => p
+                      ..name = 'err'
+                      ..type = refer('Object')))
+                    ..lambda = true
+                    ..body = const Code('_\$autoAbort.isCompleted')).closure,
                 },
               )
               .property('whenComplete')
               .call([
-                refer('_\$chopperTimeoutTimer').property('cancel'),
+                refer('_\$timeout').property('cancel'),
               ]);
 
           blocks.add(chained.returned.statement);
