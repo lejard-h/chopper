@@ -338,6 +338,11 @@ abstract class HttpTestService extends ChopperService {
 
   @GET(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
   Future<Response<String>> getTimeoutTestNeg();
+
+  @GET(path: 'get_abort_trigger')
+  Future<Response<String>> getWithAbortTrigger({
+    @AbortTrigger() Future<void>? abortTrigger,
+  });
 }
 
 Request customConvertRequest(Request req) {

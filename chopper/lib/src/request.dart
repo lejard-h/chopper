@@ -12,7 +12,8 @@ import 'package:qs_dart/qs_dart.dart' show ListFormat;
 /// This class represents an HTTP request that can be made with Chopper.
 /// {@endtemplate}
 // ignore: must_be_immutable
-base class Request extends http.BaseRequest with EquatableMixin {
+base class Request extends http.BaseRequest
+    with http.Abortable, EquatableMixin {
   final Uri uri;
   final Uri baseUri;
   final dynamic body;
@@ -25,6 +26,8 @@ base class Request extends http.BaseRequest with EquatableMixin {
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
   final bool? includeNullQueryVars;
+  @override
+  final Future<void>? abortTrigger;
 
   /// {@macro request}
   Request(
@@ -41,6 +44,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     @Deprecated('Use listFormat instead') this.useBrackets,
     this.dateFormat,
     this.includeNullQueryVars,
+    this.abortTrigger,
   })  : assert(
             !baseUri.hasQuery,
             'baseUri should not contain query parameters.'

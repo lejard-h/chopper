@@ -795,6 +795,23 @@ final class Tag {
   const Tag();
 }
 
+/// {@template AbortTrigger}
+/// Adds an abort trigger to the request.
+///
+/// ```dart
+/// @GET(path: '/something')
+/// Future<Response> requestWithAbortTrigger(
+///   @AbortTrigger() Future<void> abortTrigger,
+/// );
+/// ```
+///
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.parameter})
+final class AbortTrigger {
+  const AbortTrigger();
+}
+
 /// {@macro ChopperApi}
 const chopperApi = ChopperApi();
 
@@ -863,3 +880,6 @@ const formUrlEncoded = FormUrlEncoded();
 
 /// {@macro Tag}
 const tag = Tag();
+
+/// {@macro AbortTrigger}
+const abortTrigger = AbortTrigger();

@@ -234,6 +234,10 @@ final class ChopperGenerator
           m.formalParameters.where((p) => p.isNamed).map(Utils.buildNamedParam),
         );
 
+      // Detect optional @AbortTrigger parameter (passed by the caller)
+      final abortParam = Utils.findAbortTriggerParam(m);
+      final String? abortParamName = abortParam?.displayName;
+
       // Make method async if Response is omitted.
       // We need the await the response in order to return the body.
       if (!isResponseObject) {
@@ -433,6 +437,7 @@ final class ChopperGenerator
                 useBrackets: useBrackets,
                 dateFormat: dateFormat,
                 includeNullQueryVars: includeNullQueryVars,
+                abortParamName: abortParamName,
               ),
             )
             .statement,
@@ -537,6 +542,8 @@ final class ChopperGenerator
     String name = '';
 
     for (final FormalParameterElement p in method.formalParameters) {
+      // Skip parameters marked as @AbortTrigger from all other annotation buckets
+      if (Utils.isAbortTriggerParam(p)) continue;
       final DartObject? a = _typeChecker(type).firstAnnotationOf(p);
       if (annotation != null && a != null) {
         throw Exception(
@@ -557,7 +564,8 @@ final class ChopperGenerator
   ) =>
       {
         for (final FormalParameterElement p in m.formalParameters)
-          if (_typeChecker(type).hasAnnotationOf(p))
+          // Skip parameters marked as @AbortTrigger from all other annotation buckets
+          if (!Utils.isAbortTriggerParam(p) && _typeChecker(type).hasAnnotationOf(p))
             p: ConstantReader(_typeChecker(type).firstAnnotationOf(p)),
       };
 
@@ -729,6 +737,7 @@ final class ChopperGenerator
     @Deprecated('Use listFormat instead') bool? useBrackets,
     chopper.DateFormat? dateFormat,
     bool? includeNullQueryVars,
+    String? abortParamName,
     Reference? tagRefer,
   }) =>
       refer('Request').newInstance(
@@ -753,6 +762,7 @@ final class ChopperGenerator
             'dateFormat': refer('DateFormat').type.property(dateFormat.name),
           if (includeNullQueryVars != null)
             'includeNullQueryVars': literalBool(includeNullQueryVars),
+          if (abortParamName != null) 'abortTrigger': refer(abortParamName),
         },
       );
 

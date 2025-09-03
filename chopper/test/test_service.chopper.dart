@@ -1014,4 +1014,16 @@ final class _$HttpTestService extends HttpTestService {
         .send<String, String>($request)
         .timeout(const Duration(microseconds: 0));
   }
+
+  @override
+  Future<Response<String>> getWithAbortTrigger({Future<void>? abortTrigger}) {
+    final Uri $url = Uri.parse('/test/get_abort_trigger');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: abortTrigger,
+    );
+    return client.send<String, String>($request);
+  }
 }
