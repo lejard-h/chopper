@@ -435,9 +435,9 @@ final class ChopperGenerator
       // If a timeout is configured, create an auto-abort that fires at the deadline.
       Expression? abortTriggerExpr;
       if (timeout != null) {
-        // _$autoAbort: Completer<void>()
+        // $abort: Completer<void>()
         blocks.add(
-          declareFinal('_\$autoAbort',
+          declareFinal('\$abort',
                   type: TypeReference((t) => t
                     ..symbol = 'Completer'
                     ..url = 'dart:async'
@@ -449,7 +449,7 @@ final class ChopperGenerator
               .statement,
         );
 
-        // _$timeout: triggers auto-abort after `timeout`
+        // $timeout: triggers auto-abort after `timeout`
         final durationExpr = refer('Duration').constInstance(
           const [],
           {
@@ -458,7 +458,7 @@ final class ChopperGenerator
         );
 
         blocks.add(
-          declareFinal('_\$timeout',
+          declareFinal('\$timeout',
                   type: TypeReference((t) => t
                     ..symbol = 'Timer'
                     ..url = 'dart:async'))
@@ -467,7 +467,7 @@ final class ChopperGenerator
                   durationExpr,
                   Method((b) => b
                     ..body = Code(
-                      'if (!_\$autoAbort.isCompleted) _\$autoAbort.complete();',
+                      'if (!\$abort.isCompleted) \$abort.complete();',
                     )).closure,
                 ]),
               )
@@ -475,7 +475,7 @@ final class ChopperGenerator
         );
 
         // Use the auto-abort future directly
-        abortTriggerExpr = refer('_\$autoAbort').property('future');
+        abortTriggerExpr = refer('\$abort').property('future');
       } else if (abortParamName != null) {
         // No timeout: pass through the caller-provided abort future if present
         abortTriggerExpr = refer(abortParamName);
@@ -565,11 +565,11 @@ final class ChopperGenerator
                 'test': Method((b) => b
                   ..requiredParameters.add(Parameter((p) => p..name = '_'))
                   ..lambda = true
-                  ..body = const Code('_\$autoAbort.isCompleted')).closure,
+                  ..body = const Code('\$abort.isCompleted')).closure,
               })
               .property('whenComplete')
               .call([
-                refer('_\$timeout').property('cancel'),
+                refer('\$timeout').property('cancel'),
               ]);
         }
       }
@@ -633,12 +633,12 @@ final class ChopperGenerator
                       ..name = 'err'
                       ..type = refer('Object')))
                     ..lambda = true
-                    ..body = const Code('_\$autoAbort.isCompleted')).closure,
+                    ..body = const Code('\$abort.isCompleted')).closure,
                 },
               )
               .property('whenComplete')
               .call([
-                refer('_\$timeout').property('cancel'),
+                refer('\$timeout').property('cancel'),
               ]);
 
           blocks.add(chained.returned.statement);
