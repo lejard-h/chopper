@@ -81,8 +81,8 @@ base class Request extends http.BaseRequest
     @Deprecated('Use listFormat instead') bool? useBrackets,
     DateFormat? dateFormat,
     bool? includeNullQueryVars,
-    Future<void>? abortTrigger,
     Object? tag,
+    Future<void>? abortTrigger,
   }) =>
       Request(
         method ?? this.method,
@@ -98,8 +98,8 @@ base class Request extends http.BaseRequest
         useBrackets: useBrackets ?? this.useBrackets,
         dateFormat: dateFormat ?? this.dateFormat,
         includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
-        abortTrigger: abortTrigger ?? this.abortTrigger,
         tag: tag ?? this.tag,
+        abortTrigger: abortTrigger ?? this.abortTrigger,
       );
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
