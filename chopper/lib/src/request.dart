@@ -271,6 +271,7 @@ base class Request extends http.BaseRequest
         useBrackets,
         dateFormat,
         includeNullQueryVars,
+        abortTrigger,
       ];
 }
 
