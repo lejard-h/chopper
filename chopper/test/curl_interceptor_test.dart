@@ -177,7 +177,8 @@ final class MockMultipartRequest extends Request {
     super.headers,
   });
 
-  final http.MultipartRequest _multipartRequest = http.MultipartRequest(
+  final http.AbortableMultipartRequest _multipartRequest =
+      http.AbortableMultipartRequest(
     'POST',
     Uri.parse('https://api.example.com/upload'),
   );
@@ -187,7 +188,7 @@ final class MockMultipartRequest extends Request {
   }
 
   @override
-  Future<http.BaseRequest> toBaseRequest() async {
+  Future<http.Abortable> toBaseRequest() async {
     return _multipartRequest;
   }
 }

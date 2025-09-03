@@ -152,7 +152,7 @@ base class Request extends http.BaseRequest
     );
   }
 
-  /// Converts this Chopper Request into a [http.BaseRequest].
+  /// Converts this Chopper Request into a [http.Abortable].
   ///
   /// All [parameters] and [headers] are conserved.
   ///
@@ -160,7 +160,7 @@ base class Request extends http.BaseRequest
   ///   - [http.AbortableStreamedRequest] if body is a [Stream<List<int>>]
   ///   - [http.AbortableMultipartRequest] if [multipart] is true
   ///   - or a [http.AbortableRequest]
-  Future<http.BaseRequest> toBaseRequest() async {
+  Future<http.Abortable> toBaseRequest() async {
     if (body is Stream<List<int>>) return toStreamedRequest(body);
 
     if (multipart) return toMultipartRequest();
