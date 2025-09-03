@@ -81,6 +81,7 @@ base class Request extends http.BaseRequest
     @Deprecated('Use listFormat instead') bool? useBrackets,
     DateFormat? dateFormat,
     bool? includeNullQueryVars,
+    Future<void>? abortTrigger,
     Object? tag,
   }) =>
       Request(
@@ -97,6 +98,7 @@ base class Request extends http.BaseRequest
         useBrackets: useBrackets ?? this.useBrackets,
         dateFormat: dateFormat ?? this.dateFormat,
         includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
+        abortTrigger: abortTrigger ?? this.abortTrigger,
         tag: tag ?? this.tag,
       );
 
