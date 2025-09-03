@@ -157,9 +157,9 @@ base class Request extends http.BaseRequest
   /// All [parameters] and [headers] are conserved.
   ///
   /// Depending on the request type the returning object will be:
-  ///   - [http.StreamedRequest] if body is a [Stream<List<int>>]
-  ///   - [http.MultipartRequest] if [multipart] is true
-  ///   - or a [http.Request]
+  ///   - [http.AbortableStreamedRequest] if body is a [Stream<List<int>>]
+  ///   - [http.AbortableMultipartRequest] if [multipart] is true
+  ///   - or a [http.AbortableRequest]
   Future<http.BaseRequest> toBaseRequest() async {
     if (body is Stream<List<int>>) return toStreamedRequest(body);
 
@@ -171,7 +171,7 @@ base class Request extends http.BaseRequest
   /// Convert this [Request] to a [http.Request]
   @visibleForTesting
   http.Request toHttpRequest() {
-    final http.Request request = http.Request(method, url)
+    final http.Request request = http.AbortableRequest(method, url)
       ..followRedirects = followRedirects;
 
     if (body == null) {
@@ -197,11 +197,12 @@ base class Request extends http.BaseRequest
     return request;
   }
 
-  /// Convert this [Request] to a [http.MultipartRequest]
+  /// Convert this [Request] to a [http.AbortableMultipartRequest]
   @visibleForTesting
-  Future<http.MultipartRequest> toMultipartRequest() async {
-    final http.MultipartRequest request = http.MultipartRequest(method, url)
-      ..headers.addAll(headers);
+  Future<http.AbortableMultipartRequest> toMultipartRequest() async {
+    final http.AbortableMultipartRequest request =
+        http.AbortableMultipartRequest(method, url, abortTrigger: abortTrigger)
+          ..headers.addAll(headers);
 
     for (final PartValue part in parts) {
       if (part.value == null) continue;
@@ -243,9 +244,11 @@ base class Request extends http.BaseRequest
 
   /// Convert this [Request] to a [http.StreamedRequest]
   @visibleForTesting
-  http.StreamedRequest toStreamedRequest(Stream<List<int>> bodyStream) {
-    final http.StreamedRequest request = http.StreamedRequest(method, url)
-      ..headers.addAll(headers);
+  http.AbortableStreamedRequest toStreamedRequest(
+      Stream<List<int>> bodyStream) {
+    final http.AbortableStreamedRequest request =
+        http.AbortableStreamedRequest(method, url, abortTrigger: abortTrigger)
+          ..headers.addAll(headers);
 
     bodyStream.listen(
       request.sink.add,
