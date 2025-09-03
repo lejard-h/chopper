@@ -565,7 +565,8 @@ final class ChopperGenerator
       {
         for (final FormalParameterElement p in m.formalParameters)
           // Skip parameters marked as @AbortTrigger from all other annotation buckets
-          if (!Utils.isAbortTriggerParam(p) && _typeChecker(type).hasAnnotationOf(p))
+          if (!Utils.isAbortTriggerParam(p) &&
+              _typeChecker(type).hasAnnotationOf(p))
             p: ConstantReader(_typeChecker(type).firstAnnotationOf(p)),
       };
 
