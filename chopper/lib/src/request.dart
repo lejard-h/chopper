@@ -170,9 +170,10 @@ base class Request extends http.BaseRequest
 
   /// Convert this [Request] to a [http.Request]
   @visibleForTesting
-  http.Request toHttpRequest() {
-    final http.Request request = http.AbortableRequest(method, url)
-      ..followRedirects = followRedirects;
+  http.AbortableRequest toHttpRequest() {
+    final http.AbortableRequest request =
+        http.AbortableRequest(method, url, abortTrigger: abortTrigger)
+          ..followRedirects = followRedirects;
 
     if (body == null) {
       request.headers.addAll(headers);
