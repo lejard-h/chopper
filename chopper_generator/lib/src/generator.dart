@@ -422,6 +422,67 @@ final class ChopperGenerator
 
       final Duration? timeout = Utils.getTimeout(method);
 
+      // Disallow defining both a timeout and an @AbortTrigger on the same method
+      if (timeout != null && abortParamName != null) {
+        throw InvalidGenerationSourceError(
+          'Method "${m.displayName}" cannot define both a timeout and an @AbortTrigger parameter. Choose one.',
+          element: m.baseElement,
+          todo:
+              'Remove either the timeout from the annotation or the @AbortTrigger parameter.',
+        );
+      }
+
+      // If a timeout is configured, create an auto-abort that fires at the deadline.
+      Expression? abortTriggerExpr;
+      if (timeout != null) {
+        // _$chopperAutoAbort: Completer<void>()
+        blocks.add(
+          declareFinal('_\$chopperAutoAbort',
+                  type: TypeReference((t) => t
+                    ..symbol = 'Completer'
+                    ..url = 'dart:async'
+                    ..types.add(refer('void'))))
+              .assign(TypeReference((t) => t
+                ..symbol = 'Completer'
+                ..url = 'dart:async'
+                ..types.add(refer('void'))).newInstance(const []))
+              .statement,
+        );
+
+        // _$chopperTimeoutTimer: triggers auto-abort after `timeout`
+        final durationExpr = refer('Duration').constInstance(
+          const [],
+          {
+            'microseconds': literalNum(timeout.inMicroseconds),
+          },
+        );
+
+        blocks.add(
+          declareFinal('_\$chopperTimeoutTimer',
+                  type: TypeReference((t) => t
+                    ..symbol = 'Timer'
+                    ..url = 'dart:async'))
+              .assign(
+                refer('Timer', 'dart:async').newInstance([
+                  durationExpr,
+                  Method((b) => b
+                    ..body = Code(
+                      'if (!_\$chopperAutoAbort.isCompleted) { '
+                      '_\$chopperAutoAbort.complete(); '
+                      '}',
+                    )).closure,
+                ]),
+              )
+              .statement,
+        );
+
+        // Use the auto-abort future directly
+        abortTriggerExpr = refer('_\$chopperAutoAbort').property('future');
+      } else if (abortParamName != null) {
+        // No timeout: pass through the caller-provided abort future if present
+        abortTriggerExpr = refer(abortParamName);
+      }
+
       blocks.add(
         declareFinal(Vars.request.toString(), type: refer('Request'))
             .assign(
@@ -437,7 +498,7 @@ final class ChopperGenerator
                 useBrackets: useBrackets,
                 dateFormat: dateFormat,
                 includeNullQueryVars: includeNullQueryVars,
-                abortParamName: abortParamName,
+                abortTriggerExpr: abortTriggerExpr,
               ),
             )
             .statement,
@@ -475,34 +536,150 @@ final class ChopperGenerator
         typeArguments,
       );
       if (timeout != null) {
-        returnStatement = returnStatement.property('timeout').call([
-          refer('Duration').constInstance([], {
-            'microseconds': literalNum(timeout.inMicroseconds),
-          }),
-        ]);
+        if (isResponseObject) {
+          // For Response<> methods: map an auto-abort error to TimeoutException and always cancel the timer.
+          returnStatement = returnStatement
+              .property('catchError')
+              .call([
+                // onError
+                Method(
+                  (b) => b
+                    ..requiredParameters.add(Parameter((p) => p
+                      ..name = 'err'
+                      ..type = refer('Object')))
+                    ..body = Block.of(
+                      [
+                        refer('Future', 'dart:async')
+                            .property('error')
+                            .call(
+                              [
+                                refer('TimeoutException', 'dart:async')
+                                    .newInstance(
+                                  [
+                                    literal(
+                                      'Request timed out after ${timeout.inSeconds} seconds',
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                            .returned
+                            .statement,
+                      ],
+                    ),
+                ).closure
+              ], {
+                // test: only handle errors when our auto-abort fired
+                'test': Method((b) => b
+                      ..requiredParameters.add(Parameter((p) => p
+                        ..name = 'err'
+                        ..type = refer('Object')))
+                      ..lambda = true
+                      ..body = const Code('_\$chopperAutoAbort.isCompleted'))
+                    .closure,
+              })
+              .property('whenComplete')
+              .call([
+                Method((b) => b
+                  ..body = refer('_\$chopperTimeoutTimer')
+                      .property('cancel')
+                      .call(const []).statement).closure,
+              ]);
+        }
       }
 
       if (isResponseObject) {
         // Return the response object directly from chopper.send
         blocks.add(returnStatement.returned.statement);
       } else {
-        // Await the response object from chopper.send
-        blocks.add(
-          // generic types are not passed in the code_builder at the moment.
-          declareFinal(
-            Vars.response.toString(),
-            type: TypeReference(
-              (b) => b
-                ..symbol = 'Response'
-                ..types.add(responseTypeReference),
-            ),
-          ).assign(returnStatement.awaited).statement,
-        );
-        // Return the body of the response object
-        blocks.add(refer(Vars.response.toString())
-            .property('bodyOrThrow')
-            .returned
-            .statement);
+        if (timeout != null) {
+          // Build a chain: send().then((resp) => resp.bodyOrThrow)
+          final Expression mapToBody = Method((b) => b
+                ..requiredParameters.add(
+                  Parameter((p) => p
+                    ..name = 'resp'
+                    ..type = TypeReference((t) => t
+                      ..symbol = 'Response'
+                      ..types.add(responseTypeReference))),
+                )
+                ..body =
+                    refer('resp').property('bodyOrThrow').returned.statement)
+              .closure;
+
+          final Expression chained = returnStatement
+              .property('then')
+              .call(
+                [
+                  mapToBody,
+                ],
+                {},
+                [responseTypeReference],
+              )
+              // Map auto-abort to TimeoutException and always cancel the timer
+              .property('catchError')
+              .call(
+                [
+                  Method(
+                    (b) => b
+                      ..requiredParameters.add(Parameter((p) => p
+                        ..name = 'err'
+                        ..type = refer('Object')))
+                      ..body = Block.of(
+                        [
+                          refer('Future', 'dart:async')
+                              .property('error')
+                              .call([
+                                refer('TimeoutException', 'dart:async')
+                                    .newInstance([
+                                  literal(
+                                      'Request timed out after ${timeout.inSeconds} seconds'),
+                                ]),
+                              ])
+                              .returned
+                              .statement,
+                        ],
+                      ),
+                  ).closure
+                ],
+                {
+                  'test': Method((b) => b
+                        ..requiredParameters.add(Parameter((p) => p
+                          ..name = 'err'
+                          ..type = refer('Object')))
+                        ..lambda = true
+                        ..body = const Code('_\$chopperAutoAbort.isCompleted'))
+                      .closure,
+                },
+              )
+              .property('whenComplete')
+              .call(
+                [
+                  Method((b) => b
+                    ..body = refer('_\$chopperTimeoutTimer')
+                        .property('cancel')
+                        .call(const []).statement).closure,
+                ],
+              );
+
+          blocks.add(chained.returned.statement);
+        } else {
+          // Await the response object from chopper.send
+          blocks.add(
+            declareFinal(
+              Vars.response.toString(),
+              type: TypeReference(
+                (b) => b
+                  ..symbol = 'Response'
+                  ..types.add(responseTypeReference),
+              ),
+            ).assign(returnStatement.awaited).statement,
+          );
+          // Return the body of the response object
+          blocks.add(refer(Vars.response.toString())
+              .property('bodyOrThrow')
+              .returned
+              .statement);
+        }
       }
 
       methodBuilder.body = Block.of(blocks);
@@ -738,7 +915,8 @@ final class ChopperGenerator
     @Deprecated('Use listFormat instead') bool? useBrackets,
     chopper.DateFormat? dateFormat,
     bool? includeNullQueryVars,
-    String? abortParamName,
+    //String? abortParamName,
+    Expression? abortTriggerExpr,
     Reference? tagRefer,
   }) =>
       refer('Request').newInstance(
@@ -763,7 +941,7 @@ final class ChopperGenerator
             'dateFormat': refer('DateFormat').type.property(dateFormat.name),
           if (includeNullQueryVars != null)
             'includeNullQueryVars': literalBool(includeNullQueryVars),
-          if (abortParamName != null) 'abortTrigger': refer(abortParamName),
+          if (abortTriggerExpr != null) 'abortTrigger': abortTriggerExpr,
         },
       );
 

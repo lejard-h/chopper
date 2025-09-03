@@ -979,40 +979,88 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getTimeoutTest() {
     final Uri $url = Uri.parse('/test/get_timeout');
+    final Completer _$chopperAutoAbort = Completer<void>();
+    final Timer _$chopperTimeoutTimer = Timer(
+      const Duration(microseconds: 42000000),
+      () {
+        if (!_$chopperAutoAbort.isCompleted) {
+          _$chopperAutoAbort.complete();
+        }
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: _$chopperAutoAbort.future,
     );
-    return client
-        .send<String, String>($request)
-        .timeout(const Duration(microseconds: 42000000));
+    return client.send<String, String>($request).catchError(
+      (Object err) {
+        return Future.error(
+            TimeoutException('Request timed out after 42 seconds'));
+      },
+      test: (Object err) => _$chopperAutoAbort.isCompleted,
+    ).whenComplete(() {
+      _$chopperTimeoutTimer.cancel();
+    });
   }
 
   @override
   Future<Response<String>> getTimeoutTestZero() {
     final Uri $url = Uri.parse('/test/get_timeout_zero');
+    final Completer _$chopperAutoAbort = Completer<void>();
+    final Timer _$chopperTimeoutTimer = Timer(
+      const Duration(microseconds: 0),
+      () {
+        if (!_$chopperAutoAbort.isCompleted) {
+          _$chopperAutoAbort.complete();
+        }
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: _$chopperAutoAbort.future,
     );
-    return client
-        .send<String, String>($request)
-        .timeout(const Duration(microseconds: 0));
+    return client.send<String, String>($request).catchError(
+      (Object err) {
+        return Future.error(
+            TimeoutException('Request timed out after 0 seconds'));
+      },
+      test: (Object err) => _$chopperAutoAbort.isCompleted,
+    ).whenComplete(() {
+      _$chopperTimeoutTimer.cancel();
+    });
   }
 
   @override
   Future<Response<String>> getTimeoutTestNeg() {
     final Uri $url = Uri.parse('/test/get_timeout_neg');
+    final Completer _$chopperAutoAbort = Completer<void>();
+    final Timer _$chopperTimeoutTimer = Timer(
+      const Duration(microseconds: 0),
+      () {
+        if (!_$chopperAutoAbort.isCompleted) {
+          _$chopperAutoAbort.complete();
+        }
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: _$chopperAutoAbort.future,
     );
-    return client
-        .send<String, String>($request)
-        .timeout(const Duration(microseconds: 0));
+    return client.send<String, String>($request).catchError(
+      (Object err) {
+        return Future.error(
+            TimeoutException('Request timed out after 0 seconds'));
+      },
+      test: (Object err) => _$chopperAutoAbort.isCompleted,
+    ).whenComplete(() {
+      _$chopperTimeoutTimer.cancel();
+    });
   }
 
   @override
