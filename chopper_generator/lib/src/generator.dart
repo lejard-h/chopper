@@ -544,36 +544,28 @@ final class ChopperGenerator
                 // onError
                 Method(
                   (b) => b
-                    ..requiredParameters.add(Parameter((p) => p
-                      ..name = 'err'
-                      ..type = refer('Object')))
+                    ..requiredParameters.add(Parameter((p) => p..name = '_'))
+                    ..lambda = true
                     ..body = Block.of(
                       [
-                        refer('Future', 'dart:async')
-                            .property('error')
-                            .call(
+                        refer('Future', 'dart:async').property('error').call(
+                          [
+                            refer('TimeoutException', 'dart:async').newInstance(
                               [
-                                refer('TimeoutException', 'dart:async')
-                                    .newInstance(
-                                  [
-                                    literal(
-                                      'Request timed out after ${timeout.inSeconds} seconds',
-                                    ),
-                                  ],
+                                literal(
+                                  'Request timed out after ${timeout.inSeconds} seconds',
                                 ),
                               ],
-                            )
-                            .returned
-                            .statement,
+                            ),
+                          ],
+                        ).code,
                       ],
                     ),
                 ).closure
               ], {
                 // test: only handle errors when our auto-abort fired
                 'test': Method((b) => b
-                      ..requiredParameters.add(Parameter((p) => p
-                        ..name = 'err'
-                        ..type = refer('Object')))
+                      ..requiredParameters.add(Parameter((p) => p..name = '_'))
                       ..lambda = true
                       ..body = const Code('_\$chopperAutoAbort.isCompleted'))
                     .closure,

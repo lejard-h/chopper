@@ -1106,13 +1106,14 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       abortTrigger: _$chopperAutoAbort.future,
     );
-    return client.send<String, String>($request).catchError(
-      (Object err) {
-        return Future.error(
-            TimeoutException('Request timed out after 42 seconds'));
-      },
-      test: (Object err) => _$chopperAutoAbort.isCompleted,
-    ).whenComplete(() {
+    return client
+        .send<String, String>($request)
+        .catchError(
+          (_) => Future.error(
+              TimeoutException('Request timed out after 42 seconds')),
+          test: (_) => _$chopperAutoAbort.isCompleted,
+        )
+        .whenComplete(() {
       _$chopperTimeoutTimer.cancel();
     });
   }
@@ -1135,13 +1136,14 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       abortTrigger: _$chopperAutoAbort.future,
     );
-    return client.send<String, String>($request).catchError(
-      (Object err) {
-        return Future.error(
-            TimeoutException('Request timed out after 0 seconds'));
-      },
-      test: (Object err) => _$chopperAutoAbort.isCompleted,
-    ).whenComplete(() {
+    return client
+        .send<String, String>($request)
+        .catchError(
+          (_) => Future.error(
+              TimeoutException('Request timed out after 0 seconds')),
+          test: (_) => _$chopperAutoAbort.isCompleted,
+        )
+        .whenComplete(() {
       _$chopperTimeoutTimer.cancel();
     });
   }
@@ -1164,13 +1166,14 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       abortTrigger: _$chopperAutoAbort.future,
     );
-    return client.send<String, String>($request).catchError(
-      (Object err) {
-        return Future.error(
-            TimeoutException('Request timed out after 0 seconds'));
-      },
-      test: (Object err) => _$chopperAutoAbort.isCompleted,
-    ).whenComplete(() {
+    return client
+        .send<String, String>($request)
+        .catchError(
+          (_) => Future.error(
+              TimeoutException('Request timed out after 0 seconds')),
+          test: (_) => _$chopperAutoAbort.isCompleted,
+        )
+        .whenComplete(() {
       _$chopperTimeoutTimer.cancel();
     });
   }
