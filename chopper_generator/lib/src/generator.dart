@@ -915,7 +915,6 @@ final class ChopperGenerator
     @Deprecated('Use listFormat instead') bool? useBrackets,
     chopper.DateFormat? dateFormat,
     bool? includeNullQueryVars,
-    //String? abortParamName,
     Expression? abortTriggerExpr,
     Reference? tagRefer,
   }) =>
