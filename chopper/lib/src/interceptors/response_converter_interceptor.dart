@@ -55,7 +55,7 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
     if (responseConverter != null) {
       response = await responseConverter(response);
     } else if (_converter != null) {
-      response = await _decodeResponse<BodyType>(response, _converter!);
+      response = await _decodeResponse<BodyType>(response, _converter);
     }
 
     return Response<BodyType>(response.base, response.body);
@@ -74,10 +74,10 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
   ) async {
     var error = response.body;
     if (_errorConverter != null) {
-      final errorRes = await _errorConverter?.convertError<BodyType, InnerType>(
+      final errorRes = await _errorConverter.convertError<BodyType, InnerType>(
         response,
       );
-      error = errorRes?.error ?? errorRes?.body;
+      error = errorRes.error ?? errorRes.body;
     }
 
     return Response<BodyType>(response.base, null, error: error);
