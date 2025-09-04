@@ -550,9 +550,21 @@ final class ChopperGenerator
                           [
                             refer('TimeoutException', 'dart:async').newInstance(
                               [
-                                literal(
-                                  'Request timed out after ${timeout.inSeconds} seconds',
-                                ),
+                                literal(switch (timeout) {
+                                  >= const Duration(days: 1) =>
+                                    'Request timed out after ${timeout.inDays} days',
+                                  >= const Duration(hours: 1) =>
+                                    'Request timed out after ${timeout.inHours} hours',
+                                  >= const Duration(minutes: 1) =>
+                                    'Request timed out after ${timeout.inMinutes} minutes',
+                                  >= const Duration(seconds: 1) =>
+                                    'Request timed out after ${timeout.inSeconds} seconds',
+                                  >= const Duration(milliseconds: 1) =>
+                                    'Request timed out after ${timeout.inMilliseconds} milliseconds',
+                                  >= const Duration(microseconds: 1) =>
+                                    'Request timed out after ${timeout.inMicroseconds} microseconds',
+                                  >= Duration.zero || _ => 'Request timed out',
+                                }),
                               ],
                             ),
                           ],
@@ -617,8 +629,23 @@ final class ChopperGenerator
                               .call([
                                 refer('TimeoutException', 'dart:async')
                                     .newInstance([
-                                  literal(
-                                      'Request timed out after ${timeout.inSeconds} seconds'),
+                                  literal(switch (timeout) {
+                                    >= const Duration(days: 1) =>
+                                      'Request timed out after ${timeout.inDays} days',
+                                    >= const Duration(hours: 1) =>
+                                      'Request timed out after ${timeout.inHours} hours',
+                                    >= const Duration(minutes: 1) =>
+                                      'Request timed out after ${timeout.inMinutes} minutes',
+                                    >= const Duration(seconds: 1) =>
+                                      'Request timed out after ${timeout.inSeconds} seconds',
+                                    >= const Duration(milliseconds: 1) =>
+                                      'Request timed out after ${timeout.inMilliseconds} milliseconds',
+                                    >= const Duration(microseconds: 1) =>
+                                      'Request timed out after ${timeout.inMicroseconds} microseconds',
+                                    >= Duration.zero ||
+                                    _ =>
+                                      'Request timed out',
+                                  }),
                                 ]),
                               ])
                               .returned
