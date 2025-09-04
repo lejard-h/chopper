@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:http/http.dart' show MultipartFile, RequestAbortedException;
+import 'package:http/http.dart' show MultipartFile;
 
 part 'test_service.chopper.dart';
 
