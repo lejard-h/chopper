@@ -438,12 +438,12 @@ final class ChopperGenerator
         blocks.add(
           declareFinal('\$abortTrigger',
                   type: TypeReference((t) => t
-                    ..symbol = 'Completer'
-                    ..url = 'dart:async'
+                    ..symbol = 'ChopperCompleter'
+                    ..url = 'package:chopper/chopper.dart'
                     ..types.add(refer('void'))))
               .assign(TypeReference((t) => t
-                ..symbol = 'Completer'
-                ..url = 'dart:async'
+                ..symbol = 'ChopperCompleter'
+                ..url = 'package:chopper/chopper.dart'
                 ..types.add(refer('void'))).newInstance(const []))
               .statement,
         );
@@ -580,9 +580,10 @@ final class ChopperGenerator
                           ..types.add(
                             TypeReference((t2) => t2
                               ..symbol = 'Response'
+                              ..url = 'package:chopper/chopper.dart'
                               ..types.add(responseTypeReference)),
                           )).property('error').call([
-                          refer('TimeoutException', 'dart:async').newInstance([
+                          refer('ChopperTimeoutException').newInstance([
                             literal(getTimeoutExceptionMessage(timeout)),
                           ]),
                         ]).code,
@@ -597,8 +598,10 @@ final class ChopperGenerator
                       ..type = refer('Object')))
                     ..lambda = true
                     ..body = refer('err')
-                        .isA(refer('RequestAbortedException',
-                            'package:http/http.dart'))
+                        .isA(refer(
+                          'ChopperRequestAbortedException',
+                          'package:chopper/chopper.dart',
+                        ))
                         .and(refer('\$abortTrigger').property('isCompleted'))
                         .code,
                 ).closure,
@@ -622,6 +625,7 @@ final class ChopperGenerator
                 ..name = 'resp'
                 ..type = TypeReference((t) => t
                   ..symbol = 'Response'
+                  ..url = 'package:chopper/chopper.dart'
                   ..types.add(responseTypeReference))),
             )
             ..lambda = true
@@ -652,7 +656,10 @@ final class ChopperGenerator
                                 ..types.add(responseTypeReference))
                               .property('error')
                               .call([
-                            refer('TimeoutException', 'dart:async').newInstance(
+                            refer(
+                              'ChopperTimeoutException',
+                              'package:chopper/chopper.dart',
+                            ).newInstance(
                               [
                                 literal(getTimeoutExceptionMessage(timeout)),
                               ],
@@ -670,8 +677,10 @@ final class ChopperGenerator
                         ..type = refer('Object')))
                       ..lambda = true
                       ..body = refer('err')
-                          .isA(refer('RequestAbortedException',
-                              'package:http/http.dart'))
+                          .isA(refer(
+                            'ChopperRequestAbortedException',
+                            'package:chopper/chopper.dart',
+                          ))
                           .and(refer('\$abortTrigger').property('isCompleted'))
                           .code,
                   ).closure,
@@ -691,6 +700,7 @@ final class ChopperGenerator
               type: TypeReference(
                 (b) => b
                   ..symbol = 'Response'
+                  ..url = 'package:chopper/chopper.dart'
                   ..types.add(responseTypeReference),
               ),
             ).assign(returnStatement.awaited).statement,
