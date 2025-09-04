@@ -435,7 +435,6 @@ final class ChopperGenerator
       // If a timeout is configured, create an auto-abort that fires at the deadline.
       Expression? abortTriggerExpr;
       if (timeout != null) {
-        // $abortTrigger: Completer<void>()
         blocks.add(
           declareFinal('\$abortTrigger',
                   type: TypeReference((t) => t
@@ -527,6 +526,36 @@ final class ChopperGenerator
         ]);
       }
 
+      String getTimeoutExceptionMessage(Duration timeout) {
+        return switch (timeout) {
+          > const Duration(days: 1) =>
+            'Request timed out after ${timeout.inDays} days',
+          == const Duration(days: 1) =>
+            'Request timed out after ${timeout.inDays} day',
+          > const Duration(hours: 1) =>
+            'Request timed out after ${timeout.inHours} hours',
+          == const Duration(hours: 1) =>
+            'Request timed out after ${timeout.inHours} hour',
+          > const Duration(minutes: 1) =>
+            'Request timed out after ${timeout.inMinutes} minutes',
+          == const Duration(minutes: 1) =>
+            'Request timed out after ${timeout.inMinutes} minute',
+          > const Duration(seconds: 1) =>
+            'Request timed out after ${timeout.inSeconds} seconds',
+          == const Duration(seconds: 1) =>
+            'Request timed out after ${timeout.inSeconds} second',
+          > const Duration(milliseconds: 1) =>
+            'Request timed out after ${timeout.inMilliseconds} milliseconds',
+          == const Duration(milliseconds: 1) =>
+            'Request timed out after ${timeout.inMilliseconds} millisecond',
+          > const Duration(microseconds: 1) =>
+            'Request timed out after ${timeout.inMicroseconds} microseconds',
+          == const Duration(microseconds: 1) =>
+            'Request timed out after ${timeout.inMicroseconds} microsecond',
+          >= Duration.zero || _ => 'Request timed out',
+        };
+      }
+
       Expression returnStatement =
           refer(Vars.client.toString()).property('send').call(
         [refer(Vars.request.toString())],
@@ -550,33 +579,9 @@ final class ChopperGenerator
                           [
                             refer('TimeoutException', 'dart:async').newInstance(
                               [
-                                literal(switch (timeout) {
-                                  > const Duration(days: 1) =>
-                                    'Request timed out after ${timeout.inDays} days',
-                                  == const Duration(days: 1) =>
-                                    'Request timed out after ${timeout.inDays} day',
-                                  > const Duration(hours: 1) =>
-                                    'Request timed out after ${timeout.inHours} hours',
-                                  == const Duration(hours: 1) =>
-                                    'Request timed out after ${timeout.inHours} hour',
-                                  > const Duration(minutes: 1) =>
-                                    'Request timed out after ${timeout.inMinutes} minutes',
-                                  == const Duration(minutes: 1) =>
-                                    'Request timed out after ${timeout.inMinutes} minute',
-                                  > const Duration(seconds: 1) =>
-                                    'Request timed out after ${timeout.inSeconds} seconds',
-                                  == const Duration(seconds: 1) =>
-                                    'Request timed out after ${timeout.inSeconds} second',
-                                  > const Duration(milliseconds: 1) =>
-                                    'Request timed out after ${timeout.inMilliseconds} milliseconds',
-                                  == const Duration(milliseconds: 1) =>
-                                    'Request timed out after ${timeout.inMilliseconds} millisecond',
-                                  > const Duration(microseconds: 1) =>
-                                    'Request timed out after ${timeout.inMicroseconds} microseconds',
-                                  == const Duration(microseconds: 1) =>
-                                    'Request timed out after ${timeout.inMicroseconds} microsecond',
-                                  >= Duration.zero || _ => 'Request timed out',
-                                }),
+                                literal(
+                                  getTimeoutExceptionMessage(timeout),
+                                ),
                               ],
                             ),
                           ],
@@ -638,40 +643,18 @@ final class ChopperGenerator
                         [
                           refer('Future', 'dart:async')
                               .property('error')
-                              .call([
-                                refer('TimeoutException', 'dart:async')
-                                    .newInstance([
-                                  literal(switch (timeout) {
-                                    > const Duration(days: 1) =>
-                                      'Request timed out after ${timeout.inDays} days',
-                                    == const Duration(days: 1) =>
-                                      'Request timed out after ${timeout.inDays} day',
-                                    > const Duration(hours: 1) =>
-                                      'Request timed out after ${timeout.inHours} hours',
-                                    == const Duration(hours: 1) =>
-                                      'Request timed out after ${timeout.inHours} hour',
-                                    > const Duration(minutes: 1) =>
-                                      'Request timed out after ${timeout.inMinutes} minutes',
-                                    == const Duration(minutes: 1) =>
-                                      'Request timed out after ${timeout.inMinutes} minute',
-                                    > const Duration(seconds: 1) =>
-                                      'Request timed out after ${timeout.inSeconds} seconds',
-                                    == const Duration(seconds: 1) =>
-                                      'Request timed out after ${timeout.inSeconds} second',
-                                    > const Duration(milliseconds: 1) =>
-                                      'Request timed out after ${timeout.inMilliseconds} milliseconds',
-                                    == const Duration(milliseconds: 1) =>
-                                      'Request timed out after ${timeout.inMilliseconds} millisecond',
-                                    > const Duration(microseconds: 1) =>
-                                      'Request timed out after ${timeout.inMicroseconds} microseconds',
-                                    == const Duration(microseconds: 1) =>
-                                      'Request timed out after ${timeout.inMicroseconds} microsecond',
-                                    >= Duration.zero ||
-                                    _ =>
-                                      'Request timed out',
-                                  }),
-                                ]),
-                              ])
+                              .call(
+                                [
+                                  refer('TimeoutException', 'dart:async')
+                                      .newInstance(
+                                    [
+                                      literal(
+                                        getTimeoutExceptionMessage(timeout),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
                               .returned
                               .statement,
                         ],
