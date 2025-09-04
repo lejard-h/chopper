@@ -832,7 +832,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<String> getTimeoutTest() async {
     final Uri $url = Uri.parse('/test/get_timeout');
-    final Completer $abortTrigger = Completer<void>();
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
     final Timer $timeout = Timer(
       const Duration(microseconds: 42000000),
       () {
@@ -850,9 +850,10 @@ final class _$HttpTestService extends HttpTestService {
         .then<String>((Response<String> resp) => resp.bodyOrThrow)
         .catchError(
           (_) => Future<String>.error(
-              TimeoutException('Request timed out after 42 seconds')),
+              ChopperTimeoutException('Request timed out after 42 seconds')),
           test: (Object err) =>
-              err is RequestAbortedException && $abortTrigger.isCompleted,
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }
@@ -860,7 +861,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<String> getTimeoutTestZero() async {
     final Uri $url = Uri.parse('/test/get_timeout_zero');
-    final Completer $abortTrigger = Completer<void>();
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
     final Timer $timeout = Timer(
       const Duration(microseconds: 0),
       () {
@@ -877,9 +878,11 @@ final class _$HttpTestService extends HttpTestService {
         .send<String, String>($request)
         .then<String>((Response<String> resp) => resp.bodyOrThrow)
         .catchError(
-          (_) => Future<String>.error(TimeoutException('Request timed out')),
+          (_) => Future<String>.error(
+              ChopperTimeoutException('Request timed out')),
           test: (Object err) =>
-              err is RequestAbortedException && $abortTrigger.isCompleted,
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }
@@ -887,7 +890,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<String> getTimeoutTestNeg() async {
     final Uri $url = Uri.parse('/test/get_timeout_neg');
-    final Completer $abortTrigger = Completer<void>();
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
     final Timer $timeout = Timer(
       const Duration(microseconds: 0),
       () {
@@ -904,9 +907,11 @@ final class _$HttpTestService extends HttpTestService {
         .send<String, String>($request)
         .then<String>((Response<String> resp) => resp.bodyOrThrow)
         .catchError(
-          (_) => Future<String>.error(TimeoutException('Request timed out')),
+          (_) => Future<String>.error(
+              ChopperTimeoutException('Request timed out')),
           test: (Object err) =>
-              err is RequestAbortedException && $abortTrigger.isCompleted,
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }
