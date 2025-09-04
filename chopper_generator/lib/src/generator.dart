@@ -435,9 +435,9 @@ final class ChopperGenerator
       // If a timeout is configured, create an auto-abort that fires at the deadline.
       Expression? abortTriggerExpr;
       if (timeout != null) {
-        // $abort: Completer<void>()
+        // $abortTrigger: Completer<void>()
         blocks.add(
-          declareFinal('\$abort',
+          declareFinal('\$abortTrigger',
                   type: TypeReference((t) => t
                     ..symbol = 'Completer'
                     ..url = 'dart:async'
@@ -467,7 +467,7 @@ final class ChopperGenerator
                   durationExpr,
                   Method((b) => b
                     ..body = Code(
-                      'if (!\$abort.isCompleted) \$abort.complete();',
+                      'if (!\$abortTrigger.isCompleted) \$abortTrigger.complete();',
                     )).closure,
                 ]),
               )
@@ -475,7 +475,7 @@ final class ChopperGenerator
         );
 
         // Use the auto-abort future directly
-        abortTriggerExpr = refer('\$abort').property('future');
+        abortTriggerExpr = refer('\$abortTrigger').property('future');
       } else if (abortParamName != null) {
         // No timeout: pass through the caller-provided abort future if present
         abortTriggerExpr = refer(abortParamName);
@@ -565,7 +565,7 @@ final class ChopperGenerator
                 'test': Method((b) => b
                   ..requiredParameters.add(Parameter((p) => p..name = '_'))
                   ..lambda = true
-                  ..body = const Code('\$abort.isCompleted')).closure,
+                  ..body = const Code('\$abortTrigger.isCompleted')).closure,
               })
               .property('whenComplete')
               .call([
@@ -633,7 +633,7 @@ final class ChopperGenerator
                       ..name = 'err'
                       ..type = refer('Object')))
                     ..lambda = true
-                    ..body = const Code('\$abort.isCompleted')).closure,
+                    ..body = const Code('\$abortTrigger.isCompleted')).closure,
                 },
               )
               .property('whenComplete')
