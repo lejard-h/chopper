@@ -564,7 +564,6 @@ final class ChopperGenerator
       );
       if (timeout != null) {
         if (isResponseObject) {
-          // For Response<> methods: map an auto-abort error to TimeoutException and always cancel the timer.
           returnStatement = returnStatement
               .property('catchError')
               .call([
@@ -591,12 +590,16 @@ final class ChopperGenerator
                 ).closure
               ], {
                 // test: only handle errors when our auto-abort fired and error is RequestAbortedException
-                'test': Method((b) => b
-                  ..requiredParameters.add(Parameter((p) => p
-                    ..name = 'err'
-                    ..type = refer('Object')))
-                  ..lambda = true
-                  ..body = const Code('err is RequestAbortedException && \$abortTrigger.isCompleted'),
+                'test': Method(
+                  (b) => b
+                    ..requiredParameters.add(Parameter((p) => p
+                      ..name = 'err'
+                      ..type = refer('Object')))
+                    ..lambda = true
+                    ..body = refer('err')
+                        .isA(refer('RequestAbortedException'))
+                        .and(refer('\$abortTrigger').property('isCompleted'))
+                        .code,
                 ).closure,
               })
               .property('whenComplete')
@@ -665,12 +668,17 @@ final class ChopperGenerator
                   ).closure
                 ],
                 {
-                  'test': Method((b) => b
-                    ..requiredParameters.add(Parameter((p) => p
-                      ..name = 'err'
-                      ..type = refer('Object')))
-                    ..lambda = true
-                    ..body = const Code('err is RequestAbortedException && \$abortTrigger.isCompleted')).closure,
+                  'test': Method(
+                    (b) => b
+                      ..requiredParameters.add(Parameter((p) => p
+                        ..name = 'err'
+                        ..type = refer('Object')))
+                      ..lambda = true
+                      ..body = refer('err')
+                          .isA(refer('RequestAbortedException'))
+                          .and(refer('\$abortTrigger').property('isCompleted'))
+                          .code,
+                  ).closure,
                 },
               )
               .property('whenComplete')
