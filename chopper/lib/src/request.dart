@@ -168,7 +168,7 @@ base class Request extends http.BaseRequest
     return toHttpRequest();
   }
 
-  /// Convert this [Request] to a [http.Request]
+  /// Convert this [Request] to a [http.AbortableRequest]
   @visibleForTesting
   http.AbortableRequest toHttpRequest() {
     final http.AbortableRequest request =
@@ -243,7 +243,7 @@ base class Request extends http.BaseRequest
     return request;
   }
 
-  /// Convert this [Request] to a [http.StreamedRequest]
+  /// Convert this [Request] to a [http.AbortableStreamedRequest]
   @visibleForTesting
   http.AbortableStreamedRequest toStreamedRequest(
       Stream<List<int>> bodyStream) {
