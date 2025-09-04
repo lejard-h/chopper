@@ -590,11 +590,14 @@ final class ChopperGenerator
                     ),
                 ).closure
               ], {
-                // test: only handle errors when our auto-abort fired
+                // test: only handle errors when our auto-abort fired and error is RequestAbortedException
                 'test': Method((b) => b
-                  ..requiredParameters.add(Parameter((p) => p..name = '_'))
+                  ..requiredParameters.add(Parameter((p) => p
+                    ..name = 'err'
+                    ..type = refer('Object')))
                   ..lambda = true
-                  ..body = const Code('\$abortTrigger.isCompleted')).closure,
+                  ..body = const Code('err is RequestAbortedException && \$abortTrigger.isCompleted'),
+                ).closure,
               })
               .property('whenComplete')
               .call([
@@ -667,7 +670,7 @@ final class ChopperGenerator
                       ..name = 'err'
                       ..type = refer('Object')))
                     ..lambda = true
-                    ..body = const Code('\$abortTrigger.isCompleted')).closure,
+                    ..body = const Code('err is RequestAbortedException && \$abortTrigger.isCompleted')).closure,
                 },
               )
               .property('whenComplete')
