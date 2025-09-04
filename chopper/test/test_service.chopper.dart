@@ -995,7 +995,7 @@ final class _$HttpTestService extends HttpTestService {
     return client
         .send<String, String>($request)
         .catchError(
-          (_) => Future.error(
+          (_) => Future<Response<String>>.error(
               TimeoutException('Request timed out after 42 seconds')),
           test: (Object err) =>
               err is RequestAbortedException && $abortTrigger.isCompleted,
@@ -1022,7 +1022,8 @@ final class _$HttpTestService extends HttpTestService {
     return client
         .send<String, String>($request)
         .catchError(
-          (_) => Future.error(TimeoutException('Request timed out')),
+          (_) => Future<Response<String>>.error(
+              TimeoutException('Request timed out')),
           test: (Object err) =>
               err is RequestAbortedException && $abortTrigger.isCompleted,
         )
@@ -1048,7 +1049,8 @@ final class _$HttpTestService extends HttpTestService {
     return client
         .send<String, String>($request)
         .catchError(
-          (_) => Future.error(TimeoutException('Request timed out')),
+          (_) => Future<Response<String>>.error(
+              TimeoutException('Request timed out')),
           test: (Object err) =>
               err is RequestAbortedException && $abortTrigger.isCompleted,
         )

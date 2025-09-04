@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
-import 'package:http/http.dart' show MultipartFile;
+import 'package:http/http.dart' show MultipartFile, RequestAbortedException;
 
 part 'test_without_response_service.chopper.dart';
 
@@ -236,6 +236,20 @@ abstract class HttpTestService extends ChopperService {
     @Header('x-int') int? intHeader,
     @Header('x-double') double? doubleHeader,
     @Header('x-enum') ExampleEnum? enumHeader,
+  });
+
+  @GET(path: 'get_timeout', timeout: Duration(seconds: 42))
+  Future<String> getTimeoutTest();
+
+  @GET(path: 'get_timeout_zero', timeout: Duration(seconds: 0))
+  Future<String> getTimeoutTestZero();
+
+  @GET(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
+  Future<String> getTimeoutTestNeg();
+
+  @GET(path: 'get_abort_trigger')
+  Future<String> getWithAbortTrigger({
+    @AbortTrigger() Future<void>? abortTrigger,
   });
 }
 

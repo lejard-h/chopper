@@ -828,4 +828,99 @@ final class _$HttpTestService extends HttpTestService {
     final Response $response = await client.send<String, String>($request);
     return $response.bodyOrThrow;
   }
+
+  @override
+  Future<String> getTimeoutTest() async {
+    final Uri $url = Uri.parse('/test/get_timeout');
+    final Completer $abortTrigger = Completer<void>();
+    final Timer $timeout = Timer(
+      const Duration(microseconds: 42000000),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: $abortTrigger.future,
+    );
+    return client
+        .send<String, String>($request)
+        .then<String>((Response<String> resp) => resp.bodyOrThrow)
+        .catchError(
+          (_) => Future<String>.error(
+              TimeoutException('Request timed out after 42 seconds')),
+          test: (Object err) =>
+              err is RequestAbortedException && $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<String> getTimeoutTestZero() async {
+    final Uri $url = Uri.parse('/test/get_timeout_zero');
+    final Completer $abortTrigger = Completer<void>();
+    final Timer $timeout = Timer(
+      const Duration(microseconds: 0),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: $abortTrigger.future,
+    );
+    return client
+        .send<String, String>($request)
+        .then<String>((Response<String> resp) => resp.bodyOrThrow)
+        .catchError(
+          (_) => Future<String>.error(TimeoutException('Request timed out')),
+          test: (Object err) =>
+              err is RequestAbortedException && $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<String> getTimeoutTestNeg() async {
+    final Uri $url = Uri.parse('/test/get_timeout_neg');
+    final Completer $abortTrigger = Completer<void>();
+    final Timer $timeout = Timer(
+      const Duration(microseconds: 0),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: $abortTrigger.future,
+    );
+    return client
+        .send<String, String>($request)
+        .then<String>((Response<String> resp) => resp.bodyOrThrow)
+        .catchError(
+          (_) => Future<String>.error(TimeoutException('Request timed out')),
+          test: (Object err) =>
+              err is RequestAbortedException && $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<String> getWithAbortTrigger({Future<void>? abortTrigger}) async {
+    final Uri $url = Uri.parse('/test/get_abort_trigger');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: abortTrigger,
+    );
+    final Response $response = await client.send<String, String>($request);
+    return $response.bodyOrThrow;
+  }
 }

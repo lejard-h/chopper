@@ -574,22 +574,22 @@ final class ChopperGenerator
                     ..lambda = true
                     ..body = Block.of(
                       [
-                        refer('Future', 'dart:async').property('error').call(
-                          [
-                            refer('TimeoutException', 'dart:async').newInstance(
-                              [
-                                literal(
-                                  getTimeoutExceptionMessage(timeout),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ).code,
+                        TypeReference((t) => t
+                          ..symbol = 'Future'
+                          ..url = 'dart:async'
+                          ..types.add(
+                            TypeReference((t2) => t2
+                              ..symbol = 'Response'
+                              ..types.add(responseTypeReference)),
+                          )).property('error').call([
+                          refer('TimeoutException', 'dart:async').newInstance([
+                            literal(getTimeoutExceptionMessage(timeout)),
+                          ]),
+                        ]).code,
                       ],
                     ),
                 ).closure
               ], {
-                // test: only handle errors when our auto-abort fired and error is RequestAbortedException
                 'test': Method(
                   (b) => b
                     ..requiredParameters.add(Parameter((p) => p
@@ -597,7 +597,8 @@ final class ChopperGenerator
                       ..type = refer('Object')))
                     ..lambda = true
                     ..body = refer('err')
-                        .isA(refer('RequestAbortedException'))
+                        .isA(refer('RequestAbortedException',
+                            'package:http/http.dart'))
                         .and(refer('\$abortTrigger').property('isCompleted'))
                         .code,
                 ).closure,
@@ -616,16 +617,15 @@ final class ChopperGenerator
         if (timeout != null) {
           // Build a chain: send().then((resp) => resp.bodyOrThrow)
           final Expression mapToBody = Method((b) => b
-                ..requiredParameters.add(
-                  Parameter((p) => p
-                    ..name = 'resp'
-                    ..type = TypeReference((t) => t
-                      ..symbol = 'Response'
-                      ..types.add(responseTypeReference))),
-                )
-                ..body =
-                    refer('resp').property('bodyOrThrow').returned.statement)
-              .closure;
+            ..requiredParameters.add(
+              Parameter((p) => p
+                ..name = 'resp'
+                ..type = TypeReference((t) => t
+                  ..symbol = 'Response'
+                  ..types.add(responseTypeReference))),
+            )
+            ..lambda = true
+            ..body = refer('resp').property('bodyOrThrow').code).closure;
 
           final Expression chained = returnStatement
               .property('then')
@@ -642,27 +642,22 @@ final class ChopperGenerator
                 [
                   Method(
                     (b) => b
-                      ..requiredParameters.add(Parameter((p) => p
-                        ..name = 'err'
-                        ..type = refer('Object')))
+                      ..requiredParameters.add(Parameter((p) => p..name = '_'))
+                      ..lambda = true
                       ..body = Block.of(
                         [
-                          refer('Future', 'dart:async')
+                          TypeReference((t) => t
+                                ..symbol = 'Future'
+                                ..url = 'dart:async'
+                                ..types.add(responseTypeReference))
                               .property('error')
-                              .call(
-                                [
-                                  refer('TimeoutException', 'dart:async')
-                                      .newInstance(
-                                    [
-                                      literal(
-                                        getTimeoutExceptionMessage(timeout),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )
-                              .returned
-                              .statement,
+                              .call([
+                            refer('TimeoutException', 'dart:async').newInstance(
+                              [
+                                literal(getTimeoutExceptionMessage(timeout)),
+                              ],
+                            ),
+                          ]).code,
                         ],
                       ),
                   ).closure
@@ -675,7 +670,8 @@ final class ChopperGenerator
                         ..type = refer('Object')))
                       ..lambda = true
                       ..body = refer('err')
-                          .isA(refer('RequestAbortedException'))
+                          .isA(refer('RequestAbortedException',
+                              'package:http/http.dart'))
                           .and(refer('\$abortTrigger').property('isCompleted'))
                           .code,
                   ).closure,
