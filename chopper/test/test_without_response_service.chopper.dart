@@ -833,7 +833,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<String> getTimeoutTest() async {
     final Uri $url = Uri.parse('/test/get_timeout');
     final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
-    final Timer $timeout = Timer(
+    final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 42000000),
       () {
         if (!$abortTrigger.isCompleted) $abortTrigger.complete();
@@ -862,7 +862,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<String> getTimeoutTestZero() async {
     final Uri $url = Uri.parse('/test/get_timeout_zero');
     final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
-    final Timer $timeout = Timer(
+    final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 0),
       () {
         if (!$abortTrigger.isCompleted) $abortTrigger.complete();
@@ -891,7 +891,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<String> getTimeoutTestNeg() async {
     final Uri $url = Uri.parse('/test/get_timeout_neg');
     final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
-    final Timer $timeout = Timer(
+    final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 0),
       () {
         if (!$abortTrigger.isCompleted) $abortTrigger.complete();

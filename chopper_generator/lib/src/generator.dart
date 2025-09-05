@@ -459,16 +459,19 @@ final class ChopperGenerator
         blocks.add(
           declareFinal('\$timeout',
                   type: TypeReference((t) => t
-                    ..symbol = 'Timer'
-                    ..url = 'dart:async'))
+                    ..symbol = 'ChopperTimer'
+                    ..url = 'package:chopper/chopper.dart'))
               .assign(
-                refer('Timer', 'dart:async').newInstance([
-                  durationExpr,
-                  Method((b) => b
-                    ..body = Code(
-                      'if (!\$abortTrigger.isCompleted) \$abortTrigger.complete();',
-                    )).closure,
-                ]),
+                refer('ChopperTimer', 'package:chopper/chopper.dart')
+                    .newInstance(
+                  [
+                    durationExpr,
+                    Method((b) => b
+                      ..body = Code(
+                        'if (!\$abortTrigger.isCompleted) \$abortTrigger.complete();',
+                      )).closure,
+                  ],
+                ),
               )
               .statement,
         );
