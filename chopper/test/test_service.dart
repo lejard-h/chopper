@@ -339,8 +339,29 @@ abstract class HttpTestService extends ChopperService {
   @GET(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
   Future<Response<String>> getTimeoutTestNeg();
 
+  @GET(
+    path: 'get_timeout_with_query_header',
+    timeout: Duration(seconds: 30),
+  )
+  Future<Response<String>> getTimeoutTestQueryHeader({
+    @Header('x-test') String? testHeader,
+    @Query() String? name,
+  });
+
   @GET(path: 'get_abort_trigger')
   Future<Response<String>> getWithAbortTrigger({
+    @AbortTrigger() Future<void>? abortTrigger,
+  });
+
+  @GET(path: 'get_abort_trigger2')
+  Future<Response<String>> getWithAbortTrigger2({
+    @AbortTrigger() Future<void>? foo,
+  });
+
+  @GET(path: 'get_abort_trigger_with_query_header')
+  Future<Response<String>> getWithAbortTriggerQueryHeader({
+    @Header('x-test') String? testHeader,
+    @Query() String? name,
     @AbortTrigger() Future<void>? abortTrigger,
   });
 }
