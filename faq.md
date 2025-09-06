@@ -49,26 +49,41 @@ try {
 }
 ```
 
-2) **Manual cancellation** — accept an `@AbortTrigger` parameter and pass a `Future<void>` (usually from a [`Completer<void>`](https://api.dart.dev/dart-async/Completer-class.html)). When you complete it, the request is **aborted immediately** and a [`RequestAbortedException`](https://pub.dev/documentation/http/1.5.0/http/RequestAbortedException-class.html) is raised by `package:http`.
+2) **Manual cancellation — `@AbortTrigger`**
+
+Accept an `@AbortTrigger` parameter and pass a `Future<void>` (usually from a [`Completer<void>`](https://api.dart.dev/dart-async/Completer/Completer.html)). When that future completes, Chopper aborts the underlying HTTP request (using `http`'s abortable support) and a [`RequestAbortedException`](https://pub.dev/documentation/http/1.5.0/http/RequestAbortedException-class.html) is thrown — mirroring the HTTP package example.
 
 ```dart
-import 'package:http/http.dart' as http show RequestAbortedException;
-
+// Service definition
 @GET(path: '/download')
-Future<Response<List<int>>> download(
-  @AbortTrigger() Future<void>? abortTrigger, {
+Future<Response<List<int>>> download({
   @Query('id') required String id,
+  @AbortTrigger() Future<void>? abortTrigger,
 });
+```
 
-final abort = Completer<void>();
-final future = api.download(abortTrigger: abort.future, id: '42');
-// ...later, e.g. user taps "Cancel":
-abort.complete();
+**Usage:**
+```dart
+import 'dart:async' show Completer;
+import 'package:http/http.dart' show RequestAbortedException;
+
+final abortTrigger = Completer<void>();
+
 try {
-  await future;
-} on http.RequestAbortedException {
-  // user-initiated cancel
+  // Start the request
+  final Response<List<int>> response = await api.download(
+    id: '42',
+    abortTrigger: abortTrigger.future, 
+  );
+  // consume response
+} on RequestAbortedException {
+  // request aborted before completion
+  print('Request was aborted by user');
+  rethrow;
 }
+
+// Whenever abortion is required, i.e. user cancelled the operation
+abortTrigger.complete();
 ```
 
 ### Rules & behavior
