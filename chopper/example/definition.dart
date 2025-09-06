@@ -40,4 +40,7 @@ abstract class MyService extends ChopperService {
   Future<Response> postFile(
     @Part('file') List<int> bytes,
   );
+
+  @GET(path: '/assets/10GB.bin', timeout: Duration(seconds: 30))
+  Future<Response> getMassiveFile();
 }
