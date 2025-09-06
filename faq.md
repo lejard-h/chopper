@@ -65,7 +65,7 @@ Future<Response<List<int>>> download({
 **Usage:**
 ```dart
 import 'dart:async' show Completer;
-import 'package:http/http.dart' show RequestAbortedException;
+import 'package:http/http.dart' as http show RequestAbortedException;
 
 final abortTrigger = Completer<void>();
 
@@ -76,7 +76,7 @@ try {
     abortTrigger: abortTrigger.future, 
   );
   // consume response
-} on RequestAbortedException {
+} on http.RequestAbortedException {
   // request aborted before completion
   print('Request was aborted by user');
   rethrow;
