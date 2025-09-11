@@ -66,7 +66,13 @@ final class Utils {
   static Parameter buildRequiredPositionalParam(FormalParameterElement p) =>
       Parameter(
         (ParameterBuilder pb) => pb
-          ..name = p.name3!
+          ..name = switch (p.name3) {
+            final String name? => name,
+            null => throw InvalidGenerationSourceError(
+                'Encountered a required positional parameter without a name.',
+                element: p.baseElement,
+              ),
+          }
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
           ),
@@ -76,7 +82,13 @@ final class Utils {
   static Parameter buildOptionalPositionalParam(FormalParameterElement p) =>
       Parameter((ParameterBuilder pb) {
         pb
-          ..name = p.name3!
+          ..name = switch (p.name3) {
+            final String name? => name,
+            null => throw InvalidGenerationSourceError(
+                'Encountered an optional positional parameter without a name.',
+                element: p.baseElement,
+              ),
+          }
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
           );
@@ -91,7 +103,13 @@ final class Utils {
       Parameter((ParameterBuilder pb) {
         pb
           ..named = true
-          ..name = p.name3!
+          ..name = switch (p.name3) {
+            final String name? => name,
+            null => throw InvalidGenerationSourceError(
+                'Encountered a named parameter without a name.',
+                element: p.baseElement,
+              ),
+          }
           ..required = p.isRequiredNamed
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
@@ -111,7 +129,7 @@ final class Utils {
     FormalParameterElement? found;
 
     for (final FormalParameterElement p in m.formalParameters) {
-      final param = p.baseElement;
+      final FormalParameterElement param = p.baseElement;
       if (_abortTriggerChecker.hasAnnotationOf(param)) {
         if (found != null) {
           throw InvalidGenerationSourceError(
@@ -132,11 +150,10 @@ final class Utils {
       _abortTriggerChecker.hasAnnotationOf(p.baseElement);
 
   static void _assertValidAbortTriggerType(FormalParameterElement p) {
-    final ty = p.type.getDisplayString(withNullability: true);
-    final ok = (ty == 'Future<void>') || (ty == 'Future<void>?');
-    if (!ok) {
+    final String type = p.type.getDisplayString(withNullability: true);
+    if (!const <String>{'Future<void>', 'Future<void>?'}.contains(type)) {
       throw InvalidGenerationSourceError(
-        '@AbortTrigger parameter must be `Future<void>` or `Future<void>?`. Found: $ty',
+        '@AbortTrigger parameter must be `Future<void>` or `Future<void>?`. Found: $type',
         element: p.baseElement,
       );
     }
