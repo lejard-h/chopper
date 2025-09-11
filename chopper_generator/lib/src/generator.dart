@@ -554,7 +554,8 @@ final class ChopperGenerator
       final ConstantReader? responseFactory =
           factoryConverter?.peek('response');
       if (responseFactory != null) {
-        if (responseFactory.objectValue.toFunctionValue2() case final func?) {
+        if (responseFactory.objectValue.toFunctionValue2()
+            case final ExecutableElement func?) {
           namedArguments['responseConverter'] =
               refer(_factoryForFunction(func));
         }
