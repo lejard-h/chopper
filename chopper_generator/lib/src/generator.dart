@@ -17,8 +17,15 @@ import 'package:source_gen/source_gen.dart';
 
 /// Code generator for [chopper.ChopperApi] annotated classes.
 ///
-/// Will throw an [InvalidGenerationSourceError] if the annotated
-/// element is not a [ClassElement2].
+/// Responsibilities
+/// * Validate that the annotated element is a `ClassElement2` that extends
+///   `ChopperService`.
+/// * Synthesize implementations for abstract API methods, wiring up
+///   paths, queries, headers, body/parts, and calling `ChopperClient.send`.
+/// * Prefer pattern matching over force-unwraps to keep null-safety explicit.
+///
+/// Throws
+/// * [InvalidGenerationSourceError] if misapplied or required metadata is missing.
 final class ChopperGenerator
     extends GeneratorForAnnotation<chopper.ChopperApi> {
   const ChopperGenerator();
@@ -42,9 +49,12 @@ final class ChopperGenerator
     return _buildChopperApiImplementationClass(annotation, element);
   }
 
+  /// Returns true iff the given type is exactly `ChopperService`.
   static bool _extendsChopperService(InterfaceType type) =>
       _typeChecker(chopper.ChopperService).isExactlyType(type);
 
+  /// Builds the `definitionType` override used by Chopper to infer the
+  /// original abstract service type at runtime.
   static Field _buildDefinitionTypeMethod(String superType) => Field(
         (FieldBuilder method) => method
           ..annotations.add(refer('override'))
@@ -54,10 +64,13 @@ final class ChopperGenerator
           ..assignment = Code(superType),
       );
 
+  /// Emits the concrete implementation class for a given `@ChopperApi` service.
+  /// Returns the formatted Dart source as a string.
   static String _buildChopperApiImplementationClass(
     ConstantReader annotation,
     ClassElement2 element,
   ) {
+    // Ensure the annotated class derives from `ChopperService`.
     if (!element.allSupertypes.any(_extendsChopperService)) {
       final String friendlyName = element.displayName;
       throw InvalidGenerationSourceError(
@@ -109,6 +122,8 @@ final class ChopperGenerator
     return '$ignore\n${classBuilder.accept(emitter)}';
   }
 
+  /// Generates a constructor that optionally accepts a `ChopperClient` and
+  /// assigns it to `this.client` if provided.
   static Constructor _generateConstructor() => Constructor(
         (ConstructorBuilder b) => b
           ..optionalParameters.add(
@@ -130,6 +145,8 @@ final class ChopperGenerator
           ),
       );
 
+  /// Filters abstract methods that look like Chopper endpoints and maps them
+  /// to their generated implementations.
   static Iterable<Method> _parseMethods(
     ClassElement2 element,
     String baseUrl,
@@ -137,21 +154,25 @@ final class ChopperGenerator
   ) =>
       element.methods2
           .where(
-            (MethodElement2 method) =>
+            (method) =>
                 _getMethodAnnotation(method) != null &&
                 method.isAbstract &&
                 method.returnType.isDartAsyncFuture,
           )
-          .map(
-            (MethodElement2 m) =>
-                _generateMethod(m, baseUrl, baseUrlVariableElement),
-          );
+          .map((m) => _generateMethod(m, baseUrl, baseUrlVariableElement));
 
+  /// Generates a concrete implementation for a single abstract API method.
+  /// Handles:
+  /// * HTTP method detection and headers
+  /// * Path, query, field, and part parameter mapping
+  /// * Optional body/parts, multipart, and factory converters
+  /// * Return type plumbing (`Future<Response<T>>` vs `Future<T>`).
   static Method _generateMethod(
     MethodElement2 m,
     String baseUrl,
     TopLevelVariableElement2? baseUrlVariableElement,
   ) {
+    // Extract and validate the HTTP method annotation (@Get/@Post/@Put/@Patch/@Delete/...).
     final ConstantReader method = switch (_getMethodAnnotation(m)) {
       final ConstantReader reader? => reader,
       null => throw InvalidGenerationSourceError(
@@ -159,6 +180,7 @@ final class ChopperGenerator
           element: m.baseElement,
         ),
     };
+    // Per-method configuration flags
     final bool multipart = _hasAnnotation(m, chopper.Multipart);
     final bool formUrlEncoded = _hasAnnotation(m, chopper.FormUrlEncoded);
     final ConstantReader? factoryConverter = _getFactoryConverterAnnotation(m);
@@ -184,11 +206,12 @@ final class ChopperGenerator
         _getAnnotation(m, chopper.PartFileMap);
     final Map<String, ConstantReader> tag = _getAnnotation(m, chopper.Tag);
 
+    // Pre-build static and parameter-driven headers (or null if none)
     final Code? headers = _generateHeaders(m, method, formUrlEncoded);
     final Expression url =
         _generateUrl(method, paths, baseUrl, baseUrlVariableElement);
 
-    // Check if Response is present in the return type
+    // Return type analysis: does the method return `Future<Response<T>>`?
     final bool isResponseObject = _isResponse(m.returnType);
     final DartType? responseType =
         _getResponseType(m.returnType, isResponseObject);
@@ -200,7 +223,7 @@ final class ChopperGenerator
       responseType?.getDisplayString(withNullability: false) ?? 'dynamic',
     );
     // Set the return type
-    final returnType = isResponseObject
+    final Reference returnType = isResponseObject
         ? refer(m.returnType.getDisplayString(withNullability: false))
         : TypeReference(
             (TypeReferenceBuilder b) => b
@@ -215,33 +238,25 @@ final class ChopperGenerator
         // We don't support returning null Type
         ..returns = returnType
         // And null Typed parameters
-        ..types.addAll(
-          m.typeParameters2.map(
-            (TypeParameterElement2 t) => refer(
-              switch (t.bound) {
-                final DartType type? =>
-                  type.getDisplayString(withNullability: false),
-                null => throw InvalidGenerationSourceError(
-                    'Type parameter without a bound on method "${m.displayName}".',
-                    element: m.baseElement,
-                  ),
-              },
-            ),
-          ),
-        )
-        ..requiredParameters.addAll(
-          m.formalParameters
-              .where((p) => p.isRequiredPositional)
-              .map(Utils.buildRequiredPositionalParam),
-        )
-        ..optionalParameters.addAll(
-          m.formalParameters
-              .where((p) => p.isOptionalPositional)
-              .map(Utils.buildOptionalPositionalParam),
-        )
-        ..optionalParameters.addAll(
-          m.formalParameters.where((p) => p.isNamed).map(Utils.buildNamedParam),
-        );
+        ..types.addAll(m.typeParameters2.map(
+          (TypeParameterElement2 t) => refer(switch (t.bound) {
+            final DartType type? =>
+              type.getDisplayString(withNullability: false),
+            null => throw InvalidGenerationSourceError(
+                'Type parameter without a bound on method "${m.displayName}".',
+                element: m.baseElement,
+              ),
+          }),
+        ))
+        ..requiredParameters.addAll(m.formalParameters
+            .where((p) => p.isRequiredPositional)
+            .map(Utils.buildRequiredPositionalParam))
+        ..optionalParameters.addAll(m.formalParameters
+            .where((p) => p.isOptionalPositional)
+            .map(Utils.buildOptionalPositionalParam))
+        ..optionalParameters.addAll(m.formalParameters
+            .where((p) => p.isNamed)
+            .map(Utils.buildNamedParam));
 
       // Detect optional @AbortTrigger parameter (passed by the caller)
       final abortParam = Utils.findAbortTriggerParam(m);
@@ -268,7 +283,8 @@ final class ChopperGenerator
         );
       }
 
-      /// Build an iterable of all the parameters that are nullable
+      /// Build an iterable of all parameters that are nullable so we can handle
+      /// `QueryMap`/`FieldMap` nullability without using `!`.
       final Iterable<String> optionalNullableParameters = [
         ...m.formalParameters.where((p) => p.isOptionalPositional),
         ...m.formalParameters.where((p) => p.isNamed),
@@ -388,9 +404,9 @@ final class ChopperGenerator
       if (hasPartMap) {
         if (hasParts) {
           blocks.add(
-            refer(Vars.parts.toString()).property('addAll').call(
-              [refer(partMap.keys.first)],
-            ).statement,
+            refer(Vars.parts.toString())
+                .property('addAll')
+                .call([refer(partMap.keys.first)]).statement,
           );
         } else {
           blocks.add(
@@ -405,9 +421,9 @@ final class ChopperGenerator
       if (hasFileFilesMap) {
         if (hasParts || hasPartMap) {
           blocks.add(
-            refer(Vars.parts.toString()).property('addAll').call(
-              [refer(fileFieldMap.keys.first)],
-            ).statement,
+            refer(Vars.parts.toString())
+                .property('addAll')
+                .call([refer(fileFieldMap.keys.first)]).statement,
           );
         } else {
           blocks.add(
@@ -453,6 +469,7 @@ final class ChopperGenerator
         );
       }
 
+      // Timeout & abort behavior
       // If a timeout is configured, create an auto-abort that fires at the deadline.
       Expression? abortTriggerExpr;
       if (timeout != null) {
@@ -617,7 +634,7 @@ final class ChopperGenerator
                 ).closure
               ], {
                 'test': Method(
-                  (b) => b
+                  (MethodBuilder b) => b
                     ..requiredParameters.add(Parameter((ParameterBuilder p) => p
                       ..name = 'err'
                       ..type = refer('Object')))
@@ -645,7 +662,7 @@ final class ChopperGenerator
       } else {
         if (timeout != null) {
           // Build a chain: send().then((resp) => resp.bodyOrThrow)
-          final Expression mapToBody = Method((b) => b
+          final Expression mapToBody = Method((MethodBuilder b) => b
             ..requiredParameters.add(
               Parameter((ParameterBuilder p) => p
                 ..name = 'resp'
@@ -659,16 +676,15 @@ final class ChopperGenerator
 
           final Expression chained = returnStatement
               .property('then')
-              .call([mapToBody], {}, [responseTypeReference])
+              .call([mapToBody], const {}, [responseTypeReference])
               // Map auto-abort to TimeoutException and always cancel the timer
               .property('catchError')
               .call(
                 [
                   Method(
-                    (b) => b
-                      ..requiredParameters.add(
-                        Parameter((ParameterBuilder p) => p..name = '_'),
-                      )
+                    (MethodBuilder b) => b
+                      ..requiredParameters
+                          .add(Parameter((ParameterBuilder p) => p..name = '_'))
                       ..lambda = true
                       ..body = Block.of(
                         [
@@ -721,7 +737,7 @@ final class ChopperGenerator
             declareFinal(
               Vars.response.toString(),
               type: TypeReference(
-                (b) => b
+                (TypeReferenceBuilder b) => b
                   ..symbol = 'Response'
                   ..url = 'package:chopper/chopper.dart'
                   ..types.add(responseTypeReference),
@@ -740,15 +756,15 @@ final class ChopperGenerator
     });
   }
 
+  /// Converts a `Map` with non-string keys/values to `Map<String, String>` by
+  /// calling `toString()` on both key and value; used for form-url-encoded bodies.
   static Expression _generateMapToStringExpression(Reference map) {
     return map.property('map<String, String>').call([
-      Method((b) => b
-        ..requiredParameters.add(
-          Parameter((b) => b..name = 'key'),
-        )
-        ..requiredParameters.add(
-          Parameter((b) => b..name = 'value'),
-        )
+      Method((MethodBuilder b) => b
+        ..requiredParameters
+            .add(Parameter((ParameterBuilder b) => b..name = 'key'))
+        ..requiredParameters
+            .add(Parameter((ParameterBuilder b) => b..name = 'value'))
         ..returns = refer('MapEntry', 'dart.core')
         ..body = refer('MapEntry', 'dart.core')
             .newInstance([
@@ -760,6 +776,8 @@ final class ChopperGenerator
     ]);
   }
 
+  /// Formats a reference to a top-level or static factory function, including
+  /// its enclosing class name if present.
   static String _factoryForFunction(FunctionTypedElement2 function) {
     final String fnName = switch (function.name3) {
       final String name? => name,
@@ -782,6 +800,8 @@ final class ChopperGenerator
     return fnName;
   }
 
+  /// Returns a single-parameter annotation map for the specified type.
+  /// If multiple parameters have the same annotation, throws.
   static Map<String, ConstantReader> _getAnnotation(
     MethodElement2 method,
     Type type,
@@ -803,9 +823,12 @@ final class ChopperGenerator
       }
     }
 
-    return annotation == null ? {} : {name: ConstantReader(annotation)};
+    return {
+      if (annotation != null) name: ConstantReader(annotation),
+    };
   }
 
+  /// Returns a map of parameters to their annotation metadata for the given type.
   static Map<FormalParameterElement, ConstantReader> _getAnnotations(
     MethodElement2 m,
     Type type,
@@ -818,8 +841,10 @@ final class ChopperGenerator
             p: ConstantReader(_typeChecker(type).firstAnnotationOf(p)),
       };
 
+  /// Small helper to get a `TypeChecker` for a runtime type.
   static TypeChecker _typeChecker(Type type) => TypeChecker.fromRuntime(type);
 
+  /// Scans supported HTTP method annotations (@Get/@Post/...) and returns the first match.
   static ConstantReader? _getMethodAnnotation(MethodElement2 method) {
     for (final Type type in _methodsAnnotations) {
       final DartObject? annotation = _typeChecker(type)
@@ -832,6 +857,7 @@ final class ChopperGenerator
     return null;
   }
 
+  /// Returns the `@FactoryConverter` annotation if present on the method.
   static ConstantReader? _getFactoryConverterAnnotation(MethodElement2 method) {
     final DartObject? annotation = _typeChecker(chopper.FactoryConverter)
         .firstAnnotationOf(method, throwOnUnresolved: false);
@@ -839,10 +865,12 @@ final class ChopperGenerator
     return annotation != null ? ConstantReader(annotation) : null;
   }
 
+  /// Checks whether the given method has an annotation of the given type.
   static bool _hasAnnotation(MethodElement2 method, Type type) =>
       _typeChecker(type).firstAnnotationOf(method, throwOnUnresolved: false) !=
       null;
 
+  /// Supported HTTP method annotations in priority order.
   static const List<Type> _methodsAnnotations = [
     chopper.Get,
     chopper.Post,
@@ -854,47 +882,43 @@ final class ChopperGenerator
     chopper.Options,
   ];
 
+  /// Returns the first type argument if `type` is a generic interface; otherwise null.
   static DartType? _genericOf(DartType? type) =>
       type is InterfaceType && type.typeArguments.isNotEmpty
           ? type.typeArguments.first
           : null;
 
-  static bool _isMap(DartType type) {
-    return _typeChecker(Map).isExactlyType(type) ||
-        _typeChecker(Map).isAssignableFromType(type);
-  }
+  /// True if the type is (or is assignable to) `Map`.
+  static bool _isMap(DartType type) =>
+      _typeChecker(Map).isExactlyType(type) ||
+      _typeChecker(Map).isAssignableFromType(type);
 
-  static bool _isMapStringString(DartType type) {
-    if (!_isMap(type)) {
-      return false;
-    }
-    final firsType = type is InterfaceType && type.typeArguments.isNotEmpty
-        ? type.typeArguments.first
-        : null;
-    final secondType = type is InterfaceType && type.typeArguments.length > 1
-        ? type.typeArguments[1]
-        : null;
-    if (firsType == null || secondType == null) {
-      return false;
-    }
-    return _isString(firsType) && _isString(secondType);
-  }
+  /// True if the type is a `Map<String, String>`.
+  static bool _isMapStringString(DartType type) =>
+      _isMap(type) &&
+      switch (type) {
+        InterfaceType(typeArguments: [final k, final v, ...]) =>
+          _isString(k) && _isString(v),
+        _ => false,
+      };
 
-  static bool _isString(DartType type) {
-    return _typeChecker(String).isExactlyType(type) ||
-        _typeChecker(String).isAssignableFromType(type);
-  }
+  /// True if the type is (or is assignable to) `String`.
+  static bool _isString(DartType type) =>
+      _typeChecker(String).isExactlyType(type) ||
+      _typeChecker(String).isAssignableFromType(type);
 
-  static bool _isResponse(DartType type) {
-    final DartType? responseType = _genericOf(type);
-    if (responseType == null) return false;
+  /// True if the outer generic of `type` is `chopper.Response`.
+  static bool _isResponse(DartType type) => switch (_genericOf(type)) {
+        null => false,
+        final DartType responseType =>
+          _typeChecker(chopper.Response).isExactlyType(responseType)
+      };
 
-    return _typeChecker(chopper.Response).isExactlyType(responseType);
-  }
-
+  /// For `Future<Response<T>>`, returns `T`. For `Future<T>`, returns `T`.
   static DartType? _getResponseType(DartType type, bool isResponseObject) =>
       isResponseObject ? _genericOf(_genericOf(type)) : _genericOf(type);
 
+  /// Recursively unwraps nested generics to return the innermost element type.
   static DartType? _getResponseInnerType(DartType type) {
     final DartType? generic = _genericOf(type);
 
@@ -914,6 +938,8 @@ final class ChopperGenerator
     return _getResponseInnerType(generic);
   }
 
+  /// Builds the final `Uri` used for the request, combining baseUrl and path,
+  /// and substituting any `@Path` parameters.
   static Expression _generateUrl(
     ConstantReader method,
     Map<FormalParameterElement, ConstantReader> paths,
@@ -973,9 +999,12 @@ final class ChopperGenerator
     );
   }
 
+  /// Helper to create `Uri.parse(url)` as a code expression.
   static Expression _generateUri(String url) =>
       refer('Uri').newInstanceNamed('parse', [literal(url)]);
 
+  /// Creates the `Request(...)` expression with all optional named arguments
+  /// (body, parts, parameters, headers, tag, listFormat, etc.).
   static Expression _generateRequest(
     ConstantReader method, {
     bool hasBody = false,
@@ -1015,6 +1044,7 @@ final class ChopperGenerator
         },
       );
 
+  /// Builds a literal `Map<String, dynamic>` for query/field parameters.
   static Expression _generateMap(
     Map<FormalParameterElement, ConstantReader> queries, {
     bool enableToString = false,
@@ -1032,44 +1062,42 @@ final class ChopperGenerator
         refer(enableToString ? 'String' : 'dynamic'),
       );
 
+  /// Builds a `List<PartValue>` (and `PartValueFile`) for multipart requests.
   static Expression _generateList(
     Map<FormalParameterElement, ConstantReader> parts,
     Map<FormalParameterElement, ConstantReader> fileFields,
   ) {
     final List list = [];
 
-    parts.forEach((p, ConstantReader r) {
-      final String name = r.peek('name')?.stringValue ?? p.displayName;
-      final List<Expression> params = [
-        literal(name),
-        refer(p.displayName),
-      ];
-
-      list.add(refer(
+    parts.forEach(
+      (FormalParameterElement p, ConstantReader r) => list.add(refer(
         'PartValue<${p.type.getDisplayString(
           withNullability: p.type.isNullable,
         )}>',
-      ).newInstance(params));
-    });
-
-    fileFields.forEach((p, ConstantReader r) {
-      final String name = r.peek('name')?.stringValue ?? p.displayName;
-      final List<Expression> params = [
-        literal(name),
+      ).newInstance([
+        literal(r.peek('name')?.stringValue ?? p.displayName),
         refer(p.displayName),
-      ];
+      ])),
+    );
 
-      list.add(
+    fileFields.forEach(
+      (FormalParameterElement p, ConstantReader r) => list.add(
         refer('PartValueFile<${p.type.getDisplayString(
           withNullability: p.type.isNullable,
         )}>')
-            .newInstance(params),
-      );
-    });
+            .newInstance([
+          literal(r.peek('name')?.stringValue ?? p.displayName),
+          refer(p.displayName),
+        ]),
+      ),
+    );
 
     return literalList(list, refer('PartValue'));
   }
 
+  /// Emits a `Map<String, String>` for headers, merging parameter-level
+  /// `@Header()`s with the static `headers:` map on the HTTP annotation.
+  /// Returns `null` if no headers are present.
   static Code? _generateHeaders(
     MethodElement2 methodElement,
     ConstantReader method,
