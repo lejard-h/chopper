@@ -436,7 +436,7 @@ final class ChopperGenerator
       Expression? abortTriggerExpr;
       if (timeout != null) {
         blocks.add(
-          declareFinal('\$abortTrigger',
+          declareFinal(Vars.abortTrigger.toString(),
                   type: TypeReference((t) => t
                     ..symbol = 'ChopperCompleter'
                     ..url = 'package:chopper/chopper.dart'
@@ -457,7 +457,7 @@ final class ChopperGenerator
         );
 
         blocks.add(
-          declareFinal('\$timeout',
+          declareFinal(Vars.timeout.toString(),
                   type: TypeReference((t) => t
                     ..symbol = 'ChopperTimer'
                     ..url = 'package:chopper/chopper.dart'))
@@ -468,7 +468,7 @@ final class ChopperGenerator
                     durationExpr,
                     Method((b) => b
                       ..body = Code(
-                        'if (!\$abortTrigger.isCompleted) \$abortTrigger.complete();',
+                        'if (!${Vars.abortTrigger}.isCompleted) ${Vars.abortTrigger}.complete();',
                       )).closure,
                   ],
                 ),
@@ -477,7 +477,8 @@ final class ChopperGenerator
         );
 
         // Use the auto-abort future directly
-        abortTriggerExpr = refer('\$abortTrigger').property('future');
+        abortTriggerExpr =
+            refer(Vars.abortTrigger.toString()).property('future');
       } else if (abortParamName != null) {
         // No timeout: pass through the caller-provided abort future if present
         abortTriggerExpr = refer(abortParamName);
@@ -605,13 +606,14 @@ final class ChopperGenerator
                           'ChopperRequestAbortedException',
                           'package:chopper/chopper.dart',
                         ))
-                        .and(refer('\$abortTrigger').property('isCompleted'))
+                        .and(refer(Vars.abortTrigger.toString())
+                            .property('isCompleted'))
                         .code,
                 ).closure,
               })
               .property('whenComplete')
               .call([
-                refer('\$timeout').property('cancel'),
+                refer(Vars.timeout.toString()).property('cancel'),
               ]);
         }
       }
@@ -684,14 +686,15 @@ final class ChopperGenerator
                             'ChopperRequestAbortedException',
                             'package:chopper/chopper.dart',
                           ))
-                          .and(refer('\$abortTrigger').property('isCompleted'))
+                          .and(refer(Vars.abortTrigger.toString())
+                              .property('isCompleted'))
                           .code,
                   ).closure,
                 },
               )
               .property('whenComplete')
               .call([
-                refer('\$timeout').property('cancel'),
+                refer(Vars.timeout.toString()).property('cancel'),
               ]);
 
           blocks.add(chained.returned.statement);
