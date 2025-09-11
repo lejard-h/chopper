@@ -237,6 +237,20 @@ abstract class HttpTestService extends ChopperService {
     @Header('x-double') double? doubleHeader,
     @Header('x-enum') ExampleEnum? enumHeader,
   });
+
+  @GET(path: 'get_timeout', timeout: Duration(seconds: 42))
+  Future<String> getTimeoutTest();
+
+  @GET(path: 'get_timeout_zero', timeout: Duration(seconds: 0))
+  Future<String> getTimeoutTestZero();
+
+  @GET(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
+  Future<String> getTimeoutTestNeg();
+
+  @GET(path: 'get_abort_trigger')
+  Future<String> getWithAbortTrigger({
+    @AbortTrigger() Future<void>? abortTrigger,
+  });
 }
 
 Request customConvertRequest(Request req) {

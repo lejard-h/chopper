@@ -979,39 +979,167 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getTimeoutTest() {
     final Uri $url = Uri.parse('/test/get_timeout');
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 42000000),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: $abortTrigger.future,
     );
     return client
         .send<String, String>($request)
-        .timeout(const Duration(microseconds: 42000000));
+        .catchError(
+          (_) => Future<Response<String>>.error(
+              ChopperTimeoutException('Request timed out after 42 seconds')),
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
   }
 
   @override
   Future<Response<String>> getTimeoutTestZero() {
     final Uri $url = Uri.parse('/test/get_timeout_zero');
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 0),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: $abortTrigger.future,
     );
     return client
         .send<String, String>($request)
-        .timeout(const Duration(microseconds: 0));
+        .catchError(
+          (_) => Future<Response<String>>.error(
+              ChopperTimeoutException('Request timed out')),
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
   }
 
   @override
   Future<Response<String>> getTimeoutTestNeg() {
     final Uri $url = Uri.parse('/test/get_timeout_neg');
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 0),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: $abortTrigger.future,
     );
     return client
         .send<String, String>($request)
-        .timeout(const Duration(microseconds: 0));
+        .catchError(
+          (_) => Future<Response<String>>.error(
+              ChopperTimeoutException('Request timed out')),
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<Response<String>> getTimeoutTestQueryHeader({
+    String? testHeader,
+    String? name,
+  }) {
+    final Uri $url = Uri.parse('/test/get_timeout_with_query_header');
+    final Map<String, dynamic> $params = <String, dynamic>{'name': name};
+    final Map<String, String> $headers = {
+      if (testHeader != null) 'x-test': testHeader,
+    };
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 30000000),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      headers: $headers,
+      abortTrigger: $abortTrigger.future,
+    );
+    return client
+        .send<String, String>($request)
+        .catchError(
+          (_) => Future<Response<String>>.error(
+              ChopperTimeoutException('Request timed out after 30 seconds')),
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<Response<String>> getWithAbortTrigger({Future<void>? abortTrigger}) {
+    final Uri $url = Uri.parse('/test/get_abort_trigger');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: abortTrigger,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getWithAbortTrigger2({Future<void>? foo}) {
+    final Uri $url = Uri.parse('/test/get_abort_trigger2');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: foo,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getWithAbortTriggerQueryHeader({
+    String? testHeader,
+    String? name,
+    Future<void>? abortTrigger,
+  }) {
+    final Uri $url = Uri.parse('/test/get_abort_trigger_with_query_header');
+    final Map<String, dynamic> $params = <String, dynamic>{'name': name};
+    final Map<String, String> $headers = {
+      if (testHeader != null) 'x-test': testHeader,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      headers: $headers,
+      abortTrigger: abortTrigger,
+    );
+    return client.send<String, String>($request);
   }
 }

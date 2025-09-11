@@ -1,12 +1,8 @@
 import 'dart:async';
 
-import 'package:chopper/src/constants.dart';
-import 'package:chopper/src/date_format.dart';
-import 'package:chopper/src/request.dart';
-import 'package:chopper/src/response.dart';
+import 'package:chopper/chopper.dart';
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
-import 'package:qs_dart/qs_dart.dart' show ListFormat;
 
 /// {@template ChopperApi}
 /// Defines a Chopper API.
@@ -795,6 +791,64 @@ final class Tag {
   const Tag();
 }
 
+/// {@template AbortTrigger}
+/// Adds a **cancellation trigger** to the request.
+///
+/// Pass a [Future<void>] (typically `Completer<void>().future`) whose
+/// completion **aborts** the underlying HTTP request using `package:http`'s
+/// abortable support. When the future completes, the request is cancelled and
+/// a [http.RequestAbortedException] is thrown. See the http docs:
+/// https://pub.dev/documentation/http/1.5.0/http/Abortable/abortTrigger.html
+///
+/// **Type**: `Future<void>` or `Future<void>?`
+///
+/// **Rules**
+/// - Only one `@AbortTrigger` parameter is allowed per method.
+/// - It must not be combined with a method-level `timeout:`; code generation
+///   will fail if both are present (choose one or the other).
+///
+/// **Example**
+/// ```dart
+/// import 'dart:async' show Completer;
+/// import 'http/http.dart' as http show RequestAbortedException;
+///
+/// @GET(path: '/download')
+/// Future<Response<List<int>>> download({
+///   @Query('id') required String id,
+///   @AbortTrigger() Future<void>? abortTrigger,
+/// });
+///
+/// final abort = Completer<void>();
+/// try {
+///   final res = await api.download(
+///     id: '42',
+///     abortTrigger: abort.future,
+///   );
+///   // consume res
+/// } on http.RequestAbortedException {
+///   // user-initiated cancel
+/// }
+///
+/// // later (e.g. on user action):
+/// abort.complete();
+/// ```
+///
+/// **Notes**
+/// - Aborting during streaming ends the response stream early.
+/// - If you want time-based cancellation, prefer a method `timeout:` which
+///   generates an internal auto-abort; don’t use both.
+/// - Importing `package:chopper/chopper.dart` is sufficient; it re-exports:
+///   - [Completer] as [ChopperCompleter]
+///   - [Timer] as [ChopperTimer]
+///   - [TimeoutException] as [ChopperTimeoutException]
+///   - [http.RequestAbortedException] as [ChopperRequestAbortedException]
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.parameter})
+final class AbortTrigger {
+  const AbortTrigger();
+}
+
 /// {@macro ChopperApi}
 const chopperApi = ChopperApi();
 
@@ -863,3 +917,6 @@ const formUrlEncoded = FormUrlEncoded();
 
 /// {@macro Tag}
 const tag = Tag();
+
+/// {@macro AbortTrigger}
+const abortTrigger = AbortTrigger();

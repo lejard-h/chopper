@@ -3,7 +3,7 @@
 import 'dart:math' show max;
 
 import 'package:analyzer/dart/element/element2.dart';
-import 'package:chopper/chopper.dart' show DateFormat, ListFormat;
+import 'package:chopper/chopper.dart' show DateFormat, ListFormat, AbortTrigger;
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:collection/collection.dart';
@@ -101,4 +101,44 @@ final class Utils {
           pb.defaultTo = Code(p.defaultValueCode!);
         }
       });
+
+  static final TypeChecker _abortTriggerChecker =
+      const TypeChecker.fromRuntime(AbortTrigger);
+
+  /// Returns the first parameter annotated with `@AbortTrigger`, or null.
+  /// Validates there is at most one and that it is of type `Future<void>` or `Future<void>?`.
+  static FormalParameterElement? findAbortTriggerParam(ExecutableElement2 m) {
+    FormalParameterElement? found;
+
+    for (final FormalParameterElement p in m.formalParameters) {
+      final param = p.baseElement;
+      if (_abortTriggerChecker.hasAnnotationOf(param)) {
+        if (found != null) {
+          throw InvalidGenerationSourceError(
+            'Only one @AbortTrigger parameter is allowed on "${m.displayName}".',
+            element: param,
+          );
+        }
+        _assertValidAbortTriggerType(p);
+        found = p;
+      }
+    }
+
+    return found;
+  }
+
+  /// Quick predicate for filtering collections.
+  static bool isAbortTriggerParam(FormalParameterElement p) =>
+      _abortTriggerChecker.hasAnnotationOf(p.baseElement);
+
+  static void _assertValidAbortTriggerType(FormalParameterElement p) {
+    final ty = p.type.getDisplayString(withNullability: true);
+    final ok = (ty == 'Future<void>') || (ty == 'Future<void>?');
+    if (!ok) {
+      throw InvalidGenerationSourceError(
+        '@AbortTrigger parameter must be `Future<void>` or `Future<void>?`. Found: $ty',
+        element: p.baseElement,
+      );
+    }
+  }
 }

@@ -58,7 +58,7 @@ void main() {
       expect(
         exception.toString(),
         // ignore: lines_longer_than_80_chars
-        'ChopperException: Test message with request , \nRequest: Request(GET, http://localhost/test, http://baseurl, null, {}, {}, false, [], null, null, null, null)',
+        'ChopperException: Test message with request , \nRequest: Request(GET, http://localhost/test, http://baseurl, null, {}, {}, false, [], null, null, null, null, null)',
       );
     });
 
@@ -82,7 +82,7 @@ void main() {
         expect(
           exception.toString(),
           // ignore: lines_longer_than_80_chars
-          'ChopperException: Test message with response and request , \nResponse: Response<Null>(Instance of \'Response\', null, null), \nRequest: Request(POST, http://localhost/another/test, http://baseurl, {key: value}, {}, {foo: bar}, false, [], null, null, null, null)',
+          'ChopperException: Test message with response and request , \nResponse: Response<Null>(Instance of \'Response\', null, null), \nRequest: Request(POST, http://localhost/another/test, http://baseurl, {key: value}, {}, {foo: bar}, false, [], null, null, null, null, null)',
         );
       },
       testOn: 'vm',
@@ -108,7 +108,7 @@ void main() {
         expect(
           exception.toString(),
           // ignore: lines_longer_than_80_chars
-          'ChopperException: Test message with response and request , \nResponse: Response<Null>(Instance of \'Response0\', null, null), \nRequest: Request(POST, http://localhost/another/test, http://baseurl, {key: value}, {}, {foo: bar}, false, [], null, null, null, null)',
+          'ChopperException: Test message with response and request , \nResponse: Response<Null>(Instance of \'Response0\', null, null), \nRequest: Request(POST, http://localhost/another/test, http://baseurl, {key: value}, {}, {foo: bar}, false, [], null, null, null, null, null)',
         );
       },
       testOn: 'chrome',

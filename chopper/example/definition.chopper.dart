@@ -126,4 +126,32 @@ final class _$MyService extends MyService {
     );
     return client.send<dynamic, dynamic>($request);
   }
+
+  @override
+  Future<Response<dynamic>> getMassiveFile() {
+    final Uri $url = Uri.parse('/resources/assets/10GB.bin');
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 30000000),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: $abortTrigger.future,
+    );
+    return client
+        .send<dynamic, dynamic>($request)
+        .catchError(
+          (_) => Future<Response<dynamic>>.error(
+              ChopperTimeoutException('Request timed out after 30 seconds')),
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
 }

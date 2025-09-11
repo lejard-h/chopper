@@ -12,7 +12,8 @@ import 'package:qs_dart/qs_dart.dart' show ListFormat;
 /// This class represents an HTTP request that can be made with Chopper.
 /// {@endtemplate}
 // ignore: must_be_immutable
-base class Request extends http.BaseRequest with EquatableMixin {
+base class Request extends http.BaseRequest
+    with http.Abortable, EquatableMixin {
   final Uri uri;
   final Uri baseUri;
   final dynamic body;
@@ -25,6 +26,8 @@ base class Request extends http.BaseRequest with EquatableMixin {
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
   final bool? includeNullQueryVars;
+  @override
+  final Future<void>? abortTrigger;
 
   /// {@macro request}
   Request(
@@ -41,6 +44,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     @Deprecated('Use listFormat instead') this.useBrackets,
     this.dateFormat,
     this.includeNullQueryVars,
+    this.abortTrigger,
   })  : assert(
             !baseUri.hasQuery,
             'baseUri should not contain query parameters.'
@@ -78,6 +82,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
     DateFormat? dateFormat,
     bool? includeNullQueryVars,
     Object? tag,
+    Future<void>? abortTrigger,
   }) =>
       Request(
         method ?? this.method,
@@ -94,6 +99,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
         dateFormat: dateFormat ?? this.dateFormat,
         includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
         tag: tag ?? this.tag,
+        abortTrigger: abortTrigger ?? this.abortTrigger,
       );
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
@@ -146,15 +152,15 @@ base class Request extends http.BaseRequest with EquatableMixin {
     );
   }
 
-  /// Converts this Chopper Request into a [http.BaseRequest].
+  /// Converts this Chopper Request into a [http.Abortable].
   ///
   /// All [parameters] and [headers] are conserved.
   ///
   /// Depending on the request type the returning object will be:
-  ///   - [http.StreamedRequest] if body is a [Stream<List<int>>]
-  ///   - [http.MultipartRequest] if [multipart] is true
-  ///   - or a [http.Request]
-  Future<http.BaseRequest> toBaseRequest() async {
+  ///   - [http.AbortableStreamedRequest] if body is a [Stream<List<int>>]
+  ///   - [http.AbortableMultipartRequest] if [multipart] is true
+  ///   - or a [http.AbortableRequest]
+  Future<http.Abortable> toBaseRequest() async {
     if (body is Stream<List<int>>) return toStreamedRequest(body);
 
     if (multipart) return toMultipartRequest();
@@ -162,11 +168,12 @@ base class Request extends http.BaseRequest with EquatableMixin {
     return toHttpRequest();
   }
 
-  /// Convert this [Request] to a [http.Request]
+  /// Convert this [Request] to a [http.AbortableRequest]
   @visibleForTesting
-  http.Request toHttpRequest() {
-    final http.Request request = http.Request(method, url)
-      ..followRedirects = followRedirects;
+  http.AbortableRequest toHttpRequest() {
+    final http.AbortableRequest request =
+        http.AbortableRequest(method, url, abortTrigger: abortTrigger)
+          ..followRedirects = followRedirects;
 
     if (body == null) {
       request.headers.addAll(headers);
@@ -191,11 +198,12 @@ base class Request extends http.BaseRequest with EquatableMixin {
     return request;
   }
 
-  /// Convert this [Request] to a [http.MultipartRequest]
+  /// Convert this [Request] to a [http.AbortableMultipartRequest]
   @visibleForTesting
-  Future<http.MultipartRequest> toMultipartRequest() async {
-    final http.MultipartRequest request = http.MultipartRequest(method, url)
-      ..headers.addAll(headers);
+  Future<http.AbortableMultipartRequest> toMultipartRequest() async {
+    final http.AbortableMultipartRequest request =
+        http.AbortableMultipartRequest(method, url, abortTrigger: abortTrigger)
+          ..headers.addAll(headers);
 
     for (final PartValue part in parts) {
       if (part.value == null) continue;
@@ -235,11 +243,13 @@ base class Request extends http.BaseRequest with EquatableMixin {
     return request;
   }
 
-  /// Convert this [Request] to a [http.StreamedRequest]
+  /// Convert this [Request] to a [http.AbortableStreamedRequest]
   @visibleForTesting
-  http.StreamedRequest toStreamedRequest(Stream<List<int>> bodyStream) {
-    final http.StreamedRequest request = http.StreamedRequest(method, url)
-      ..headers.addAll(headers);
+  http.AbortableStreamedRequest toStreamedRequest(
+      Stream<List<int>> bodyStream) {
+    final http.AbortableStreamedRequest request =
+        http.AbortableStreamedRequest(method, url, abortTrigger: abortTrigger)
+          ..headers.addAll(headers);
 
     bodyStream.listen(
       request.sink.add,
@@ -265,6 +275,7 @@ base class Request extends http.BaseRequest with EquatableMixin {
         useBrackets,
         dateFormat,
         includeNullQueryVars,
+        abortTrigger,
       ];
 }
 
