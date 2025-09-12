@@ -18,10 +18,10 @@ import 'package:source_gen/source_gen.dart';
 /// Code generator for [chopper.ChopperApi] annotated classes.
 ///
 /// Responsibilities
-/// * Validate that the annotated element is a `ClassElement2` that extends
-///   `ChopperService`.
+/// * Validate that the annotated element is a [ClassElement2] that extends
+///   [chopper.ChopperService].
 /// * Synthesize implementations for abstract API methods, wiring up
-///   paths, queries, headers, body/parts, and calling `ChopperClient.send`.
+///   paths, queries, headers, body/parts, and calling [chopper.ChopperClient.send].
 /// * Prefer pattern matching over force-unwraps to keep null-safety explicit.
 ///
 /// Throws
@@ -49,7 +49,7 @@ final class ChopperGenerator
     return _buildChopperApiImplementationClass(annotation, element);
   }
 
-  /// Returns true iff the given type is exactly `ChopperService`.
+  /// Returns true iff the given type is exactly [chopper.ChopperService].
   static bool _extendsChopperService(InterfaceType type) =>
       _typeChecker(chopper.ChopperService).isExactlyType(type);
 
@@ -122,7 +122,7 @@ final class ChopperGenerator
     return '$ignore\n${classBuilder.accept(emitter)}';
   }
 
-  /// Generates a constructor that optionally accepts a `ChopperClient` and
+  /// Generates a constructor that optionally accepts a [chopper.ChopperClient] and
   /// assigns it to `this.client` if provided.
   static Constructor _generateConstructor() => Constructor(
         (ConstructorBuilder b) => b
@@ -569,6 +569,7 @@ final class ChopperGenerator
         ],
       ];
 
+      /// Generates a user-friendly timeout message based on the given duration.
       String getTimeoutExceptionMessage(Duration timeout) => switch (timeout) {
             > const Duration(days: 1) =>
               'Request timed out after ${timeout.inDays} days',
@@ -842,7 +843,7 @@ final class ChopperGenerator
             p: ConstantReader(_typeChecker(type).firstAnnotationOf(p)),
       };
 
-  /// Small helper to get a `TypeChecker` for a runtime type.
+  /// Small helper to get a [TypeChecker] for a runtime type.
   static TypeChecker _typeChecker(Type type) => TypeChecker.fromRuntime(type);
 
   /// Scans supported HTTP method annotations (@Get/@Post/...) and returns the first match.
@@ -889,7 +890,7 @@ final class ChopperGenerator
           ? type.typeArguments.first
           : null;
 
-  /// True if the type is (or is assignable to) `Map`.
+  /// True if the type is (or is assignable to) [Map].
   static bool _isMap(DartType type) =>
       _typeChecker(Map).isExactlyType(type) ||
       _typeChecker(Map).isAssignableFromType(type);
@@ -903,12 +904,12 @@ final class ChopperGenerator
         _ => false,
       };
 
-  /// True if the type is (or is assignable to) `String`.
+  /// True if the type is (or is assignable to) [String].
   static bool _isString(DartType type) =>
       _typeChecker(String).isExactlyType(type) ||
       _typeChecker(String).isAssignableFromType(type);
 
-  /// True if the outer generic of `type` is `chopper.Response`.
+  /// True if the outer generic of `type` is [chopper.Response].
   static bool _isResponse(DartType type) => switch (_genericOf(type)) {
         null => false,
         final DartType responseType =>
@@ -939,7 +940,7 @@ final class ChopperGenerator
     return _getResponseInnerType(generic);
   }
 
-  /// Builds the final `Uri` used for the request, combining baseUrl and path,
+  /// Builds the final [Uri] used for the request, combining [baseUrl] and path,
   /// and substituting any `@Path` parameters.
   static Expression _generateUrl(
     ConstantReader method,
@@ -1004,7 +1005,7 @@ final class ChopperGenerator
   static Expression _generateUri(String url) =>
       refer('Uri').newInstanceNamed('parse', [literal(url)]);
 
-  /// Creates the `Request(...)` expression with all optional named arguments
+  /// Creates the [chopper.Request] expression with all optional named arguments
   /// (body, parts, parameters, headers, tag, listFormat, etc.).
   static Expression _generateRequest(
     ConstantReader method, {
@@ -1063,7 +1064,7 @@ final class ChopperGenerator
         refer(enableToString ? 'String' : 'dynamic'),
       );
 
-  /// Builds a `List<PartValue>` (and `PartValueFile`) for multipart requests.
+  /// Builds a `List<PartValue>` (and [chopper.PartValueFile]) for multipart requests.
   static Expression _generateList(
     Map<FormalParameterElement, ConstantReader> parts,
     Map<FormalParameterElement, ConstantReader> fileFields,
