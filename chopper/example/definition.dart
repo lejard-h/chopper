@@ -9,14 +9,10 @@ abstract class MyService extends ChopperService {
   static MyService create(ChopperClient client) => _$MyService(client);
 
   @Get(path: '/{id}')
-  Future<Response> getResource(
-    @Path() String id,
-  );
+  Future<Response> getResource(@Path() String id);
 
   @Get(path: '/', headers: {'foo': 'bar'})
-  Future<Response<Map>> getMapResource(
-    @Query() String id,
-  );
+  Future<Response<Map>> getMapResource(@Query() String id);
 
   @Get(path: '/resources')
   Future<Response<List<Map>>> getListResources();
@@ -37,9 +33,7 @@ abstract class MyService extends ChopperService {
 
   @Post(path: '/file')
   @multipart
-  Future<Response> postFile(
-    @Part('file') List<int> bytes,
-  );
+  Future<Response> postFile(@Part('file') List<int> bytes);
 
   @GET(path: '/assets/10GB.bin', timeout: Duration(seconds: 30))
   Future<Response> getMassiveFile();

@@ -29,9 +29,7 @@ final class ChopperApi {
   final String baseUrl;
 
   /// {@macro ChopperApi}
-  const ChopperApi({
-    this.baseUrl = '',
-  });
+  const ChopperApi({this.baseUrl = ''});
 }
 
 /// {@template Path}
@@ -281,9 +279,9 @@ final class GET extends Method {
     super.includeNullQueryVars,
     super.timeout,
   })
-// coverage:ignore-start
-  : super(HttpMethod.Get);
-// coverage:ignore-end
+    // coverage:ignore-start
+    : super(HttpMethod.Get);
+  // coverage:ignore-end
 }
 
 /// {@template Get}
@@ -325,9 +323,9 @@ final class POST extends Method {
     super.includeNullQueryVars,
     super.timeout,
   })
-// coverage:ignore-start
-  : super(HttpMethod.Post);
-// coverage:ignore-end
+    // coverage:ignore-start
+    : super(HttpMethod.Post);
+  // coverage:ignore-end
 }
 
 /// {@template Post}
@@ -369,9 +367,9 @@ final class DELETE extends Method {
     super.includeNullQueryVars,
     super.timeout,
   })
-// coverage:ignore-start
-  : super(HttpMethod.Delete);
-// coverage:ignore-end
+    // coverage:ignore-start
+    : super(HttpMethod.Delete);
+  // coverage:ignore-end
 }
 
 /// {@template Delete}
@@ -413,9 +411,9 @@ final class PUT extends Method {
     super.includeNullQueryVars,
     super.timeout,
   })
-// coverage:ignore-start
-  : super(HttpMethod.Put);
-// coverage:ignore-end
+    // coverage:ignore-start
+    : super(HttpMethod.Put);
+  // coverage:ignore-end
 }
 
 /// {@template Put}
@@ -458,9 +456,9 @@ final class PATCH extends Method {
     super.includeNullQueryVars,
     super.timeout,
   })
-// coverage:ignore-start
-  : super(HttpMethod.Patch);
-// coverage:ignore-end
+    // coverage:ignore-start
+    : super(HttpMethod.Patch);
+  // coverage:ignore-end
 }
 
 /// {@template Patch}
@@ -501,9 +499,9 @@ final class HEAD extends Method {
     super.includeNullQueryVars,
     super.timeout,
   })
-// coverage:ignore-start
-  : super(HttpMethod.Head);
-// coverage:ignore-end
+    // coverage:ignore-start
+    : super(HttpMethod.Head);
+  // coverage:ignore-end
 }
 
 /// {@template Head}
@@ -543,9 +541,9 @@ final class OPTIONS extends Method {
     super.includeNullQueryVars,
     super.timeout,
   })
-// coverage:ignore-start
-  : super(HttpMethod.Options);
-// coverage:ignore-end
+    // coverage:ignore-start
+    : super(HttpMethod.Options);
+  // coverage:ignore-end
 }
 
 /// {@template Options}
@@ -613,10 +611,7 @@ final class FactoryConverter {
   final ConvertResponse? response;
 
   /// {@macro FactoryConverter}
-  const FactoryConverter({
-    this.request,
-    this.response,
-  });
+  const FactoryConverter({this.request, this.response});
 }
 
 /// {@template Field}

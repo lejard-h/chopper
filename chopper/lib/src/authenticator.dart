@@ -7,11 +7,12 @@ import 'package:chopper/chopper.dart';
 /// based on the given [request], [response], and optionally the
 /// [originalRequest].
 ///
-typedef AuthenticationCallback = FutureOr<void> Function(
-  Request request,
-  Response response, [
-  Request? originalRequest,
-]);
+typedef AuthenticationCallback =
+    FutureOr<void> Function(
+      Request request,
+      Response response, [
+      Request? originalRequest,
+    ]);
 
 ///
 /// Handles authentication challenges raised by the [ChopperClient].

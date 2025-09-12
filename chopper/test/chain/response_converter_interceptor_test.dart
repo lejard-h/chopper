@@ -16,180 +16,193 @@ void main() {
 
   group('response converter tests', () {
     test(
-        'response is successful converter is null and response converter is null, response is not converted',
-        () async {
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(),
-          ResponseInterceptor(),
-        ],
-        request: testRequest,
-      );
+      'response is successful converter is null and response converter is null, response is not converted',
+      () async {
+        interceptorChain = InterceptorChain(
+          interceptors: [ResponseConverterInterceptor(), ResponseInterceptor()],
+          request: testRequest,
+        );
 
-      final response = await interceptorChain.proceed(testRequest);
+        final response = await interceptorChain.proceed(testRequest);
 
-      expect(response.body, 'TestResponse');
-    });
+        expect(response.body, 'TestResponse');
+      },
+    );
 
     test(
-        'response is successful converter is not null and response converter is null, response is converted',
-        () async {
-      final converter = ResponseConverter();
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(converter: converter),
-          ResponseInterceptor(),
-        ],
-        request: testRequest,
-      );
+      'response is successful converter is not null and response converter is null, response is converted',
+      () async {
+        final converter = ResponseConverter();
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(converter: converter),
+            ResponseInterceptor(),
+          ],
+          request: testRequest,
+        );
 
-      final response = await interceptorChain.proceed(testRequest);
+        final response = await interceptorChain.proceed(testRequest);
 
-      expect(response.body, 'converted');
-      expect(converter.called, 1);
-    });
+        expect(response.body, 'converted');
+        expect(converter.called, 1);
+      },
+    );
 
     test(
-        'response is successful converter is not null and response converter is not null, response is converted by response converter',
-        () async {
-      final converter = ResponseConverter();
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(
+      'response is successful converter is not null and response converter is not null, response is converted by response converter',
+      () async {
+        final converter = ResponseConverter();
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(
               converter: converter,
-              responseConverter: (response) =>
-                  response.copyWith(body: 'response converted')),
-          ResponseInterceptor(),
-        ],
-        request: testRequest,
-      );
+              responseConverter:
+                  (response) => response.copyWith(body: 'response converted'),
+            ),
+            ResponseInterceptor(),
+          ],
+          request: testRequest,
+        );
 
-      final response = await interceptorChain.proceed(testRequest);
+        final response = await interceptorChain.proceed(testRequest);
 
-      expect(response.body, 'response converted');
-      expect(converter.called, 0);
-    });
-
-    test(
-        'response is successful converter is not null and response converter is null, response is converted with null body',
-        () async {
-      final converter = ResponseNullBodyConverter();
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(converter: converter),
-          ResponseInterceptor(),
-        ],
-        request: testRequest,
-      );
-
-      final response = await interceptorChain.proceed(testRequest);
-
-      expect(response.body, null);
-      expect(converter.called, 1);
-    });
+        expect(response.body, 'response converted');
+        expect(converter.called, 0);
+      },
+    );
 
     test(
-        'response is successful converter is not null and response converter is not null, response is converted by response converter with null body',
-        () async {
-      final converter = ResponseNullBodyConverter();
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(
+      'response is successful converter is not null and response converter is null, response is converted with null body',
+      () async {
+        final converter = ResponseNullBodyConverter();
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(converter: converter),
+            ResponseInterceptor(),
+          ],
+          request: testRequest,
+        );
+
+        final response = await interceptorChain.proceed(testRequest);
+
+        expect(response.body, null);
+        expect(converter.called, 1);
+      },
+    );
+
+    test(
+      'response is successful converter is not null and response converter is not null, response is converted by response converter with null body',
+      () async {
+        final converter = ResponseNullBodyConverter();
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(
               converter: converter,
-              responseConverter: (response) => Response(response.base, null)),
-          ResponseInterceptor(),
-        ],
-        request: testRequest,
-      );
+              responseConverter: (response) => Response(response.base, null),
+            ),
+            ResponseInterceptor(),
+          ],
+          request: testRequest,
+        );
 
-      final response = await interceptorChain.proceed(testRequest);
+        final response = await interceptorChain.proceed(testRequest);
 
-      expect(response.body, null);
-      expect(converter.called, 0);
-    });
+        expect(response.body, null);
+        expect(converter.called, 0);
+      },
+    );
 
     test(
-        'response is unsuccessful converter is not null and response converter is not null, response is not converted',
-        () async {
-      final converter = ResponseConverter();
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(
+      'response is unsuccessful converter is not null and response converter is not null, response is not converted',
+      () async {
+        final converter = ResponseConverter();
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(
               converter: converter,
-              responseConverter: (response) =>
-                  response.copyWith(body: 'response converted')),
-          ResponseInterceptor(
+              responseConverter:
+                  (response) => response.copyWith(body: 'response converted'),
+            ),
+            ResponseInterceptor(
               response: Response<String>(
-                  http.Response('error base', 500, request: testRequest),
-                  'error')),
-        ],
-        request: testRequest,
-      );
+                http.Response('error base', 500, request: testRequest),
+                'error',
+              ),
+            ),
+          ],
+          request: testRequest,
+        );
 
-      final response = await interceptorChain.proceed(testRequest);
+        final response = await interceptorChain.proceed(testRequest);
 
-      expect(response.body, null);
-      expect(response.error, 'error');
-      expect(converter.called, 0);
-    });
+        expect(response.body, null);
+        expect(response.error, 'error');
+        expect(converter.called, 0);
+      },
+    );
   });
 
   group('response error converter tests', () {
     final errorResponse = Response<String>(
-        http.Response('error base', 500, request: testRequest), 'error');
+      http.Response('error base', 500, request: testRequest),
+      'error',
+    );
     test(
-        'response is unsuccessful converter is null, response is not converted',
-        () async {
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(),
-          ResponseInterceptor(response: errorResponse),
-        ],
-        request: testRequest,
-      );
+      'response is unsuccessful converter is null, response is not converted',
+      () async {
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(),
+            ResponseInterceptor(response: errorResponse),
+          ],
+          request: testRequest,
+        );
 
-      final response = await interceptorChain.proceed(testRequest);
+        final response = await interceptorChain.proceed(testRequest);
 
-      expect(response.body, null);
-      expect(response.error, 'error');
-    });
-
-    test(
-        'response is unsuccessful converter is not null, response is converted',
-        () async {
-      final converter = ResponseErrorConverter();
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(errorConverter: converter),
-          ResponseInterceptor(response: errorResponse),
-        ],
-        request: testRequest,
-      );
-
-      final response = await interceptorChain.proceed(testRequest);
-
-      expect(response.body, null);
-      expect(response.error, 'converted');
-      expect(converter.called, 1);
-    });
+        expect(response.body, null);
+        expect(response.error, 'error');
+      },
+    );
 
     test(
-        'response is successful converter is not null, response is not converter',
-        () async {
-      final converter = ResponseErrorConverter();
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          ResponseConverterInterceptor(errorConverter: converter),
-          ResponseInterceptor(),
-        ],
-        request: testRequest,
-      );
+      'response is unsuccessful converter is not null, response is converted',
+      () async {
+        final converter = ResponseErrorConverter();
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(errorConverter: converter),
+            ResponseInterceptor(response: errorResponse),
+          ],
+          request: testRequest,
+        );
 
-      final response = await interceptorChain.proceed(testRequest);
+        final response = await interceptorChain.proceed(testRequest);
 
-      expect(response.body, 'TestResponse');
-      expect(converter.called, 0);
-    });
+        expect(response.body, null);
+        expect(response.error, 'converted');
+        expect(converter.called, 1);
+      },
+    );
+
+    test(
+      'response is successful converter is not null, response is not converter',
+      () async {
+        final converter = ResponseErrorConverter();
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            ResponseConverterInterceptor(errorConverter: converter),
+            ResponseInterceptor(),
+          ],
+          request: testRequest,
+        );
+
+        final response = await interceptorChain.proceed(testRequest);
+
+        expect(response.body, 'TestResponse');
+        expect(converter.called, 0);
+      },
+    );
   });
 
   group('response converter returns converted response tests', () {});
@@ -207,7 +220,8 @@ class ResponseConverter implements Converter {
 
   @override
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
-      Response response) {
+    Response response,
+  ) {
     called++;
     return response.copyWith(body: 'converted' as BodyType);
   }
@@ -225,7 +239,8 @@ class ResponseNullBodyConverter implements Converter {
 
   @override
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
-      Response response) {
+    Response response,
+  ) {
     called++;
     return Response(response.base, null as BodyType);
   }
@@ -238,7 +253,8 @@ class ResponseErrorConverter implements ErrorConverter {
 
   @override
   FutureOr<Response<BodyType>> convertError<BodyType, InnerType>(
-      Response response) {
+    Response response,
+  ) {
     called++;
     return response.copyWith(body: 'converted' as BodyType);
   }
@@ -253,7 +269,8 @@ class ResponseInterceptor implements Interceptor {
   FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) {
     return response as Response<BodyType>? ??
         Response(
-            http.Response('TestResponse base', 200, request: chain.request),
-            'TestResponse' as BodyType);
+          http.Response('TestResponse base', 200, request: chain.request),
+          'TestResponse' as BodyType,
+        );
   }
 }

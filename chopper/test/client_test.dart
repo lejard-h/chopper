@@ -11,21 +11,18 @@ final baseUrl = Uri.parse('http://localhost:8000');
 
 void main() {
   ChopperClient buildClient([http.Client? httpClient]) => ChopperClient(
-        baseUrl: baseUrl,
-        client: httpClient,
-        interceptors: [
-          HeadersInterceptor({'foo': 'bar'}),
-        ],
-        converter: JsonConverter(),
-      );
+    baseUrl: baseUrl,
+    client: httpClient,
+    interceptors: [
+      const HeadersInterceptor({'foo': 'bar'}),
+    ],
+    converter: const JsonConverter(),
+  );
 
   group('Client methods', () {
     test('GET', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get?key=val'));
         expect(request.method, equals('GET'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -35,10 +32,7 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.get(
-        Uri(
-          path: '/test/get',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/get', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
       );
 
@@ -49,10 +43,7 @@ void main() {
     });
     test('POST', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/post?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/post?key=val'));
         expect(request.method, equals('POST'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -63,10 +54,7 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.post(
-        Uri(
-          path: '/test/post',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/post', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
         body: {'content': 'body'},
       );
@@ -79,10 +67,7 @@ void main() {
 
     test('PUT', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/put?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/put?key=val'));
         expect(request.method, equals('PUT'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -93,10 +78,7 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.put(
-        Uri(
-          path: '/test/put',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/put', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
         body: {'content': 'body'},
       );
@@ -109,10 +91,7 @@ void main() {
 
     test('PATCH', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/patch?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/patch?key=val'));
         expect(request.method, equals('PATCH'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -123,10 +102,7 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.patch(
-        Uri(
-          path: '/test/patch',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/patch', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
         body: {'content': 'body'},
       );
@@ -139,10 +115,7 @@ void main() {
 
     test('DELETE', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/delete?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/delete?key=val'));
         expect(request.method, equals('DELETE'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -152,10 +125,7 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.delete(
-        Uri(
-          path: '/test/delete',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/delete', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
       );
 
@@ -166,10 +136,7 @@ void main() {
     });
     test('OPTIONS', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get?key=val'));
         expect(request.method, equals('OPTIONS'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -179,10 +146,7 @@ void main() {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.options(
-        Uri(
-          path: '/test/get',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/get', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
       );
 

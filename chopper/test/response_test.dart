@@ -17,41 +17,45 @@ void main() {
       expect(result, isNull);
     });
 
-    test('Response is unsuccessful and has no error object, [returns null]',
-        () {
-      final base = http.Response('Foobar', 400);
+    test(
+      'Response is unsuccessful and has no error object, [returns null]',
+      () {
+        final base = http.Response('Foobar', 400);
 
-      final response = Response(base, '');
+        final response = Response(base, '');
 
-      final result = response.errorWhereType<FooErrorType>();
+        final result = response.errorWhereType<FooErrorType>();
 
-      expect(result, isNull);
-    });
+        expect(result, isNull);
+      },
+    );
 
     test(
-        'Response is unsuccessful and has error object of different type, [returns null]',
-        () {
-      final base = http.Response('Foobar', 400);
+      'Response is unsuccessful and has error object of different type, [returns null]',
+      () {
+        final base = http.Response('Foobar', 400);
 
-      final response = Response(base, '', error: 'Foobar');
+        final response = Response(base, '', error: 'Foobar');
 
-      final result = response.errorWhereType<FooErrorType>();
+        final result = response.errorWhereType<FooErrorType>();
 
-      expect(result, isNull);
-    });
+        expect(result, isNull);
+      },
+    );
 
     test(
-        'Response is unsuccessful and has error object of specified type, [returns error as ErrorType]',
-        () {
-      final base = http.Response('Foobar', 400);
+      'Response is unsuccessful and has error object of specified type, [returns error as ErrorType]',
+      () {
+        final base = http.Response('Foobar', 400);
 
-      final response = Response(base, 'Foobar', error: FooErrorType());
+        final response = Response(base, 'Foobar', error: const FooErrorType());
 
-      final result = response.errorWhereType<FooErrorType>();
+        final result = response.errorWhereType<FooErrorType>();
 
-      expect(result, isNotNull);
-      expect(result, isA<FooErrorType>());
-    });
+        expect(result, isNotNull);
+        expect(result, isA<FooErrorType>());
+      },
+    );
   });
 
   group('bodyOrThrow tests', () {
@@ -66,50 +70,65 @@ void main() {
     });
 
     test(
-        'Response is unsuccessful and has Exception as error, [bodyOrThrow throws error]',
-        () {
-      final base = http.Response('Foobar', 400);
-      final response = Response(base, '', error: Exception('Error occurred'));
+      'Response is unsuccessful and has Exception as error, [bodyOrThrow throws error]',
+      () {
+        final base = http.Response('Foobar', 400);
+        final response = Response(base, '', error: Exception('Error occurred'));
 
-      expect(() => response.bodyOrThrow, throwsA(isA<Exception>()));
-    });
-
-    test(
-        'Response is unsuccessful and has non-exception object as error, [bodyOrThrow throws error]',
-        () {
-      final base = http.Response('Foobar', 400);
-      final response = Response(base, '', error: 'Error occurred');
-
-      expect(() => response.bodyOrThrow, throwsA(isA<ChopperHttpException>()));
-    });
+        expect(() => response.bodyOrThrow, throwsA(isA<Exception>()));
+      },
+    );
 
     test(
-        'Response is unsuccessful and has no error, [bodyOrThrow throws ChopperHttpException]',
-        () {
-      final base = http.Response('Foobar', 400);
-      final response = Response(base, '');
+      'Response is unsuccessful and has non-exception object as error, [bodyOrThrow throws error]',
+      () {
+        final base = http.Response('Foobar', 400);
+        final response = Response(base, '', error: 'Error occurred');
 
-      expect(() => response.bodyOrThrow, throwsA(isA<ChopperHttpException>()));
-    });
+        expect(
+          () => response.bodyOrThrow,
+          throwsA(isA<ChopperHttpException>()),
+        );
+      },
+    );
 
     test(
-        'Response is successful and has no body, [bodyOrThrow throws ChopperHttpException]',
-        () {
-      final base = http.Response('Foobar', 200);
-      final Response<String> response = Response(base, null);
+      'Response is unsuccessful and has no error, [bodyOrThrow throws ChopperHttpException]',
+      () {
+        final base = http.Response('Foobar', 400);
+        final response = Response(base, '');
 
-      expect(() => response.bodyOrThrow, throwsA(isA<ChopperHttpException>()));
-    });
+        expect(
+          () => response.bodyOrThrow,
+          throwsA(isA<ChopperHttpException>()),
+        );
+      },
+    );
 
-    test('Response is successful and has void body, [bodyOrThrow returns void]',
-        () {
-      final base = http.Response('Foobar', 200);
-      // Ignoring void checks for testing purposes
-      //ignore: void_checks
-      final Response<void> response = Response(base, '');
+    test(
+      'Response is successful and has no body, [bodyOrThrow throws ChopperHttpException]',
+      () {
+        final base = http.Response('Foobar', 200);
+        final Response<String> response = Response(base, null);
 
-      expect(() => response.bodyOrThrow, returnsNormally);
-    });
+        expect(
+          () => response.bodyOrThrow,
+          throwsA(isA<ChopperHttpException>()),
+        );
+      },
+    );
+
+    test(
+      'Response is successful and has void body, [bodyOrThrow returns void]',
+      () {
+        final base = http.Response('Foobar', 200);
+        // Ignoring void checks for testing purposes
+        //ignore: void_checks
+        final Response<void> response = Response(base, '');
+
+        expect(() => response.bodyOrThrow, returnsNormally);
+      },
+    );
   });
 
   group('copyWith tests', () {
@@ -161,8 +180,9 @@ void main() {
 
     test('copyWith changes body type', () {
       final newBody = 'New body string';
-      final Response<String> copiedResponse =
-          initialResponse.copyWith<String>(body: newBody);
+      final Response<String> copiedResponse = initialResponse.copyWith<String>(
+        body: newBody,
+      );
 
       expect(copiedResponse.base, baseResponse);
       expect(copiedResponse.body, newBody);

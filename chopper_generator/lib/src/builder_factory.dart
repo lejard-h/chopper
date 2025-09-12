@@ -17,19 +17,18 @@ Builder chopperGeneratorFactory(BuilderOptions options) {
     const [ChopperGenerator()],
     buildExtension,
     header: options.config['header'],
-    formatOutput: PartBuilder(
-      const [ChopperGenerator()],
-      buildExtension,
-    ).formatOutput,
-    options: !options.config.containsKey('build_extensions')
-        ? options.overrideWith(
-            BuilderOptions({
-              'build_extensions': {
-                '.dart': [buildExtension]
-              },
-            }),
-          )
-        : options,
+    formatOutput:
+        PartBuilder(const [ChopperGenerator()], buildExtension).formatOutput,
+    options:
+        !options.config.containsKey('build_extensions')
+            ? options.overrideWith(
+              BuilderOptions({
+                'build_extensions': {
+                  '.dart': [buildExtension],
+                },
+              }),
+            )
+            : options,
   );
 }
 
@@ -50,6 +49,6 @@ Builder chopperGeneratorFactory(BuilderOptions options) {
 ///           build_extensions: {".dart": [".chopper.g.dart"]}
 /// ```
 String _getBuildExtension(BuilderOptions options) => switch (options.config) {
-      {'build_extensions': {'.dart': [final String ext, ...]}} => ext,
-      _ => '.chopper.dart',
-    };
+  {'build_extensions': {'.dart': [final String ext, ...]}} => ext,
+  _ => '.chopper.dart',
+};

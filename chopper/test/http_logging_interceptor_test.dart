@@ -25,12 +25,7 @@ void main() {
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
         await logger.intercept(FakeChain(fakeRequest));
 
-        expect(
-          logs,
-          equals(
-            [],
-          ),
-        );
+        expect(logs, equals([]));
       });
 
       test('Http logger interceptor basic level request', () async {
@@ -40,15 +35,7 @@ void main() {
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
         await logger.intercept(FakeChain(fakeRequest));
 
-        expect(
-          logs,
-          containsAll(
-            [
-              '',
-              '--> POST base/ (4-byte body)',
-            ],
-          ),
-        );
+        expect(logs, containsAll(['', '--> POST base/ (4-byte body)']));
       });
 
       test('Http logger interceptor basic level request', () async {
@@ -60,16 +47,14 @@ void main() {
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '--> POST base/',
-              'foo: bar',
-              'content-type: text/plain; charset=utf-8',
-              'content-length: 4',
-              '--> END POST',
-            ],
-          ),
+          containsAll([
+            '',
+            '--> POST base/',
+            'foo: bar',
+            'content-type: text/plain; charset=utf-8',
+            'content-length: 4',
+            '--> END POST',
+          ]),
         );
       });
 
@@ -82,18 +67,16 @@ void main() {
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '--> POST base/',
-              'foo: bar',
-              'content-type: text/plain; charset=utf-8',
-              'content-length: 4',
-              '',
-              'test',
-              '--> END POST',
-            ],
-          ),
+          containsAll([
+            '',
+            '--> POST base/',
+            'foo: bar',
+            'content-type: text/plain; charset=utf-8',
+            'content-length: 4',
+            '',
+            'test',
+            '--> END POST',
+          ]),
         );
       });
     });
@@ -120,12 +103,7 @@ void main() {
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
         await logger.intercept(FakeChain(fakeRequest));
 
-        expect(
-          logs,
-          equals(
-            [],
-          ),
-        );
+        expect(logs, equals([]));
       });
 
       test('Http logger interceptor basic level response', () async {
@@ -137,12 +115,7 @@ void main() {
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '<-- 200 POST base/ (0ms, 16-byte body)',
-            ],
-          ),
+          containsAll(['', '<-- 200 POST base/ (0ms, 16-byte body)']),
         );
       });
 
@@ -155,15 +128,13 @@ void main() {
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '<-- 200 POST base/ (0ms)',
-              'foo: bar',
-              'content-length: 16',
-              '<-- END HTTP',
-            ],
-          ),
+          containsAll([
+            '',
+            '<-- 200 POST base/ (0ms)',
+            'foo: bar',
+            'content-length: 16',
+            '<-- END HTTP',
+          ]),
         );
       });
 
@@ -176,17 +147,15 @@ void main() {
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '<-- 200 POST base/ (0ms)',
-              'foo: bar',
-              'content-length: 16',
-              '',
-              'responseBodyBase',
-              '<-- END HTTP',
-            ],
-          ),
+          containsAll([
+            '',
+            '<-- 200 POST base/ (0ms)',
+            'foo: bar',
+            'content-length: 16',
+            '',
+            'responseBodyBase',
+            '<-- END HTTP',
+          ]),
         );
       });
     });
@@ -199,10 +168,7 @@ void main() {
           http.Response(
             'responseBodyBase',
             200,
-            headers: {
-              'foo': 'bar',
-              'content-length': '42',
-            },
+            headers: {'foo': 'bar', 'content-length': '42'},
             request: await fakeRequest.toBaseRequest(),
           ),
           'responseBody',
@@ -215,21 +181,24 @@ void main() {
         final logs = [];
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-        await logger.intercept(FakeChain(fakeRequest.copyWith(
-            headers: {...fakeRequest.headers, 'content-length': '42'})));
+        await logger.intercept(
+          FakeChain(
+            fakeRequest.copyWith(
+              headers: {...fakeRequest.headers, 'content-length': '42'},
+            ),
+          ),
+        );
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '--> POST base/',
-              'foo: bar',
-              'content-length: 42',
-              'content-type: text/plain; charset=utf-8',
-              '--> END POST',
-            ],
-          ),
+          containsAll([
+            '',
+            '--> POST base/',
+            'foo: bar',
+            'content-length: 42',
+            'content-type: text/plain; charset=utf-8',
+            '--> END POST',
+          ]),
         );
       });
 
@@ -239,23 +208,26 @@ void main() {
         final logs = [];
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-        await logger.intercept(FakeChain(fakeRequest.copyWith(
-            headers: {...fakeRequest.headers, 'content-length': '42'})));
+        await logger.intercept(
+          FakeChain(
+            fakeRequest.copyWith(
+              headers: {...fakeRequest.headers, 'content-length': '42'},
+            ),
+          ),
+        );
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '--> POST base/',
-              'foo: bar',
-              'content-length: 42',
-              'content-type: text/plain; charset=utf-8',
-              '',
-              'test',
-              '--> END POST',
-            ],
-          ),
+          containsAll([
+            '',
+            '--> POST base/',
+            'foo: bar',
+            'content-length: 42',
+            'content-type: text/plain; charset=utf-8',
+            '',
+            'test',
+            '--> END POST',
+          ]),
         );
       });
 
@@ -268,15 +240,13 @@ void main() {
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '<-- 200 POST base/ (0ms)',
-              'foo: bar',
-              'content-length: 42',
-              '<-- END HTTP',
-            ],
-          ),
+          containsAll([
+            '',
+            '<-- 200 POST base/ (0ms)',
+            'foo: bar',
+            'content-length: 42',
+            '<-- END HTTP',
+          ]),
         );
       });
       test('response body level content-length', () async {
@@ -288,17 +258,15 @@ void main() {
 
         expect(
           logs,
-          containsAll(
-            [
-              '',
-              '<-- 200 POST base/ (0ms)',
-              'foo: bar',
-              'content-length: 42',
-              '',
-              'responseBodyBase',
-              '<-- END HTTP',
-            ],
-          ),
+          containsAll([
+            '',
+            '<-- 200 POST base/ (0ms)',
+            'foo: bar',
+            'content-length: 42',
+            '',
+            'responseBodyBase',
+            '<-- END HTTP',
+          ]),
         );
       });
     });
@@ -307,8 +275,10 @@ void main() {
   group('only errors', () {
     group('http logging requests', () {
       test('Http logger interceptor none level request', () async {
-        final logger =
-            HttpLoggingInterceptor(level: Level.none, onlyErrors: true);
+        final logger = HttpLoggingInterceptor(
+          level: Level.none,
+          onlyErrors: true,
+        );
 
         final logs = [];
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
@@ -318,8 +288,10 @@ void main() {
       });
 
       test('Http logger interceptor basic level request', () async {
-        final logger =
-            HttpLoggingInterceptor(level: Level.basic, onlyErrors: true);
+        final logger = HttpLoggingInterceptor(
+          level: Level.basic,
+          onlyErrors: true,
+        );
 
         final logs = [];
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
@@ -329,8 +301,10 @@ void main() {
       });
 
       test('Http logger interceptor basic level request', () async {
-        final logger =
-            HttpLoggingInterceptor(level: Level.headers, onlyErrors: true);
+        final logger = HttpLoggingInterceptor(
+          level: Level.headers,
+          onlyErrors: true,
+        );
 
         final logs = [];
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
@@ -340,8 +314,10 @@ void main() {
       });
 
       test('Http logger interceptor body level request', () async {
-        final logger =
-            HttpLoggingInterceptor(level: Level.body, onlyErrors: true);
+        final logger = HttpLoggingInterceptor(
+          level: Level.body,
+          onlyErrors: true,
+        );
 
         final logs = [];
         chopperLogger.onRecord.listen((r) => logs.add(r.message));
@@ -368,53 +344,59 @@ void main() {
         });
 
         test('Http logger interceptor none level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.none, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.none,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
           await logger.intercept(FakeChain(fakeRequest));
 
-          expect(
-            logs,
-            equals(
-              [],
-            ),
-          );
+          expect(logs, equals([]));
         });
 
         test('Http logger interceptor basic level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.basic, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.basic,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(logs, equals([]));
         });
 
         test('Http logger interceptor headers level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.headers, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.headers,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(logs, equals([]));
         });
 
         test('Http logger interceptor body level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.body, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.body,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(logs, equals([]));
         });
@@ -428,10 +410,7 @@ void main() {
             http.Response(
               'responseBodyBase',
               200,
-              headers: {
-                'foo': 'bar',
-                'content-length': '42',
-              },
+              headers: {'foo': 'bar', 'content-length': '42'},
               request: await fakeRequest.toBaseRequest(),
             ),
             'responseBody',
@@ -439,50 +418,70 @@ void main() {
         });
 
         test('request header level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.headers, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.headers,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-          await logger.intercept(FakeChain(fakeRequest.copyWith(
-              headers: {...fakeRequest.headers, 'content-length': '42'})));
+          await logger.intercept(
+            FakeChain(
+              fakeRequest.copyWith(
+                headers: {...fakeRequest.headers, 'content-length': '42'},
+              ),
+            ),
+          );
 
           expect(logs, equals([]));
         });
 
         test('request body level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.body, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.body,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-          await logger.intercept(FakeChain(fakeRequest.copyWith(
-              headers: {...fakeRequest.headers, 'content-length': '42'})));
+          await logger.intercept(
+            FakeChain(
+              fakeRequest.copyWith(
+                headers: {...fakeRequest.headers, 'content-length': '42'},
+              ),
+            ),
+          );
 
           expect(logs, equals([]));
         });
 
         test('response header level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.headers, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.headers,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(logs, equals([]));
         });
         test('response body level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.body, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.body,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(logs, equals([]));
         });
@@ -506,86 +505,83 @@ void main() {
         });
 
         test('Http logger interceptor none level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.none, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.none,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
           await logger.intercept(FakeChain(fakeRequest));
 
-          expect(
-            logs,
-            equals(
-              [],
-            ),
-          );
+          expect(logs, equals([]));
         });
 
         test('Http logger interceptor basic level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.basic, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.basic,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(
             logs,
-            containsAll(
-              [
-                '',
-                '<-- 400 POST base/ (0ms, 16-byte body)',
-              ],
-            ),
+            containsAll(['', '<-- 400 POST base/ (0ms, 16-byte body)']),
           );
         });
 
         test('Http logger interceptor headers level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.headers, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.headers,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(
             logs,
-            containsAll(
-              [
-                '',
-                '<-- 400 POST base/ (0ms)',
-                'foo: bar',
-                'content-length: 16',
-                '<-- END HTTP',
-              ],
-            ),
+            containsAll([
+              '',
+              '<-- 400 POST base/ (0ms)',
+              'foo: bar',
+              'content-length: 16',
+              '<-- END HTTP',
+            ]),
           );
         });
 
         test('Http logger interceptor body level response', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.body, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.body,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(
             logs,
-            containsAll(
-              [
-                '',
-                '<-- 400 POST base/ (0ms)',
-                'foo: bar',
-                'content-length: 16',
-                '',
-                'responseBodyBase',
-                '<-- END HTTP',
-              ],
-            ),
+            containsAll([
+              '',
+              '<-- 400 POST base/ (0ms)',
+              'foo: bar',
+              'content-length: 16',
+              '',
+              'responseBodyBase',
+              '<-- END HTTP',
+            ]),
           );
         });
       });
@@ -598,10 +594,7 @@ void main() {
             http.Response(
               'responseBodyBase',
               400,
-              headers: {
-                'foo': 'bar',
-                'content-length': '42',
-              },
+              headers: {'foo': 'bar', 'content-length': '42'},
               request: await fakeRequest.toBaseRequest(),
             ),
             'responseBody',
@@ -609,75 +602,91 @@ void main() {
         });
 
         test('request header level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.headers, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.headers,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-          await logger.intercept(FakeChain(fakeRequest.copyWith(
-              headers: {...fakeRequest.headers, 'content-length': '42'})));
+          await logger.intercept(
+            FakeChain(
+              fakeRequest.copyWith(
+                headers: {...fakeRequest.headers, 'content-length': '42'},
+              ),
+            ),
+          );
 
           expect(logs, equals([]));
         });
 
         test('request body level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.body, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.body,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-          await logger.intercept(FakeChain(fakeRequest.copyWith(
-              headers: {...fakeRequest.headers, 'content-length': '42'})));
+          await logger.intercept(
+            FakeChain(
+              fakeRequest.copyWith(
+                headers: {...fakeRequest.headers, 'content-length': '42'},
+              ),
+            ),
+          );
 
           expect(logs, equals([]));
         });
 
         test('response header level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.headers, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.headers,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(
             logs,
-            containsAll(
-              [
-                '',
-                '<-- 400 POST base/ (0ms)',
-                'foo: bar',
-                'content-length: 42',
-                '<-- END HTTP',
-              ],
-            ),
+            containsAll([
+              '',
+              '<-- 400 POST base/ (0ms)',
+              'foo: bar',
+              'content-length: 42',
+              '<-- END HTTP',
+            ]),
           );
         });
         test('response body level content-length', () async {
-          final logger =
-              HttpLoggingInterceptor(level: Level.body, onlyErrors: true);
+          final logger = HttpLoggingInterceptor(
+            level: Level.body,
+            onlyErrors: true,
+          );
 
           final logs = [];
           chopperLogger.onRecord.listen((r) => logs.add(r.message));
-          await logger
-              .intercept(FakeChain(fakeRequest, response: fakeResponse));
+          await logger.intercept(
+            FakeChain(fakeRequest, response: fakeResponse),
+          );
 
           expect(
             logs,
-            containsAll(
-              [
-                '',
-                '<-- 400 POST base/ (0ms)',
-                'foo: bar',
-                'content-length: 42',
-                '',
-                'responseBodyBase',
-                '<-- END HTTP',
-              ],
-            ),
+            containsAll([
+              '',
+              '<-- 400 POST base/ (0ms)',
+              'foo: bar',
+              'content-length: 42',
+              '',
+              'responseBodyBase',
+              '<-- END HTTP',
+            ]),
           );
         });
       });
@@ -778,16 +787,14 @@ void main() {
     final logs = [];
     chopperLogger.onRecord.listen((r) => logs.add(r.message));
 
-    await logger
-        .intercept(FakeChain(fakeRequest, response: responseWithCustomReason));
+    await logger.intercept(
+      FakeChain(fakeRequest, response: responseWithCustomReason),
+    );
 
     // Verify the log includes the custom reason phrase
     expect(
       logs,
-      containsAll([
-        '',
-        '<-- 200 Custom Reason POST base/ (0ms, 9-byte body)',
-      ]),
+      containsAll(['', '<-- 200 Custom Reason POST base/ (0ms, 9-byte body)']),
     );
   });
 }

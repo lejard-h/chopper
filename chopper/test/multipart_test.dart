@@ -35,8 +35,10 @@ void main() {
         return http.Response('ok', 200);
       });
 
-      final chopper =
-          ChopperClient(client: httpClient, converter: JsonConverter());
+      final chopper = ChopperClient(
+        client: httpClient,
+        converter: const JsonConverter(),
+      );
       final service = HttpTestService.create(chopper);
 
       await service.postResources({'foo': 'bar'}, {'bar': 'foo'});
@@ -47,10 +49,7 @@ void main() {
     test('file', () async {
       final httpClient = MockClient((http.Request req) async {
         expect(req.headers['Content-Type'], contains('multipart/form-data;'));
-        expect(
-          req.body,
-          contains('content-type: application/octet-stream'),
-        );
+        expect(req.body, contains('content-type: application/octet-stream'));
         expect(
           req.body,
           contains('content-disposition: form-data; name="file"'),
@@ -78,10 +77,7 @@ void main() {
         expect(req.headers['Content-Type'], contains('multipart/form-data;'));
         expect(body, contains('content-type: application/octet-stream'));
         expect(body, contains('content-disposition: form-data; name="image"'));
-        expect(
-          body,
-          contains(String.fromCharCodes(kTransparentImage)),
-        );
+        expect(body, contains(String.fromCharCodes(kTransparentImage)));
 
         return http.Response('ok', 200);
       });
@@ -97,10 +93,7 @@ void main() {
     test('file with MultipartFile', () async {
       final httpClient = MockClient((http.Request req) async {
         expect(req.headers['Content-Type'], contains('multipart/form-data;'));
-        expect(
-          req.body,
-          contains('content-type: application/octet-stream'),
-        );
+        expect(req.body, contains('content-type: application/octet-stream'));
 
         expect(
           req.body,
@@ -141,15 +134,10 @@ void main() {
 
         expect(
           req.body,
-          contains(
-            'content-disposition: form-data; name="id"\r\n\r\n42\r\n',
-          ),
+          contains('content-disposition: form-data; name="id"\r\n\r\n42\r\n'),
         );
 
-        expect(
-          req.body,
-          contains('content-type: application/octet-stream'),
-        );
+        expect(req.body, contains('content-type: application/octet-stream'));
         expect(
           req.body,
           contains(
@@ -229,48 +217,44 @@ void main() {
     });
 
     test('PartValue', () async {
-      final req = await Request(
-        HttpMethod.Post,
-        Uri.parse('https://foo/'),
-        Uri.parse(''),
-        parts: [
-          PartValue<String>('foo', 'bar'),
-          PartValue<int>('int', 42),
-        ],
-      ).toMultipartRequest();
+      final req =
+          await Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            parts: [
+              const PartValue<String>('foo', 'bar'),
+              const PartValue<int>('int', 42),
+            ],
+          ).toMultipartRequest();
 
       expect(req.fields['foo'], equals('bar'));
       expect(req.fields['int'], equals('42'));
     });
 
-    test(
-      'PartFile',
-      () async {
-        final req = await Request(
-          HttpMethod.Post,
-          Uri.parse('https://foo/'),
-          Uri.parse(''),
-          parts: [
-            PartValueFile<String>('foo', 'test/multipart_test.dart'),
-            PartValueFile<List<int>>('int', [1, 2]),
-          ],
-        ).toMultipartRequest();
+    test('PartFile', () async {
+      final req =
+          await Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            parts: [
+              const PartValueFile<String>('foo', 'test/multipart_test.dart'),
+              const PartValueFile<List<int>>('int', [1, 2]),
+            ],
+          ).toMultipartRequest();
 
-        expect(
-          req.files.firstWhere((f) => f.field == 'foo').filename,
-          equals('multipart_test.dart'),
-        );
-        final bytes = await req.files
-            .firstWhere((f) => f.field == 'int')
-            .finalize()
-            .first;
-        expect(bytes, equals([1, 2]));
-      },
-      testOn: 'vm',
-    );
+      expect(
+        req.files.firstWhere((f) => f.field == 'foo').filename,
+        equals('multipart_test.dart'),
+      );
+      final bytes =
+          await req.files.firstWhere((f) => f.field == 'int').finalize().first;
+      expect(bytes, equals([1, 2]));
+    }, testOn: 'vm');
 
     test('PartValue.replace', () {
-      dynamic part = PartValue<String>('foo', 'bar');
+      dynamic part = const PartValue<String>('foo', 'bar');
 
       expect(part.name, equals('foo'));
       expect(part.value, equals('bar'));
@@ -287,17 +271,18 @@ void main() {
     });
 
     test('Multipart request non nullable', () async {
-      final req = await Request(
-        HttpMethod.Post,
-        Uri.parse('https://foo/'),
-        Uri.parse(''),
-        parts: [
-          PartValue<int>('int', 42),
-          PartValueFile<List<int>>('list int', [1, 2]),
-          PartValue('null value', null),
-          PartValueFile('null file', null),
-        ],
-      ).toMultipartRequest();
+      final req =
+          await Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            parts: [
+              const PartValue<int>('int', 42),
+              const PartValueFile<List<int>>('list int', [1, 2]),
+              const PartValue('null value', null),
+              const PartValueFile('null file', null),
+            ],
+          ).toMultipartRequest();
 
       expect(req.fields.length, equals(1));
       expect(req.fields['int'], equals('42'));
@@ -307,29 +292,28 @@ void main() {
     });
 
     test('PartValue with MultipartFile directly', () async {
-      final req = await Request(
-        HttpMethod.Post,
-        Uri.parse('https://foo/'),
-        Uri.parse(''),
-        parts: [
-          PartValue<http.MultipartFile>(
-            '',
-            http.MultipartFile.fromBytes(
-              'first',
-              [1, 2],
-              filename: 'list int 1',
-            ),
-          ),
-          PartValueFile<http.MultipartFile>(
-            '',
-            http.MultipartFile.fromBytes(
-              'second',
-              [2, 1],
-              filename: 'list int 2',
-            ),
-          ),
-        ],
-      ).toMultipartRequest();
+      final req =
+          await Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            parts: [
+              PartValue<http.MultipartFile>(
+                '',
+                http.MultipartFile.fromBytes('first', [
+                  1,
+                  2,
+                ], filename: 'list int 1'),
+              ),
+              PartValueFile<http.MultipartFile>(
+                '',
+                http.MultipartFile.fromBytes('second', [
+                  2,
+                  1,
+                ], filename: 'list int 2'),
+              ),
+            ],
+          ).toMultipartRequest();
 
       final first = req.files[0];
       final second = req.files[1];
@@ -346,14 +330,13 @@ void main() {
 
     test('Throw exception', () async {
       expect(
-        () async => await Request(
-          HttpMethod.Post,
-          Uri.parse('https://foo/'),
-          Uri.parse(''),
-          parts: [
-            PartValueFile('', 123),
-          ],
-        ).toMultipartRequest(),
+        () async =>
+            await Request(
+              HttpMethod.Post,
+              Uri.parse('https://foo/'),
+              Uri.parse(''),
+              parts: [const PartValueFile('', 123)],
+            ).toMultipartRequest(),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -361,13 +344,7 @@ void main() {
     test('Multipart request List', () async {
       const List<int> ints = [1, 2, 3];
       const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
-      const List<num> nums = [
-        1.23443534678,
-        0.00000000001,
-        -34251,
-        0.0,
-        3 / 4,
-      ];
+      const List<num> nums = [1.23443534678, 0.00000000001, -34251, 0.0, 3 / 4];
       const List<String> strings = [
         'lorem',
         'ipsum',
@@ -375,17 +352,18 @@ void main() {
         '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
       ];
 
-      final req = await Request(
-        HttpMethod.Post,
-        Uri.parse('https://foo/'),
-        Uri.parse(''),
-        parts: [
-          PartValue<List<int>>('ints', ints),
-          PartValue<List<double>>('doubles', doubles),
-          PartValue<List<num>>('nums', nums),
-          PartValue<List<String>>('strings', strings),
-        ],
-      ).toMultipartRequest();
+      final req =
+          await Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            parts: [
+              const PartValue<List<int>>('ints', ints),
+              const PartValue<List<double>>('doubles', doubles),
+              const PartValue<List<num>>('nums', nums),
+              const PartValue<List<String>>('strings', strings),
+            ],
+          ).toMultipartRequest();
 
       expect(
         req.fields.length,
@@ -412,21 +390,10 @@ void main() {
     test('Multipart lists', () async {
       const List<int> ints = [1, 2, 3];
       const List<double> doubles = [1.23, -1.23, 0.0, 0.12324, 3 / 4];
-      const List<num> nums = [
-        1.23443534678,
-        0.00000000001,
-        -34251,
-        0.0,
-        3 / 4,
-      ];
+      const List<num> nums = [1.23443534678, 0.00000000001, -34251, 0.0, 3 / 4];
       const String utf8String =
           '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''';
-      const List<String> strings = [
-        'lorem',
-        'ipsum',
-        'dolor',
-        utf8String,
-      ];
+      const List<String> strings = ['lorem', 'ipsum', 'dolor', utf8String];
 
       final httpClient = MockClient((http.Request req) async {
         expect(req.headers['Content-Type'], contains('multipart/form-data;'));

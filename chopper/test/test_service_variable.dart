@@ -110,22 +110,15 @@ abstract class HttpTestServiceVariable extends ChopperService {
 
   @POST(path: 'multi')
   @multipart
-  Future<Response> postResources(
-    @Part('1') Map a,
-    @Part('2') Map b,
-  );
+  Future<Response> postResources(@Part('1') Map a, @Part('2') Map b);
 
   @POST(path: 'file')
   @multipart
-  Future<Response> postFile(
-    @PartFile('file') List<int> bytes,
-  );
+  Future<Response> postFile(@PartFile('file') List<int> bytes);
 
   @POST(path: 'image')
   @multipart
-  Future<Response> postImage(
-    @PartFile('image') List<int> imageData,
-  );
+  Future<Response> postImage(@PartFile('image') List<int> imageData);
 
   @POST(path: 'file')
   @multipart
@@ -233,7 +226,7 @@ abstract class HttpTestServiceVariable extends ChopperService {
 }
 
 Request customConvertRequest(Request req) {
-  final r = JsonConverter().convertRequest(req);
+  final r = const JsonConverter().convertRequest(req);
 
   return applyHeader(r, 'customConverter', 'true');
 }

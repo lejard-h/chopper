@@ -21,11 +21,7 @@ final class _$DeprecatedAnnotationService extends DeprecatedAnnotationService {
   @override
   Future<Response<String>> testGet() {
     final Uri $url = Uri.parse('/test/get');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<String, String>($request);
   }
 
@@ -33,12 +29,7 @@ final class _$DeprecatedAnnotationService extends DeprecatedAnnotationService {
   Future<Response<dynamic>> testPost(dynamic body) {
     final Uri $url = Uri.parse('/test/post');
     final $body = body;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -46,12 +37,7 @@ final class _$DeprecatedAnnotationService extends DeprecatedAnnotationService {
   Future<Response<dynamic>> testPut(dynamic body) {
     final Uri $url = Uri.parse('/test/put');
     final $body = body;
-    final Request $request = Request(
-      'PUT',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('PUT', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -71,33 +57,21 @@ final class _$DeprecatedAnnotationService extends DeprecatedAnnotationService {
   @override
   Future<Response<dynamic>> testDelete() {
     final Uri $url = Uri.parse('/test/delete');
-    final Request $request = Request(
-      'DELETE',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('DELETE', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> testHead() {
     final Uri $url = Uri.parse('/test/head');
-    final Request $request = Request(
-      'HEAD',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('HEAD', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> testOptions() {
     final Uri $url = Uri.parse('/test/options');
-    final Request $request = Request(
-      'OPTIONS',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('OPTIONS', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 }
@@ -116,11 +90,7 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   @override
   Future<Response<dynamic>> testGetShorthand() {
     final Uri $url = Uri.parse('/shorthand');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -128,12 +98,7 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   Future<Response<dynamic>> testPostShorthand(dynamic body) {
     final Uri $url = Uri.parse('/shorthand');
     final $body = body;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -141,12 +106,7 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   Future<Response<dynamic>> testPutShorthand(dynamic body) {
     final Uri $url = Uri.parse('/shorthand');
     final $body = body;
-    final Request $request = Request(
-      'PUT',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('PUT', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -166,44 +126,28 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   @override
   Future<Response<dynamic>> testDeleteShorthand() {
     final Uri $url = Uri.parse('/shorthand');
-    final Request $request = Request(
-      'DELETE',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('DELETE', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> testHeadShorthand() {
     final Uri $url = Uri.parse('/shorthand');
-    final Request $request = Request(
-      'HEAD',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('HEAD', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> testOptionsShorthand() {
     final Uri $url = Uri.parse('/shorthand');
-    final Request $request = Request(
-      'OPTIONS',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('OPTIONS', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> testPathShorthand(String id) {
     final Uri $url = Uri.parse('/shorthand/${id}');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -236,9 +180,7 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   @override
   Future<Response<dynamic>> testHeaderShorthand(String testHeader) {
     final Uri $url = Uri.parse('/shorthand/header');
-    final Map<String, String> $headers = {
-      'testHeader': testHeader,
-    };
+    final Map<String, String> $headers = {'testHeader': testHeader};
     final Request $request = Request(
       'GET',
       $url,
@@ -271,14 +213,8 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
     final Map<String, String> $headers = {
       'content-type': 'application/x-www-form-urlencoded',
     };
-    final $body = data.map<String, String>((
-      key,
-      value,
-    ) {
-      return MapEntry(
-        key.toString(),
-        value.toString(),
-      );
+    final $body = data.map<String, String>((key, value) {
+      return MapEntry(key.toString(), value.toString());
     });
     final Request $request = Request(
       'POST',
@@ -293,12 +229,7 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   @override
   Future<Response<dynamic>> testPartShorthand(String data) {
     final Uri $url = Uri.parse('/shorthand/multipart');
-    final List<PartValue> $parts = <PartValue>[
-      PartValue<String>(
-        'data',
-        data,
-      )
-    ];
+    final List<PartValue> $parts = <PartValue>[PartValue<String>('data', data)];
     final Request $request = Request(
       'POST',
       $url,
@@ -313,10 +244,7 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   Future<Response<dynamic>> testPartFileShorthand(List<int> data) {
     final Uri $url = Uri.parse('/shorthand/partFile');
     final List<PartValue> $parts = <PartValue>[
-      PartValueFile<List<int>>(
-        'data',
-        data,
-      )
+      PartValueFile<List<int>>('data', data),
     ];
     final Request $request = Request(
       'POST',
@@ -330,7 +258,8 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
 
   @override
   Future<Response<dynamic>> testPartMapShorthand(
-      List<PartValue<dynamic>> data) {
+    List<PartValue<dynamic>> data,
+  ) {
     final Uri $url = Uri.parse('/shorthand/partMap');
     final List<PartValue> $parts = data;
     final Request $request = Request(
@@ -345,7 +274,8 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
 
   @override
   Future<Response<dynamic>> testPartFileMapShorthand(
-      List<PartValueFile<dynamic>> data) {
+    List<PartValueFile<dynamic>> data,
+  ) {
     final Uri $url = Uri.parse('/shorthand/partFileMap');
     final List<PartValue> $parts = data;
     final Request $request = Request(
@@ -361,12 +291,7 @@ final class _$ShorthandAnnotationService extends ShorthandAnnotationService {
   @override
   Future<Response<dynamic>> testTagShorthand(String myTag) {
     final Uri $url = Uri.parse('/shorthand/tag');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      tag: myTag,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl, tag: myTag);
     return client.send<dynamic, dynamic>($request);
   }
 }

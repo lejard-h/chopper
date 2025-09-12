@@ -96,7 +96,7 @@ abstract class HttpTestServiceBaseUrl extends ChopperService {
 }
 
 Request customConvertRequest(Request req) {
-  final r = JsonConverter().convertRequest(req);
+  final r = const JsonConverter().convertRequest(req);
 
   return applyHeader(r, 'customConverter', 'true');
 }

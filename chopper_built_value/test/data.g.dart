@@ -6,8 +6,8 @@ part of 'data.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<DataModel> _$dataModelSerializer = new _$DataModelSerializer();
-Serializer<ErrorModel> _$errorModelSerializer = new _$ErrorModelSerializer();
+Serializer<DataModel> _$dataModelSerializer = _$DataModelSerializer();
+Serializer<ErrorModel> _$errorModelSerializer = _$ErrorModelSerializer();
 
 class _$DataModelSerializer implements StructuredSerializer<DataModel> {
   @override
@@ -16,8 +16,11 @@ class _$DataModelSerializer implements StructuredSerializer<DataModel> {
   final String wireName = 'DataModel';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, DataModel object,
-      {FullType specifiedType = FullType.unspecified}) {
+  Iterable<Object?> serialize(
+    Serializers serializers,
+    DataModel object, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
     final result = <Object?>[
       'id',
       serializers.serialize(object.id, specifiedType: const FullType(int)),
@@ -29,9 +32,12 @@ class _$DataModelSerializer implements StructuredSerializer<DataModel> {
   }
 
   @override
-  DataModel deserialize(Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new DataModelBuilder();
+  DataModel deserialize(
+    Serializers serializers,
+    Iterable<Object?> serialized, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    final result = DataModelBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -40,12 +46,20 @@ class _$DataModelSerializer implements StructuredSerializer<DataModel> {
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
-          result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int))! as int;
+          result.id =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(int),
+                  )!
+                  as int;
           break;
         case 'name':
-          result.name = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+          result.name =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(String),
+                  )!
+                  as String;
           break;
       }
     }
@@ -61,21 +75,29 @@ class _$ErrorModelSerializer implements StructuredSerializer<ErrorModel> {
   final String wireName = 'ErrorModel';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, ErrorModel object,
-      {FullType specifiedType = FullType.unspecified}) {
+  Iterable<Object?> serialize(
+    Serializers serializers,
+    ErrorModel object, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
     final result = <Object?>[
       'message',
-      serializers.serialize(object.message,
-          specifiedType: const FullType(String)),
+      serializers.serialize(
+        object.message,
+        specifiedType: const FullType(String),
+      ),
     ];
 
     return result;
   }
 
   @override
-  ErrorModel deserialize(Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new ErrorModelBuilder();
+  ErrorModel deserialize(
+    Serializers serializers,
+    Iterable<Object?> serialized, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    final result = ErrorModelBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -84,8 +106,12 @@ class _$ErrorModelSerializer implements StructuredSerializer<ErrorModel> {
       final Object? value = iterator.current;
       switch (key) {
         case 'message':
-          result.message = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+          result.message =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(String),
+                  )!
+                  as String;
           break;
       }
     }
@@ -101,19 +127,15 @@ class _$DataModel extends DataModel {
   final String name;
 
   factory _$DataModel([void Function(DataModelBuilder)? updates]) =>
-      (new DataModelBuilder()..update(updates))._build();
+      (DataModelBuilder()..update(updates))._build();
 
-  _$DataModel._({required this.id, required this.name}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, r'DataModel', 'id');
-    BuiltValueNullFieldError.checkNotNull(name, r'DataModel', 'name');
-  }
-
+  _$DataModel._({required this.id, required this.name}) : super._();
   @override
   DataModel rebuild(void Function(DataModelBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  DataModelBuilder toBuilder() => new DataModelBuilder()..replace(this);
+  DataModelBuilder toBuilder() => DataModelBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -164,7 +186,6 @@ class DataModelBuilder implements Builder<DataModel, DataModelBuilder> {
 
   @override
   void replace(DataModel other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$DataModel;
   }
 
@@ -177,11 +198,16 @@ class DataModelBuilder implements Builder<DataModel, DataModelBuilder> {
   DataModel build() => _build();
 
   _$DataModel _build() {
-    final _$result = _$v ??
-        new _$DataModel._(
-            id: BuiltValueNullFieldError.checkNotNull(id, r'DataModel', 'id'),
-            name: BuiltValueNullFieldError.checkNotNull(
-                name, r'DataModel', 'name'));
+    final _$result =
+        _$v ??
+        _$DataModel._(
+          id: BuiltValueNullFieldError.checkNotNull(id, r'DataModel', 'id'),
+          name: BuiltValueNullFieldError.checkNotNull(
+            name,
+            r'DataModel',
+            'name',
+          ),
+        );
     replace(_$result);
     return _$result;
   }
@@ -192,18 +218,15 @@ class _$ErrorModel extends ErrorModel {
   final String message;
 
   factory _$ErrorModel([void Function(ErrorModelBuilder)? updates]) =>
-      (new ErrorModelBuilder()..update(updates))._build();
+      (ErrorModelBuilder()..update(updates))._build();
 
-  _$ErrorModel._({required this.message}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(message, r'ErrorModel', 'message');
-  }
-
+  _$ErrorModel._({required this.message}) : super._();
   @override
   ErrorModel rebuild(void Function(ErrorModelBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ErrorModelBuilder toBuilder() => new ErrorModelBuilder()..replace(this);
+  ErrorModelBuilder toBuilder() => ErrorModelBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -221,8 +244,8 @@ class _$ErrorModel extends ErrorModel {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'ErrorModel')..add('message', message))
-        .toString();
+    return (newBuiltValueToStringHelper(r'ErrorModel')
+      ..add('message', message)).toString();
   }
 }
 
@@ -246,7 +269,6 @@ class ErrorModelBuilder implements Builder<ErrorModel, ErrorModelBuilder> {
 
   @override
   void replace(ErrorModel other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ErrorModel;
   }
 
@@ -259,10 +281,15 @@ class ErrorModelBuilder implements Builder<ErrorModel, ErrorModelBuilder> {
   ErrorModel build() => _build();
 
   _$ErrorModel _build() {
-    final _$result = _$v ??
-        new _$ErrorModel._(
-            message: BuiltValueNullFieldError.checkNotNull(
-                message, r'ErrorModel', 'message'));
+    final _$result =
+        _$v ??
+        _$ErrorModel._(
+          message: BuiltValueNullFieldError.checkNotNull(
+            message,
+            r'ErrorModel',
+            'message',
+          ),
+        );
     replace(_$result);
     return _$result;
   }

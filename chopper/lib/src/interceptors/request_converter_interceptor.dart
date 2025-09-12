@@ -22,13 +22,10 @@ class RequestConverterInterceptor implements InternalInterceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-          Chain<BodyType> chain) async =>
-      await chain.proceed(
-        await _handleRequestConverter(
-          chain.request,
-          _requestConverter,
-        ),
-      );
+    Chain<BodyType> chain,
+  ) async => await chain.proceed(
+    await _handleRequestConverter(chain.request, _requestConverter),
+  );
 
   /// Converts the [request] using [_requestConverter] if it is not null, otherwise uses [_converter].
   Future<Request> _handleRequestConverter(

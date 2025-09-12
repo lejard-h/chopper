@@ -60,21 +60,24 @@ final class Utils {
   /// Returns the per-method timeout if specified on the annotation, clamped to
   /// a non-negative duration.
   static Duration? getTimeout(ConstantReader method) => switch (method
-          .peek('timeout')
-          ?.objectValue
-          .getField('_duration')
-          ?.toIntValue()) {
-        final int us? => Duration(microseconds: max(us, 0)),
-        _ => null,
-      };
+      .peek('timeout')
+      ?.objectValue
+      .getField('_duration')
+      ?.toIntValue()) {
+    final int us? => Duration(microseconds: max(us, 0)),
+    _ => null,
+  };
 
   /// All positional required params must support nullability
-  static Parameter buildRequiredPositionalParam(FormalParameterElement p) =>
-      Parameter(
-        (ParameterBuilder pb) => pb
+  static Parameter buildRequiredPositionalParam(
+    FormalParameterElement p,
+  ) => Parameter(
+    (ParameterBuilder pb) =>
+        pb
           ..name = switch (p.name3) {
             final String name? => name,
-            null => throw InvalidGenerationSourceError(
+            null =>
+              throw InvalidGenerationSourceError(
                 'Encountered a required positional parameter without a name.',
                 element: p.baseElement,
               ),
@@ -82,48 +85,57 @@ final class Utils {
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
           ),
-      );
+  );
 
   /// All optional positional params must support nullability
-  static Parameter buildOptionalPositionalParam(FormalParameterElement p) =>
-      Parameter((ParameterBuilder b) => b
-        ..name = switch (p.name3) {
-          final String name? => name,
-          null => throw InvalidGenerationSourceError(
-              'Encountered an optional positional parameter without a name.',
-              element: p.baseElement,
-            ),
-        }
-        ..type = Reference(
-          p.type.getDisplayString(withNullability: p.type.isNullable),
-        )
-        ..defaultTo = switch (p.defaultValueCode) {
-          final String code? => Code(code),
-          null => null,
-        });
+  static Parameter buildOptionalPositionalParam(
+    FormalParameterElement p,
+  ) => Parameter(
+    (ParameterBuilder b) =>
+        b
+          ..name = switch (p.name3) {
+            final String name? => name,
+            null =>
+              throw InvalidGenerationSourceError(
+                'Encountered an optional positional parameter without a name.',
+                element: p.baseElement,
+              ),
+          }
+          ..type = Reference(
+            p.type.getDisplayString(withNullability: p.type.isNullable),
+          )
+          ..defaultTo = switch (p.defaultValueCode) {
+            final String code? => Code(code),
+            null => null,
+          },
+  );
 
   /// Named params can be optional or required, they also need to support nullability
-  static Parameter buildNamedParam(FormalParameterElement p) =>
-      Parameter((ParameterBuilder pb) => pb
-        ..named = true
-        ..name = switch (p.name3) {
-          final String name? => name,
-          null => throw InvalidGenerationSourceError(
-              'Encountered a named parameter without a name.',
-              element: p.baseElement,
-            ),
-        }
-        ..required = p.isRequiredNamed
-        ..type = Reference(
-          p.type.getDisplayString(withNullability: p.type.isNullable),
-        )
-        ..defaultTo = switch (p.defaultValueCode) {
-          final String code? => Code(code),
-          null => null,
-        });
+  static Parameter buildNamedParam(FormalParameterElement p) => Parameter(
+    (ParameterBuilder pb) =>
+        pb
+          ..named = true
+          ..name = switch (p.name3) {
+            final String name? => name,
+            null =>
+              throw InvalidGenerationSourceError(
+                'Encountered a named parameter without a name.',
+                element: p.baseElement,
+              ),
+          }
+          ..required = p.isRequiredNamed
+          ..type = Reference(
+            p.type.getDisplayString(withNullability: p.type.isNullable),
+          )
+          ..defaultTo = switch (p.defaultValueCode) {
+            final String code? => Code(code),
+            null => null,
+          },
+  );
 
-  static final TypeChecker _abortTriggerChecker =
-      const TypeChecker.fromRuntime(AbortTrigger);
+  static final TypeChecker _abortTriggerChecker = const TypeChecker.fromRuntime(
+    AbortTrigger,
+  );
 
   /// Locates the first parameter annotated with `@AbortTrigger`, or returns
   /// `null` if none exists. Enforces that **at most one** such parameter is

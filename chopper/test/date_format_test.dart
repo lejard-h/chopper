@@ -90,14 +90,16 @@ void main() {
 
       // Test date serializer
       final dateResult = DateFormat.date(testDateTime);
-      final expectedDate = '${testDateTime.year.toString().padLeft(4, '0')}-'
+      final expectedDate =
+          '${testDateTime.year.toString().padLeft(4, '0')}-'
           '${testDateTime.month.toString().padLeft(2, '0')}-'
           '${testDateTime.day.toString().padLeft(2, '0')}';
       expect(dateResult, equals(expectedDate));
 
       // Test time serializer
       final timeResult = DateFormat.time(testDateTime);
-      final expectedTime = '${testDateTime.hour.toString().padLeft(2, '0')}:'
+      final expectedTime =
+          '${testDateTime.hour.toString().padLeft(2, '0')}:'
           '${testDateTime.minute.toString().padLeft(2, '0')}:'
           '${testDateTime.second.toString().padLeft(2, '0')}';
       expect(timeResult, equals(expectedTime));
@@ -133,9 +135,7 @@ void main() {
         dateFormat: DateFormat.seconds,
       );
 
-      final copiedRequest = request.copyWith(
-        method: 'POST',
-      );
+      final copiedRequest = request.copyWith(method: 'POST');
 
       expect(copiedRequest.dateFormat, equals(DateFormat.seconds));
     });

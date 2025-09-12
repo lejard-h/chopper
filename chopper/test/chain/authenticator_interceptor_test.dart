@@ -14,65 +14,66 @@ void main() {
   setUp(() {
     chain = MockChain<String>(
       request,
-      () => Response<String>(
-        http.Response('', 200),
-        '',
-      ),
+      () => Response<String>(http.Response('', 200), ''),
     );
     authenticator = MockAuthenticator(() => null);
     authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
   });
 
-  test('Intercepted response is authenticated, chain.proceed called once',
-      () async {
-    await authenticatorInterceptor.intercept(chain);
+  test(
+    'Intercepted response is authenticated, chain.proceed called once',
+    () async {
+      await authenticatorInterceptor.intercept(chain);
 
-    expect(authenticator.authenticateCalled, 1);
-    expect(chain.proceedCalled, 1);
-  });
-
-  test('Intercepted response is not authenticated, chain.proceed called twice',
-      () async {
-    authenticator = MockAuthenticator(() => request);
-    authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
-
-    await authenticatorInterceptor.intercept(chain);
-
-    expect(authenticator.authenticateCalled, 1);
-    expect(chain.proceedCalled, 2);
-  });
+      expect(authenticator.authenticateCalled, 1);
+      expect(chain.proceedCalled, 1);
+    },
+  );
 
   test(
-      'Intercepted response is not authenticated, authentication is successful',
-      () async {
-    authenticator = MockAuthenticator(() => request);
-    authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
+    'Intercepted response is not authenticated, chain.proceed called twice',
+    () async {
+      authenticator = MockAuthenticator(() => request);
+      authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
 
-    await authenticatorInterceptor.intercept(chain);
+      await authenticatorInterceptor.intercept(chain);
 
-    expect(authenticator.authenticateCalled, 1);
-    expect(chain.proceedCalled, 2);
-    expect(authenticator.onAuthenticationSuccessfulCalled, 1);
-  });
+      expect(authenticator.authenticateCalled, 1);
+      expect(chain.proceedCalled, 2);
+    },
+  );
 
-  test('Intercepted response is not authenticated, authentication failed',
-      () async {
-    chain = MockChain<String>(
-      request,
-      () => Response<String>(
-        http.Response('', 400),
-        '',
-      ),
-    );
-    authenticator = MockAuthenticator(() => request);
-    authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
+  test(
+    'Intercepted response is not authenticated, authentication is successful',
+    () async {
+      authenticator = MockAuthenticator(() => request);
+      authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
 
-    await authenticatorInterceptor.intercept(chain);
+      await authenticatorInterceptor.intercept(chain);
 
-    expect(authenticator.authenticateCalled, 1);
-    expect(chain.proceedCalled, 2);
-    expect(authenticator.onAuthenticationFailedCalled, 1);
-  });
+      expect(authenticator.authenticateCalled, 1);
+      expect(chain.proceedCalled, 2);
+      expect(authenticator.onAuthenticationSuccessfulCalled, 1);
+    },
+  );
+
+  test(
+    'Intercepted response is not authenticated, authentication failed',
+    () async {
+      chain = MockChain<String>(
+        request,
+        () => Response<String>(http.Response('', 400), ''),
+      );
+      authenticator = MockAuthenticator(() => request);
+      authenticatorInterceptor = AuthenticatorInterceptor(authenticator);
+
+      await authenticatorInterceptor.intercept(chain);
+
+      expect(authenticator.authenticateCalled, 1);
+      expect(chain.proceedCalled, 2);
+      expect(authenticator.onAuthenticationFailedCalled, 1);
+    },
+  );
 }
 
 class MockChain<BodyType> implements Chain {
