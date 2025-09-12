@@ -1057,7 +1057,9 @@ final class ChopperGenerator
               in queries.entries)
             query.value.peek('name')?.stringValue ?? query.key.displayName:
                 enableToString
-                    ? refer(query.key.displayName).property('toString').call([])
+                    ? refer(query.key.displayName)
+                        .property('toString')
+                        .call(const [])
                     : refer(query.key.displayName),
         },
         refer('String'),
