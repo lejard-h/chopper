@@ -5,7 +5,7 @@ documentation: https://hadrien-lejard.gitbook.io/chopper/converters/built-value-
 repository: https://github.com/lejard-h/chopper
 
 environment:
-  sdk: ^3.4.0
+  sdk: ^3.7.0
 
 dependencies:
   built_value: ^8.11.0
@@ -18,7 +18,7 @@ dev_dependencies:
   build_runner: ^2.7.1
   build_test: ^3.3.3
   built_value_generator: ^8.11.0
-  lints: ^6.0.0
+  lints: ">=5.1.1 <7.0.0"
 
 topics:
   - codegen
