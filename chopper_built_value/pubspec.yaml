@@ -10,13 +10,13 @@ environment:
 dependencies:
   built_value: ^8.11.0
   built_collection: ^5.1.1
-  chopper: ^8.2.0
-  http: ^1.4.0
+  chopper: ^8.3.0
+  http: ^1.5.0
 
 dev_dependencies:
   test: ^1.26.3
-  build_runner: ^2.6.0
-  build_test: ^3.3.0
+  build_runner: ^2.7.1
+  build_test: ^3.3.3
   built_value_generator: ^8.11.0
   lints: ^6.0.0
 

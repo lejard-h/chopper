@@ -15,10 +15,10 @@ dependencies:
   qs_dart: ^1.5.6
 
 dev_dependencies:
-  build_runner: ^2.6.0
-  build_test: ^3.3.0
+  build_runner: ^2.7.1
+  build_test: ^3.3.3
   build_verify: ^3.1.1
-  collection: ^1.18.0
+  collection: ^1.19.0
   coverage: ^1.15.0
   data_fixture_dart: ^3.0.0
   faker: ^2.2.0
@@ -26,7 +26,7 @@ dev_dependencies:
   lints: ^6.0.0
   test: ^1.26.3
   transparent_image: ^2.0.1
-  chopper_generator: ^8.3.0
+  chopper_generator: ^8.3.1
 
 topics:
   - api
