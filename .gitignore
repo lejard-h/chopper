@@ -12,6 +12,7 @@ doc/api/
 .test_coverage.dart
 coverage
 chopper/doc/
+chopper_generator/doc/
 .vscode/
 pubspec.temp.yaml
 .DS_Store
