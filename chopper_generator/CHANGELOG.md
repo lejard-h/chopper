@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.4.0
+
+- Add `@AbortTrigger` annotation and support for abortable requests ([#679](https://github.com/lejard-h/chopper/pull/679))
+- Change the timeout mechanism to use `http` package's built-in [`abortTrigger`](https://pub.dev/documentation/http/latest/http/Abortable/abortTrigger.html) rather than `Future`'s [`timeout`](https://api.flutter.dev/flutter/dart-async/Future/timeout.html) ([#679](https://github.com/lejard-h/chopper/pull/679))
+- Require Dart SDK 3.7.0 ([#683](https://github.com/lejard-h/chopper/pull/683))
+
 ## 8.3.1
 
 - Update analyzer dependency to `>=7.4.0 <9.0.0`
