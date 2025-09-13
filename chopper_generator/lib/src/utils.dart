@@ -133,8 +133,9 @@ final class Utils {
           },
   );
 
-  static final TypeChecker _abortTriggerChecker = const TypeChecker.fromRuntime(
+  static final TypeChecker _abortTriggerChecker = const TypeChecker.typeNamed(
     AbortTrigger,
+    inPackage: 'chopper',
   );
 
   /// Locates the first parameter annotated with `@AbortTrigger`, or returns

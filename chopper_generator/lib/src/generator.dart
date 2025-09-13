@@ -50,8 +50,10 @@ final class ChopperGenerator
   }
 
   /// Returns true iff the given type is exactly [chopper.ChopperService].
-  static bool _extendsChopperService(InterfaceType type) =>
-      _typeChecker(chopper.ChopperService).isExactlyType(type);
+  static bool _extendsChopperService(InterfaceType type) => _typeChecker(
+    chopper.ChopperService,
+    inPackage: 'chopper',
+  ).isExactlyType(type);
 
   /// Builds the `definitionType` override used by Chopper to infer the
   /// original abstract service type at runtime.
@@ -389,8 +391,10 @@ final class ChopperGenerator
           final DartType bodyType =
               m.formalParameters
                   .firstWhere(
-                    (FormalParameterElement p) =>
-                        _typeChecker(chopper.Body).hasAnnotationOf(p),
+                    (FormalParameterElement p) => _typeChecker(
+                      chopper.Body,
+                      inPackage: 'chopper',
+                    ).hasAnnotationOf(p),
                   )
                   .type;
           final Expression map =
@@ -414,7 +418,10 @@ final class ChopperGenerator
         final DartType fieldMapType =
             m.formalParameters
                 .firstWhere(
-                  (p) => _typeChecker(chopper.FieldMap).hasAnnotationOf(p),
+                  (FormalParameterElement p) => _typeChecker(
+                    chopper.FieldMap,
+                    inPackage: 'chopper',
+                  ).hasAnnotationOf(p),
                 )
                 .type;
         final Expression map =
@@ -965,7 +972,11 @@ final class ChopperGenerator
   };
 
   /// Small helper to get a [TypeChecker] for a runtime type.
-  static TypeChecker _typeChecker(Type type) => TypeChecker.fromRuntime(type);
+  static TypeChecker _typeChecker(
+    Type type, {
+    String? inPackage,
+    bool? inSdk,
+  }) => TypeChecker.typeNamed(type, inPackage: inPackage, inSdk: inSdk);
 
   /// Scans supported HTTP method annotations (@Get/@Post/...) and returns the first match.
   static ConstantReader? _getMethodAnnotation(MethodElement2 method) {
@@ -985,6 +996,7 @@ final class ChopperGenerator
   static ConstantReader? _getFactoryConverterAnnotation(MethodElement2 method) {
     final DartObject? annotation = _typeChecker(
       chopper.FactoryConverter,
+      inPackage: 'chopper',
     ).firstAnnotationOf(method, throwOnUnresolved: false);
 
     return annotation != null ? ConstantReader(annotation) : null;
@@ -1015,29 +1027,37 @@ final class ChopperGenerator
 
   /// True if the type is (or is assignable to) [Map].
   static bool _isMap(DartType type) =>
-      _typeChecker(Map).isExactlyType(type) ||
-      _typeChecker(Map).isAssignableFromType(type);
+      type.isDartCoreMap ||
+      _typeChecker(Map, inSdk: true).isAssignableFromType(type);
 
   /// True if the type is a `Map<String, String>`.
   static bool _isMapStringString(DartType type) =>
       _isMap(type) &&
       switch (type) {
-        InterfaceType(typeArguments: [final k, final v, ...]) =>
+        InterfaceType(
+          typeArguments: [final DartType k, final DartType v, ...],
+        ) =>
           _isString(k) && _isString(v),
         _ => false,
       };
 
   /// True if the type is (or is assignable to) [String].
   static bool _isString(DartType type) =>
-      _typeChecker(String).isExactlyType(type) ||
-      _typeChecker(String).isAssignableFromType(type);
+      type.isDartCoreString ||
+      (type is InterfaceType &&
+          type.element3.name3 == 'String' &&
+          type.element3.library2.uri.toString() == 'dart:core');
 
   /// True if the outer generic of `type` is [chopper.Response].
   static bool _isResponse(DartType type) => switch (_genericOf(type)) {
-    null => false,
-    final DartType responseType => _typeChecker(
-      chopper.Response,
-    ).isExactlyType(responseType),
+    InterfaceType(
+      element3: InterfaceElement(
+        name3: 'Response',
+        library2: final LibraryElement lib,
+      ),
+    ) =>
+      lib.uri.toString().startsWith('package:chopper/'),
+    _ => false,
   };
 
   /// For `Future<Response<T>>`, returns `T`. For `Future<T>`, returns `T`.
@@ -1049,15 +1069,21 @@ final class ChopperGenerator
     final DartType? generic = _genericOf(type);
 
     if (generic == null ||
-        _typeChecker(Map).isExactlyType(type) ||
-        _typeChecker(BuiltMap).isExactlyType(type)) {
+        type.isDartCoreMap ||
+        _typeChecker(
+          BuiltMap,
+          inPackage: 'built_collection',
+        ).isExactlyType(type)) {
       return type;
     }
 
     if (generic is DynamicType) return null;
 
-    if (_typeChecker(List).isExactlyType(type) ||
-        _typeChecker(BuiltList).isExactlyType(type)) {
+    if (type.isDartCoreList ||
+        _typeChecker(
+          BuiltList,
+          inPackage: 'built_collection',
+        ).isExactlyType(type)) {
       return generic;
     }
 
