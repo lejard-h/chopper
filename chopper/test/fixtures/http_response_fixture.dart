@@ -15,11 +15,11 @@ extension ResponseFixture on http.Response {
 final class ResponseFactory extends FixtureFactory<http.Response> {
   @override
   FixtureDefinition<http.Response> definition() => define(
-        (Faker faker, [int index = 0]) => http.Response(
-          jsonEncode(PayloadFixture.factory.makeSingle().toJson()),
-          200,
-        ),
-      );
+    (Faker faker, [int index = 0]) => http.Response(
+      jsonEncode(PayloadFixture.factory.makeSingle().toJson()),
+      200,
+    ),
+  );
 
   FixtureRedefinitionBuilder<http.Response> body(String? body) =>
       (http.Response response, [int index = 0]) =>

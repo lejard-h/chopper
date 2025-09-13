@@ -11,9 +11,7 @@ extension PayloadFixture on Payload {
 final class PayloadFactory extends FixtureFactory<Payload> {
   @override
   FixtureDefinition<Payload> definition() => define(
-        (Faker faker, [int index = 0]) => Payload(
-          statusCode: 200,
-          message: faker.lorem.sentence(),
-        ),
-      );
+    (Faker faker, [int index = 0]) =>
+        Payload(statusCode: 200, message: faker.lorem.sentence()),
+  );
 }

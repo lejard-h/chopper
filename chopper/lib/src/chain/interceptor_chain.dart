@@ -62,10 +62,7 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
   }
 
   /// Copy the current [InterceptorChain]. With updated [request] or [index].
-  InterceptorChain<T> copyWith<T>({
-    Request? request,
-    int? index,
-  }) =>
+  InterceptorChain<T> copyWith<T>({Request? request, int? index}) =>
       InterceptorChain<T>(
         request: request ?? this.request,
         index: index ?? this.index,

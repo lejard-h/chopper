@@ -7,14 +7,11 @@ import 'package:http/http.dart' as http;
 
 /// A fake implementation of [Chain] for testing purposes.
 class FakeChain<BodyType> implements Chain<BodyType> {
-  FakeChain(
-    this.request, {
-    this.response,
-    this.exception,
-  }) : assert(
-          response == null || exception == null,
-          'Either response or exception must be provided, not both.',
-        );
+  FakeChain(this.request, {this.response, this.exception})
+    : assert(
+        response == null || exception == null,
+        'Either response or exception must be provided, not both.',
+      );
 
   @override
   final Request request;

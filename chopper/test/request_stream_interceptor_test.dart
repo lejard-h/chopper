@@ -110,9 +110,6 @@ class CustomFakeChain<T> implements Chain<T> {
   @override
   Future<Response<T>> proceed(Request request) async {
     processedRequest = request;
-    return Response<T>(
-      http.Response('', 200),
-      null as T,
-    );
+    return Response<T>(http.Response('', 200), null as T);
   }
 }

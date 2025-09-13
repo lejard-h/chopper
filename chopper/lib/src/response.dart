@@ -42,12 +42,11 @@ base class Response<BodyType> with EquatableMixin {
     http.BaseResponse? base,
     NewBodyType? body,
     Object? bodyError,
-  }) =>
-      Response<NewBodyType>(
-        base ?? this.base,
-        body ?? (this.body as NewBodyType?),
-        error: bodyError ?? error,
-      );
+  }) => Response<NewBodyType>(
+    base ?? this.base,
+    body ?? (this.body as NewBodyType?),
+    error: bodyError ?? error,
+  );
 
   /// The HTTP status code of the response.
   int get statusCode => base.statusCode;
@@ -95,11 +94,7 @@ base class Response<BodyType> with EquatableMixin {
   }
 
   @override
-  List<Object?> get props => [
-        base,
-        body,
-        error,
-      ];
+  List<Object?> get props => [base, body, error];
 }
 
 ///

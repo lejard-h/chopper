@@ -21,11 +21,6 @@ class HeadersInterceptor implements Interceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-          Chain<BodyType> chain) async =>
-      chain.proceed(
-        applyHeaders(
-          chain.request,
-          headers,
-        ),
-      );
+    Chain<BodyType> chain,
+  ) async => chain.proceed(applyHeaders(chain.request, headers));
 }

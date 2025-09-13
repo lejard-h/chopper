@@ -54,8 +54,10 @@ void main() {
       await interceptor.intercept(FakeChain(simpleRequest));
 
       expect(logs, hasLength(1));
-      expect(logs[0],
-          contains("curl -v -X GET 'https://api.example.com/resource'"));
+      expect(
+        logs[0],
+        contains("curl -v -X GET 'https://api.example.com/resource'"),
+      );
     });
 
     test('includes headers in curl command', () async {
@@ -90,9 +92,11 @@ void main() {
 
       expect(logs, hasLength(1));
       expect(
-          logs[0],
-          contains(
-              "'https://api.example.com/resource?param1=value1&param2=value2'"));
+        logs[0],
+        contains(
+          "'https://api.example.com/resource?param1=value1&param2=value2'",
+        ),
+      );
     });
 
     test('escapes single quotes in body', () async {
@@ -142,9 +146,13 @@ void main() {
       request.setupMultipart((multipart) {
         multipart.fields['field1'] = 'value1';
         multipart.fields['field2'] = 'value2';
-        multipart.files.add(http.MultipartFile.fromString(
-            'file', 'test content',
-            filename: 'test.txt'));
+        multipart.files.add(
+          http.MultipartFile.fromString(
+            'file',
+            'test content',
+            filename: 'test.txt',
+          ),
+        );
       });
 
       final interceptor = CurlInterceptor();
@@ -179,9 +187,9 @@ final class MockMultipartRequest extends Request {
 
   final http.AbortableMultipartRequest _multipartRequest =
       http.AbortableMultipartRequest(
-    'POST',
-    Uri.parse('https://api.example.com/upload'),
-  );
+        'POST',
+        Uri.parse('https://api.example.com/upload'),
+      );
 
   void setupMultipart(void Function(http.MultipartRequest) setup) {
     setup(_multipartRequest);

@@ -45,25 +45,26 @@ base class Request extends http.BaseRequest
     this.dateFormat,
     this.includeNullQueryVars,
     this.abortTrigger,
-  })  : assert(
-            !baseUri.hasQuery,
-            'baseUri should not contain query parameters.'
-            'Use a request interceptor to add default query parameters'),
-        // Merge uri.queryParametersAll in the final parameters object so the request object reflects all configured queryParameters
-        parameters = {...uri.queryParametersAll, ...?parameters},
-        super(
-          method,
-          buildUri(
-            baseUri,
-            uri,
-            {...uri.queryParametersAll, ...?parameters},
-            listFormat: listFormat,
-            // ignore: deprecated_member_use_from_same_package
-            useBrackets: useBrackets,
-            dateFormat: dateFormat,
-            includeNullQueryVars: includeNullQueryVars,
-          ),
-        ) {
+  }) : assert(
+         !baseUri.hasQuery,
+         'baseUri should not contain query parameters.'
+         'Use a request interceptor to add default query parameters',
+       ),
+       // Merge uri.queryParametersAll in the final parameters object so the request object reflects all configured queryParameters
+       parameters = {...uri.queryParametersAll, ...?parameters},
+       super(
+         method,
+         buildUri(
+           baseUri,
+           uri,
+           {...uri.queryParametersAll, ...?parameters},
+           listFormat: listFormat,
+           // ignore: deprecated_member_use_from_same_package
+           useBrackets: useBrackets,
+           dateFormat: dateFormat,
+           includeNullQueryVars: includeNullQueryVars,
+         ),
+       ) {
     this.headers.addAll(headers);
   }
 
@@ -83,24 +84,23 @@ base class Request extends http.BaseRequest
     bool? includeNullQueryVars,
     Object? tag,
     Future<void>? abortTrigger,
-  }) =>
-      Request(
-        method ?? this.method,
-        uri ?? this.uri,
-        baseUri ?? this.baseUri,
-        body: body ?? this.body,
-        parameters: parameters ?? this.parameters,
-        headers: headers ?? this.headers,
-        multipart: multipart ?? this.multipart,
-        parts: parts ?? this.parts,
-        listFormat: listFormat ?? this.listFormat,
-        // ignore: deprecated_member_use_from_same_package
-        useBrackets: useBrackets ?? this.useBrackets,
-        dateFormat: dateFormat ?? this.dateFormat,
-        includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
-        tag: tag ?? this.tag,
-        abortTrigger: abortTrigger ?? this.abortTrigger,
-      );
+  }) => Request(
+    method ?? this.method,
+    uri ?? this.uri,
+    baseUri ?? this.baseUri,
+    body: body ?? this.body,
+    parameters: parameters ?? this.parameters,
+    headers: headers ?? this.headers,
+    multipart: multipart ?? this.multipart,
+    parts: parts ?? this.parts,
+    listFormat: listFormat ?? this.listFormat,
+    // ignore: deprecated_member_use_from_same_package
+    useBrackets: useBrackets ?? this.useBrackets,
+    dateFormat: dateFormat ?? this.dateFormat,
+    includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
+    tag: tag ?? this.tag,
+    abortTrigger: abortTrigger ?? this.abortTrigger,
+  );
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
   ///
@@ -117,16 +117,19 @@ base class Request extends http.BaseRequest
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
-    final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
-        ? url
-        : _mergeUri(baseUrl, url);
+    final Uri uri =
+        url.isScheme('HTTP') || url.isScheme('HTTPS')
+            ? url
+            : _mergeUri(baseUrl, url);
 
     // Check if parameter also has all the queryParameters from the url (not the merged uri)
-    final bool parametersContainsUriQuery = parameters.keys
-        .every((element) => url.queryParametersAll.keys.contains(element));
-    final Map<String, dynamic> allParameters = parametersContainsUriQuery
-        ? parameters
-        : {...url.queryParametersAll, ...parameters};
+    final bool parametersContainsUriQuery = parameters.keys.every(
+      (element) => url.queryParametersAll.keys.contains(element),
+    );
+    final Map<String, dynamic> allParameters =
+        parametersContainsUriQuery
+            ? parameters
+            : {...url.queryParametersAll, ...parameters};
 
     final String query = mapToQuery(
       allParameters,
@@ -142,9 +145,10 @@ base class Request extends http.BaseRequest
 
   /// Merges Uri into another Uri preserving queries and paths
   static Uri _mergeUri(Uri baseUri, Uri addToUri) {
-    final path = baseUri.hasEmptyPath
-        ? addToUri.path
-        : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
+    final path =
+        baseUri.hasEmptyPath
+            ? addToUri.path
+            : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
 
     return baseUri.replace(
       path: path,
@@ -171,9 +175,11 @@ base class Request extends http.BaseRequest
   /// Convert this [Request] to a [http.AbortableRequest]
   @visibleForTesting
   http.AbortableRequest toHttpRequest() {
-    final http.AbortableRequest request =
-        http.AbortableRequest(method, url, abortTrigger: abortTrigger)
-          ..followRedirects = followRedirects;
+    final http.AbortableRequest request = http.AbortableRequest(
+      method,
+      url,
+      abortTrigger: abortTrigger,
+    )..followRedirects = followRedirects;
 
     if (body == null) {
       request.headers.addAll(headers);
@@ -246,10 +252,13 @@ base class Request extends http.BaseRequest
   /// Convert this [Request] to a [http.AbortableStreamedRequest]
   @visibleForTesting
   http.AbortableStreamedRequest toStreamedRequest(
-      Stream<List<int>> bodyStream) {
-    final http.AbortableStreamedRequest request =
-        http.AbortableStreamedRequest(method, url, abortTrigger: abortTrigger)
-          ..headers.addAll(headers);
+    Stream<List<int>> bodyStream,
+  ) {
+    final http.AbortableStreamedRequest request = http.AbortableStreamedRequest(
+      method,
+      url,
+      abortTrigger: abortTrigger,
+    )..headers.addAll(headers);
 
     bodyStream.listen(
       request.sink.add,
@@ -262,21 +271,21 @@ base class Request extends http.BaseRequest
 
   @override
   List<Object?> get props => [
-        method,
-        uri,
-        baseUri,
-        body,
-        parameters,
-        headers,
-        multipart,
-        parts,
-        listFormat,
-        // ignore: deprecated_member_use_from_same_package
-        useBrackets,
-        dateFormat,
-        includeNullQueryVars,
-        abortTrigger,
-      ];
+    method,
+    uri,
+    baseUri,
+    body,
+    parameters,
+    headers,
+    multipart,
+    parts,
+    listFormat,
+    // ignore: deprecated_member_use_from_same_package
+    useBrackets,
+    dateFormat,
+    includeNullQueryVars,
+    abortTrigger,
+  ];
 }
 
 ///
@@ -296,24 +305,15 @@ final class PartValue<T> with EquatableMixin {
   final T value;
   final String name;
 
-  const PartValue(
-    this.name,
-    this.value,
-  );
+  const PartValue(this.name, this.value);
 
   /// Makes a copy of this PartValue, replacing original values with the given ones.
   /// This method can also alter the type of the request body.
   PartValue<NewType> copyWith<NewType>({String? name, NewType? value}) =>
-      PartValue<NewType>(
-        name ?? this.name,
-        value ?? this.value as NewType,
-      );
+      PartValue<NewType>(name ?? this.name, value ?? this.value as NewType);
 
   @override
-  List<Object?> get props => [
-        name,
-        value,
-      ];
+  List<Object?> get props => [name, value];
 }
 
 ///

@@ -34,8 +34,9 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   }
 
   BuiltList<InnerType> _deserializeListOf<InnerType>(Iterable value) {
-    final Iterable<InnerType?> deserialized =
-        value.map((value) => _deserialize<InnerType>(value));
+    final Iterable<InnerType?> deserialized = value.map(
+      (value) => _deserialize<InnerType>(value),
+    );
 
     return BuiltList<InnerType>(deserialized.toList(growable: false));
   }
@@ -51,8 +52,8 @@ class BuiltValueConverter implements Converter, ErrorConverter {
 
   @override
   Request convertRequest(Request request) => jsonConverter.convertRequest(
-        request.copyWith(body: serializers.serialize(request.body)),
-      );
+    request.copyWith(body: serializers.serialize(request.body)),
+  );
 
   @override
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
