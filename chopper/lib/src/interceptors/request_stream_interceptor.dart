@@ -12,7 +12,8 @@ class RequestStreamInterceptor implements InternalInterceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     await callback(chain.request);
 
     return chain.proceed(chain.request);

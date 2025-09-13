@@ -41,10 +41,7 @@ void main() {
           'GET',
           Uri.parse('/bar'),
           Uri.parse('https://foo/'),
-          parameters: {
-            'lorem': 'ipsum',
-            'dolor': 123,
-          },
+          parameters: {'lorem': 'ipsum', 'dolor': 123},
         ).url,
         equals(Uri.parse('https://foo/bar?lorem=ipsum&dolor=123')),
       );
@@ -60,9 +57,11 @@ void main() {
             'second_list': ['a', 'b'],
           },
         ).url,
-        equals(Uri.parse(
-          'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b&lorem=ipsum&dolor=123&second_list=a&second_list=b',
-        )),
+        equals(
+          Uri.parse(
+            'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b&lorem=ipsum&dolor=123&second_list=a&second_list=b',
+          ),
+        ),
       );
     });
 
@@ -79,16 +78,16 @@ void main() {
         headers: headers,
       );
 
-      expect(
-        MapEquality().equals(request.headers, headers),
-        true,
-      );
+      expect(const MapEquality().equals(request.headers, headers), true);
     });
 
     test('copyWith creates a BaseRequest', () {
       expect(
-        Request('GET', Uri.parse('/bar'), Uri.parse('https://foo/'))
-            .copyWith(method: HttpMethod.Put),
+        Request(
+          'GET',
+          Uri.parse('/bar'),
+          Uri.parse('https://foo/'),
+        ).copyWith(method: HttpMethod.Put),
         isA<http.BaseRequest>(),
       );
     });
@@ -129,10 +128,7 @@ void main() {
           'GET',
           Uri.parse('https://foo/bar'),
           Uri.parse(''),
-          parameters: {
-            'lorem': 'ipsum',
-            'dolor': 123,
-          },
+          parameters: {'lorem': 'ipsum', 'dolor': 123},
         ).url,
         equals(Uri.parse('https://foo/bar?lorem=ipsum&dolor=123')),
       );
@@ -150,29 +146,22 @@ void main() {
             'second_list': ['a', 'b'],
           },
         ).url,
-        equals(Uri.parse(
-          'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b&lorem=ipsum&dolor=123&second_list=a&second_list=b',
-        )),
+        equals(
+          Uri.parse(
+            'https://foo/bar?first=sit&second=amet&first_list=a&first_list=b&lorem=ipsum&dolor=123&second_list=a&second_list=b',
+          ),
+        ),
       );
 
       expect(
         Request(
           'GET',
-          Uri.parse(
-            'https://chopper.dev/test3',
-          ),
+          Uri.parse('https://chopper.dev/test3'),
           Uri.parse(''),
           parameters: {
             'foo': 'bar',
-            'foo_list': [
-              'one',
-              'two',
-              'three',
-            ],
-            'user': {
-              'name': 'john',
-              'surname': 'doe',
-            },
+            'foo_list': ['one', 'two', 'three'],
+            'user': {'name': 'john', 'surname': 'doe'},
           },
         ).url.toString(),
         equals(
@@ -200,16 +189,16 @@ void main() {
         headers: headers,
       );
 
-      expect(
-        MapEquality().equals(request.headers, headers),
-        true,
-      );
+      expect(const MapEquality().equals(request.headers, headers), true);
     });
 
     test('copyWith creates a BaseRequest', () {
       expect(
-        Request('GET', Uri.parse('https://foo/bar'), Uri.parse(''))
-            .copyWith(method: HttpMethod.Put),
+        Request(
+          'GET',
+          Uri.parse('https://foo/bar'),
+          Uri.parse(''),
+        ).copyWith(method: HttpMethod.Put),
         isA<http.BaseRequest>(),
       );
     });
@@ -220,55 +209,28 @@ void main() {
       () => Request(
         'GET',
         Uri.parse('foo'),
-        Uri.http(
-          'foo',
-          'bar',
-          {
-            'first': '123',
-            'second': '456',
-          },
-        ),
+        Uri.http('foo', 'bar', {'first': '123', 'second': '456'}),
       ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
+      throwsA(const TypeMatcher<AssertionError>()),
+    );
+
+    expect(
+      () => Request('GET', Uri.parse('foo'), Uri.parse('foo/bar?first=123')),
+      throwsA(const TypeMatcher<AssertionError>()),
     );
 
     expect(
       () => Request(
         'GET',
         Uri.parse('foo'),
-        Uri.parse('foo/bar?first=123'),
+        Uri(queryParameters: {'first': '123', 'second': '456'}),
       ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
-    );
-
-    expect(
-      () => Request(
-        'GET',
-        Uri.parse('foo'),
-        Uri(
-          queryParameters: {
-            'first': '123',
-            'second': '456',
-          },
-        ),
-      ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
+      throwsA(const TypeMatcher<AssertionError>()),
     );
     expect(
-      () => Request(
-        'GET',
-        Uri.parse('foo'),
-        Uri(query: 'first=123&second=456'),
-      ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
+      () =>
+          Request('GET', Uri.parse('foo'), Uri(query: 'first=123&second=456')),
+      throwsA(const TypeMatcher<AssertionError>()),
     );
   });
 }

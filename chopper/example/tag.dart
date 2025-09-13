@@ -15,9 +15,7 @@ Future<void> main() async {
       // the generated service
       TagService.create(ChopperClient()),
     ],
-    interceptors: [
-      TagInterceptor(),
-    ],
+    interceptors: [TagInterceptor()],
     converter: JsonConverter(),
   );
 
@@ -81,7 +79,7 @@ abstract class TagService extends ChopperService {
   Future<Response> requestWithTag({@Tag() BizTag tag = const BizTag()});
 
   @get(path: '/include')
-  Future<Response> includeBodyNullOrEmptyTag(
-      {@Tag()
-      IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag()});
+  Future<Response> includeBodyNullOrEmptyTag({
+    @Tag() IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag(),
+  });
 }

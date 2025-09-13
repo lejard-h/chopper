@@ -18,9 +18,9 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
     Converter? converter,
     ErrorConverter? errorConverter,
     FutureOr<Response<dynamic>> Function(Response<dynamic>)? responseConverter,
-  })  : _responseConverter = responseConverter,
-        _errorConverter = errorConverter,
-        _converter = converter;
+  }) : _responseConverter = responseConverter,
+       _errorConverter = errorConverter,
+       _converter = converter;
 
   /// Converter to be used for response conversion.
   final Converter? _converter;
@@ -33,7 +33,8 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final realChain = chain as InterceptorChain<BodyType>;
     final typedChain = switch (isTypeOf<BodyType, Stream<List<int>>>()) {
       true => realChain,
@@ -55,7 +56,7 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
     if (responseConverter != null) {
       response = await responseConverter(response);
     } else if (_converter != null) {
-      response = await _decodeResponse<BodyType>(response, _converter!);
+      response = await _decodeResponse<BodyType>(response, _converter);
     }
 
     return Response<BodyType>(response.base, response.body);
@@ -65,8 +66,7 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
   Future<Response<BodyType>> _decodeResponse<BodyType>(
     Response response,
     Converter withConverter,
-  ) async =>
-      await withConverter.convertResponse<BodyType, InnerType>(response);
+  ) async => await withConverter.convertResponse<BodyType, InnerType>(response);
 
   /// Handles the error response by converting it using [_errorConverter].
   Future<Response<BodyType>> _handleErrorResponse<BodyType>(
@@ -74,10 +74,10 @@ class ResponseConverterInterceptor<InnerType> implements InternalInterceptor {
   ) async {
     var error = response.body;
     if (_errorConverter != null) {
-      final errorRes = await _errorConverter?.convertError<BodyType, InnerType>(
+      final errorRes = await _errorConverter.convertError<BodyType, InnerType>(
         response,
       );
-      error = errorRes?.error ?? errorRes?.body;
+      error = errorRes.error ?? errorRes.body;
     }
 
     return Response<BodyType>(response.base, null, error: error);

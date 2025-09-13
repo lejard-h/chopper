@@ -29,9 +29,11 @@ void main() {
 
       expect(
         () => interceptor.intercept(chain),
-        throwsA(isA<ChopperException>()
-            .having((e) => e.message, 'message', 'Unsupported type')
-            .having((e) => e.request, 'request', equals(request))),
+        throwsA(
+          isA<ChopperException>()
+              .having((e) => e.message, 'message', 'Unsupported type')
+              .having((e) => e.request, 'request', equals(request)),
+        ),
       );
     });
   });
@@ -48,9 +50,6 @@ class MockHttpClient extends http.BaseClient {
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
     // We won't reach this code because the exception is thrown before the actual HTTP call
-    return http.StreamedResponse(
-      Stream.empty(),
-      200,
-    );
+    return http.StreamedResponse(const Stream.empty(), 200);
   }
 }

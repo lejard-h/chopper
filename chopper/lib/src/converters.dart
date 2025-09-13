@@ -68,13 +68,8 @@ class JsonConverter implements Converter, ErrorConverter {
 
   @override
   Request convertRequest(Request request) => encodeJson(
-        applyHeader(
-          request,
-          contentTypeKey,
-          jsonHeaders,
-          override: false,
-        ),
-      );
+    applyHeader(request, contentTypeKey, jsonHeaders, override: false),
+  );
 
   Request encodeJson(Request request) {
     final String? contentType = request.headers[contentTypeKey];
@@ -135,13 +130,11 @@ class JsonConverter implements Converter, ErrorConverter {
   @override
   FutureOr<Response> convertError<BodyType, InnerType>(
     Response response,
-  ) async =>
-      await decodeJson(response);
+  ) async => await decodeJson(response);
 
   static FutureOr<Response<BodyType>> responseFactory<BodyType, InnerType>(
     Response response,
-  ) =>
-      const JsonConverter().convertResponse<BodyType, InnerType>(response);
+  ) => const JsonConverter().convertResponse<BodyType, InnerType>(response);
 
   static Request requestFactory(Request request) =>
       const JsonConverter().convertRequest(request);
@@ -181,10 +174,12 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
     if (req.body is Map<String, String>) return req;
 
     if (req.body is Map) {
-      return req.copyWith(body: <String, String>{
-        for (final MapEntry e in req.body.entries)
-          if (e.value != null) e.key.toString(): e.value.toString(),
-      });
+      return req.copyWith(
+        body: <String, String>{
+          for (final MapEntry e in req.body.entries)
+            if (e.value != null) e.key.toString(): e.value.toString(),
+        },
+      );
     }
 
     return req;
@@ -193,8 +188,7 @@ class FormUrlEncodedConverter implements Converter, ErrorConverter {
   @override
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
     Response response,
-  ) =>
-      response as Response<BodyType>;
+  ) => response as Response<BodyType>;
 
   @override
   FutureOr<Response> convertError<BodyType, InnerType>(Response response) =>

@@ -16,9 +16,7 @@ final class ResponseFixtureFactory<T> extends FixtureFactory<Response<T>> {
     final http.Response base =
         http_fixture.ResponseFixture.factory.makeSingle();
 
-    return define(
-      (Faker faker, [int index = 0]) => Response<T>(base, null),
-    );
+    return define((Faker faker, [int index = 0]) => Response<T>(base, null));
   }
 
   FixtureRedefinitionBuilder<Response<T>> body(T? body) =>

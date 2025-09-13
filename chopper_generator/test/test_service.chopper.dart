@@ -19,14 +19,9 @@ final class _$HttpTestService extends HttpTestService {
   final Type definitionType = HttpTestService;
 
   @override
-  Future<Response<String>> getTest(
-    String id, {
-    required String dynamicHeader,
-  }) {
+  Future<Response<String>> getTest(String id, {required String dynamicHeader}) {
     final Uri $url = Uri.parse('/test/get/${id}');
-    final Map<String, String> $headers = {
-      'test': dynamicHeader,
-    };
+    final Map<String, String> $headers = {'test': dynamicHeader};
     final Request $request = Request(
       'GET',
       $url,
@@ -39,55 +34,35 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<dynamic>> headTest() {
     final Uri $url = Uri.parse('/test/head');
-    final Request $request = Request(
-      'HEAD',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('HEAD', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> optionsTest() {
     final Uri $url = Uri.parse('/test/options');
-    final Request $request = Request(
-      'OPTIONS',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('OPTIONS', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<Stream<List<int>>>> getStreamTest() {
     final Uri $url = Uri.parse('/test/get');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<Stream<List<int>>, int>($request);
   }
 
   @override
   Future<Response<dynamic>> getAll() {
     final Uri $url = Uri.parse('/test');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> getAllWithTrailingSlash() {
     final Uri $url = Uri.parse('/test/');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -201,12 +176,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> getBody(dynamic body) {
     final Uri $url = Uri.parse('/test/get_body');
     final $body = body;
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -214,12 +184,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postTest(String data) {
     final Uri $url = Uri.parse('/test/post');
     final $body = data;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -227,37 +192,22 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postStreamTest(Stream<List<int>> byteStream) {
     final Uri $url = Uri.parse('/test/post');
     final $body = byteStream;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
-  Future<Response<dynamic>> putTest(
-    String test,
-    String data,
-  ) {
+  Future<Response<dynamic>> putTest(String test, String data) {
     final Uri $url = Uri.parse('/test/put/${test}');
     final $body = data;
-    final Request $request = Request(
-      'PUT',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('PUT', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> deleteTest(String id) {
     final Uri $url = Uri.parse('/test/delete/${id}');
-    final Map<String, String> $headers = {
-      'foo': 'bar',
-    };
+    final Map<String, String> $headers = {'foo': 'bar'};
     final Request $request = Request(
       'DELETE',
       $url,
@@ -268,10 +218,7 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
-  Future<Response<dynamic>> patchTest(
-    String id,
-    String data,
-  ) {
+  Future<Response<dynamic>> patchTest(String id, String data) {
     final Uri $url = Uri.parse('/test/patch/${id}');
     final $body = data;
     final Request $request = Request(
@@ -287,12 +234,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> mapTest(Map<String, String> map) {
     final Uri $url = Uri.parse('/test/map');
     final $body = map;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -300,12 +242,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postForm(Map<String, String> fields) {
     final Uri $url = Uri.parse('/test/form/body');
     final $body = fields;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>(
       $request,
       requestConverter: convertForm,
@@ -330,21 +267,10 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
-  Future<Response<dynamic>> postFormFields(
-    String foo,
-    int bar,
-  ) {
+  Future<Response<dynamic>> postFormFields(String foo, int bar) {
     final Uri $url = Uri.parse('/test/form/body/fields');
-    final $body = <String, dynamic>{
-      'foo': foo,
-      'bar': bar,
-    };
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final $body = <String, dynamic>{'foo': foo, 'bar': bar};
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>(
       $request,
       requestConverter: convertForm,
@@ -355,12 +281,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> forceJsonTest(Map<dynamic, dynamic> map) {
     final Uri $url = Uri.parse('/test/map/json');
     final $body = map;
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<dynamic, dynamic>(
       $request,
       requestConverter: customConvertRequest,
@@ -375,14 +296,8 @@ final class _$HttpTestService extends HttpTestService {
   ) {
     final Uri $url = Uri.parse('/test/multi');
     final List<PartValue> $parts = <PartValue>[
-      PartValue<Map<dynamic, dynamic>>(
-        '1',
-        a,
-      ),
-      PartValue<Map<dynamic, dynamic>>(
-        '2',
-        b,
-      ),
+      PartValue<Map<dynamic, dynamic>>('1', a),
+      PartValue<Map<dynamic, dynamic>>('2', b),
     ];
     final Request $request = Request(
       'POST',
@@ -403,14 +318,8 @@ final class _$HttpTestService extends HttpTestService {
     final Map<String, String> $headers = {
       'content-type': 'application/x-www-form-urlencoded',
     };
-    final $body = hashMapBody.map<String, String>((
-      key,
-      value,
-    ) {
-      return MapEntry(
-        key.toString(),
-        value.toString(),
-      );
+    final $body = hashMapBody.map<String, String>((key, value) {
+      return MapEntry(key.toString(), value.toString());
     });
     $body.addAll(map);
     final Request $request = Request(
@@ -424,18 +333,12 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
-  Future<Response<dynamic>> postFormUrlEncodeField(
-    String a,
-    String a2,
-  ) {
+  Future<Response<dynamic>> postFormUrlEncodeField(String a, String a2) {
     final Uri $url = Uri.parse('/test/formUrlEncoded');
     final Map<String, String> $headers = {
       'content-type': 'application/x-www-form-urlencoded',
     };
-    final $body = <String, String>{
-      'a': a.toString(),
-      'a1': a2.toString(),
-    };
+    final $body = <String, String>{'a': a.toString(), 'a1': a2.toString()};
     final Request $request = Request(
       'POST',
       $url,
@@ -465,19 +368,14 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<dynamic>> postFormUrlEncodeFieldDynamicMap(
-      Map<String, dynamic> c) {
+    Map<String, dynamic> c,
+  ) {
     final Uri $url = Uri.parse('/test/formUrlEncoded');
     final Map<String, String> $headers = {
       'content-type': 'application/x-www-form-urlencoded',
     };
-    final $body = c.map<String, String>((
-      key,
-      value,
-    ) {
-      return MapEntry(
-        key.toString(),
-        value.toString(),
-      );
+    final $body = c.map<String, String>((key, value) {
+      return MapEntry(key.toString(), value.toString());
     });
     final Request $request = Request(
       'POST',
@@ -493,10 +391,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postFile(List<int> bytes) {
     final Uri $url = Uri.parse('/test/file');
     final List<PartValue> $parts = <PartValue>[
-      PartValueFile<List<int>>(
-        'file',
-        bytes,
-      )
+      PartValueFile<List<int>>('file', bytes),
     ];
     final Request $request = Request(
       'POST',
@@ -512,10 +407,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postImage(List<int> imageData) {
     final Uri $url = Uri.parse('/test/image');
     final List<PartValue> $parts = <PartValue>[
-      PartValueFile<List<int>>(
-        'image',
-        imageData,
-      )
+      PartValueFile<List<int>>('image', imageData),
     ];
     final Request $request = Request(
       'POST',
@@ -534,14 +426,8 @@ final class _$HttpTestService extends HttpTestService {
   }) {
     final Uri $url = Uri.parse('/test/file');
     final List<PartValue> $parts = <PartValue>[
-      PartValue<String?>(
-        'id',
-        id,
-      ),
-      PartValueFile<MultipartFile>(
-        'file',
-        file,
-      ),
+      PartValue<String?>('id', id),
+      PartValueFile<MultipartFile>('file', file),
     ];
     final Request $request = Request(
       'POST',
@@ -557,10 +443,7 @@ final class _$HttpTestService extends HttpTestService {
   Future<Response<dynamic>> postListFiles(List<MultipartFile> files) {
     final Uri $url = Uri.parse('/test/files');
     final List<PartValue> $parts = <PartValue>[
-      PartValueFile<List<MultipartFile>>(
-        'files',
-        files,
-      )
+      PartValueFile<List<MultipartFile>>('files', files),
     ];
     final Request $request = Request(
       'POST',
@@ -581,22 +464,10 @@ final class _$HttpTestService extends HttpTestService {
   }) {
     final Uri $url = Uri.parse('/test/multipart_list');
     final List<PartValue> $parts = <PartValue>[
-      PartValue<List<int>>(
-        'ints',
-        ints,
-      ),
-      PartValue<List<double>>(
-        'doubles',
-        doubles,
-      ),
-      PartValue<List<num>>(
-        'nums',
-        nums,
-      ),
-      PartValue<List<String>>(
-        'strings',
-        strings,
-      ),
+      PartValue<List<int>>('ints', ints),
+      PartValue<List<double>>('doubles', doubles),
+      PartValue<List<num>>('nums', nums),
+      PartValue<List<String>>('strings', strings),
     ];
     final Request $request = Request(
       'POST',
@@ -611,33 +482,21 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<dynamic>> fullUrl() {
     final Uri $url = Uri.parse('https://test.com');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<List<String>>> listString() {
     final Uri $url = Uri.parse('/test/list/string');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<List<String>, String>($request);
   }
 
   @override
   Future<Response<dynamic>> noBody() {
     final Uri $url = Uri.parse('/test/no-body');
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -678,7 +537,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithBracketsLegacy(
-      List<String> value) {
+    List<String> value,
+  ) {
     final Uri $url = Uri.parse('/test/list_query_param_with_brackets_legacy');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -693,7 +553,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithBrackets(
-      List<String> value) {
+    List<String> value,
+  ) {
     final Uri $url = Uri.parse('/test/list_query_param_with_brackets');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -708,7 +569,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithIndices(
-      List<String> value) {
+    List<String> value,
+  ) {
     final Uri $url = Uri.parse('/test/list_query_param_with_indices');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -723,7 +585,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithRepeat(
-      List<String> value) {
+    List<String> value,
+  ) {
     final Uri $url = Uri.parse('/test/list_query_param_with_repeat');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -765,7 +628,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingMapQueryParamIncludeNullQueryVars(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse('/test/map_query_param_include_null_query_vars');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -780,7 +644,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithBracketsLegacy(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse('/test/map_query_param_with_brackets_legacy');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -795,7 +660,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse('/test/map_query_param_with_brackets');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -810,7 +676,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithIndices(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse('/test/map_query_param_with_indices');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -825,7 +692,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithRepeat(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse('/test/map_query_param_with_repeat');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -840,7 +708,8 @@ final class _$HttpTestService extends HttpTestService {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithComma(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse('/test/map_query_param_with_comma');
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
@@ -1059,12 +928,7 @@ final class _$HttpTestService extends HttpTestService {
       'positives': positives,
       'signature': signature,
     };
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      body: $body,
-    );
+    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
     return client.send<void, void>(
       $request,
       requestConverter: FormUrlEncodedConverter.requestFactory,
@@ -1072,10 +936,7 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
-  Future<Response<void>> tag(
-    String foo,
-    Object? t1,
-  ) {
+  Future<Response<void>> tag(String foo, Object? t1) {
     final Uri $url = Uri.parse('/test/tag');
     final $body = <String, dynamic>{'fool': foo};
     final Request $request = Request(
@@ -1091,39 +952,175 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getTimeoutTest() {
     final Uri $url = Uri.parse('/test/get_timeout');
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 42000000),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: $abortTrigger.future,
     );
     return client
         .send<String, String>($request)
-        .timeout(const Duration(microseconds: 42000000));
+        .catchError(
+          (_) => Future<Response<String>>.error(
+            ChopperTimeoutException('Request timed out after 42 seconds'),
+          ),
+          test:
+              (Object err) =>
+                  err is ChopperRequestAbortedException &&
+                  $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
   }
 
   @override
   Future<Response<String>> getTimeoutTestZero() {
     final Uri $url = Uri.parse('/test/get_timeout_zero');
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 0),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: $abortTrigger.future,
     );
     return client
         .send<String, String>($request)
-        .timeout(const Duration(microseconds: 0));
+        .catchError(
+          (_) => Future<Response<String>>.error(
+            ChopperTimeoutException('Request timed out'),
+          ),
+          test:
+              (Object err) =>
+                  err is ChopperRequestAbortedException &&
+                  $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
   }
 
   @override
   Future<Response<String>> getTimeoutTestNeg() {
     final Uri $url = Uri.parse('/test/get_timeout_neg');
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 0),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
     final Request $request = Request(
       'GET',
       $url,
       client.baseUrl,
+      abortTrigger: $abortTrigger.future,
     );
     return client
         .send<String, String>($request)
-        .timeout(const Duration(microseconds: 0));
+        .catchError(
+          (_) => Future<Response<String>>.error(
+            ChopperTimeoutException('Request timed out'),
+          ),
+          test:
+              (Object err) =>
+                  err is ChopperRequestAbortedException &&
+                  $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<Response<String>> getTimeoutTestQueryHeader({
+    String? testHeader,
+    String? name,
+  }) {
+    final Uri $url = Uri.parse('/test/get_timeout_with_query_header');
+    final Map<String, dynamic> $params = <String, dynamic>{'name': name};
+    final Map<String, String> $headers = {
+      if (testHeader != null) 'x-test': testHeader,
+    };
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 30000000),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      headers: $headers,
+      abortTrigger: $abortTrigger.future,
+    );
+    return client
+        .send<String, String>($request)
+        .catchError(
+          (_) => Future<Response<String>>.error(
+            ChopperTimeoutException('Request timed out after 30 seconds'),
+          ),
+          test:
+              (Object err) =>
+                  err is ChopperRequestAbortedException &&
+                  $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<Response<String>> getWithAbortTrigger({Future<void>? abortTrigger}) {
+    final Uri $url = Uri.parse('/test/get_abort_trigger');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: abortTrigger,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getWithAbortTrigger2({Future<void>? foo}) {
+    final Uri $url = Uri.parse('/test/get_abort_trigger2');
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      abortTrigger: foo,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
+  Future<Response<String>> getWithAbortTriggerQueryHeader({
+    String? testHeader,
+    String? name,
+    Future<void>? abortTrigger,
+  }) {
+    final Uri $url = Uri.parse('/test/get_abort_trigger_with_query_header');
+    final Map<String, dynamic> $params = <String, dynamic>{'name': name};
+    final Map<String, String> $headers = {
+      if (testHeader != null) 'x-test': testHeader,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+      headers: $headers,
+      abortTrigger: abortTrigger,
+    );
+    return client.send<String, String>($request);
   }
 }

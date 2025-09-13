@@ -18,8 +18,11 @@ void main() {
     late InterceptorChain interceptorChain;
 
     setUp(() {
-      mockRequest =
-          Request('GET', Uri.parse('bar'), Uri.parse('http://localhost'));
+      mockRequest = Request(
+        'GET',
+        Uri.parse('bar'),
+        Uri.parse('http://localhost'),
+      );
       mockInterceptor = MockInterceptor();
       interceptorChain = InterceptorChain(
         interceptors: [mockInterceptor],
@@ -33,10 +36,15 @@ void main() {
     });
 
     test('copyWith method works as expected', () {
-      final newRequest =
-          Request('GET', Uri.parse('foo'), Uri.parse('http://localhost'));
-      final copiedChain =
-          interceptorChain.copyWith(request: newRequest, index: 666);
+      final newRequest = Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri.parse('http://localhost'),
+      );
+      final copiedChain = interceptorChain.copyWith(
+        request: newRequest,
+        index: 666,
+      );
       expect(copiedChain.request, newRequest);
       expect(copiedChain.interceptors, [mockInterceptor]);
       expect(copiedChain.index, 666);
@@ -44,23 +52,22 @@ void main() {
 
     test('A empty Interceptor chain throws assertion', () {
       expect(
-          () => InterceptorChain(
-                interceptors: [],
-                request: mockRequest,
-              ),
-          throwsA(isA<AssertionError>()));
+        () => InterceptorChain(interceptors: [], request: mockRequest),
+        throwsA(isA<AssertionError>()),
+      );
     });
 
     test(
-        'Intercept chain proceed called with index out of bounds throws assertion',
-        () async {
-      final chain = InterceptorChain(
-        interceptors: [mockInterceptor],
-        request: mockRequest,
-        index: 666,
-      );
-      expect(chain.proceed(mockRequest), throwsA(isA<AssertionError>()));
-    });
+      'Intercept chain proceed called with index out of bounds throws assertion',
+      () async {
+        final chain = InterceptorChain(
+          interceptors: [mockInterceptor],
+          request: mockRequest,
+          index: 666,
+        );
+        expect(chain.proceed(mockRequest), throwsA(isA<AssertionError>()));
+      },
+    );
   });
 
   group('interceptor chain proceed tests', () {
@@ -98,10 +105,11 @@ void main() {
         () => interceptorChain.proceed(mockRequest),
         throwsA(
           isA<AssertionError>().having(
-              (e) => e.message,
-              'assertion',
-              'Interceptor [RequestModifierInterceptor] should not transform the body of the request, '
-                  'Use Request converter instead'),
+            (e) => e.message,
+            'assertion',
+            'Interceptor [RequestModifierInterceptor] should not transform the body of the request, '
+                'Use Request converter instead',
+          ),
         ),
       );
     });
@@ -116,44 +124,42 @@ void main() {
         () => interceptorChain.proceed(mockRequest),
         throwsA(
           isA<AssertionError>().having(
-              (e) => e.message,
-              'assertion',
-              'Interceptor [ResponseModifierInterceptor] should not transform the body of the response, '
-                  'Use Response converter instead'),
+            (e) => e.message,
+            'assertion',
+            'Interceptor [ResponseModifierInterceptor] should not transform the body of the response, '
+                'Use Response converter instead',
+          ),
         ),
       );
     });
 
     test(
-        'Internal interceptor is allowed modify request/response when proceeding, return normally',
-        () async {
-      interceptorChain = InterceptorChain(
-        interceptors: [InternalModifierInterceptor(), mockInterceptor],
-        request: mockRequest,
-      );
+      'Internal interceptor is allowed modify request/response when proceeding, return normally',
+      () async {
+        interceptorChain = InterceptorChain(
+          interceptors: [InternalModifierInterceptor(), mockInterceptor],
+          request: mockRequest,
+        );
 
-      expect(
-        () => interceptorChain.proceed(mockRequest),
-        returnsNormally,
-      );
-    });
+        expect(() => interceptorChain.proceed(mockRequest), returnsNormally);
+      },
+    );
 
-    test('proceed chain is broken before reaching the end, returns normally',
-        () {
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          PassthroughInterceptor(),
-          mockInterceptor,
-          PassthroughInterceptor(),
-        ],
-        request: mockRequest,
-      );
+    test(
+      'proceed chain is broken before reaching the end, returns normally',
+      () {
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            PassthroughInterceptor(),
+            mockInterceptor,
+            PassthroughInterceptor(),
+          ],
+          request: mockRequest,
+        );
 
-      expect(
-        () => interceptorChain.proceed(mockRequest),
-        returnsNormally,
-      );
-    });
+        expect(() => interceptorChain.proceed(mockRequest), returnsNormally);
+      },
+    );
   });
 
   group('Chain exception tests', () {
@@ -168,29 +174,36 @@ void main() {
       );
     });
 
-    test('Exception thrown inside the interceptor chain will be passed up',
-        () async {
-      interceptorChain = InterceptorChain(
-        interceptors: [
-          RequestConverterInterceptor(null, null),
-          PassthroughInterceptor(),
-          PassthroughInterceptor(),
-          ResponseConverterInterceptor(
-            converter: null,
-            errorConverter: null,
-            responseConverter: null,
-          ),
-          ExceptionThrowingInterceptor(),
-        ],
-        request: mockRequest,
-      );
+    test(
+      'Exception thrown inside the interceptor chain will be passed up',
+      () async {
+        interceptorChain = InterceptorChain(
+          interceptors: [
+            RequestConverterInterceptor(null, null),
+            PassthroughInterceptor(),
+            PassthroughInterceptor(),
+            ResponseConverterInterceptor(
+              converter: null,
+              errorConverter: null,
+              responseConverter: null,
+            ),
+            ExceptionThrowingInterceptor(),
+          ],
+          request: mockRequest,
+        );
 
-      expect(
-        () => interceptorChain.proceed(mockRequest),
-        throwsA(isA<Exception>().having(
-            (e) => e.toString(), 'message', 'Exception: Test exception')),
-      );
-    });
+        expect(
+          () => interceptorChain.proceed(mockRequest),
+          throwsA(
+            isA<Exception>().having(
+              (e) => e.toString(),
+              'message',
+              'Exception: Test exception',
+            ),
+          ),
+        );
+      },
+    );
   });
 }
 
@@ -205,9 +218,7 @@ class RequestModifierInterceptor implements Interceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) {
     return chain.proceed(
-      chain.request.copyWith(
-        body: '${chain.request.body} modified!',
-      ),
+      chain.request.copyWith(body: '${chain.request.body} modified!'),
     );
   }
 }
@@ -215,18 +226,21 @@ class RequestModifierInterceptor implements Interceptor {
 class ResponseModifierInterceptor implements Interceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final response = await chain.proceed(chain.request);
 
     return response.copyWith<BodyType>(
-        body: '${response.body ?? ''} modified!' as BodyType);
+      body: '${response.body ?? ''} modified!' as BodyType,
+    );
   }
 }
 
 class DoubleProceedInterceptor implements Interceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final _ = await chain.proceed(chain.request);
     final response2 = await chain.proceed(chain.request);
 
@@ -237,7 +251,8 @@ class DoubleProceedInterceptor implements Interceptor {
 class PassthroughInterceptor implements Interceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     return await chain.proceed(chain.request);
   }
 }
@@ -245,7 +260,8 @@ class PassthroughInterceptor implements Interceptor {
 class InternalModifierInterceptor implements InternalInterceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final request = chain.request.copyWith(
       body: '${chain.request.body} modified!',
     );
@@ -253,7 +269,8 @@ class InternalModifierInterceptor implements InternalInterceptor {
     final response = await chain.proceed(request);
 
     return response.copyWith<BodyType>(
-        body: '${response.body ?? ''} modified!' as BodyType);
+      body: '${response.body ?? ''} modified!' as BodyType,
+    );
   }
 }
 
@@ -269,7 +286,9 @@ class MockInterceptor implements InternalInterceptor {
   FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) {
     called++;
     return response as Response<BodyType>? ??
-        Response(http.Response('TestResponse', 200, request: chain.request),
-            'TestResponse' as BodyType);
+        Response(
+          http.Response('TestResponse', 200, request: chain.request),
+          'TestResponse' as BodyType,
+        );
   }
 }

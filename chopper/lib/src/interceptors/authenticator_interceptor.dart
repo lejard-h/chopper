@@ -19,7 +19,8 @@ class AuthenticatorInterceptor implements InternalInterceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final originalRequest = chain.request;
 
     Response<BodyType> response = await chain.proceed(originalRequest);
@@ -33,11 +34,17 @@ class AuthenticatorInterceptor implements InternalInterceptor {
     if (updatedRequest != null) {
       response = await chain.proceed(updatedRequest);
       if (response.statusCode.isSuccessfulStatusCode) {
-        await _authenticator.onAuthenticationSuccessful
-            ?.call(updatedRequest, response, originalRequest);
+        await _authenticator.onAuthenticationSuccessful?.call(
+          updatedRequest,
+          response,
+          originalRequest,
+        );
       } else {
-        await _authenticator.onAuthenticationFailed
-            ?.call(updatedRequest, response, originalRequest);
+        await _authenticator.onAuthenticationFailed?.call(
+          updatedRequest,
+          response,
+          originalRequest,
+        );
       }
     }
 

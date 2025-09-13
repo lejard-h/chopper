@@ -33,8 +33,9 @@ void main() {
     });
 
     test('uses provided http client and does not close it on dispose', () {
-      final mockHttpClient =
-          ClosableMockClient((_) async => http.Response('', 200));
+      final mockHttpClient = ClosableMockClient(
+        (_) async => http.Response('', 200),
+      );
       final client = ChopperClient(client: mockHttpClient);
       expect(client.httpClient, same(mockHttpClient));
       client.dispose();
@@ -46,8 +47,10 @@ void main() {
     test('initializes services and sets their client', () {
       final service =
           HttpTestService.create(); // Assumes HttpTestService.create() is valid
-      final client =
-          ChopperClient(services: [service], baseUrl: defaultBaseUrl);
+      final client = ChopperClient(
+        services: [service],
+        baseUrl: defaultBaseUrl,
+      );
       expect(client.getService<HttpTestService>(), same(service));
       expect(service.client, same(client));
       client.dispose();
@@ -57,22 +60,28 @@ void main() {
   group('ChopperClient getService', () {
     test('returns registered service', () {
       final service = HttpTestService.create();
-      final client =
-          ChopperClient(services: [service], baseUrl: defaultBaseUrl);
+      final client = ChopperClient(
+        services: [service],
+        baseUrl: defaultBaseUrl,
+      );
       expect(client.getService<HttpTestService>(), equals(service));
       client.dispose();
     });
 
     test('throws Exception if service not found', () {
       final client = ChopperClient(
-          services: [HttpTestService.create()], baseUrl: defaultBaseUrl);
+        services: [HttpTestService.create()],
+        baseUrl: defaultBaseUrl,
+      );
       expect(
         () => client.getService<OtherTestService>(),
-        throwsA(isA<Exception>().having(
-          (e) => e.toString(),
-          'toString',
-          contains('Service of type \'OtherTestService\' not found.'),
-        )),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'toString',
+            contains('Service of type \'OtherTestService\' not found.'),
+          ),
+        ),
       );
       client.dispose();
     });
@@ -83,12 +92,15 @@ void main() {
         // Changed from <dynamic> to <ChopperService> to avoid compile error
         // The runtime error message being checked is the same.
         () => client.getService<ChopperService>(),
-        throwsA(isA<Exception>().having(
-          (e) => e.toString(),
-          'toString',
-          contains(
-              'Service type should be provided, `dynamic` is not allowed.'),
-        )),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'toString',
+            contains(
+              'Service type should be provided, `dynamic` is not allowed.',
+            ),
+          ),
+        ),
       );
       client.dispose();
     });
@@ -97,12 +109,15 @@ void main() {
       final client = ChopperClient(baseUrl: defaultBaseUrl);
       expect(
         () => client.getService<ChopperService>(),
-        throwsA(isA<Exception>().having(
-          (e) => e.toString(),
-          'toString',
-          contains(
-              'Service type should be provided, `dynamic` is not allowed.'),
-        )),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'toString',
+            contains(
+              'Service type should be provided, `dynamic` is not allowed.',
+            ),
+          ),
+        ),
       );
       client.dispose();
     });
@@ -111,7 +126,9 @@ void main() {
   group('ChopperClient dispose', () {
     test('closes internal http client, streams, and clears services', () {
       final client = ChopperClient(
-          services: [HttpTestService.create()], baseUrl: defaultBaseUrl);
+        services: [HttpTestService.create()],
+        baseUrl: defaultBaseUrl,
+      );
       // To check if the internal client is closed, we'd ideally mock http.Client's close method
       // or check a flag if ChopperClient exposed it.
       // For now, we trust that dispose calls httpClient.close() when _clientIsInternal is true.
@@ -128,12 +145,14 @@ void main() {
     test(
       'does not close external http client but closes streams and clears services',
       () {
-        final mockHttpClient =
-            ClosableMockClient((request) async => http.Response('', 200));
+        final mockHttpClient = ClosableMockClient(
+          (request) async => http.Response('', 200),
+        );
         final client = ChopperClient(
-            client: mockHttpClient,
-            services: [HttpTestService.create()],
-            baseUrl: defaultBaseUrl);
+          client: mockHttpClient,
+          services: [HttpTestService.create()],
+          baseUrl: defaultBaseUrl,
+        );
 
         client.dispose();
 
@@ -164,7 +183,7 @@ void main() {
       client = ChopperClient(
         client: mockHttpClient,
         baseUrl: defaultBaseUrl,
-        converter: JsonConverter(),
+        converter: const JsonConverter(),
       );
     });
 
@@ -174,8 +193,11 @@ void main() {
     });
 
     test('onRequest stream emits request', () async {
-      final request =
-          Request(HttpMethod.Get, Uri.parse('/test'), client.baseUrl);
+      final request = Request(
+        HttpMethod.Get,
+        Uri.parse('/test'),
+        client.baseUrl,
+      );
 
       // Start listening before the action
       final futureEmittedRequest = client.onRequest.first;
@@ -191,17 +213,23 @@ void main() {
 
       // Now check the stream emission.
       final emittedRequest = await futureEmittedRequest.timeout(
-        Duration(seconds: 2),
+        const Duration(seconds: 2),
         // Short timeout, event should be immediate after send's internal add
-        onTimeout: () => throw TimeoutException(
-            'onRequest.first timed out after send completed'),
+        onTimeout:
+            () =>
+                throw TimeoutException(
+                  'onRequest.first timed out after send completed',
+                ),
       );
       expect(emittedRequest.url.toString(), endsWith('/test'));
     });
 
     test('onResponse stream emits response', () async {
-      final request =
-          Request(HttpMethod.Get, Uri.parse('/test'), client.baseUrl);
+      final request = Request(
+        HttpMethod.Get,
+        Uri.parse('/test'),
+        client.baseUrl,
+      );
 
       // Start listening before the action
       final futureEmittedResponse = client.onResponse.first;
@@ -218,15 +246,20 @@ void main() {
 
       // Check the stream emission
       final emittedResponse = await futureEmittedResponse.timeout(
-        Duration(seconds: 2),
+        const Duration(seconds: 2),
         // Short timeout, event should be immediate after send completes
-        onTimeout: () => throw TimeoutException(
-            'onResponse.first timed out after send completed'),
+        onTimeout:
+            () =>
+                throw TimeoutException(
+                  'onResponse.first timed out after send completed',
+                ),
       );
 
       expect(emittedResponse.base.statusCode, 200);
-      expect(emittedResponse.body,
-          actualResponse.body); // Compare with the response from send()
+      expect(
+        emittedResponse.body,
+        actualResponse.body,
+      ); // Compare with the response from send()
     });
   });
 
@@ -237,7 +270,8 @@ void main() {
     final baseUrl = Uri.parse('http://localhost:8000');
 
     void setupClientWithMock(
-        Future<http.Response> Function(http.Request) handler) {
+      Future<http.Response> Function(http.Request) handler,
+    ) {
       // Dispose previous client instance before creating a new one.
       // ChopperClient.dispose() handles whether to close the httpClient.
       try {
@@ -250,8 +284,8 @@ void main() {
       client = ChopperClient(
         client: mockHttp,
         baseUrl: baseUrl,
-        converter: JsonConverter(),
-        errorConverter: JsonConverter(),
+        converter: const JsonConverter(),
+        errorConverter: const JsonConverter(),
       );
     }
 
@@ -269,7 +303,7 @@ void main() {
       client = ChopperClient(
         client: mockHttp,
         baseUrl: baseUrl,
-        converter: JsonConverter(),
+        converter: const JsonConverter(),
       );
     });
 
@@ -288,10 +322,10 @@ void main() {
           headers: {'content-type': 'application/json'},
         );
       });
-      final response =
-          await client.get<Map<String, dynamic>, Map<String, dynamic>>(
-        Uri.parse('/resources/1'),
-      );
+      final response = await client
+          .get<Map<String, dynamic>, Map<String, dynamic>>(
+            Uri.parse('/resources/1'),
+          );
       expect(response.isSuccessful, isTrue);
       expect(response.body, {'id': 1, 'name': 'test'});
     });
@@ -310,12 +344,12 @@ void main() {
         );
       });
 
-      final response =
-          await client.get<Map<String, dynamic>, Map<String, dynamic>>(
-        Uri.parse('/resources/1'),
-        headers: {'X-Test-Header': 'header_value'},
-        parameters: {'param1': 'value1', 'param2': 'value2'},
-      );
+      final response = await client
+          .get<Map<String, dynamic>, Map<String, dynamic>>(
+            Uri.parse('/resources/1'),
+            headers: {'X-Test-Header': 'header_value'},
+            parameters: {'param1': 'value1', 'param2': 'value2'},
+          );
       expect(response.isSuccessful, isTrue);
       expect(response.body, {'id': 1, 'name': 'test_params_headers'});
     });
@@ -325,8 +359,10 @@ void main() {
       setupClientWithMock((request) async {
         expect(request.method, 'POST');
         expect(request.url.path, '/resources');
-        expect(request.headers[contentTypeKey],
-            startsWith(jsonHeaders)); // Changed from jsonContentType
+        expect(
+          request.headers[contentTypeKey],
+          startsWith(jsonHeaders),
+        ); // Changed from jsonContentType
         expect(json.decode(request.body), requestBody); // Compare decoded JSON
         return http.Response(
           json.encode({'id': 2, 'received_body': requestBody}),
@@ -335,11 +371,11 @@ void main() {
         );
       });
 
-      final response =
-          await client.post<Map<String, dynamic>, Map<String, dynamic>>(
-        Uri.parse('/resources'),
-        body: requestBody,
-      );
+      final response = await client
+          .post<Map<String, dynamic>, Map<String, dynamic>>(
+            Uri.parse('/resources'),
+            body: requestBody,
+          );
       expect(response.isSuccessful, isTrue);
       expect(response.statusCode, 201);
       expect(response.body!['received_body'], equals(requestBody));
@@ -350,8 +386,10 @@ void main() {
       setupClientWithMock((request) async {
         expect(request.method, 'PUT');
         expect(request.url.path, '/resources/1');
-        expect(request.headers[contentTypeKey],
-            startsWith(jsonHeaders)); // Changed from jsonContentType
+        expect(
+          request.headers[contentTypeKey],
+          startsWith(jsonHeaders),
+        ); // Changed from jsonContentType
         expect(json.decode(request.body), requestBody);
         return http.Response(
           json.encode({'id': 1, 'received_body': requestBody}),
@@ -360,11 +398,11 @@ void main() {
         );
       });
 
-      final response =
-          await client.put<Map<String, dynamic>, Map<String, dynamic>>(
-        Uri.parse('/resources/1'),
-        body: requestBody,
-      );
+      final response = await client
+          .put<Map<String, dynamic>, Map<String, dynamic>>(
+            Uri.parse('/resources/1'),
+            body: requestBody,
+          );
       expect(response.isSuccessful, isTrue);
       expect(response.body!['received_body'], equals(requestBody));
     });
@@ -374,8 +412,10 @@ void main() {
       setupClientWithMock((request) async {
         expect(request.method, 'PATCH');
         expect(request.url.path, '/resources/1');
-        expect(request.headers[contentTypeKey],
-            startsWith(jsonHeaders)); // Changed from jsonContentType
+        expect(
+          request.headers[contentTypeKey],
+          startsWith(jsonHeaders),
+        ); // Changed from jsonContentType
         expect(json.decode(request.body), requestBody);
         return http.Response(
           json.encode({'id': 1, 'received_body': requestBody}),
@@ -384,11 +424,11 @@ void main() {
         );
       });
 
-      final response =
-          await client.patch<Map<String, dynamic>, Map<String, dynamic>>(
-        Uri.parse('/resources/1'),
-        body: requestBody,
-      );
+      final response = await client
+          .patch<Map<String, dynamic>, Map<String, dynamic>>(
+            Uri.parse('/resources/1'),
+            body: requestBody,
+          );
       expect(response.isSuccessful, isTrue);
       expect(response.body!['received_body'], equals(requestBody));
     });
@@ -436,11 +476,11 @@ void main() {
         );
       });
 
-      final response =
-          await client.get<Map<String, dynamic>, Map<String, dynamic>>(
-        Uri.parse('/resources/1'),
-        baseUrl: newBaseUrl,
-      );
+      final response = await client
+          .get<Map<String, dynamic>, Map<String, dynamic>>(
+            Uri.parse('/resources/1'),
+            baseUrl: newBaseUrl,
+          );
       expect(response.isSuccessful, isTrue);
       expect(response.body, {'id': 1, 'name': 'other_host_test'});
     });
@@ -462,15 +502,13 @@ void main() {
         );
       });
 
-      final parts = [
-        PartValue<String>('key1', 'value1'),
-      ];
-      final response =
-          await client.post<Map<String, dynamic>, Map<String, dynamic>>(
-        Uri.parse('/upload'),
-        parts: parts,
-        multipart: true,
-      );
+      final parts = [const PartValue<String>('key1', 'value1')];
+      final response = await client
+          .post<Map<String, dynamic>, Map<String, dynamic>>(
+            Uri.parse('/upload'),
+            parts: parts,
+            multipart: true,
+          );
       expect(response.isSuccessful, isTrue);
       expect(response.body, {'status': 'multipart success'});
     });
@@ -481,23 +519,23 @@ void main() {
 class ClosableMockClient extends http.BaseClient {
   bool closeCalled = false;
   final Future<http.StreamedResponse> Function(http.BaseRequest request)
-      _handler;
+  _handler;
 
   ClosableMockClient(
-      Future<http.Response> Function(http.BaseRequest request) handler)
-      : _handler = ((req) async {
-          final response = await handler(req);
-          return http.StreamedResponse(
-            Stream.value(response.bodyBytes),
-            response.statusCode,
-            headers: response.headers,
-            reasonPhrase: response.reasonPhrase,
-            contentLength: response.contentLength,
-            request: req,
-            isRedirect: response.isRedirect,
-            persistentConnection: response.persistentConnection,
-          );
-        });
+    Future<http.Response> Function(http.BaseRequest request) handler,
+  ) : _handler = ((req) async {
+        final response = await handler(req);
+        return http.StreamedResponse(
+          Stream.value(response.bodyBytes),
+          response.statusCode,
+          headers: response.headers,
+          reasonPhrase: response.reasonPhrase,
+          contentLength: response.contentLength,
+          request: req,
+          isRedirect: response.isRedirect,
+          persistentConnection: response.persistentConnection,
+        );
+      });
 
   @override
   Future<http.StreamedResponse> send(http.BaseRequest request) async {
