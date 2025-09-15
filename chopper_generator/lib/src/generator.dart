@@ -628,7 +628,7 @@ final class ChopperGenerator
       );
       if (responseFactory != null) {
         if (responseFactory.objectValue.toFunctionValue2()
-            case final ExecutableElement func?) {
+            case final ExecutableElement2 func?) {
           namedArguments['responseConverter'] = refer(
             _factoryForFunction(func),
           );
@@ -1051,9 +1051,9 @@ final class ChopperGenerator
   /// True if the outer generic of `type` is [chopper.Response].
   static bool _isResponse(DartType type) => switch (_genericOf(type)) {
     InterfaceType(
-      element3: InterfaceElement(
+      element3: InterfaceElement2(
         name3: 'Response',
-        library2: final LibraryElement lib,
+        library2: final LibraryElement2 lib,
       ),
     ) =>
       lib.uri.toString().startsWith('package:chopper/'),
