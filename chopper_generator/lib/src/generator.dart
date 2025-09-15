@@ -274,15 +274,21 @@ final class ChopperGenerator
         // And null Typed parameters
         ..types.addAll(
           m.typeParameters2.map(
-            (TypeParameterElement2 t) => refer(switch (t.bound) {
-              final DartType type? => type.getDisplayString(
-                withNullability: false,
-              ),
-              null =>
-                throw InvalidGenerationSourceError(
-                  'Type parameter without a bound on method "${m.displayName}".',
-                  element: m.baseElement,
-                ),
+            (TypeParameterElement2 t) => TypeReference((
+              TypeReferenceBuilder b,
+            ) {
+              b.symbol = switch (t.name3) {
+                final String name? => name,
+                null =>
+                  throw InvalidGenerationSourceError(
+                    'Type parameter without a name on method "${m.displayName}".',
+                    element: m.baseElement,
+                  ),
+              };
+
+              if (t.bound case final DartType bound?) {
+                b.bound = refer(bound.getDisplayString(withNullability: false));
+              }
             }),
           ),
         )
