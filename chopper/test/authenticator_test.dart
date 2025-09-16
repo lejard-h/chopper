@@ -36,14 +36,14 @@ void main() async {
   final Uri baseUrl = Uri.parse('http://localhost:8000');
 
   ChopperClient buildClient([http.Client? httpClient]) => ChopperClient(
-        baseUrl: baseUrl,
-        client: httpClient,
-        interceptors: [
-          HeadersInterceptor({'foo': 'bar'}),
-        ],
-        converter: JsonConverter(),
-        authenticator: FakeAuthenticator(),
-      );
+    baseUrl: baseUrl,
+    client: httpClient,
+    interceptors: [
+      const HeadersInterceptor({'foo': 'bar'}),
+    ],
+    converter: const JsonConverter(),
+    authenticator: FakeAuthenticator(),
+  );
 
   late bool authenticated;
   final Map<String, bool> tested = {
@@ -60,10 +60,7 @@ void main() async {
   group('GET', () {
     test('authorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get?key=val'));
         expect(request.method, equals('GET'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -73,10 +70,7 @@ void main() async {
 
       final chopper = buildClient(httpClient);
       final response = await chopper.get(
-        Uri(
-          path: '/test/get',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/get', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
       );
 
@@ -88,10 +82,7 @@ void main() async {
 
     test('unauthorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get?key=val'));
         expect(request.method, equals('GET'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -112,10 +103,7 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.get(
-        Uri(
-          path: '/test/get',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/get', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
       );
 
@@ -123,10 +111,14 @@ void main() async {
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
@@ -135,10 +127,7 @@ void main() async {
 
     test('unauthorized total failure', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get?key=val'));
         expect(request.method, equals('GET'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
@@ -159,10 +148,7 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.get(
-        Uri(
-          path: '/test/get',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/get', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
       );
 
@@ -170,10 +156,14 @@ void main() async {
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
@@ -184,37 +174,20 @@ void main() async {
   group('POST', () {
     test('authorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/post?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/post?key=val'));
         expect(request.method, equals('POST'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         return http.Response('ok', 200);
       });
 
       final chopper = buildClient(httpClient);
       final response = await chopper.post(
-        Uri(
-          path: '/test/post',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/post', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, equals('ok'));
@@ -225,22 +198,11 @@ void main() async {
 
     test('unauthorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/post?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/post?key=val'));
         expect(request.method, equals('POST'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         if (!authenticated) {
           tested['unauthenticated'] = true;
@@ -258,25 +220,23 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.post(
-        Uri(
-          path: '/test/post',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/post', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, equals('ok'));
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
@@ -285,22 +245,11 @@ void main() async {
 
     test('unauthorized total failure', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/post?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/post?key=val'));
         expect(request.method, equals('POST'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         if (!authenticated) {
           tested['unauthenticated'] = true;
@@ -318,25 +267,23 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.post(
-        Uri(
-          path: '/test/post',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/post', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, anyOf(isNull, isEmpty));
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
@@ -347,37 +294,20 @@ void main() async {
   group('PUT', () {
     test('authorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/put?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/put?key=val'));
         expect(request.method, equals('PUT'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         return http.Response('ok', 200);
       });
 
       final chopper = buildClient(httpClient);
       final response = await chopper.put(
-        Uri(
-          path: '/test/put',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/put', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, equals('ok'));
@@ -388,22 +318,11 @@ void main() async {
 
     test('unauthorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/put?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/put?key=val'));
         expect(request.method, equals('PUT'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         if (!authenticated) {
           tested['unauthenticated'] = true;
@@ -421,25 +340,23 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.put(
-        Uri(
-          path: '/test/put',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/put', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, equals('ok'));
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
@@ -448,22 +365,11 @@ void main() async {
 
     test('unauthorized total failure', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/put?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/put?key=val'));
         expect(request.method, equals('PUT'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         if (!authenticated) {
           tested['unauthenticated'] = true;
@@ -481,25 +387,23 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.put(
-        Uri(
-          path: '/test/put',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/put', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, anyOf(isNull, isEmpty));
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.capturedResponse, response);
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
@@ -510,37 +414,20 @@ void main() async {
   group('PATCH', () {
     test('authorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/patch?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/patch?key=val'));
         expect(request.method, equals('PATCH'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         return http.Response('ok', 200);
       });
 
       final chopper = buildClient(httpClient);
       final response = await chopper.patch(
-        Uri(
-          path: '/test/patch',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/patch', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, equals('ok'));
@@ -551,22 +438,11 @@ void main() async {
 
     test('unauthorized', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/patch?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/patch?key=val'));
         expect(request.method, equals('PATCH'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         if (!authenticated) {
           tested['unauthenticated'] = true;
@@ -584,26 +460,24 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.patch(
-        Uri(
-          path: '/test/patch',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/patch', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, equals('ok'));
       expect(response.statusCode, equals(200));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
       expect(authenticator.capturedResponse, response);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.onAuthenticationSuccessfulCalled, isTrue);
 
       httpClient.close();
@@ -611,22 +485,11 @@ void main() async {
 
     test('unauthorized total failure', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/patch?key=val'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/patch?key=val'));
         expect(request.method, equals('PATCH'));
         expect(request.headers['foo'], equals('bar'));
         expect(request.headers['int'], equals('42'));
-        expect(
-          request.body,
-          jsonEncode(
-            {
-              'name': 'john',
-              'surname': 'doe',
-            },
-          ),
-        );
+        expect(request.body, jsonEncode({'name': 'john', 'surname': 'doe'}));
 
         if (!authenticated) {
           tested['unauthenticated'] = true;
@@ -644,26 +507,24 @@ void main() async {
       final chopper = buildClient(httpClient);
       final authenticator = chopper.authenticator as FakeAuthenticator;
       final response = await chopper.patch(
-        Uri(
-          path: '/test/patch',
-          queryParameters: {'key': 'val'},
-        ),
+        Uri(path: '/test/patch', queryParameters: {'key': 'val'}),
         headers: {'int': '42'},
-        body: {
-          'name': 'john',
-          'surname': 'doe',
-        },
+        body: {'name': 'john', 'surname': 'doe'},
       );
 
       expect(response.body, anyOf(isNull, isEmpty));
       expect(response.statusCode, equals(403));
       expect(tested['authenticated'], equals(true));
       expect(tested['unauthenticated'], equals(true));
-      expect(authenticator.capturedRequest,
-          authenticator.capturedAuthenticateRequest);
+      expect(
+        authenticator.capturedRequest,
+        authenticator.capturedAuthenticateRequest,
+      );
       expect(authenticator.capturedResponse, response);
-      expect(authenticator.capturedOriginalRequest,
-          authenticator.capturedAuthenticateOriginalRequest);
+      expect(
+        authenticator.capturedOriginalRequest,
+        authenticator.capturedAuthenticateOriginalRequest,
+      );
       expect(authenticator.onAuthenticationFailedCalled, isTrue);
 
       httpClient.close();
@@ -676,9 +537,9 @@ void main() async {
           baseUrl: baseUrl,
           client: httpClient,
           interceptors: [
-            HeadersInterceptor({'foo': 'bar'}),
+            const HeadersInterceptor({'foo': 'bar'}),
           ],
-          converter: JsonConverter(),
+          converter: const JsonConverter(),
           authenticator: MinimalAuthenticator(),
         );
 
@@ -691,16 +552,16 @@ void main() async {
         } else {
           // This is the retried request after authentication
           expect(
-              request.headers['authorization'], equals('some_minimal_token'));
+            request.headers['authorization'],
+            equals('some_minimal_token'),
+          );
           return http.Response('ok_minimal', 200);
         }
       });
 
       final chopper = buildMinimalClient(httpClient);
       final authenticator = chopper.authenticator as MinimalAuthenticator;
-      final response = await chopper.get(
-        Uri(path: '/test/get'),
-      );
+      final response = await chopper.get(Uri(path: '/test/get'));
 
       expect(response.body, equals('ok_minimal'));
       expect(response.statusCode, equals(200));
@@ -721,16 +582,16 @@ void main() async {
         } else {
           // This is the retried request after authentication, still failing
           expect(
-              request.headers['authorization'], equals('some_minimal_token'));
+            request.headers['authorization'],
+            equals('some_minimal_token'),
+          );
           return http.Response('still_unauthorized', 403);
         }
       });
 
       final chopper = buildMinimalClient(httpClient);
       final authenticator = chopper.authenticator as MinimalAuthenticator;
-      final response = await chopper.get(
-        Uri(path: '/test/get'),
-      );
+      final response = await chopper.get(Uri(path: '/test/get'));
 
       expect(response.body, anyOf(isNull, isEmpty));
       expect(response.statusCode, equals(403));

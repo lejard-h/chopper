@@ -21,18 +21,17 @@ void main() {
   ChopperClient buildClient([
     http.Client? httpClient,
     ErrorConverter? errorConverter,
-  ]) =>
-      ChopperClient(
-        baseUrl: baseUrl,
-        services: [
-          // the generated service
-          HttpTestService.create(),
-          HttpTestServiceVariable.create(),
-          HttpTestServiceBaseUrl.create(),
-        ],
-        client: httpClient,
-        errorConverter: errorConverter,
-      );
+  ]) => ChopperClient(
+    baseUrl: baseUrl,
+    services: [
+      // the generated service
+      HttpTestService.create(),
+      HttpTestServiceVariable.create(),
+      HttpTestServiceBaseUrl.create(),
+    ],
+    client: httpClient,
+    errorConverter: errorConverter,
+  );
 
   group('ChopperClient constructor defaults', () {
     test('uses default Uri() if baseUrl is null', () {
@@ -52,11 +51,13 @@ void main() {
       final chopper = ChopperClient(services: null);
       expect(
         () => chopper.getService<HttpTestService>(),
-        throwsA(isA<Exception>().having(
-          (e) => e.toString(),
-          'toString()',
-          contains("Service of type 'HttpTestService' not found."),
-        )),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'toString()',
+            contains("Service of type 'HttpTestService' not found."),
+          ),
+        ),
       );
       chopper.dispose();
     });
@@ -79,9 +80,7 @@ void main() {
     });
 
     test('get service errors', () async {
-      final chopper = ChopperClient(
-        baseUrl: baseUrl,
-      );
+      final chopper = ChopperClient(baseUrl: baseUrl);
 
       try {
         chopper.getService<HttpTestService>();
@@ -104,10 +103,7 @@ void main() {
 
     test('GET', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get/1234'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get/1234'));
         expect(request.method, equals('GET'));
 
         return http.Response('get response', 200);
@@ -126,10 +122,7 @@ void main() {
 
     test('GET Variable', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$testEnv/get/1234'),
-        );
+        expect(request.url.toString(), equals('$testEnv/get/1234'));
         expect(request.method, equals('GET'));
 
         return http.Response('get response', 200);
@@ -148,15 +141,14 @@ void main() {
 
     test('GET stream', () async {
       final httpClient = MockClient.streaming((request, stream) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get'));
         expect(request.method, equals('GET'));
 
         final bodyStreamList = <Future<List<int>>>[];
-        bodyStreamList.add(Future.value(Utf8Encoder().convert('get ')));
-        bodyStreamList.add(Future.value(Utf8Encoder().convert('response')));
+        bodyStreamList.add(Future.value(const Utf8Encoder().convert('get ')));
+        bodyStreamList.add(
+          Future.value(const Utf8Encoder().convert('response')),
+        );
         final s = Stream.fromFutures(bodyStreamList);
 
         return http.StreamedResponse(s, 200);
@@ -172,7 +164,7 @@ void main() {
         bytes.addAll(d);
       });
 
-      expect(Utf8Decoder().convert(bytes), equals('get response'));
+      expect(const Utf8Decoder().convert(bytes), equals('get response'));
       expect(response.statusCode, equals(200));
 
       httpClient.close();
@@ -180,10 +172,7 @@ void main() {
 
     test('GET with query params, null value', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/query'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/query'));
         expect(request.method, equals('GET'));
 
         return http.Response('get response', 200);
@@ -236,8 +225,11 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response =
-          await service.getQueryTest(name: 'Foo', def: 40, number: 18);
+      final response = await service.getQueryTest(
+        name: 'Foo',
+        def: 40,
+        number: 18,
+      );
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
@@ -247,10 +239,7 @@ void main() {
 
     test('GET with body', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/get_body'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/get_body'));
         expect(request.method, equals('GET'));
         expect(request.body, equals('get body'));
 
@@ -270,10 +259,7 @@ void main() {
 
     test('POST', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/post'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/post'));
         expect(request.method, equals('POST'));
         expect(request.body, equals('post body'));
 
@@ -293,10 +279,7 @@ void main() {
 
     test('POST Variable', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$testEnv/post'),
-        );
+        expect(request.url.toString(), equals('$testEnv/post'));
         expect(request.method, equals('POST'));
         expect(request.body, equals('post body'));
 
@@ -316,10 +299,7 @@ void main() {
 
     test('POST with streamed body', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/post'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/post'));
         expect(request.method, equals('POST'));
         expect(request.body, equals('post body'));
 
@@ -330,8 +310,8 @@ void main() {
       final service = chopper.getService<HttpTestService>();
 
       final bodyStreamList = <Future<List<int>>>[];
-      bodyStreamList.add(Future.value(Utf8Encoder().convert('post ')));
-      bodyStreamList.add(Future.value(Utf8Encoder().convert('body')));
+      bodyStreamList.add(Future.value(const Utf8Encoder().convert('post ')));
+      bodyStreamList.add(Future.value(const Utf8Encoder().convert('body')));
       final s = Stream.fromFutures(bodyStreamList);
 
       final response = await service.postStreamTest(s);
@@ -344,10 +324,7 @@ void main() {
 
     test('PUT', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/put/1234'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/put/1234'));
         expect(request.method, equals('PUT'));
         expect(request.body, equals('put body'));
 
@@ -367,10 +344,7 @@ void main() {
 
     test('PUT Variable', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$testEnv/put/1234'),
-        );
+        expect(request.url.toString(), equals('$testEnv/put/1234'));
         expect(request.method, equals('PUT'));
         expect(request.body, equals('put body'));
 
@@ -390,10 +364,7 @@ void main() {
 
     test('PATCH', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/patch/1234'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/patch/1234'));
         expect(request.method, equals('PATCH'));
         expect(request.body, equals('patch body'));
 
@@ -413,10 +384,7 @@ void main() {
 
     test('PATCH Variable', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$testEnv/patch/1234'),
-        );
+        expect(request.url.toString(), equals('$testEnv/patch/1234'));
         expect(request.method, equals('PATCH'));
         expect(request.body, equals('patch body'));
 
@@ -436,10 +404,7 @@ void main() {
 
     test('DELETE', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/delete/1234'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/delete/1234'));
         expect(request.method, equals('DELETE'));
 
         return http.Response('delete response', 200);
@@ -458,10 +423,7 @@ void main() {
 
     test('DELETE Variable', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$testEnv/delete/1234'),
-        );
+        expect(request.url.toString(), equals('$testEnv/delete/1234'));
         expect(request.method, equals('DELETE'));
 
         return http.Response('delete response', 200);
@@ -480,10 +442,7 @@ void main() {
 
     test('Head', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$baseUrl/test/head'),
-        );
+        expect(request.url.toString(), equals('$baseUrl/test/head'));
         expect(request.method, equals('HEAD'));
 
         return http.Response('head response', 200);
@@ -502,10 +461,7 @@ void main() {
 
     test('Head Variable', () async {
       final httpClient = MockClient((request) async {
-        expect(
-          request.url.toString(),
-          equals('$testEnv/head'),
-        );
+        expect(request.url.toString(), equals('$testEnv/head'));
         expect(request.method, equals('HEAD'));
 
         return http.Response('head response', 200);
@@ -531,9 +487,7 @@ void main() {
       });
 
       final chopper = ChopperClient(
-        services: [
-          HttpTestService.create(),
-        ],
+        services: [HttpTestService.create()],
         client: client,
       );
 
@@ -551,34 +505,26 @@ void main() {
       });
 
       final chopper = ChopperClient(
-        services: [
-          HttpTestService.create(),
-        ],
+        services: [HttpTestService.create()],
         client: client,
       );
 
       await chopper.getService<HttpTestService>().getTest(
-            '1234',
-            dynamicHeader: '42',
-          );
+        '1234',
+        dynamicHeader: '42',
+      );
 
       client.close();
     });
 
     test('factory', () async {
       final client = MockClient((http.Request req) async {
-        expect(
-          req.url.toString(),
-          equals('$baseUrl/test/get/1234'),
-        );
+        expect(req.url.toString(), equals('$baseUrl/test/get/1234'));
 
         return http.Response('', 200);
       });
 
-      final chopper = ChopperClient(
-        baseUrl: baseUrl,
-        client: client,
-      );
+      final chopper = ChopperClient(baseUrl: baseUrl, client: client);
 
       final service = HttpTestService.create(chopper);
 
@@ -614,8 +560,9 @@ void main() {
     });
 
     test('applyHeaders', () {
-      final req1 =
-          applyHeaders(Request('GET', Uri.parse('/'), baseUrl), {'foo': 'bar'});
+      final req1 = applyHeaders(Request('GET', Uri.parse('/'), baseUrl), {
+        'foo': 'bar',
+      });
 
       expect(req1.headers, equals({'foo': 'bar'}));
 
@@ -642,10 +589,7 @@ void main() {
       final chopper = buildClient(client);
 
       chopper.onRequest.listen((request) {
-        expect(
-          request.url.toString(),
-          equals('https://test.com'),
-        );
+        expect(request.url.toString(), equals('https://test.com'));
       });
 
       final service = HttpTestService.create(chopper);
@@ -677,20 +621,20 @@ void main() {
       );
 
       expect(
-        Request.buildUri(Uri.parse('http://foo'), Uri.parse('/bar'), {})
-            .toString(),
+        Request.buildUri(
+          Uri.parse('http://foo'),
+          Uri.parse('/bar'),
+          {},
+        ).toString(),
         equals('http://foo/bar'),
       );
 
       expect(
-        Request.buildUri(Uri.parse('https://foo'), Uri.parse('/bar'), {})
-            .toString(),
-        equals('https://foo/bar'),
-      );
-
-      expect(
-        Request.buildUri(Uri.parse('https://foo/'), Uri.parse('/bar'), {})
-            .toString(),
+        Request.buildUri(
+          Uri.parse('https://foo'),
+          Uri.parse('/bar'),
+          {},
+        ).toString(),
         equals('https://foo/bar'),
       );
 
@@ -698,8 +642,15 @@ void main() {
         Request.buildUri(
           Uri.parse('https://foo/'),
           Uri.parse('/bar'),
-          {'abc': 'xyz'},
+          {},
         ).toString(),
+        equals('https://foo/bar'),
+      );
+
+      expect(
+        Request.buildUri(Uri.parse('https://foo/'), Uri.parse('/bar'), {
+          'abc': 'xyz',
+        }).toString(),
         equals('https://foo/bar?abc=xyz'),
       );
 
@@ -707,10 +658,7 @@ void main() {
         Request.buildUri(
           Uri.parse('https://foo/'),
           Uri.parse('/bar?first=123&second=456'),
-          {
-            'third': '789',
-            'fourth': '012',
-          },
+          {'third': '789', 'fourth': '012'},
         ).toString(),
         equals('https://foo/bar?first=123&second=456&third=789&fourth=012'),
       );
@@ -719,10 +667,7 @@ void main() {
         Request.buildUri(
           Uri.parse('https://foo?first=123&second=456'),
           Uri.parse('/bar'),
-          {
-            'third': '789',
-            'fourth': '012',
-          },
+          {'third': '789', 'fourth': '012'},
         ).toString(),
         equals('https://foo/bar?third=789&fourth=012'),
       );
@@ -731,14 +676,9 @@ void main() {
         Request.buildUri(
           Uri.parse('https://foo?first=123&second=456'),
           Uri.parse('/bar?third=789&fourth=012'),
-          {
-            'fifth': '345',
-            'sixth': '678',
-          },
+          {'fifth': '345', 'sixth': '678'},
         ).toString(),
-        equals(
-          'https://foo/bar?third=789&fourth=012&fifth=345&sixth=678',
-        ),
+        equals('https://foo/bar?third=789&fourth=012&fifth=345&sixth=678'),
       );
 
       expect(
@@ -785,27 +725,26 @@ void main() {
     });
 
     test('BodyBytes', () {
-      final request = Request(
-        HttpMethod.Post,
-        Uri.parse('https://foo/'),
-        Uri.parse(''),
-        body: [1, 2, 3],
-      ).toHttpRequest();
+      final request =
+          Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            body: [1, 2, 3],
+          ).toHttpRequest();
 
       expect(request.bodyBytes, equals([1, 2, 3]));
     });
 
     test('BodyBytes does not have charset header', () {
-      final request = Request(
-        HttpMethod.Post,
-        Uri.parse('https://foo/'),
-        Uri.parse(''),
-        headers: {
-          'authorization': 'Bearer fooBarBaz',
-          'x-foo': 'bar',
-        },
-        body: kTransparentImage,
-      ).toHttpRequest();
+      final request =
+          Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            headers: {'authorization': 'Bearer fooBarBaz', 'x-foo': 'bar'},
+            body: kTransparentImage,
+          ).toHttpRequest();
 
       expect(request.headers['authorization'], equals('Bearer fooBarBaz'));
       expect(request.headers['x-foo'], equals('bar'));
@@ -815,12 +754,13 @@ void main() {
     });
 
     test('BodyFields', () {
-      final request = Request(
-        HttpMethod.Post,
-        Uri.parse('https://foo/'),
-        Uri.parse(''),
-        body: {'foo': 'bar'},
-      ).toHttpRequest();
+      final request =
+          Request(
+            HttpMethod.Post,
+            Uri.parse('https://foo/'),
+            Uri.parse(''),
+            body: {'foo': 'bar'},
+          ).toHttpRequest();
 
       expect(request.bodyFields, equals({'foo': 'bar'}));
     });
@@ -880,14 +820,11 @@ void main() {
       final chopper = buildClient(httpClient);
       final service = chopper.getService<HttpTestService>();
 
-      final response = await service.getQueryMapTest2(
-        {
-          'foo': 'bar',
-          'list': [1, 2],
-          'inner': {'test': 42},
-        },
-        test: true,
-      );
+      final response = await service.getQueryMapTest2({
+        'foo': 'bar',
+        'list': [1, 2],
+        'inner': {'test': 42},
+      }, test: true);
 
       expect(response.body, equals('get response'));
       expect(response.statusCode, equals(200));
@@ -910,10 +847,7 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response = await service.getQueryMapTest3(
-      name: 'foo',
-      number: 1234,
-    );
+    final response = await service.getQueryMapTest3(name: 'foo', number: 1234);
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -935,10 +869,7 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response = await service.getQueryMapTest4(
-      name: 'foo',
-      number: 1234,
-    );
+    final response = await service.getQueryMapTest4(name: 'foo', number: 1234);
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -965,9 +896,7 @@ void main() {
     final response = await service.getQueryMapTest4(
       name: 'foo',
       number: 1234,
-      filters: {
-        'filter_1': 'filter_value_1',
-      },
+      filters: {'filter_1': 'filter_value_1'},
     );
 
     expect(response.body, equals('get response'));
@@ -995,9 +924,7 @@ void main() {
       final response = await service.getQueryMapTest4(
         name: 'foo',
         number: 1234,
-        filters: {
-          'name': 'bar',
-        },
+        filters: {'name': 'bar'},
       );
 
       expect(response.body, equals('get response'));
@@ -1009,10 +936,7 @@ void main() {
 
   test('Query Map 5 without QueryMap', () async {
     final httpClient = MockClient((request) async {
-      expect(
-        request.url.toString(),
-        equals('$baseUrl/test/query_map'),
-      );
+      expect(request.url.toString(), equals('$baseUrl/test/query_map'));
       expect(request.method, equals('GET'));
 
       return http.Response('get response', 200);
@@ -1044,9 +968,7 @@ void main() {
     final service = chopper.getService<HttpTestService>();
 
     final response = await service.getQueryMapTest5(
-      filters: {
-        'filter_1': 'filter_value_1',
-      },
+      filters: {'filter_1': 'filter_value_1'},
     );
 
     expect(response.body, equals('get response'));
@@ -1063,10 +985,7 @@ void main() {
     final chopper = buildClient(client);
 
     chopper.onRequest.listen((request) {
-      expect(
-        request.url.toString(),
-        equals('$baseUrl/test/get/1234'),
-      );
+      expect(request.url.toString(), equals('$baseUrl/test/get/1234'));
     });
 
     final service = HttpTestService.create(chopper);
@@ -1115,37 +1034,50 @@ void main() {
   });
 
   test(
-      'Response.bodyOrThrow throws ChopperHttpException for non-Exception error',
-      () {
-    final baseHttpResponse = http.Response('Error content', 400);
-    final chopperResponse =
-        Response<String>(baseHttpResponse, null, error: 'Error string object');
-    expect(
-      () => chopperResponse.bodyOrThrow,
-      throwsA(isA<ChopperHttpException>()),
-    );
-  });
+    'Response.bodyOrThrow throws ChopperHttpException for non-Exception error',
+    () {
+      final baseHttpResponse = http.Response('Error content', 400);
+      final chopperResponse = Response<String>(
+        baseHttpResponse,
+        null,
+        error: 'Error string object',
+      );
+      expect(
+        () => chopperResponse.bodyOrThrow,
+        throwsA(isA<ChopperHttpException>()),
+      );
+    },
+  );
 
   test(
-      'Response.bodyOrThrow throws original Exception if error is an Exception',
-      () {
-    final customException = Exception('Custom error');
-    final baseHttpResponse = http.Response('Error content', 500);
-    final chopperResponse =
-        Response<String>(baseHttpResponse, null, error: customException);
-    expect(
-      () => chopperResponse.bodyOrThrow,
-      throwsA(isA<Exception>()
-          .having((e) => e.toString(), 'toString', customException.toString())),
-    );
-  });
+    'Response.bodyOrThrow throws original Exception if error is an Exception',
+    () {
+      final customException = Exception('Custom error');
+      final baseHttpResponse = http.Response('Error content', 500);
+      final chopperResponse = Response<String>(
+        baseHttpResponse,
+        null,
+        error: customException,
+      );
+      expect(
+        () => chopperResponse.bodyOrThrow,
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'toString',
+            customException.toString(),
+          ),
+        ),
+      );
+    },
+  );
 
   test('error Converter', () async {
     final client = MockClient((http.Request req) async {
       return http.Response('{"error":true}', 400);
     });
 
-    final chopper = buildClient(client, JsonConverter());
+    final chopper = buildClient(client, const JsonConverter());
 
     final service = HttpTestService.create(chopper);
     final res = await service.getTest('1234', dynamicHeader: '');
@@ -1160,10 +1092,7 @@ void main() {
 
   test('Empty path gives no trailing slash', () async {
     final httpClient = MockClient((request) async {
-      expect(
-        request.url.toString(),
-        equals('$baseUrl/test'),
-      );
+      expect(request.url.toString(), equals('$baseUrl/test'));
       expect(request.method, equals('GET'));
 
       return http.Response('get response', 200);
@@ -1177,10 +1106,7 @@ void main() {
 
   test('Empty path gives no trailing slash new base url', () async {
     final httpClient = MockClient((request) async {
-      expect(
-        request.url.toString(),
-        equals('$testEnv/test'),
-      );
+      expect(request.url.toString(), equals('$testEnv/test'));
       expect(request.method, equals('GET'));
 
       return http.Response('get response', 200);
@@ -1194,10 +1120,7 @@ void main() {
 
   test('Slash in path gives a trailing slash', () async {
     final httpClient = MockClient((request) async {
-      expect(
-        request.url.toString(),
-        equals('$baseUrl/test/'),
-      );
+      expect(request.url.toString(), equals('$baseUrl/test/'));
       expect(request.method, equals('GET'));
 
       return http.Response('get response', 200);
@@ -1211,10 +1134,7 @@ void main() {
 
   test('Slash in path gives a trailing slash new base url', () async {
     final httpClient = MockClient((request) async {
-      expect(
-        request.url.toString(),
-        equals('$testEnv/test/'),
-      );
+      expect(request.url.toString(), equals('$testEnv/test/'));
       expect(request.method, equals('GET'));
 
       return http.Response('get response', 200);
@@ -1236,28 +1156,27 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    expect(
-      () async {
-        try {
-          await service
-              .getTest('1234', dynamicHeader: '')
-              .timeout(const Duration(seconds: 3));
-        } finally {
-          httpClient.close();
-        }
-      },
-      throwsA(isA<TimeoutException>()),
-    );
+    expect(() async {
+      try {
+        await service
+            .getTest('1234', dynamicHeader: '')
+            .timeout(const Duration(seconds: 3));
+      } finally {
+        httpClient.close();
+      }
+    }, throwsA(isA<TimeoutException>()));
   });
 
   test('Include null query vars', () async {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/query_param_include_null_query_vars'
-            '?foo=foo_val'
-            '&bar='
-            '&baz=baz_val'),
+        equals(
+          '$baseUrl/test/query_param_include_null_query_vars'
+          '?foo=foo_val'
+          '&bar='
+          '&baz=baz_val',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1282,10 +1201,12 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/list_query_param'
-            '?value=foo'
-            '&value=bar'
-            '&value=baz'),
+        equals(
+          '$baseUrl/test/list_query_param'
+          '?value=foo'
+          '&value=bar'
+          '&value=baz',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1311,10 +1232,12 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/list_query_param_with_brackets'
-            '?value%5B%5D=foo'
-            '&value%5B%5D=bar'
-            '&value%5B%5D=baz'),
+        equals(
+          '$baseUrl/test/list_query_param_with_brackets'
+          '?value%5B%5D=foo'
+          '&value%5B%5D=bar'
+          '&value%5B%5D=baz',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1340,10 +1263,12 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/list_query_param_with_brackets_legacy'
-            '?value%5B%5D=foo'
-            '&value%5B%5D=bar'
-            '&value%5B%5D=baz'),
+        equals(
+          '$baseUrl/test/list_query_param_with_brackets_legacy'
+          '?value%5B%5D=foo'
+          '&value%5B%5D=bar'
+          '&value%5B%5D=baz',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1369,10 +1294,12 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/list_query_param_with_indices'
-            '?value%5B0%5D=foo'
-            '&value%5B1%5D=bar'
-            '&value%5B2%5D=baz'),
+        equals(
+          '$baseUrl/test/list_query_param_with_indices'
+          '?value%5B0%5D=foo'
+          '&value%5B1%5D=bar'
+          '&value%5B2%5D=baz',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1398,10 +1325,12 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/list_query_param_with_repeat'
-            '?value=foo'
-            '&value=bar'
-            '&value=baz'),
+        equals(
+          '$baseUrl/test/list_query_param_with_repeat'
+          '?value=foo'
+          '&value=bar'
+          '&value=baz',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1427,10 +1356,12 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/list_query_param_with_comma'
-            '?value=foo'
-            '%2Cbar'
-            '%2Cbaz'),
+        equals(
+          '$baseUrl/test/list_query_param_with_comma'
+          '?value=foo'
+          '%2Cbar'
+          '%2Cbaz',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1458,17 +1389,19 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param'
-            '?value.bar=baz'
-            '&value.zap=abc'
-            '&value.etc.abc=def'
-            '&value.etc.ghi=jkl'
-            '&value.etc.mno.opq=rst'
-            '&value.etc.mno.uvw=xyz'
-            '&value.etc.mno.list=a'
-            '&value.etc.mno.list=123'
-            '&value.etc.mno.list=false'
-            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param'
+          '?value.bar=baz'
+          '&value.zap=abc'
+          '&value.etc.abc=def'
+          '&value.etc.ghi=jkl'
+          '&value.etc.mno.opq=rst'
+          '&value.etc.mno.uvw=xyz'
+          '&value.etc.mno.list=a'
+          '&value.etc.mno.list=123'
+          '&value.etc.mno.list=false'
+          '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1505,17 +1438,19 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param_with_brackets'
-            '?value%5Bbar%5D=baz'
-            '&value%5Bzap%5D=abc'
-            '&value%5Betc%5D%5Babc%5D=def'
-            '&value%5Betc%5D%5Bghi%5D=jkl'
-            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
-            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=a'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=123'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'
-            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param_with_brackets'
+          '?value%5Bbar%5D=baz'
+          '&value%5Bzap%5D=abc'
+          '&value%5Betc%5D%5Babc%5D=def'
+          '&value%5Betc%5D%5Bghi%5D=jkl'
+          '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+          '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=a'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=123'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'
+          '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1525,21 +1460,22 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response =
-        await service.getUsingMapQueryParamWithBrackets(<String, dynamic>{
-      'bar': 'baz',
-      'zap': 'abc',
-      'etc': <String, dynamic>{
-        'abc': 'def',
-        'ghi': 'jkl',
-        'mno': <String, dynamic>{
-          'opq': 'rst',
-          'uvw': 'xyz',
-          'list': ['a', 123, false],
+    final response = await service.getUsingMapQueryParamWithBrackets(
+      <String, dynamic>{
+        'bar': 'baz',
+        'zap': 'abc',
+        'etc': <String, dynamic>{
+          'abc': 'def',
+          'ghi': 'jkl',
+          'mno': <String, dynamic>{
+            'opq': 'rst',
+            'uvw': 'xyz',
+            'list': ['a', 123, false],
+          },
+          'dt': now,
         },
-        'dt': now,
       },
-    });
+    );
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -1553,17 +1489,19 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param_with_brackets_legacy'
-            '?value%5Bbar%5D=baz'
-            '&value%5Bzap%5D=abc'
-            '&value%5Betc%5D%5Babc%5D=def'
-            '&value%5Betc%5D%5Bghi%5D=jkl'
-            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
-            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=a'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=123'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'
-            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param_with_brackets_legacy'
+          '?value%5Bbar%5D=baz'
+          '&value%5Bzap%5D=abc'
+          '&value%5Betc%5D%5Babc%5D=def'
+          '&value%5Betc%5D%5Bghi%5D=jkl'
+          '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+          '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=a'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=123'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B%5D=false'
+          '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1573,21 +1511,22 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response =
-        await service.getUsingMapQueryParamWithBracketsLegacy(<String, dynamic>{
-      'bar': 'baz',
-      'zap': 'abc',
-      'etc': <String, dynamic>{
-        'abc': 'def',
-        'ghi': 'jkl',
-        'mno': <String, dynamic>{
-          'opq': 'rst',
-          'uvw': 'xyz',
-          'list': ['a', 123, false],
+    final response = await service.getUsingMapQueryParamWithBracketsLegacy(
+      <String, dynamic>{
+        'bar': 'baz',
+        'zap': 'abc',
+        'etc': <String, dynamic>{
+          'abc': 'def',
+          'ghi': 'jkl',
+          'mno': <String, dynamic>{
+            'opq': 'rst',
+            'uvw': 'xyz',
+            'list': ['a', 123, false],
+          },
+          'dt': now,
         },
-        'dt': now,
       },
-    });
+    );
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -1601,17 +1540,19 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param_with_indices'
-            '?value%5Bbar%5D=baz'
-            '&value%5Bzap%5D=abc'
-            '&value%5Betc%5D%5Babc%5D=def'
-            '&value%5Betc%5D%5Bghi%5D=jkl'
-            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
-            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B0%5D=a'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B1%5D=123'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B2%5D=false'
-            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param_with_indices'
+          '?value%5Bbar%5D=baz'
+          '&value%5Bzap%5D=abc'
+          '&value%5Betc%5D%5Babc%5D=def'
+          '&value%5Betc%5D%5Bghi%5D=jkl'
+          '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+          '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B0%5D=a'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B1%5D=123'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D%5B2%5D=false'
+          '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1621,21 +1562,22 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response =
-        await service.getUsingMapQueryParamWithIndices(<String, dynamic>{
-      'bar': 'baz',
-      'zap': 'abc',
-      'etc': <String, dynamic>{
-        'abc': 'def',
-        'ghi': 'jkl',
-        'mno': <String, dynamic>{
-          'opq': 'rst',
-          'uvw': 'xyz',
-          'list': ['a', 123, false],
+    final response = await service.getUsingMapQueryParamWithIndices(
+      <String, dynamic>{
+        'bar': 'baz',
+        'zap': 'abc',
+        'etc': <String, dynamic>{
+          'abc': 'def',
+          'ghi': 'jkl',
+          'mno': <String, dynamic>{
+            'opq': 'rst',
+            'uvw': 'xyz',
+            'list': ['a', 123, false],
+          },
+          'dt': now,
         },
-        'dt': now,
       },
-    });
+    );
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -1649,17 +1591,19 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param_with_repeat'
-            '?value.bar=baz'
-            '&value.zap=abc'
-            '&value.etc.abc=def'
-            '&value.etc.ghi=jkl'
-            '&value.etc.mno.opq=rst'
-            '&value.etc.mno.uvw=xyz'
-            '&value.etc.mno.list=a'
-            '&value.etc.mno.list=123'
-            '&value.etc.mno.list=false'
-            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param_with_repeat'
+          '?value.bar=baz'
+          '&value.zap=abc'
+          '&value.etc.abc=def'
+          '&value.etc.ghi=jkl'
+          '&value.etc.mno.opq=rst'
+          '&value.etc.mno.uvw=xyz'
+          '&value.etc.mno.list=a'
+          '&value.etc.mno.list=123'
+          '&value.etc.mno.list=false'
+          '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1669,21 +1613,22 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response =
-        await service.getUsingMapQueryParamWithRepeat(<String, dynamic>{
-      'bar': 'baz',
-      'zap': 'abc',
-      'etc': <String, dynamic>{
-        'abc': 'def',
-        'ghi': 'jkl',
-        'mno': <String, dynamic>{
-          'opq': 'rst',
-          'uvw': 'xyz',
-          'list': ['a', 123, false],
+    final response = await service.getUsingMapQueryParamWithRepeat(
+      <String, dynamic>{
+        'bar': 'baz',
+        'zap': 'abc',
+        'etc': <String, dynamic>{
+          'abc': 'def',
+          'ghi': 'jkl',
+          'mno': <String, dynamic>{
+            'opq': 'rst',
+            'uvw': 'xyz',
+            'list': ['a', 123, false],
+          },
+          'dt': now,
         },
-        'dt': now,
       },
-    });
+    );
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -1697,15 +1642,17 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param_with_comma'
-            '?value%5Bbar%5D=baz'
-            '&value%5Bzap%5D=abc'
-            '&value%5Betc%5D%5Babc%5D=def'
-            '&value%5Betc%5D%5Bghi%5D=jkl'
-            '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
-            '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
-            '&value%5Betc%5D%5Bmno%5D%5Blist%5D=a%2C123%2Cfalse'
-            '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param_with_comma'
+          '?value%5Bbar%5D=baz'
+          '&value%5Bzap%5D=abc'
+          '&value%5Betc%5D%5Babc%5D=def'
+          '&value%5Betc%5D%5Bghi%5D=jkl'
+          '&value%5Betc%5D%5Bmno%5D%5Bopq%5D=rst'
+          '&value%5Betc%5D%5Bmno%5D%5Buvw%5D=xyz'
+          '&value%5Betc%5D%5Bmno%5D%5Blist%5D=a%2C123%2Cfalse'
+          '&value%5Betc%5D%5Bdt%5D=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1715,21 +1662,22 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response =
-        await service.getUsingMapQueryParamWithComma(<String, dynamic>{
-      'bar': 'baz',
-      'zap': 'abc',
-      'etc': <String, dynamic>{
-        'abc': 'def',
-        'ghi': 'jkl',
-        'mno': <String, dynamic>{
-          'opq': 'rst',
-          'uvw': 'xyz',
-          'list': ['a', 123, false],
+    final response = await service.getUsingMapQueryParamWithComma(
+      <String, dynamic>{
+        'bar': 'baz',
+        'zap': 'abc',
+        'etc': <String, dynamic>{
+          'abc': 'def',
+          'ghi': 'jkl',
+          'mno': <String, dynamic>{
+            'opq': 'rst',
+            'uvw': 'xyz',
+            'list': ['a', 123, false],
+          },
+          'dt': now,
         },
-        'dt': now,
       },
-    });
+    );
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -1743,14 +1691,16 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param'
-            '?value.bar=baz'
-            '&value.etc.abc=def'
-            '&value.etc.mno.opq=rst'
-            '&value.etc.mno.list=a'
-            '&value.etc.mno.list=123'
-            '&value.etc.mno.list=false'
-            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param'
+          '?value.bar=baz'
+          '&value.etc.abc=def'
+          '&value.etc.mno.opq=rst'
+          '&value.etc.mno.list=a'
+          '&value.etc.mno.list=123'
+          '&value.etc.mno.list=false'
+          '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1787,17 +1737,19 @@ void main() {
     final httpClient = MockClient((request) async {
       expect(
         request.url.toString(),
-        equals('$baseUrl/test/map_query_param_include_null_query_vars'
-            '?value.bar=baz'
-            '&value.zap='
-            '&value.etc.abc=def'
-            '&value.etc.ghi='
-            '&value.etc.mno.opq=rst'
-            '&value.etc.mno.uvw='
-            '&value.etc.mno.list=a'
-            '&value.etc.mno.list=123'
-            '&value.etc.mno.list=false'
-            '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}'),
+        equals(
+          '$baseUrl/test/map_query_param_include_null_query_vars'
+          '?value.bar=baz'
+          '&value.zap='
+          '&value.etc.abc=def'
+          '&value.etc.ghi='
+          '&value.etc.mno.opq=rst'
+          '&value.etc.mno.uvw='
+          '&value.etc.mno.list=a'
+          '&value.etc.mno.list=123'
+          '&value.etc.mno.list=false'
+          '&value.etc.dt=${Uri.encodeComponent(now.toUtc().toIso8601String())}',
+        ),
       );
       expect(request.method, equals('GET'));
 
@@ -1807,21 +1759,22 @@ void main() {
     final chopper = buildClient(httpClient);
     final service = chopper.getService<HttpTestService>();
 
-    final response = await service
-        .getUsingMapQueryParamIncludeNullQueryVars(<String, dynamic>{
-      'bar': 'baz',
-      'zap': null,
-      'etc': <String, dynamic>{
-        'abc': 'def',
-        'ghi': null,
-        'mno': <String, dynamic>{
-          'opq': 'rst',
-          'uvw': null,
-          'list': ['a', 123, false],
+    final response = await service.getUsingMapQueryParamIncludeNullQueryVars(
+      <String, dynamic>{
+        'bar': 'baz',
+        'zap': null,
+        'etc': <String, dynamic>{
+          'abc': 'def',
+          'ghi': null,
+          'mno': <String, dynamic>{
+            'opq': 'rst',
+            'uvw': null,
+            'list': ['a', 123, false],
+          },
+          'dt': now,
         },
-        'dt': now,
       },
-    });
+    );
 
     expect(response.body, equals('get response'));
     expect(response.statusCode, equals(200));
@@ -1832,49 +1785,25 @@ void main() {
   test('client baseUrl cannot contain query parameters', () {
     expect(
       () => ChopperClient(
-        baseUrl: Uri.http(
-          'foo',
-          'bar',
-          {
-            'first': '123',
-            'second': '456',
-          },
-        ),
+        baseUrl: Uri.http('foo', 'bar', {'first': '123', 'second': '456'}),
       ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
+      throwsA(const TypeMatcher<AssertionError>()),
+    );
+
+    expect(
+      () => ChopperClient(baseUrl: Uri.parse('foo/bar?first=123')),
+      throwsA(const TypeMatcher<AssertionError>()),
     );
 
     expect(
       () => ChopperClient(
-        baseUrl: Uri.parse('foo/bar?first=123'),
+        baseUrl: Uri(queryParameters: {'first': '123', 'second': '456'}),
       ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
-    );
-
-    expect(
-      () => ChopperClient(
-        baseUrl: Uri(
-          queryParameters: {
-            'first': '123',
-            'second': '456',
-          },
-        ),
-      ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
+      throwsA(const TypeMatcher<AssertionError>()),
     );
     expect(
-      () => ChopperClient(
-        baseUrl: Uri(query: 'first=123&second=456'),
-      ),
-      throwsA(
-        TypeMatcher<AssertionError>(),
-      ),
+      () => ChopperClient(baseUrl: Uri(query: 'first=123&second=456')),
+      throwsA(const TypeMatcher<AssertionError>()),
     );
   });
 
@@ -1893,19 +1822,23 @@ void main() {
       expect(formatted, equals(expected));
     });
 
-    test('DateFormat.milliseconds encodes DateTime as milliseconds since epoch',
-        () {
-      final formatted = DateFormat.milliseconds.format(dateTime);
-      final expected = dateTime.millisecondsSinceEpoch.toString();
-      expect(formatted, equals(expected));
-    });
+    test(
+      'DateFormat.milliseconds encodes DateTime as milliseconds since epoch',
+      () {
+        final formatted = DateFormat.milliseconds.format(dateTime);
+        final expected = dateTime.millisecondsSinceEpoch.toString();
+        expect(formatted, equals(expected));
+      },
+    );
 
-    test('DateFormat.microseconds encodes DateTime as microseconds since epoch',
-        () {
-      final formatted = DateFormat.microseconds.format(dateTime);
-      final expected = dateTime.microsecondsSinceEpoch.toString();
-      expect(formatted, equals(expected));
-    });
+    test(
+      'DateFormat.microseconds encodes DateTime as microseconds since epoch',
+      () {
+        final formatted = DateFormat.microseconds.format(dateTime);
+        final expected = dateTime.microsecondsSinceEpoch.toString();
+        expect(formatted, equals(expected));
+      },
+    );
 
     test('DateFormat.utcIso8601 encodes DateTime as UTC ISO8601', () {
       final formatted = DateFormat.utcIso8601.format(dateTime);
@@ -1918,7 +1851,9 @@ void main() {
       // Since this converts to local timezone, we can't test exact value
       // but we can verify it follows the ISO8601 format without Z suffix
       expect(
-          formatted, matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}$'));
+        formatted,
+        matches(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}$'),
+      );
     });
 
     test('DateFormat.iso8601 encodes DateTime as ISO8601', () {
@@ -1967,7 +1902,7 @@ void main() {
           return http.Response('get response', 200);
         });
 
-        final chopper = buildClient(httpClient, JsonConverter());
+        final chopper = buildClient(httpClient, const JsonConverter());
         final service = chopper.getService<HttpTestService>();
 
         final response = await service.getDateTime(dateTime);
@@ -1981,8 +1916,9 @@ void main() {
 
     test('Local DateTime is encoded as UTC ISO8601 by default', () async {
       final DateTime dateTime = DateTime.now();
-      final String expected =
-          Uri.encodeComponent(dateTime.toUtc().toIso8601String());
+      final String expected = Uri.encodeComponent(
+        dateTime.toUtc().toIso8601String(),
+      );
 
       final httpClient = MockClient((request) async {
         expect(
@@ -1994,7 +1930,7 @@ void main() {
         return http.Response('get response', 200);
       });
 
-      final chopper = buildClient(httpClient, JsonConverter());
+      final chopper = buildClient(httpClient, const JsonConverter());
       final service = chopper.getService<HttpTestService>();
 
       final response = await service.getDateTime(dateTime);
@@ -2007,8 +1943,9 @@ void main() {
 
     test('DateTime is encoded in URL query parameters', () async {
       final DateTime dateTime = DateTime.utc(2023, 1, 1, 12, 34, 56);
-      final String expected =
-          Uri.encodeComponent(dateTime.toUtc().toIso8601String());
+      final String expected = Uri.encodeComponent(
+        dateTime.toUtc().toIso8601String(),
+      );
 
       final httpClient = MockClient((request) async {
         expect(
@@ -2020,7 +1957,7 @@ void main() {
         return http.Response('get response', 200);
       });
 
-      final chopper = buildClient(httpClient, JsonConverter());
+      final chopper = buildClient(httpClient, const JsonConverter());
       final service = chopper.getService<HttpTestService>();
 
       final response = await service.getDateTime(dateTime);
@@ -2031,8 +1968,9 @@ void main() {
       httpClient.close();
     });
 
-    for (final ({DateTime dt, String expected, DateFormat fmt}) testCase
-        in <({DateTime dt, DateFormat fmt, String expected})>[
+    for (final ({DateTime dt, String expected, DateFormat fmt}) testCase in <
+      ({DateTime dt, DateFormat fmt, String expected})
+    >[
       (
         dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
         fmt: DateFormat.seconds,
@@ -2060,93 +1998,96 @@ void main() {
       (
         dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
         fmt: DateFormat.utcIso8601,
-        expected: '2023-01-01T12%3A34%3A56.000Z'
+        expected: '2023-01-01T12%3A34%3A56.000Z',
       ),
       (
         dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
         fmt: DateFormat.localIso8601,
-        expected: '2023-01-01T12%3A34%3A56.000'
+        expected: '2023-01-01T12%3A34%3A56.000',
       ),
       (
         dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
         fmt: DateFormat.iso8601,
-        expected: '2023-01-01T12%3A34%3A56.000Z'
+        expected: '2023-01-01T12%3A34%3A56.000Z',
       ),
       (
         dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
         fmt: DateFormat.rfc2822,
-        expected: 'Sun%2C%2001%20Jan%202023%2012%3A34%3A56%20GMT'
+        expected: 'Sun%2C%2001%20Jan%202023%2012%3A34%3A56%20GMT',
       ),
       (
         dt: DateTime.utc(2023, 1, 1),
         fmt: DateFormat.date,
-        expected: '2023-01-01'
+        expected: '2023-01-01',
       ),
       (
         dt: DateTime.utc(2023, 1, 1),
         fmt: DateFormat.time,
-        expected: '00%3A00%3A00'
+        expected: '00%3A00%3A00',
       ),
       (
         dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
         fmt: DateFormat.string,
-        expected: '2023-01-01%2012%3A34%3A56.000Z'
+        expected: '2023-01-01%2012%3A34%3A56.000Z',
       ),
     ]) {
       test(
-          'DateTime is encoded in URL query parameters using DateFormat.${testCase.fmt.name}',
-          () async {
-        final httpClient = MockClient((request) async {
-          expect(
-            request.url.toString(),
-            equals(
-              '$baseUrl/test/date_time_format_${testCase.fmt.name}?value=${testCase.expected}',
+        'DateTime is encoded in URL query parameters using DateFormat.${testCase.fmt.name}',
+        () async {
+          final httpClient = MockClient((request) async {
+            expect(
+              request.url.toString(),
+              equals(
+                '$baseUrl/test/date_time_format_${testCase.fmt.name}?value=${testCase.expected}',
+              ),
+            );
+            expect(request.method, equals('GET'));
+
+            return http.Response('get response', 200);
+          });
+
+          final chopper = buildClient(httpClient, const JsonConverter());
+          final service = chopper.getService<HttpTestService>();
+
+          final Response<String> response = switch (testCase.fmt) {
+            DateFormat.seconds => await service.getDateTimeFormatSeconds(
+              testCase.dt,
             ),
-          );
-          expect(request.method, equals('GET'));
+            DateFormat.unix => await service.getDateTimeFormatUnix(testCase.dt),
+            DateFormat.milliseconds => await service
+                .getDateTimeFormatMilliseconds(testCase.dt),
+            DateFormat.microseconds => await service
+                .getDateTimeFormatMicroseconds(testCase.dt),
+            DateFormat.utcIso8601 => await service.getDateTimeFormatUtcIso8601(
+              testCase.dt,
+            ),
+            DateFormat.localIso8601 => await service
+                .getDateTimeFormatLocalIso8601(testCase.dt),
+            DateFormat.iso8601 => await service.getDateTimeFormatIso8601(
+              testCase.dt,
+            ),
+            DateFormat.rfc2822 => await service.getDateTimeFormatRfc2822(
+              testCase.dt,
+            ),
+            DateFormat.date => await service.getDateTimeFormatDate(testCase.dt),
+            DateFormat.time => await service.getDateTimeFormatTime(testCase.dt),
+            DateFormat.string => await service.getDateTimeFormatString(
+              testCase.dt,
+            ),
+          };
 
-          return http.Response('get response', 200);
-        });
+          expect(response.body, equals('get response'));
+          expect(response.statusCode, equals(200));
 
-        final chopper = buildClient(httpClient, JsonConverter());
-        final service = chopper.getService<HttpTestService>();
-
-        final Response<String> response = switch (testCase.fmt) {
-          DateFormat.seconds =>
-            await service.getDateTimeFormatSeconds(testCase.dt),
-          DateFormat.unix => await service.getDateTimeFormatUnix(testCase.dt),
-          DateFormat.milliseconds =>
-            await service.getDateTimeFormatMilliseconds(testCase.dt),
-          DateFormat.microseconds =>
-            await service.getDateTimeFormatMicroseconds(testCase.dt),
-          DateFormat.utcIso8601 =>
-            await service.getDateTimeFormatUtcIso8601(testCase.dt),
-          DateFormat.localIso8601 =>
-            await service.getDateTimeFormatLocalIso8601(testCase.dt),
-          DateFormat.iso8601 =>
-            await service.getDateTimeFormatIso8601(testCase.dt),
-          DateFormat.rfc2822 =>
-            await service.getDateTimeFormatRfc2822(testCase.dt),
-          DateFormat.date => await service.getDateTimeFormatDate(testCase.dt),
-          DateFormat.time => await service.getDateTimeFormatTime(testCase.dt),
-          DateFormat.string =>
-            await service.getDateTimeFormatString(testCase.dt),
-        };
-
-        expect(response.body, equals('get response'));
-        expect(response.statusCode, equals(200));
-
-        httpClient.close();
-      });
+          httpClient.close();
+        },
+      );
     }
   });
 
   test('headers are always stringified', () async {
     final httpClient = MockClient((request) async {
-      expect(
-        request.url.toString(),
-        equals('$baseUrl/test/headers'),
-      );
+      expect(request.url.toString(), equals('$baseUrl/test/headers'));
       expect(request.method, equals('GET'));
       expect(request.headers['x-string'], equals('lorem'));
       expect(request.headers['x-boolean'], equals('true'));
@@ -2157,7 +2098,7 @@ void main() {
       return http.Response('get response', 200);
     });
 
-    final chopper = buildClient(httpClient, JsonConverter());
+    final chopper = buildClient(httpClient, const JsonConverter());
     final service = chopper.getService<HttpTestService>();
 
     final response = await service.getHeaders(

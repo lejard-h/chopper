@@ -15,16 +15,11 @@ import 'test_service.dart';
 
 void main() {
   group('Interceptors', () {
-    final requestClient = MockClient(
-      (request) async {
-        expect(
-          request.url.toString(),
-          equals('/test/get/1234/intercept'),
-        );
+    final requestClient = MockClient((request) async {
+      expect(request.url.toString(), equals('/test/get/1234/intercept'));
 
-        return http.Response('', 200);
-      },
-    );
+      return http.Response('', 200);
+    });
 
     final responseClient = MockClient(
       (request) async => http.Response('body', 200),
@@ -38,31 +33,27 @@ void main() {
     test('RequestInterceptor', () async {
       final chopper = ChopperClient(
         interceptors: [RequestIntercept()],
-        services: [
-          HttpTestService.create(),
-        ],
+        services: [HttpTestService.create()],
         client: requestClient,
       );
 
       await chopper.getService<HttpTestService>().getTest(
-            '1234',
-            dynamicHeader: '',
-          );
+        '1234',
+        dynamicHeader: '',
+      );
     });
 
     test('ResponseInterceptor', () async {
       final chopper = ChopperClient(
         interceptors: [ResponseIntercept()],
-        services: [
-          HttpTestService.create(),
-        ],
+        services: [HttpTestService.create()],
         client: responseClient,
       );
 
       await chopper.getService<HttpTestService>().getTest(
-            '1234',
-            dynamicHeader: '',
-          );
+        '1234',
+        dynamicHeader: '',
+      );
 
       expect(ResponseIntercept.intercepted, isA<_Intercepted>());
     });
@@ -77,18 +68,16 @@ void main() {
 
       final chopper = ChopperClient(
         interceptors: [
-          HeadersInterceptor({'foo': 'bar'}),
+          const HeadersInterceptor({'foo': 'bar'}),
         ],
-        services: [
-          HttpTestService.create(),
-        ],
+        services: [HttpTestService.create()],
         client: client,
       );
 
       await chopper.getService<HttpTestService>().getTest(
-            '1234',
-            dynamicHeader: '',
-          );
+        '1234',
+        dynamicHeader: '',
+      );
     });
 
     test('Curl interceptors', () async {
@@ -141,7 +130,7 @@ void main() {
         Uri.parse('base'),
         headers: {'foo': 'bar'},
         parts: [
-          PartValue<int>('p1', 123),
+          const PartValue<int>('p1', 123),
           PartValueFile<http.MultipartFile>(
             'p2',
             http.MultipartFile.fromBytes('file', [0], filename: 'filename'),
@@ -170,7 +159,8 @@ class ResponseIntercept implements Interceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final response = await chain.proceed(chain.request);
 
     intercepted = _Intercepted(response.body);
@@ -182,7 +172,8 @@ class ResponseIntercept implements Interceptor {
 class RequestIntercept implements Interceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final request = chain.request;
     return chain.proceed(
       request.copyWith(

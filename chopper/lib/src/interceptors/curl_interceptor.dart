@@ -15,7 +15,8 @@ import 'package:meta/meta.dart';
 class CurlInterceptor implements Interceptor {
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final http.BaseRequest baseRequest = await chain.request.toBaseRequest();
     final List<String> curlParts = ['curl -v -X ${baseRequest.method}'];
     for (final MapEntry<String, String> header in baseRequest.headers.entries) {

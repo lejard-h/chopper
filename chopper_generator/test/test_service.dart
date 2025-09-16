@@ -109,10 +109,7 @@ abstract class HttpTestService extends ChopperService {
 
   @POST(path: 'multi')
   @multipart
-  Future<Response> postResources(
-    @Part('1') Map a,
-    @Part('2') Map b,
-  );
+  Future<Response> postResources(@Part('1') Map a, @Part('2') Map b);
 
   @POST(path: 'formUrlEncoded')
   @FormUrlEncoded()
@@ -130,9 +127,7 @@ abstract class HttpTestService extends ChopperService {
 
   @POST(path: 'formUrlEncoded')
   @FormUrlEncoded()
-  Future<Response> postFormUrlEncodeFieldMap(
-    @FieldMap() Map<String, String> c,
-  );
+  Future<Response> postFormUrlEncodeFieldMap(@FieldMap() Map<String, String> c);
 
   @POST(path: 'formUrlEncoded')
   @FormUrlEncoded()
@@ -142,15 +137,11 @@ abstract class HttpTestService extends ChopperService {
 
   @POST(path: 'file')
   @multipart
-  Future<Response> postFile(
-    @PartFile('file') List<int> bytes,
-  );
+  Future<Response> postFile(@PartFile('file') List<int> bytes);
 
   @POST(path: 'image')
   @multipart
-  Future<Response> postImage(
-    @PartFile('image') List<int> imageData,
-  );
+  Future<Response> postImage(@PartFile('image') List<int> imageData);
 
   @POST(path: 'file')
   @multipart
@@ -258,9 +249,7 @@ abstract class HttpTestService extends ChopperService {
 
   /// Default [DateFormat]
   @GET(path: '/date_time')
-  Future<Response<String>> getDateTime(
-    @Query('value') DateTime value,
-  );
+  Future<Response<String>> getDateTime(@Query('value') DateTime value);
 
   /// [DateFormat.iso8601]
   @GET(path: '/date_time_format_iso8601', dateFormat: DateFormat.iso8601)
@@ -369,10 +358,33 @@ abstract class HttpTestService extends ChopperService {
 
   @GET(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
   Future<Response<String>> getTimeoutTestNeg();
+
+  @GET(path: 'get_timeout_with_query_header', timeout: Duration(seconds: 30))
+  Future<Response<String>> getTimeoutTestQueryHeader({
+    @Header('x-test') String? testHeader,
+    @Query() String? name,
+  });
+
+  @GET(path: 'get_abort_trigger')
+  Future<Response<String>> getWithAbortTrigger({
+    @AbortTrigger() Future<void>? abortTrigger,
+  });
+
+  @GET(path: 'get_abort_trigger2')
+  Future<Response<String>> getWithAbortTrigger2({
+    @AbortTrigger() Future<void>? foo,
+  });
+
+  @GET(path: 'get_abort_trigger_with_query_header')
+  Future<Response<String>> getWithAbortTriggerQueryHeader({
+    @Header('x-test') String? testHeader,
+    @Query() String? name,
+    @AbortTrigger() Future<void>? abortTrigger,
+  });
 }
 
 Request customConvertRequest(Request req) {
-  final r = JsonConverter().convertRequest(req);
+  final r = const JsonConverter().convertRequest(req);
 
   return applyHeader(r, 'customConverter', 'true');
 }

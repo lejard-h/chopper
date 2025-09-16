@@ -63,9 +63,7 @@ abstract class HttpTestService extends ChopperService {
   });
 
   @GET(path: 'query_map')
-  Future getQueryMapTest5({
-    @QueryMap() Map<String, dynamic>? filters,
-  });
+  Future getQueryMapTest5({@QueryMap() Map<String, dynamic>? filters});
 
   @GET(path: 'get_body')
   Future getBody(@Body() dynamic body);
@@ -108,22 +106,15 @@ abstract class HttpTestService extends ChopperService {
 
   @POST(path: 'multi')
   @multipart
-  Future postResources(
-    @Part('1') Map a,
-    @Part('2') Map b,
-  );
+  Future postResources(@Part('1') Map a, @Part('2') Map b);
 
   @POST(path: 'file')
   @multipart
-  Future postFile(
-    @PartFile('file') List<int> bytes,
-  );
+  Future postFile(@PartFile('file') List<int> bytes);
 
   @POST(path: 'image')
   @multipart
-  Future postImage(
-    @PartFile('image') List<int> imageData,
-  );
+  Future postImage(@PartFile('image') List<int> imageData);
 
   @POST(path: 'file')
   @multipart
@@ -162,9 +153,7 @@ abstract class HttpTestService extends ChopperService {
   });
 
   @GET(path: '/list_query_param')
-  Future<String> getUsingListQueryParam(
-    @Query('value') List<String> value,
-  );
+  Future<String> getUsingListQueryParam(@Query('value') List<String> value);
 
   @GET(path: '/list_query_param_with_brackets_legacy', useBrackets: true)
   Future<String> getUsingListQueryParamWithBracketsLegacy(
@@ -237,10 +226,24 @@ abstract class HttpTestService extends ChopperService {
     @Header('x-double') double? doubleHeader,
     @Header('x-enum') ExampleEnum? enumHeader,
   });
+
+  @GET(path: 'get_timeout', timeout: Duration(seconds: 42))
+  Future<String> getTimeoutTest();
+
+  @GET(path: 'get_timeout_zero', timeout: Duration(seconds: 0))
+  Future<String> getTimeoutTestZero();
+
+  @GET(path: 'get_timeout_neg', timeout: Duration(seconds: -1))
+  Future<String> getTimeoutTestNeg();
+
+  @GET(path: 'get_abort_trigger')
+  Future<String> getWithAbortTrigger({
+    @AbortTrigger() Future<void>? abortTrigger,
+  });
 }
 
 Request customConvertRequest(Request req) {
-  final r = JsonConverter().convertRequest(req);
+  final r = const JsonConverter().convertRequest(req);
 
   return applyHeader(r, 'customConverter', 'true');
 }

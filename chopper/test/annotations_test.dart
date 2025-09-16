@@ -61,7 +61,8 @@ abstract class ShorthandAnnotationService extends ChopperService {
 
   @Get(path: '/queryMap')
   Future<Response<dynamic>> testQueryMapShorthand(
-      @queryMap Map<String, dynamic> map);
+    @queryMap Map<String, dynamic> map,
+  );
 
   @Get(path: '/header')
   Future<Response<dynamic>> testHeaderShorthand(@header String testHeader);
@@ -73,7 +74,8 @@ abstract class ShorthandAnnotationService extends ChopperService {
   @Post(path: '/fieldMap')
   @formUrlEncoded
   Future<Response<dynamic>> testFieldMapShorthand(
-      @fieldMap Map<String, dynamic> data);
+    @fieldMap Map<String, dynamic> data,
+  );
 
   @Post(path: '/multipart')
   @multipart
@@ -90,7 +92,8 @@ abstract class ShorthandAnnotationService extends ChopperService {
   @Post(path: '/partFileMap')
   @multipart
   Future<Response<dynamic>> testPartFileMapShorthand(
-      @partFileMap List<PartValueFile> data);
+    @partFileMap List<PartValueFile> data,
+  );
 
   @Get(path: '/tag')
   Future<Response<dynamic>> testTagShorthand(@tag String myTag);
@@ -191,7 +194,9 @@ void main() {
       expect(annotation.listFormat, null);
       expect(annotation.useBrackets, null); // Changed from false to null
       expect(
-          annotation.includeNullQueryVars, null); // Changed from false to null
+        annotation.includeNullQueryVars,
+        null,
+      ); // Changed from false to null
       expect(annotation.timeout, null);
     });
 
@@ -244,7 +249,9 @@ void main() {
       FutureOr<Request> reqConv(Request r) => r;
       FutureOr<Response> resConv(Response r) => r;
       final fc = FactoryConverter(
-          request: reqConv, response: resConv); // Changed to final
+        request: reqConv,
+        response: resConv,
+      ); // Changed to final
       expect(fc.request, reqConv);
       expect(fc.response, resConv);
     });

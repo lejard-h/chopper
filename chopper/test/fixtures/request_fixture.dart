@@ -12,20 +12,26 @@ extension RequestFixture on Request {
 final class RequestFixtureFactory extends FixtureFactory<Request> {
   @override
   FixtureDefinition<Request> definition() {
-    final String method =
-        faker.randomGenerator.element(['GET', 'POST', 'PUT', 'DELETE']);
+    final String method = faker.randomGenerator.element([
+      'GET',
+      'POST',
+      'PUT',
+      'DELETE',
+    ]);
 
     return define(
       (Faker faker, [int index = 0]) => Request(
         method,
         Uri.parse('/${faker.lorem.word()}'),
         Uri.https(faker.internet.domainName()),
-        headers: faker.randomGenerator.boolean()
-            ? {'x-${faker.lorem.word()}': faker.lorem.word()}
-            : {},
-        parameters: faker.randomGenerator.boolean()
-            ? {faker.lorem.word(): faker.lorem.word()}
-            : null,
+        headers:
+            faker.randomGenerator.boolean()
+                ? {'x-${faker.lorem.word()}': faker.lorem.word()}
+                : {},
+        parameters:
+            faker.randomGenerator.boolean()
+                ? {faker.lorem.word(): faker.lorem.word()}
+                : null,
         body:
             faker.randomGenerator.boolean() && ['POST', 'PUT'].contains(method)
                 ? jsonEncode({faker.lorem.word(): faker.lorem.sentences(10)})

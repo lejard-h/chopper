@@ -15,7 +15,7 @@ void main() {
             HttpTestService.create(),
           ],
           client: httpClient,
-          converter: isJson ? JsonConverter() : null,
+          converter: isJson ? const JsonConverter() : null,
         );
 
     test('form-urlencoded default if no converter', () async {
@@ -78,11 +78,9 @@ void main() {
 
       final chopper = buildClient(httpClient, isJson: true);
 
-      final result =
-          await chopper.getService<HttpTestService>().postFormUsingHeaders({
-        'foo': 'test',
-        'factory': 'converter',
-      });
+      final result = await chopper
+          .getService<HttpTestService>()
+          .postFormUsingHeaders({'foo': 'test', 'factory': 'converter'});
 
       expect(result.body, equals('ok'));
 
@@ -102,9 +100,10 @@ void main() {
 
       final chopper = buildClient(httpClient);
 
-      final result = await chopper
-          .getService<HttpTestService>()
-          .postFormFields('test', 42);
+      final result = await chopper.getService<HttpTestService>().postFormFields(
+        'test',
+        42,
+      );
 
       expect(result.body, equals('ok'));
 

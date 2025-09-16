@@ -9,13 +9,9 @@ import 'package:test/test.dart';
 import 'test_service.dart';
 
 void main() {
-  final sample = {
-    'foo': 'bar',
-  };
+  final sample = {'foo': 'bar'};
 
-  final res = {
-    'result': 'ok',
-  };
+  final res = {'result': 'ok'};
   group('JSON', () {
     ChopperClient buildClient(bool json, http.Client httpClient) =>
         ChopperClient(
@@ -25,7 +21,9 @@ void main() {
           ],
           client: httpClient,
           converter:
-              json ? JsonConverter() as Converter : FormUrlEncodedConverter(),
+              json
+                  ? const JsonConverter() as Converter
+                  : const FormUrlEncodedConverter(),
         );
 
     test('default json', () async {
@@ -41,13 +39,11 @@ void main() {
         );
       });
 
-      final chopper = buildClient(
-        true,
-        httpClient,
-      );
+      final chopper = buildClient(true, httpClient);
 
-      final result =
-          await chopper.getService<HttpTestService>().mapTest(sample);
+      final result = await chopper.getService<HttpTestService>().mapTest(
+        sample,
+      );
 
       expect(result.body, equals(res));
 
@@ -68,13 +64,11 @@ void main() {
         );
       });
 
-      final chopper = buildClient(
-        false,
-        httpClient,
-      );
+      final chopper = buildClient(false, httpClient);
 
-      final result =
-          await chopper.getService<HttpTestService>().forceJsonTest(sample);
+      final result = await chopper.getService<HttpTestService>().forceJsonTest(
+        sample,
+      );
 
       expect(result.body, equals(res));
 

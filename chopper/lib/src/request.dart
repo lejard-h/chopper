@@ -12,7 +12,8 @@ import 'package:qs_dart/qs_dart.dart' show ListFormat;
 /// This class represents an HTTP request that can be made with Chopper.
 /// {@endtemplate}
 // ignore: must_be_immutable
-base class Request extends http.BaseRequest with EquatableMixin {
+base class Request extends http.BaseRequest
+    with http.Abortable, EquatableMixin {
   final Uri uri;
   final Uri baseUri;
   final dynamic body;
@@ -25,6 +26,8 @@ base class Request extends http.BaseRequest with EquatableMixin {
   @Deprecated('Use listFormat instead')
   final bool? useBrackets;
   final bool? includeNullQueryVars;
+  @override
+  final Future<void>? abortTrigger;
 
   /// {@macro request}
   Request(
@@ -41,25 +44,27 @@ base class Request extends http.BaseRequest with EquatableMixin {
     @Deprecated('Use listFormat instead') this.useBrackets,
     this.dateFormat,
     this.includeNullQueryVars,
-  })  : assert(
-            !baseUri.hasQuery,
-            'baseUri should not contain query parameters.'
-            'Use a request interceptor to add default query parameters'),
-        // Merge uri.queryParametersAll in the final parameters object so the request object reflects all configured queryParameters
-        parameters = {...uri.queryParametersAll, ...?parameters},
-        super(
-          method,
-          buildUri(
-            baseUri,
-            uri,
-            {...uri.queryParametersAll, ...?parameters},
-            listFormat: listFormat,
-            // ignore: deprecated_member_use_from_same_package
-            useBrackets: useBrackets,
-            dateFormat: dateFormat,
-            includeNullQueryVars: includeNullQueryVars,
-          ),
-        ) {
+    this.abortTrigger,
+  }) : assert(
+         !baseUri.hasQuery,
+         'baseUri should not contain query parameters.'
+         'Use a request interceptor to add default query parameters',
+       ),
+       // Merge uri.queryParametersAll in the final parameters object so the request object reflects all configured queryParameters
+       parameters = {...uri.queryParametersAll, ...?parameters},
+       super(
+         method,
+         buildUri(
+           baseUri,
+           uri,
+           {...uri.queryParametersAll, ...?parameters},
+           listFormat: listFormat,
+           // ignore: deprecated_member_use_from_same_package
+           useBrackets: useBrackets,
+           dateFormat: dateFormat,
+           includeNullQueryVars: includeNullQueryVars,
+         ),
+       ) {
     this.headers.addAll(headers);
   }
 
@@ -78,23 +83,24 @@ base class Request extends http.BaseRequest with EquatableMixin {
     DateFormat? dateFormat,
     bool? includeNullQueryVars,
     Object? tag,
-  }) =>
-      Request(
-        method ?? this.method,
-        uri ?? this.uri,
-        baseUri ?? this.baseUri,
-        body: body ?? this.body,
-        parameters: parameters ?? this.parameters,
-        headers: headers ?? this.headers,
-        multipart: multipart ?? this.multipart,
-        parts: parts ?? this.parts,
-        listFormat: listFormat ?? this.listFormat,
-        // ignore: deprecated_member_use_from_same_package
-        useBrackets: useBrackets ?? this.useBrackets,
-        dateFormat: dateFormat ?? this.dateFormat,
-        includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
-        tag: tag ?? this.tag,
-      );
+    Future<void>? abortTrigger,
+  }) => Request(
+    method ?? this.method,
+    uri ?? this.uri,
+    baseUri ?? this.baseUri,
+    body: body ?? this.body,
+    parameters: parameters ?? this.parameters,
+    headers: headers ?? this.headers,
+    multipart: multipart ?? this.multipart,
+    parts: parts ?? this.parts,
+    listFormat: listFormat ?? this.listFormat,
+    // ignore: deprecated_member_use_from_same_package
+    useBrackets: useBrackets ?? this.useBrackets,
+    dateFormat: dateFormat ?? this.dateFormat,
+    includeNullQueryVars: includeNullQueryVars ?? this.includeNullQueryVars,
+    tag: tag ?? this.tag,
+    abortTrigger: abortTrigger ?? this.abortTrigger,
+  );
 
   /// Builds a valid URI from [baseUrl], [url] and [parameters].
   ///
@@ -111,16 +117,19 @@ base class Request extends http.BaseRequest with EquatableMixin {
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
-    final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
-        ? url
-        : _mergeUri(baseUrl, url);
+    final Uri uri =
+        url.isScheme('HTTP') || url.isScheme('HTTPS')
+            ? url
+            : _mergeUri(baseUrl, url);
 
     // Check if parameter also has all the queryParameters from the url (not the merged uri)
-    final bool parametersContainsUriQuery = parameters.keys
-        .every((element) => url.queryParametersAll.keys.contains(element));
-    final Map<String, dynamic> allParameters = parametersContainsUriQuery
-        ? parameters
-        : {...url.queryParametersAll, ...parameters};
+    final bool parametersContainsUriQuery = parameters.keys.every(
+      (element) => url.queryParametersAll.keys.contains(element),
+    );
+    final Map<String, dynamic> allParameters =
+        parametersContainsUriQuery
+            ? parameters
+            : {...url.queryParametersAll, ...parameters};
 
     final String query = mapToQuery(
       allParameters,
@@ -136,9 +145,10 @@ base class Request extends http.BaseRequest with EquatableMixin {
 
   /// Merges Uri into another Uri preserving queries and paths
   static Uri _mergeUri(Uri baseUri, Uri addToUri) {
-    final path = baseUri.hasEmptyPath
-        ? addToUri.path
-        : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
+    final path =
+        baseUri.hasEmptyPath
+            ? addToUri.path
+            : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
 
     return baseUri.replace(
       path: path,
@@ -146,15 +156,15 @@ base class Request extends http.BaseRequest with EquatableMixin {
     );
   }
 
-  /// Converts this Chopper Request into a [http.BaseRequest].
+  /// Converts this Chopper Request into a [http.Abortable].
   ///
   /// All [parameters] and [headers] are conserved.
   ///
   /// Depending on the request type the returning object will be:
-  ///   - [http.StreamedRequest] if body is a [Stream<List<int>>]
-  ///   - [http.MultipartRequest] if [multipart] is true
-  ///   - or a [http.Request]
-  Future<http.BaseRequest> toBaseRequest() async {
+  ///   - [http.AbortableStreamedRequest] if body is a [Stream<List<int>>]
+  ///   - [http.AbortableMultipartRequest] if [multipart] is true
+  ///   - or a [http.AbortableRequest]
+  Future<http.Abortable> toBaseRequest() async {
     if (body is Stream<List<int>>) return toStreamedRequest(body);
 
     if (multipart) return toMultipartRequest();
@@ -162,11 +172,14 @@ base class Request extends http.BaseRequest with EquatableMixin {
     return toHttpRequest();
   }
 
-  /// Convert this [Request] to a [http.Request]
+  /// Convert this [Request] to a [http.AbortableRequest]
   @visibleForTesting
-  http.Request toHttpRequest() {
-    final http.Request request = http.Request(method, url)
-      ..followRedirects = followRedirects;
+  http.AbortableRequest toHttpRequest() {
+    final http.AbortableRequest request = http.AbortableRequest(
+      method,
+      url,
+      abortTrigger: abortTrigger,
+    )..followRedirects = followRedirects;
 
     if (body == null) {
       request.headers.addAll(headers);
@@ -191,11 +204,12 @@ base class Request extends http.BaseRequest with EquatableMixin {
     return request;
   }
 
-  /// Convert this [Request] to a [http.MultipartRequest]
+  /// Convert this [Request] to a [http.AbortableMultipartRequest]
   @visibleForTesting
-  Future<http.MultipartRequest> toMultipartRequest() async {
-    final http.MultipartRequest request = http.MultipartRequest(method, url)
-      ..headers.addAll(headers);
+  Future<http.AbortableMultipartRequest> toMultipartRequest() async {
+    final http.AbortableMultipartRequest request =
+        http.AbortableMultipartRequest(method, url, abortTrigger: abortTrigger)
+          ..headers.addAll(headers);
 
     for (final PartValue part in parts) {
       if (part.value == null) continue;
@@ -235,11 +249,16 @@ base class Request extends http.BaseRequest with EquatableMixin {
     return request;
   }
 
-  /// Convert this [Request] to a [http.StreamedRequest]
+  /// Convert this [Request] to a [http.AbortableStreamedRequest]
   @visibleForTesting
-  http.StreamedRequest toStreamedRequest(Stream<List<int>> bodyStream) {
-    final http.StreamedRequest request = http.StreamedRequest(method, url)
-      ..headers.addAll(headers);
+  http.AbortableStreamedRequest toStreamedRequest(
+    Stream<List<int>> bodyStream,
+  ) {
+    final http.AbortableStreamedRequest request = http.AbortableStreamedRequest(
+      method,
+      url,
+      abortTrigger: abortTrigger,
+    )..headers.addAll(headers);
 
     bodyStream.listen(
       request.sink.add,
@@ -252,20 +271,21 @@ base class Request extends http.BaseRequest with EquatableMixin {
 
   @override
   List<Object?> get props => [
-        method,
-        uri,
-        baseUri,
-        body,
-        parameters,
-        headers,
-        multipart,
-        parts,
-        listFormat,
-        // ignore: deprecated_member_use_from_same_package
-        useBrackets,
-        dateFormat,
-        includeNullQueryVars,
-      ];
+    method,
+    uri,
+    baseUri,
+    body,
+    parameters,
+    headers,
+    multipart,
+    parts,
+    listFormat,
+    // ignore: deprecated_member_use_from_same_package
+    useBrackets,
+    dateFormat,
+    includeNullQueryVars,
+    abortTrigger,
+  ];
 }
 
 ///
@@ -285,24 +305,15 @@ final class PartValue<T> with EquatableMixin {
   final T value;
   final String name;
 
-  const PartValue(
-    this.name,
-    this.value,
-  );
+  const PartValue(this.name, this.value);
 
   /// Makes a copy of this PartValue, replacing original values with the given ones.
   /// This method can also alter the type of the request body.
   PartValue<NewType> copyWith<NewType>({String? name, NewType? value}) =>
-      PartValue<NewType>(
-        name ?? this.name,
-        value ?? this.value as NewType,
-      );
+      PartValue<NewType>(name ?? this.name, value ?? this.value as NewType);
 
   @override
-  List<Object?> get props => [
-        name,
-        value,
-      ];
+  List<Object?> get props => [name, value];
 }
 
 ///

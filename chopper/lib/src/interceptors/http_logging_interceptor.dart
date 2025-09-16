@@ -80,9 +80,9 @@ class HttpLoggingInterceptor implements Interceptor {
     this.level = Level.body,
     this.onlyErrors = false,
     Logger? logger,
-  })  : _logger = logger ?? chopperLogger,
-        _logBody = level == Level.body,
-        _logHeaders = level == Level.body || level == Level.headers;
+  }) : _logger = logger ?? chopperLogger,
+       _logBody = level == Level.body,
+       _logHeaders = level == Level.body || level == Level.headers;
 
   final Level level;
   final bool onlyErrors;
@@ -92,7 +92,8 @@ class HttpLoggingInterceptor implements Interceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(
-      Chain<BodyType> chain) async {
+    Chain<BodyType> chain,
+  ) async {
     final Request request = chain.request;
 
     final Stopwatch stopWatch = Stopwatch()..start();
@@ -131,9 +132,8 @@ class HttpLoggingInterceptor implements Interceptor {
 
     if (_logHeaders) {
       baseRequest.headers.forEach(
-        (String k, String v) => _logger.info(
-          ChopperLogRecord('$k: $v', request: request),
-        ),
+        (String k, String v) =>
+            _logger.info(ChopperLogRecord('$k: $v', request: request)),
       );
 
       if (baseRequest.contentLength != null &&
@@ -194,9 +194,8 @@ class HttpLoggingInterceptor implements Interceptor {
 
     if (_logHeaders) {
       baseResponse.headers.forEach(
-        (String k, String v) => _logger.info(
-          ChopperLogRecord('$k: $v', response: response),
-        ),
+        (String k, String v) =>
+            _logger.info(ChopperLogRecord('$k: $v', response: response)),
       );
 
       if (baseResponse.contentLength != null &&
@@ -213,10 +212,7 @@ class HttpLoggingInterceptor implements Interceptor {
     if (_logBody && bodyResponseMessage.isNotEmpty) {
       _logger.info(ChopperLogRecord('', response: response));
       _logger.info(
-        ChopperLogRecord(
-          bodyResponseMessage.toString(),
-          response: response,
-        ),
+        ChopperLogRecord(bodyResponseMessage.toString(), response: response),
       );
     }
 

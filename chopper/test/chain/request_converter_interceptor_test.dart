@@ -18,98 +18,109 @@ void main() {
     final converter = RequestConverter();
     interceptorChain = InterceptorChain(
       interceptors: [
-        RequestConverterInterceptor(
-          converter,
-          null,
-        ),
-        RequestInterceptor(onRequest: (request) {
-          expect(request.body, null);
-        }),
-      ],
-      request: testRequest,
-    );
-
-    await interceptorChain.proceed(testRequest);
-
-    expect(converter.called, 0);
-  });
-
-  test(
-      'request body is not null and parts is empty, requestConverter is not provided, request is converted by converter',
-      () async {
-    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'),
-        body: 'not converted');
-    final converter = RequestConverter();
-    interceptorChain = InterceptorChain(
-      interceptors: [
-        RequestConverterInterceptor(
-          converter,
-          null,
-        ),
-        RequestInterceptor(onRequest: (request) {
-          expect(request.body, 'converted');
-        }),
-      ],
-      request: testRequest,
-    );
-
-    await interceptorChain.proceed(testRequest);
-
-    expect(converter.called, 1);
-  });
-
-  test(
-      'request body is null and parts is not empty, requestConverter is not provided, request is converted by converter',
-      () async {
-    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'),
-        parts: [PartValue('not converted', 1)]);
-    final converter = RequestConverter();
-    interceptorChain = InterceptorChain(
-      interceptors: [
-        RequestConverterInterceptor(
-          converter,
-          null,
-        ),
-        RequestInterceptor(onRequest: (request) {
-          expect(request.body, 'converted');
-        }),
-      ],
-      request: testRequest,
-    );
-
-    await interceptorChain.proceed(testRequest);
-
-    expect(converter.called, 1);
-  });
-
-  test(
-      'request body is not null and parts is empty, requestConverter is provided, request is converted by requestConverter',
-      () async {
-    final testRequest = Request('GET', Uri.parse('foo'), Uri.parse('bar'),
-        body: 'not converted');
-    final converter = RequestConverter();
-    int called = 0;
-    interceptorChain = InterceptorChain(
-      interceptors: [
-        RequestConverterInterceptor(
-          converter,
-          (req) {
-            called++;
-            return req.copyWith(body: 'foo');
+        RequestConverterInterceptor(converter, null),
+        RequestInterceptor(
+          onRequest: (request) {
+            expect(request.body, null);
           },
         ),
-        RequestInterceptor(onRequest: (request) {
-          expect(request.body, 'foo');
-        }),
       ],
       request: testRequest,
     );
 
     await interceptorChain.proceed(testRequest);
 
-    expect(called, 1);
     expect(converter.called, 0);
   });
+
+  test(
+    'request body is not null and parts is empty, requestConverter is not provided, request is converted by converter',
+    () async {
+      final testRequest = Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri.parse('bar'),
+        body: 'not converted',
+      );
+      final converter = RequestConverter();
+      interceptorChain = InterceptorChain(
+        interceptors: [
+          RequestConverterInterceptor(converter, null),
+          RequestInterceptor(
+            onRequest: (request) {
+              expect(request.body, 'converted');
+            },
+          ),
+        ],
+        request: testRequest,
+      );
+
+      await interceptorChain.proceed(testRequest);
+
+      expect(converter.called, 1);
+    },
+  );
+
+  test(
+    'request body is null and parts is not empty, requestConverter is not provided, request is converted by converter',
+    () async {
+      final testRequest = Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri.parse('bar'),
+        parts: [const PartValue('not converted', 1)],
+      );
+      final converter = RequestConverter();
+      interceptorChain = InterceptorChain(
+        interceptors: [
+          RequestConverterInterceptor(converter, null),
+          RequestInterceptor(
+            onRequest: (request) {
+              expect(request.body, 'converted');
+            },
+          ),
+        ],
+        request: testRequest,
+      );
+
+      await interceptorChain.proceed(testRequest);
+
+      expect(converter.called, 1);
+    },
+  );
+
+  test(
+    'request body is not null and parts is empty, requestConverter is provided, request is converted by requestConverter',
+    () async {
+      final testRequest = Request(
+        'GET',
+        Uri.parse('foo'),
+        Uri.parse('bar'),
+        body: 'not converted',
+      );
+      final converter = RequestConverter();
+      int called = 0;
+      interceptorChain = InterceptorChain(
+        interceptors: [
+          RequestConverterInterceptor(converter, (req) {
+            called++;
+            return req.copyWith(body: 'foo');
+          }),
+          RequestInterceptor(
+            onRequest: (request) {
+              expect(request.body, 'foo');
+            },
+          ),
+        ],
+        request: testRequest,
+      );
+
+      await interceptorChain.proceed(testRequest);
+
+      expect(called, 1);
+      expect(converter.called, 0);
+    },
+  );
 }
 
 // ignore mutability warning for test class.
@@ -124,7 +135,8 @@ class RequestConverter implements Converter {
 
   @override
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(
-      Response response) {
+    Response response,
+  ) {
     return response as Response<BodyType>;
   }
 }
@@ -140,7 +152,9 @@ class RequestInterceptor implements Interceptor {
   FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) {
     called++;
     onRequest?.call(chain.request);
-    return Response(http.Response('TestResponse', 200, request: chain.request),
-        'TestResponse' as BodyType);
+    return Response(
+      http.Response('TestResponse', 200, request: chain.request),
+      'TestResponse' as BodyType,
+    );
   }
 }

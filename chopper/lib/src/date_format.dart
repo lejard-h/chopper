@@ -54,21 +54,23 @@ enum DateFormat {
 
   /// Format a [DateTime] according to this strategy.
   String format(DateTime dt) => switch (this) {
-        seconds || unix => (dt.millisecondsSinceEpoch ~/ 1000).toString(),
-        milliseconds => dt.millisecondsSinceEpoch.toString(),
-        microseconds => dt.microsecondsSinceEpoch.toString(),
-        utcIso8601 => dt.toUtc().toIso8601String(),
-        localIso8601 => dt.toLocal().toIso8601String(),
-        iso8601 => dt.toIso8601String(),
-        rfc2822 => _rfc2822(dt),
-        date => '${dt.year.toString().padLeft(4, '0')}-'
-            '${dt.month.toString().padLeft(2, '0')}-'
-            '${dt.day.toString().padLeft(2, '0')}',
-        time => '${dt.hour.toString().padLeft(2, '0')}:'
-            '${dt.minute.toString().padLeft(2, '0')}:'
-            '${dt.second.toString().padLeft(2, '0')}',
-        string => dt.toString(),
-      };
+    seconds || unix => (dt.millisecondsSinceEpoch ~/ 1000).toString(),
+    milliseconds => dt.millisecondsSinceEpoch.toString(),
+    microseconds => dt.microsecondsSinceEpoch.toString(),
+    utcIso8601 => dt.toUtc().toIso8601String(),
+    localIso8601 => dt.toLocal().toIso8601String(),
+    iso8601 => dt.toIso8601String(),
+    rfc2822 => _rfc2822(dt),
+    date =>
+      '${dt.year.toString().padLeft(4, '0')}-'
+          '${dt.month.toString().padLeft(2, '0')}-'
+          '${dt.day.toString().padLeft(2, '0')}',
+    time =>
+      '${dt.hour.toString().padLeft(2, '0')}:'
+          '${dt.minute.toString().padLeft(2, '0')}:'
+          '${dt.second.toString().padLeft(2, '0')}',
+    string => dt.toString(),
+  };
 
   /// Format a [DateTime] to RFC 2822 format.
   static String _rfc2822(DateTime datetime) {
