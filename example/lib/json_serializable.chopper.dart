@@ -1,3 +1,4 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'json_serializable.dart';
@@ -20,20 +21,14 @@ final class _$MyService extends MyService {
   @override
   Future<Response<dynamic>> getResource(String id) {
     final Uri $url = Uri.parse('/resources/${id}/');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<List<Resource>>> getResources() {
     final Uri $url = Uri.parse('/resources/all');
-    final Map<String, String> $headers = {
-      'test': 'list',
-    };
+    final Map<String, String> $headers = {'test': 'list'};
     final Request $request = Request(
       'GET',
       $url,
@@ -59,9 +54,7 @@ final class _$MyService extends MyService {
   @override
   Future<Response<Resource>> getTypedResource() {
     final Uri $url = Uri.parse('/resources/');
-    final Map<String, String> $headers = {
-      'foo': 'bar',
-    };
+    final Map<String, String> $headers = {'foo': 'bar'};
     final Request $request = Request(
       'GET',
       $url,
@@ -72,14 +65,9 @@ final class _$MyService extends MyService {
   }
 
   @override
-  Future<Response<Resource>> newResource(
-    Resource resource, {
-    String? name,
-  }) {
+  Future<Response<Resource>> newResource(Resource resource, {String? name}) {
     final Uri $url = Uri.parse('/resources');
-    final Map<String, String> $headers = {
-      if (name != null) 'name': name,
-    };
+    final Map<String, String> $headers = {if (name != null) 'name': name};
     final $body = resource;
     final Request $request = Request(
       'POST',

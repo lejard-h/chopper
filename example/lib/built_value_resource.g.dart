@@ -6,9 +6,9 @@ part of 'built_value_resource.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<Resource> _$resourceSerializer = new _$ResourceSerializer();
+Serializer<Resource> _$resourceSerializer = _$ResourceSerializer();
 Serializer<ResourceError> _$resourceErrorSerializer =
-    new _$ResourceErrorSerializer();
+    _$ResourceErrorSerializer();
 
 class _$ResourceSerializer implements StructuredSerializer<Resource> {
   @override
@@ -17,8 +17,11 @@ class _$ResourceSerializer implements StructuredSerializer<Resource> {
   final String wireName = 'Resource';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, Resource object,
-      {FullType specifiedType = FullType.unspecified}) {
+  Iterable<Object?> serialize(
+    Serializers serializers,
+    Resource object, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
     final result = <Object?>[
       'id',
       serializers.serialize(object.id, specifiedType: const FullType(String)),
@@ -30,9 +33,12 @@ class _$ResourceSerializer implements StructuredSerializer<Resource> {
   }
 
   @override
-  Resource deserialize(Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new ResourceBuilder();
+  Resource deserialize(
+    Serializers serializers,
+    Iterable<Object?> serialized, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    final result = ResourceBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -41,12 +47,20 @@ class _$ResourceSerializer implements StructuredSerializer<Resource> {
       final Object? value = iterator.current;
       switch (key) {
         case 'id':
-          result.id = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+          result.id =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(String),
+                  )!
+                  as String;
           break;
         case 'name':
-          result.name = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+          result.name =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(String),
+                  )!
+                  as String;
           break;
       }
     }
@@ -62,14 +76,19 @@ class _$ResourceErrorSerializer implements StructuredSerializer<ResourceError> {
   final String wireName = 'ResourceError';
 
   @override
-  Iterable<Object?> serialize(Serializers serializers, ResourceError object,
-      {FullType specifiedType = FullType.unspecified}) {
+  Iterable<Object?> serialize(
+    Serializers serializers,
+    ResourceError object, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
     final result = <Object?>[
       'type',
       serializers.serialize(object.type, specifiedType: const FullType(String)),
       'message',
-      serializers.serialize(object.message,
-          specifiedType: const FullType(String)),
+      serializers.serialize(
+        object.message,
+        specifiedType: const FullType(String),
+      ),
     ];
 
     return result;
@@ -77,9 +96,11 @@ class _$ResourceErrorSerializer implements StructuredSerializer<ResourceError> {
 
   @override
   ResourceError deserialize(
-      Serializers serializers, Iterable<Object?> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new ResourceErrorBuilder();
+    Serializers serializers,
+    Iterable<Object?> serialized, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    final result = ResourceErrorBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -88,12 +109,20 @@ class _$ResourceErrorSerializer implements StructuredSerializer<ResourceError> {
       final Object? value = iterator.current;
       switch (key) {
         case 'type':
-          result.type = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+          result.type =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(String),
+                  )!
+                  as String;
           break;
         case 'message':
-          result.message = serializers.deserialize(value,
-              specifiedType: const FullType(String))! as String;
+          result.message =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(String),
+                  )!
+                  as String;
           break;
       }
     }
@@ -109,19 +138,15 @@ class _$Resource extends Resource {
   final String name;
 
   factory _$Resource([void Function(ResourceBuilder)? updates]) =>
-      (new ResourceBuilder()..update(updates))._build();
+      (ResourceBuilder()..update(updates))._build();
 
-  _$Resource._({required this.id, required this.name}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(id, r'Resource', 'id');
-    BuiltValueNullFieldError.checkNotNull(name, r'Resource', 'name');
-  }
-
+  _$Resource._({required this.id, required this.name}) : super._();
   @override
   Resource rebuild(void Function(ResourceBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ResourceBuilder toBuilder() => new ResourceBuilder()..replace(this);
+  ResourceBuilder toBuilder() => ResourceBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -172,7 +197,6 @@ class ResourceBuilder implements Builder<Resource, ResourceBuilder> {
 
   @override
   void replace(Resource other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$Resource;
   }
 
@@ -185,11 +209,16 @@ class ResourceBuilder implements Builder<Resource, ResourceBuilder> {
   Resource build() => _build();
 
   _$Resource _build() {
-    final _$result = _$v ??
-        new _$Resource._(
-            id: BuiltValueNullFieldError.checkNotNull(id, r'Resource', 'id'),
-            name: BuiltValueNullFieldError.checkNotNull(
-                name, r'Resource', 'name'));
+    final _$result =
+        _$v ??
+        _$Resource._(
+          id: BuiltValueNullFieldError.checkNotNull(id, r'Resource', 'id'),
+          name: BuiltValueNullFieldError.checkNotNull(
+            name,
+            r'Resource',
+            'name',
+          ),
+        );
     replace(_$result);
     return _$result;
   }
@@ -202,19 +231,15 @@ class _$ResourceError extends ResourceError {
   final String message;
 
   factory _$ResourceError([void Function(ResourceErrorBuilder)? updates]) =>
-      (new ResourceErrorBuilder()..update(updates))._build();
+      (ResourceErrorBuilder()..update(updates))._build();
 
-  _$ResourceError._({required this.type, required this.message}) : super._() {
-    BuiltValueNullFieldError.checkNotNull(type, r'ResourceError', 'type');
-    BuiltValueNullFieldError.checkNotNull(message, r'ResourceError', 'message');
-  }
-
+  _$ResourceError._({required this.type, required this.message}) : super._();
   @override
   ResourceError rebuild(void Function(ResourceErrorBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ResourceErrorBuilder toBuilder() => new ResourceErrorBuilder()..replace(this);
+  ResourceErrorBuilder toBuilder() => ResourceErrorBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -268,7 +293,6 @@ class ResourceErrorBuilder
 
   @override
   void replace(ResourceError other) {
-    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ResourceError;
   }
 
@@ -281,12 +305,20 @@ class ResourceErrorBuilder
   ResourceError build() => _build();
 
   _$ResourceError _build() {
-    final _$result = _$v ??
-        new _$ResourceError._(
-            type: BuiltValueNullFieldError.checkNotNull(
-                type, r'ResourceError', 'type'),
-            message: BuiltValueNullFieldError.checkNotNull(
-                message, r'ResourceError', 'message'));
+    final _$result =
+        _$v ??
+        _$ResourceError._(
+          type: BuiltValueNullFieldError.checkNotNull(
+            type,
+            r'ResourceError',
+            'type',
+          ),
+          message: BuiltValueNullFieldError.checkNotNull(
+            message,
+            r'ResourceError',
+            'message',
+          ),
+        );
     replace(_$result);
     return _$result;
   }

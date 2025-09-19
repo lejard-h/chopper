@@ -1,291 +1,392 @@
+// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'json_decode_service.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 2.4.2
+// Generator: WorkerGenerator 7.1.6 (Squadron 7.1.2+1)
 // **************************************************************************
 
+/// Command ids used in operations map
+const int _$jsonDecodeId = 1;
+
+/// WorkerService operations for JsonDecodeService
+extension on JsonDecodeService {
+  OperationsMap _$getOperations() => OperationsMap({
+    _$jsonDecodeId: ($req) async {
+      final dynamic $res;
+      try {
+        final $dsr = _$Deser(contextAware: false);
+        $res = await jsonDecode($dsr.$0($req.args[0]));
+      } finally {}
+      return $res;
+    },
+  });
+}
+
+/// Invoker for JsonDecodeService, implements the public interface to invoke the
+/// remote service.
+mixin _$JsonDecodeService$Invoker on Invoker implements JsonDecodeService {
+  @override
+  Future<dynamic> jsonDecode(String source) =>
+      send(_$jsonDecodeId, args: [source]);
+}
+
+/// Facade for JsonDecodeService, implements other details of the service unrelated to
+/// invoking the remote service.
+mixin _$JsonDecodeService$Facade implements JsonDecodeService {}
+
 /// WorkerService class for JsonDecodeService
-class _$JsonDecodeServiceWorkerService extends JsonDecodeService
+class _$JsonDecodeService$WorkerService extends JsonDecodeService
     implements WorkerService {
-  _$JsonDecodeServiceWorkerService() : super();
+  _$JsonDecodeService$WorkerService() : super();
 
   @override
-  Map<int, CommandHandler> get operations => _operations;
-
-  late final Map<int, CommandHandler> _operations =
-      Map.unmodifiable(<int, CommandHandler>{
-    _$jsonDecodeId: ($) => jsonDecode($.args[0]),
-  });
-
-  static const int _$jsonDecodeId = 1;
+  OperationsMap get operations => _$getOperations();
 }
 
 /// Service initializer for JsonDecodeService
-WorkerService $JsonDecodeServiceInitializer(WorkerRequest startRequest) =>
-    _$JsonDecodeServiceWorkerService();
-
-/// Operations map for JsonDecodeService
-@Deprecated(
-    'squadron_builder now supports "plain old Dart objects" as services. '
-    'Services do not need to derive from WorkerService nor do they need to mix in '
-    'with \$JsonDecodeServiceOperations anymore.')
-mixin $JsonDecodeServiceOperations on WorkerService {
-  @override
-  // not needed anymore, generated for compatibility with previous versions of squadron_builder
-  Map<int, CommandHandler> get operations => WorkerService.noOperations;
-}
+WorkerService $JsonDecodeServiceInitializer(WorkerRequest $req) =>
+    _$JsonDecodeService$WorkerService();
 
 /// Worker for JsonDecodeService
-class _$JsonDecodeServiceWorker extends Worker implements JsonDecodeService {
-  _$JsonDecodeServiceWorker({PlatformWorkerHook? platformWorkerHook})
-      : super($JsonDecodeServiceActivator,
-            platformWorkerHook: platformWorkerHook);
+base class _$JsonDecodeServiceWorker extends Worker
+    with _$JsonDecodeService$Invoker, _$JsonDecodeService$Facade
+    implements JsonDecodeService {
+  _$JsonDecodeServiceWorker({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : super(
+         $JsonDecodeServiceActivator(Squadron.platformType),
+         threadHook: threadHook,
+         exceptionManager: exceptionManager,
+       );
+
+  _$JsonDecodeServiceWorker.vm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : super(
+         $JsonDecodeServiceActivator(SquadronPlatformType.vm),
+         threadHook: threadHook,
+         exceptionManager: exceptionManager,
+       );
 
   @override
-  Future<dynamic> jsonDecode(String source) =>
-      send(_$JsonDecodeServiceWorkerService._$jsonDecodeId, args: [source]);
+  List? getStartArgs() => null;
 
-  final Object _detachToken = Object();
+  final _$detachToken = Object();
 }
 
 /// Finalizable worker wrapper for JsonDecodeService
-class JsonDecodeServiceWorker implements _$JsonDecodeServiceWorker {
-  JsonDecodeServiceWorker({PlatformWorkerHook? platformWorkerHook})
-      : _$w =
-            _$JsonDecodeServiceWorker(platformWorkerHook: platformWorkerHook) {
-    _finalizer.attach(this, _$w, detach: _$w._detachToken);
+base class JsonDecodeServiceWorker
+    with Releasable
+    implements _$JsonDecodeServiceWorker {
+  JsonDecodeServiceWorker._(this._$worker) {
+    _finalizer.attach(this, _$worker, detach: _$worker._$detachToken);
   }
 
-  final _$JsonDecodeServiceWorker _$w;
+  JsonDecodeServiceWorker({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : this._(
+         _$JsonDecodeServiceWorker(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+       );
+
+  JsonDecodeServiceWorker.vm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+  }) : this._(
+         _$JsonDecodeServiceWorker.vm(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+       );
+
+  final _$JsonDecodeServiceWorker _$worker;
 
   static final Finalizer<_$JsonDecodeServiceWorker> _finalizer =
       Finalizer<_$JsonDecodeServiceWorker>((w) {
+        try {
+          _finalizer.detach(w._$detachToken);
+          w.release();
+        } catch (_) {
+          // finalizers must not throw
+        }
+      });
+
+  @override
+  void release() {
     try {
-      _finalizer.detach(w._detachToken);
-      w.stop();
-    } catch (ex) {
-      // finalizers must not throw
+      _$worker.release();
+      super.release();
+    } catch (_) {
+      // release should not throw
     }
-  });
+  }
 
   @override
-  Future<dynamic> jsonDecode(String source) => _$w.jsonDecode(source);
+  List? getStartArgs() => null;
 
   @override
-  List get args => _$w.args;
+  Future<dynamic> jsonDecode(String source) => _$worker.jsonDecode(source);
 
   @override
-  Channel? get channel => _$w.channel;
+  ExceptionManager get exceptionManager => _$worker.exceptionManager;
 
   @override
-  Duration get idleTime => _$w.idleTime;
+  Logger? get channelLogger => _$worker.channelLogger;
 
   @override
-  bool get isStopped => _$w.isStopped;
+  set channelLogger(Logger? value) => _$worker.channelLogger = value;
 
   @override
-  int get maxWorkload => _$w.maxWorkload;
+  bool get isConnected => _$worker.isConnected;
 
   @override
-  WorkerStat get stats => _$w.stats;
+  bool get isStopped => _$worker.isStopped;
 
   @override
-  String get status => _$w.status;
+  // ignore: deprecated_member_use
+  WorkerStat get stats => _$worker.stats;
 
   @override
-  int get totalErrors => _$w.totalErrors;
+  WorkerStat getStats() => _$worker.getStats();
 
   @override
-  int get totalWorkload => _$w.totalWorkload;
+  Future<Channel> start() => _$worker.start();
 
   @override
-  Duration get upTime => _$w.upTime;
+  void stop() => _$worker.stop();
 
   @override
-  String get workerId => _$w.workerId;
+  void terminate([TaskTerminatedException? ex]) => _$worker.terminate(ex);
 
   @override
-  int get workload => _$w.workload;
+  Channel? getSharedChannel() => _$worker.getSharedChannel();
 
   @override
-  PlatformWorkerHook? get platformWorkerHook => _$w.platformWorkerHook;
+  Future<dynamic> send(
+    int command, {
+    List args = const [],
+    CancelationToken? token,
+    bool inspectRequest = false,
+    bool inspectResponse = false,
+  }) => _$worker.send(
+    command,
+    args: args,
+    token: token,
+    inspectRequest: inspectRequest,
+    inspectResponse: inspectResponse,
+  );
 
   @override
-  Future<Channel> start() => _$w.start();
+  Stream<dynamic> stream(
+    int command, {
+    List args = const [],
+    CancelationToken? token,
+    bool inspectRequest = false,
+    bool inspectResponse = false,
+  }) => _$worker.stream(
+    command,
+    args: args,
+    token: token,
+    inspectRequest: inspectRequest,
+    inspectResponse: inspectResponse,
+  );
 
   @override
-  void stop() => _$w.stop();
+  Object get _$detachToken => _$worker._$detachToken;
 
   @override
-  Future<T> send<T>(int command,
-          {List args = const [],
-          CancellationToken? token,
-          bool inspectRequest = false,
-          bool inspectResponse = false}) =>
-      _$w.send<T>(command,
-          args: args,
-          token: token,
-          inspectRequest: inspectRequest,
-          inspectResponse: inspectResponse);
-
-  @override
-  Stream<T> stream<T>(int command,
-          {List args = const [],
-          CancellationToken? token,
-          bool inspectRequest = false,
-          bool inspectResponse = false}) =>
-      _$w.stream<T>(command,
-          args: args,
-          token: token,
-          inspectRequest: inspectRequest,
-          inspectResponse: inspectResponse);
-
-  @override
-  Object get _detachToken => _$w._detachToken;
-
-  @override
-  Map<int, CommandHandler> get operations => WorkerService.noOperations;
+  final OperationsMap operations = WorkerService.noOperations;
 }
 
 /// Worker pool for JsonDecodeService
-class _$JsonDecodeServiceWorkerPool extends WorkerPool<JsonDecodeServiceWorker>
+base class _$JsonDecodeServiceWorkerPool
+    extends WorkerPool<JsonDecodeServiceWorker>
+    with _$JsonDecodeService$Facade
     implements JsonDecodeService {
-  _$JsonDecodeServiceWorkerPool(
-      {ConcurrencySettings? concurrencySettings,
-      PlatformWorkerHook? platformWorkerHook})
-      : super(
-            () =>
-                JsonDecodeServiceWorker(platformWorkerHook: platformWorkerHook),
-            concurrencySettings: concurrencySettings);
+  _$JsonDecodeServiceWorkerPool({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : super(
+         (ExceptionManager exceptionManager) => JsonDecodeServiceWorker(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+         concurrencySettings: concurrencySettings,
+         exceptionManager: exceptionManager,
+       );
+
+  _$JsonDecodeServiceWorkerPool.vm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : super(
+         (ExceptionManager exceptionManager) => JsonDecodeServiceWorker.vm(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+         ),
+         concurrencySettings: concurrencySettings,
+         exceptionManager: exceptionManager,
+       );
 
   @override
   Future<dynamic> jsonDecode(String source) =>
       execute((w) => w.jsonDecode(source));
 
-  final Object _detachToken = Object();
+  final _$detachToken = Object();
 }
 
 /// Finalizable worker pool wrapper for JsonDecodeService
-class JsonDecodeServiceWorkerPool implements _$JsonDecodeServiceWorkerPool {
-  JsonDecodeServiceWorkerPool(
-      {ConcurrencySettings? concurrencySettings,
-      PlatformWorkerHook? platformWorkerHook})
-      : _$p = _$JsonDecodeServiceWorkerPool(
-            concurrencySettings: concurrencySettings,
-            platformWorkerHook: platformWorkerHook) {
-    _finalizer.attach(this, _$p, detach: _$p._detachToken);
+base class JsonDecodeServiceWorkerPool
+    with Releasable
+    implements _$JsonDecodeServiceWorkerPool {
+  JsonDecodeServiceWorkerPool._(this._$pool) {
+    _finalizer.attach(this, _$pool, detach: _$pool._$detachToken);
   }
 
-  final _$JsonDecodeServiceWorkerPool _$p;
+  JsonDecodeServiceWorkerPool({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : this._(
+         _$JsonDecodeServiceWorkerPool(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+           concurrencySettings: concurrencySettings,
+         ),
+       );
+
+  JsonDecodeServiceWorkerPool.vm({
+    PlatformThreadHook? threadHook,
+    ExceptionManager? exceptionManager,
+    ConcurrencySettings? concurrencySettings,
+  }) : this._(
+         _$JsonDecodeServiceWorkerPool.vm(
+           threadHook: threadHook,
+           exceptionManager: exceptionManager,
+           concurrencySettings: concurrencySettings,
+         ),
+       );
+
+  final _$JsonDecodeServiceWorkerPool _$pool;
 
   static final Finalizer<_$JsonDecodeServiceWorkerPool> _finalizer =
       Finalizer<_$JsonDecodeServiceWorkerPool>((p) {
+        try {
+          _finalizer.detach(p._$detachToken);
+          p.release();
+        } catch (_) {
+          // finalizers must not throw
+        }
+      });
+
+  @override
+  void release() {
     try {
-      _finalizer.detach(p._detachToken);
-      p.stop();
-    } catch (ex) {
-      // finalizers must not throw
+      _$pool.release();
+      super.release();
+    } catch (_) {
+      // release should not throw
     }
-  });
+  }
 
   @override
-  Future<dynamic> jsonDecode(String source) => _$p.jsonDecode(source);
+  Future<dynamic> jsonDecode(String source) => _$pool.jsonDecode(source);
 
   @override
-  ConcurrencySettings get concurrencySettings => _$p.concurrencySettings;
+  ExceptionManager get exceptionManager => _$pool.exceptionManager;
 
   @override
-  Iterable<WorkerStat> get fullStats => _$p.fullStats;
+  Logger? get channelLogger => _$pool.channelLogger;
 
   @override
-  int get maxConcurrency => _$p.maxConcurrency;
+  set channelLogger(Logger? value) => _$pool.channelLogger = value;
 
   @override
-  int get maxParallel => _$p.maxParallel;
+  ConcurrencySettings get concurrencySettings => _$pool.concurrencySettings;
 
   @override
-  int get maxSize => _$p.maxSize;
+  Iterable<WorkerStat> get fullStats => _$pool.fullStats;
 
   @override
-  int get maxWorkers => _$p.maxWorkers;
+  int get pendingWorkload => _$pool.pendingWorkload;
 
   @override
-  int get maxWorkload => _$p.maxWorkload;
+  int get maxSize => _$pool.maxSize;
 
   @override
-  int get minWorkers => _$p.minWorkers;
+  int get size => _$pool.size;
 
   @override
-  int get pendingWorkload => _$p.pendingWorkload;
+  Iterable<WorkerStat> get stats => _$pool.stats;
 
   @override
-  int get size => _$p.size;
+  bool get stopped => _$pool.stopped;
 
   @override
-  Iterable<WorkerStat> get stats => _$p.stats;
+  void cancelAll([String? message]) => _$pool.cancelAll(message);
 
   @override
-  bool get stopped => _$p.stopped;
+  void cancel(Task task, [String? message]) => _$pool.cancel(task, message);
 
   @override
-  int get totalErrors => _$p.totalErrors;
-
-  @override
-  int get totalWorkload => _$p.totalWorkload;
-
-  @override
-  int get workload => _$p.workload;
-
-  @override
-  void cancel([Task? task, String? message]) => _$p.cancel(task, message);
-
-  @override
-  FutureOr start() => _$p.start();
+  FutureOr<void> start() => _$pool.start();
 
   @override
   int stop([bool Function(JsonDecodeServiceWorker worker)? predicate]) =>
-      _$p.stop(predicate);
+      _$pool.stop(predicate);
 
   @override
-  Object registerWorkerPoolListener(
-          void Function(JsonDecodeServiceWorker worker, bool removed)
-              listener) =>
-      _$p.registerWorkerPoolListener(listener);
+  void terminate([TaskTerminatedException? ex]) => _$pool.terminate(ex);
 
   @override
-  void unregisterWorkerPoolListener(
-          {void Function(JsonDecodeServiceWorker worker, bool removed)?
-              listener,
-          Object? token}) =>
-      _$p.unregisterWorkerPoolListener(listener: listener, token: token);
+  Object registerWorkerPoolListener(void Function(WorkerStat, bool) listener) =>
+      _$pool.registerWorkerPoolListener(listener);
 
   @override
-  Future<T> execute<T>(Future<T> Function(JsonDecodeServiceWorker worker) task,
-          {PerfCounter? counter}) =>
-      _$p.execute<T>(task, counter: counter);
+  void unregisterWorkerPoolListener({
+    void Function(WorkerStat, bool)? listener,
+    Object? token,
+  }) => _$pool.unregisterWorkerPoolListener(listener: listener, token: token);
 
   @override
-  StreamTask<T> scheduleStream<T>(
-          Stream<T> Function(JsonDecodeServiceWorker worker) task,
-          {PerfCounter? counter}) =>
-      _$p.scheduleStream<T>(task, counter: counter);
+  Future<T> execute<T>(
+    Future<T> Function(JsonDecodeServiceWorker worker) task, {
+    PerfCounter? counter,
+  }) => _$pool.execute<T>(task, counter: counter);
 
   @override
-  ValueTask<T> scheduleTask<T>(
-          Future<T> Function(JsonDecodeServiceWorker worker) task,
-          {PerfCounter? counter}) =>
-      _$p.scheduleTask<T>(task, counter: counter);
+  Stream<T> stream<T>(
+    Stream<T> Function(JsonDecodeServiceWorker worker) task, {
+    PerfCounter? counter,
+  }) => _$pool.stream<T>(task, counter: counter);
 
   @override
-  Stream<T> stream<T>(Stream<T> Function(JsonDecodeServiceWorker worker) task,
-          {PerfCounter? counter}) =>
-      _$p.stream<T>(task, counter: counter);
+  StreamTask<T> scheduleStreamTask<T>(
+    Stream<T> Function(JsonDecodeServiceWorker worker) task, {
+    PerfCounter? counter,
+  }) => _$pool.scheduleStreamTask<T>(task, counter: counter);
 
   @override
-  Object get _detachToken => _$p._detachToken;
+  ValueTask<T> scheduleValueTask<T>(
+    Future<T> Function(JsonDecodeServiceWorker worker) task, {
+    PerfCounter? counter,
+  }) => _$pool.scheduleValueTask<T>(task, counter: counter);
 
   @override
-  Map<int, CommandHandler> get operations => WorkerService.noOperations;
+  Object get _$detachToken => _$pool._$detachToken;
+
+  @override
+  final OperationsMap operations = WorkerService.noOperations;
+}
+
+final class _$Deser extends MarshalingContext {
+  _$Deser({super.contextAware});
+  late final $0 = value<String>();
 }
