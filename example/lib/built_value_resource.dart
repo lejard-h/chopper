@@ -1,4 +1,4 @@
-library resource;
+library;
 
 import 'dart:async';
 

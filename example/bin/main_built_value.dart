@@ -24,7 +24,7 @@ final client = MockClient((req) async {
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
 
-main() async {
+Future<void> main() async {
   final chopper = ChopperClient(
     client: client,
     baseUrl: Uri.parse('http://localhost:8000'),
@@ -48,9 +48,10 @@ main() async {
   print('response 3: ${response3.body}');
 
   try {
-    final builder = ResourceBuilder()
-      ..id = '3'
-      ..name = 'Super Name';
+    final builder =
+        ResourceBuilder()
+          ..id = '3'
+          ..name = 'Super Name';
     await myService.newResource(builder.build());
   } on Response catch (error) {
     print(error.body);
@@ -68,8 +69,8 @@ class BuiltValueConverter extends JsonConverter {
   }
 
   BuiltList<T> _deserializeListOf<T>(Iterable value) => BuiltList(
-        value.map((value) => _deserialize<T>(value)).toList(growable: false),
-      );
+    value.map((value) => _deserialize<T>(value)).toList(growable: false),
+  );
 
   dynamic _decode<T>(dynamic entity) {
     /// handle case when we want to access to Map<String, dynamic> directly
@@ -101,8 +102,6 @@ class BuiltValueConverter extends JsonConverter {
 
   @override
   Request convertRequest(Request request) => super.convertRequest(
-        request.copyWith(
-          body: serializers.serialize(request.body),
-        ),
-      );
+    request.copyWith(body: serializers.serialize(request.body)),
+  );
 }

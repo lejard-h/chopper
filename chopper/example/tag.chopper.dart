@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 part of 'tag.dart';
 
@@ -21,25 +21,16 @@ final class _$TagService extends TagService {
   @override
   Future<Response<dynamic>> requestWithTag({BizTag tag = const BizTag()}) {
     final Uri $url = Uri.parse('/tag');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      tag: tag,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl, tag: tag);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
-  Future<Response<dynamic>> includeBodyNullOrEmptyTag(
-      {IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag()}) {
+  Future<Response<dynamic>> includeBodyNullOrEmptyTag({
+    IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag(),
+  }) {
     final Uri $url = Uri.parse('/tag');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      tag: tag,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl, tag: tag);
     return client.send<dynamic, dynamic>($request);
   }
 }

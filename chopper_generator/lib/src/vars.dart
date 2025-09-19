@@ -1,18 +1,21 @@
+/// Variables used in generated code.
 enum Vars {
-  client('client'),
-  response(r'$response'),
+  abortTrigger(r'$abortTrigger'),
   baseUrl('baseUrl'),
-  parameters(r'$params'),
-  headers(r'$headers'),
-  request(r'$request'),
   body(r'$body'),
+  client('client'),
+  headers(r'$headers'),
+  parameters(r'$params'),
   parts(r'$parts'),
+  request(r'$request'),
+  response(r'$response'),
+  timeout(r'$timeout'),
   url(r'$url');
 
-  const Vars(this.name);
+  const Vars(this._name);
 
-  final String name;
+  final String _name;
 
   @override
-  String toString() => name;
+  String toString() => _name;
 }

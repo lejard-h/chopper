@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 part of 'test_service_base_url.dart';
 
@@ -21,33 +21,21 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
   @override
   Future<Response<dynamic>> getAll() {
     final Uri $url = Uri.parse('https://localhost:4000/test');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<dynamic>> getAllWithTrailingSlash() {
     final Uri $url = Uri.parse('https://localhost:4000/test/');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<dynamic, dynamic>($request);
   }
 
   @override
   Future<Response<List<String>>> listString() {
     final Uri $url = Uri.parse('https://localhost:4000/test/list/string');
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
+    final Request $request = Request('GET', $url, client.baseUrl);
     return client.send<List<String>, String>($request);
   }
 
@@ -58,7 +46,8 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
     String? baz,
   }) {
     final Uri $url = Uri.parse(
-        'https://localhost:4000/test/query_param_include_null_query_vars');
+      'https://localhost:4000/test/query_param_include_null_query_vars',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{
       'foo': foo,
       'bar': bar,
@@ -89,9 +78,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithBracketsLegacy(
-      List<String> value) {
+    List<String> value,
+  ) {
     final Uri $url = Uri.parse(
-        'https://localhost:4000/test/list_query_param_with_brackets_legacy');
+      'https://localhost:4000/test/list_query_param_with_brackets_legacy',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -105,9 +96,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithBrackets(
-      List<String> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/list_query_param_with_brackets');
+    List<String> value,
+  ) {
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/list_query_param_with_brackets',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -121,9 +114,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithIndices(
-      List<String> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/list_query_param_with_indices');
+    List<String> value,
+  ) {
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/list_query_param_with_indices',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -137,9 +132,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithRepeat(
-      List<String> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/list_query_param_with_repeat');
+    List<String> value,
+  ) {
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/list_query_param_with_repeat',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -153,8 +150,9 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingListQueryParamWithComma(List<String> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/list_query_param_with_comma');
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/list_query_param_with_comma',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -181,9 +179,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingMapQueryParamIncludeNullQueryVars(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse(
-        'https://localhost:4000/test/map_query_param_include_null_query_vars');
+      'https://localhost:4000/test/map_query_param_include_null_query_vars',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -197,9 +197,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithBracketsLegacy(
-      Map<String, dynamic> value) {
+    Map<String, dynamic> value,
+  ) {
     final Uri $url = Uri.parse(
-        'https://localhost:4000/test/map_query_param_with_brackets_legacy');
+      'https://localhost:4000/test/map_query_param_with_brackets_legacy',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -213,9 +215,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithBrackets(
-      Map<String, dynamic> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/map_query_param_with_brackets');
+    Map<String, dynamic> value,
+  ) {
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/map_query_param_with_brackets',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -229,9 +233,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithIndices(
-      Map<String, dynamic> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/map_query_param_with_indices');
+    Map<String, dynamic> value,
+  ) {
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/map_query_param_with_indices',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -245,9 +251,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithRepeat(
-      Map<String, dynamic> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/map_query_param_with_repeat');
+    Map<String, dynamic> value,
+  ) {
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/map_query_param_with_repeat',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',
@@ -261,9 +269,11 @@ final class _$HttpTestServiceBaseUrl extends HttpTestServiceBaseUrl {
 
   @override
   Future<Response<String>> getUsingMapQueryParamWithComa(
-      Map<String, dynamic> value) {
-    final Uri $url =
-        Uri.parse('https://localhost:4000/test/map_query_param_with_comma');
+    Map<String, dynamic> value,
+  ) {
+    final Uri $url = Uri.parse(
+      'https://localhost:4000/test/map_query_param_with_comma',
+    );
     final Map<String, dynamic> $params = <String, dynamic>{'value': value};
     final Request $request = Request(
       'GET',

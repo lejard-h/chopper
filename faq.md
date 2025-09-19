@@ -27,6 +27,71 @@ final chopper = ChopperClient(
   );
 ```
 
+
+## How to set a timeout?
+
+Chopper supports **two per‑request ways** to stop a slow request:
+
+1) **Hard timeout (auto‑abort)** — add a `timeout:` to your endpoint annotation. The generated code creates an internal abort trigger and cancels the underlying HTTP request when the deadline expires. The error you get is a [`TimeoutException`](https://api.dart.dev/dart-async/TimeoutException-class.html).
+
+```dart
+import 'dart:async' show TimeoutException;
+
+@GET(path: '/slow', timeout: Duration(seconds: 10))
+Future<Response<MyModel>> getSlowThing();
+
+// Usage
+try {
+  final res = await api.getSlowThing();
+  // ...
+} on TimeoutException catch (e) {
+  // timed out and the request was actually aborted
+}
+```
+
+2) **Manual cancellation — `@AbortTrigger`**
+
+Accept an `@AbortTrigger` parameter and pass a `Future<void>` (usually from a [`Completer<void>`](https://api.dart.dev/dart-async/Completer/Completer.html)). When that future completes, Chopper aborts the underlying HTTP request (using `http`'s abortable support) and a [`RequestAbortedException`](https://pub.dev/documentation/http/1.5.0/http/RequestAbortedException-class.html) is thrown — mirroring the HTTP package example.
+
+```dart
+// Service definition
+@GET(path: '/download')
+Future<Response<List<int>>> download({
+  @Query('id') required String id,
+  @AbortTrigger() Future<void>? abortTrigger,
+});
+```
+
+**Usage:**
+```dart
+import 'dart:async' show Completer;
+import 'package:http/http.dart' as http show RequestAbortedException;
+
+final abortTrigger = Completer<void>();
+
+try {
+  // Start the request
+  final Response<List<int>> response = await api.download(
+    id: '42',
+    abortTrigger: abortTrigger.future, 
+  );
+  // consume response
+} on http.RequestAbortedException {
+  // request aborted before completion
+  print('Request was aborted by user');
+  rethrow;
+}
+
+// Whenever abortion is required, i.e. user cancelled the operation
+abortTrigger.complete();
+```
+
+### Rules & behavior
+- **Don’t combine** a method `timeout:` **and** an `@AbortTrigger` param on the same endpoint; generation will fail (pick one mechanism).  
+- Timeouts **abort the HTTP request**, they are *not* just `Future.timeout(...)` wrappers. This uses the new abortable requests in `http` and stops uploads/streams mid‑flight.  
+- Manual aborts surface as [`RequestAbortedException`](https://pub.dev/documentation/http/1.5.0/http/RequestAbortedException-class.html); timeouts surface as [`TimeoutException`](https://api.dart.dev/dart-async/TimeoutException-class.html) with a clear message.  
+- Requires `http >= 1.5.0` (abortable requests) and a recent Dart SDK (3.4+).
+
 ## Add query parameter to all requests
 
 Possible using an interceptor.

@@ -14,10 +14,7 @@ void main() {
 
   final jsonSerializers = builder.build();
 
-  final converter = BuiltValueConverter(
-    jsonSerializers,
-    errorType: ErrorModel,
-  );
+  final converter = BuiltValueConverter(jsonSerializers, errorType: ErrorModel);
 
   final data = DataModel((b) {
     b.id = 42;
@@ -39,8 +36,8 @@ void main() {
     test('convert response with wireName', () async {
       final string = '{"\$":"DataModel","id":42,"name":"foo"}';
       final response = Response(http.Response(string, 200), string);
-      final convertedResponse =
-          await converter.convertResponse<DataModel, DataModel>(response);
+      final convertedResponse = await converter
+          .convertResponse<DataModel, DataModel>(response);
 
       expect(convertedResponse.body?.id, equals(42));
       expect(convertedResponse.body?.name, equals('foo'));
@@ -49,8 +46,8 @@ void main() {
     test('convert response without wireName', () async {
       final string = '{"id":42,"name":"foo"}';
       final response = Response(http.Response(string, 200), string);
-      final convertedResponse =
-          await converter.convertResponse<DataModel, DataModel>(response);
+      final convertedResponse = await converter
+          .convertResponse<DataModel, DataModel>(response);
 
       expect(convertedResponse.body?.id, equals(42));
       expect(convertedResponse.body?.name, equals('foo'));
@@ -98,24 +95,27 @@ void main() {
       expect(convertedResponse.body.message, equals('Error message'));
     });
 
-    test('convert error falls back to raw body when deserialization fails',
-        () async {
-      // Create a converter without an errorType specified to trigger the fallback path
-      final converterWithoutErrorType = BuiltValueConverter(jsonSerializers);
+    test(
+      'convert error falls back to raw body when deserialization fails',
+      () async {
+        // Create a converter without an errorType specified to trigger the fallback path
+        final converterWithoutErrorType = BuiltValueConverter(jsonSerializers);
 
-      // JSON object that doesn't match any model and has no wireName
-      final string =
-          '{"unknown":"structure", "that": "wont", "match": "any model"}';
-      final response = Response(http.Response(string, 400), string);
+        // JSON object that doesn't match any model and has no wireName
+        final string =
+            '{"unknown":"structure", "that": "wont", "match": "any model"}';
+        final response = Response(http.Response(string, 400), string);
 
-      final convertedResponse =
-          await converterWithoutErrorType.convertError(response);
+        final convertedResponse = await converterWithoutErrorType.convertError(
+          response,
+        );
 
-      // Check that the body is the raw JSON object (fallback path was taken)
-      expect(convertedResponse.body, isA<Map<String, dynamic>>());
-      expect(convertedResponse.body['unknown'], equals('structure'));
-      expect(convertedResponse.body['that'], equals('wont'));
-      expect(convertedResponse.body['match'], equals('any model'));
-    });
+        // Check that the body is the raw JSON object (fallback path was taken)
+        expect(convertedResponse.body, isA<Map<String, dynamic>>());
+        expect(convertedResponse.body['unknown'], equals('structure'));
+        expect(convertedResponse.body['that'], equals('wont'));
+        expect(convertedResponse.body['match'], equals('any model'));
+      },
+    );
   });
 }

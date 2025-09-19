@@ -19,12 +19,7 @@ Request applyHeader(
   String name,
   String value, {
   bool override = true,
-}) =>
-    applyHeaders(
-      request,
-      {name: value},
-      override: override,
-    );
+}) => applyHeaders(request, {name: value}, override: override);
 
 /// Creates a new [Request] by copying [request] and adding the provided [headers]
 /// to the result.

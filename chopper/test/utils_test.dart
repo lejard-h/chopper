@@ -30,8 +30,10 @@ void main() {
       {'foo': -123.456}: 'foo=-123.456',
       {'foo': true}: 'foo=true',
       {'foo': false}: 'foo=false',
-    }.forEach((map, query) =>
-        test('$map -> $query', () => expect(mapToQuery(map), query)));
+    }.forEach(
+      (map, query) =>
+          test('$map -> $query', () => expect(mapToQuery(map), query)),
+    );
   });
 
   group('mapToQuery single with includeNullQueryVars', () {
@@ -85,8 +87,10 @@ void main() {
       {'foo': -123.456, 'baz': -789.012}: 'foo=-123.456&baz=-789.012',
       {'foo': true, 'baz': true}: 'foo=true&baz=true',
       {'foo': false, 'baz': false}: 'foo=false&baz=false',
-    }.forEach((map, query) =>
-        test('$map -> $query', () => expect(mapToQuery(map), query)));
+    }.forEach(
+      (map, query) =>
+          test('$map -> $query', () => expect(mapToQuery(map), query)),
+    );
   });
 
   group('mapToQuery multiple with includeNullQueryVars', () {
@@ -159,19 +163,12 @@ void main() {
     }.forEach((map, query) {
       test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map),
-          query,
-          reason: 'legacy default',
-        ),
+        () => expect(mapToQuery(map), query, reason: 'legacy default'),
       );
 
       test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map, listFormat: ListFormat.repeat),
-          query,
-        ),
+        () => expect(mapToQuery(map, listFormat: ListFormat.repeat), query),
       );
     });
   });
@@ -214,30 +211,28 @@ void main() {
         'etc': '',
         'xyz': null,
       }: 'foo=bar&foo=baz&foo=etc&bar=baz&etc=&xyz=',
-    }.forEach(
-      (map, query) {
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(map, includeNullQueryVars: true),
-            query,
-            reason: 'legacy default',
-          ),
-        );
+    }.forEach((map, query) {
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, includeNullQueryVars: true),
+          query,
+          reason: 'legacy default',
+        ),
+      );
 
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(
-              map,
-              listFormat: ListFormat.repeat,
-              includeNullQueryVars: true,
-            ),
-            query,
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(
+            map,
+            listFormat: ListFormat.repeat,
+            includeNullQueryVars: true,
           ),
-        );
-      },
-    );
+          query,
+        ),
+      );
+    });
   });
 
   group('mapToQuery lists with brackets', () {
@@ -278,26 +273,21 @@ void main() {
         'etc': '',
         'xyz': null,
       }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc&bar=baz',
-    }.forEach(
-      (map, query) {
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(map, useBrackets: true),
-            query,
-            reason: 'legacy brackets',
-          ),
-        );
+    }.forEach((map, query) {
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, useBrackets: true),
+          query,
+          reason: 'legacy brackets',
+        ),
+      );
 
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(map, listFormat: ListFormat.brackets),
-            query,
-          ),
-        );
-      },
-    );
+      test(
+        '$map -> $query',
+        () => expect(mapToQuery(map, listFormat: ListFormat.brackets), query),
+      );
+    });
   });
 
   group('mapToQuery lists with brackets with includeNullQueryVars', () {
@@ -338,34 +328,28 @@ void main() {
         'etc': '',
         'xyz': null,
       }: 'foo%5B%5D=bar&foo%5B%5D=baz&foo%5B%5D=etc&bar=baz&etc=&xyz=',
-    }.forEach(
-      (map, query) {
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(
-              map,
-              useBrackets: true,
-              includeNullQueryVars: true,
-            ),
-            query,
-            reason: 'legacy brackets',
-          ),
-        );
+    }.forEach((map, query) {
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, useBrackets: true, includeNullQueryVars: true),
+          query,
+          reason: 'legacy brackets',
+        ),
+      );
 
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(
-              map,
-              listFormat: ListFormat.brackets,
-              includeNullQueryVars: true,
-            ),
-            query,
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(
+            map,
+            listFormat: ListFormat.brackets,
+            includeNullQueryVars: true,
           ),
-        );
-      },
-    );
+          query,
+        ),
+      );
+    });
   });
 
   group('mapToQuery lists with indices', () {
@@ -409,10 +393,7 @@ void main() {
     }.forEach(
       (map, query) => test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map, listFormat: ListFormat.indices),
-          query,
-        ),
+        () => expect(mapToQuery(map, listFormat: ListFormat.indices), query),
       ),
     );
   });
@@ -511,10 +492,7 @@ void main() {
     }.forEach(
       (map, query) => test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map, listFormat: ListFormat.comma),
-          query,
-        ),
+        () => expect(mapToQuery(map, listFormat: ListFormat.comma), query),
       ),
     );
   });
@@ -621,11 +599,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -634,39 +608,26 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: r'filters%2E$or%2Edate.$eq=2020-01-01&filters%2E$or%2Edate.$eq=2020-01-02&filters%2Eauthor%2Ename.$eq=John%20doe',
     }.forEach((map, query) {
       test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map),
-          query,
-          reason: 'legacy default',
-        ),
+        () => expect(mapToQuery(map), query, reason: 'legacy default'),
       );
 
       test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map, listFormat: ListFormat.repeat),
-          query,
-        ),
+        () => expect(mapToQuery(map, listFormat: ListFormat.repeat), query),
       );
     });
   });
@@ -720,11 +681,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -733,47 +690,39 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: r'filters%2E$or%2Edate.$eq=2020-01-01&filters%2E$or%2Edate.$eq=2020-01-02&filters%2Eauthor%2Ename.$eq=John%20doe',
-    }.forEach(
-      (map, query) {
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(map, includeNullQueryVars: true),
-            query,
-            reason: 'legacy default',
-          ),
-        );
+    }.forEach((map, query) {
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, includeNullQueryVars: true),
+          query,
+          reason: 'legacy default',
+        ),
+      );
 
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(
-              map,
-              listFormat: ListFormat.repeat,
-              includeNullQueryVars: true,
-            ),
-            query,
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(
+            map,
+            listFormat: ListFormat.repeat,
+            includeNullQueryVars: true,
           ),
-        );
-      },
-    );
+          query,
+        ),
+      );
+    });
   });
 
   group('mapToQuery maps with brackets', () {
@@ -825,11 +774,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -838,43 +783,32 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
-    }.forEach(
-      (map, query) {
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(map, useBrackets: true),
-            query,
-            reason: 'legacy brackets',
-          ),
-        );
+    }.forEach((map, query) {
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, useBrackets: true),
+          query,
+          reason: 'legacy brackets',
+        ),
+      );
 
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(map, listFormat: ListFormat.brackets),
-            query,
-          ),
-        );
-      },
-    );
+      test(
+        '$map -> $query',
+        () => expect(mapToQuery(map, listFormat: ListFormat.brackets), query),
+      );
+    });
   });
 
   group('mapToQuery maps with brackets with includeNullQueryVars', () {
@@ -926,11 +860,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -939,51 +869,39 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
-    }.forEach(
-      (map, query) {
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(
-              map,
-              useBrackets: true,
-              includeNullQueryVars: true,
-            ),
-            query,
-            reason: 'legacy brackets',
-          ),
-        );
+    }.forEach((map, query) {
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, useBrackets: true, includeNullQueryVars: true),
+          query,
+          reason: 'legacy brackets',
+        ),
+      );
 
-        test(
-          '$map -> $query',
-          () => expect(
-            mapToQuery(
-              map,
-              listFormat: ListFormat.brackets,
-              includeNullQueryVars: true,
-            ),
-            query,
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(
+            map,
+            listFormat: ListFormat.brackets,
+            includeNullQueryVars: true,
           ),
-        );
-      },
-    );
+          query,
+        ),
+      );
+    });
   });
 
   group('mapToQuery maps with indices', () {
@@ -1035,11 +953,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -1048,30 +962,21 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: 'filters%5B%24or%5D%5B0%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B1%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map, listFormat: ListFormat.indices),
-          query,
-        ),
+        () => expect(mapToQuery(map, listFormat: ListFormat.indices), query),
       ),
     );
   });
@@ -1125,11 +1030,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -1138,22 +1039,16 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: 'filters%5B%24or%5D%5B0%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B1%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
     }.forEach(
       (map, query) => test(
@@ -1219,11 +1114,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -1232,30 +1123,21 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: 'filters%5B%24or%5D=%7Bdate%3A%20%7B%24eq%3A%202020-01-01%7D%7D%2C%7Bdate%3A%20%7B%24eq%3A%202020-01-02%7D%7D&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
     }.forEach(
       (map, query) => test(
         '$map -> $query',
-        () => expect(
-          mapToQuery(map, listFormat: ListFormat.comma),
-          query,
-        ),
+        () => expect(mapToQuery(map, listFormat: ListFormat.comma), query),
       ),
     );
   });
@@ -1309,11 +1191,7 @@ void main() {
             'mno': {
               'opq': 'rst',
               'uvw': 'xyz',
-              'aab': [
-                'bbc',
-                'ccd',
-                'eef',
-              ],
+              'aab': ['bbc', 'ccd', 'eef'],
             },
           },
         },
@@ -1322,22 +1200,16 @@ void main() {
         'filters': {
           r'$or': [
             {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+              'date': {r'$eq': '2020-01-01'},
             },
             {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
+              'date': {r'$eq': '2020-01-02'},
+            },
           ],
           'author': {
-            'name': {
-              r'$eq': 'John doe',
-            },
-          }
-        }
+            'name': {r'$eq': 'John doe'},
+          },
+        },
       }: 'filters%5B%24or%5D=%7Bdate%3A%20%7B%24eq%3A%202020-01-01%7D%7D%2C%7Bdate%3A%20%7B%24eq%3A%202020-01-02%7D%7D&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=John%20doe',
     }.forEach(
       (map, query) => test(
@@ -1355,206 +1227,69 @@ void main() {
   });
 
   group('mapToQuery maps with indices and nested lists', () {
-    group(
-      'mapToQuery maps with repeat (default) and nested lists',
-      () {
-        <Map<String, dynamic>, String>{
-          {
-            'filters': {
-              r'$or': [
-                {
-                  'date': {
-                    r'$eq': '2020-01-01',
-                  }
-                },
-                null,
-                {
-                  'date': {
-                    r'$eq': '2020-01-02',
-                  }
-                }
-              ],
-              'author': {
-                'name': {
-                  r'$eq': 'Kai doe',
-                },
-              }
-            }
-          }: r'filters%2E$or%2Edate.$eq=2020-01-01&filters%2E$or%2Edate.$eq=2020-01-02&filters%2Eauthor%2Ename.$eq=Kai%20doe',
-          {
-            'filters': {
-              'id': {
-                r'$in': [3, 6, 8],
+    group('mapToQuery maps with repeat (default) and nested lists', () {
+      <Map<String, dynamic>, String>{
+        {
+          'filters': {
+            r'$or': [
+              {
+                'date': {r'$eq': '2020-01-01'},
               },
-            }
-          }: r'filters%2Eid%2E$in=3&filters%2Eid%2E$in=6&filters%2Eid%2E$in=8'
-        }.forEach(
-          (map, query) {
-            test(
-              '$map -> $query',
-              () => expect(
-                mapToQuery(
-                  map,
-                ),
-                query,
-                reason: 'legacy default',
-              ),
-            );
-
-            test(
-              '$map -> $query',
-              () => expect(
-                mapToQuery(
-                  map,
-                  listFormat: ListFormat.repeat,
-                ),
-                query,
-              ),
-            );
-          },
-        );
-      },
-    );
-
-    group(
-      'mapToQuery maps with brackets and nested lists',
-      () {
-        <Map<String, dynamic>, String>{
-          {
-            'filters': {
-              r'$or': [
-                {
-                  'date': {
-                    r'$eq': '2020-01-01',
-                  }
-                },
-                {
-                  'date': {
-                    r'$eq': '2020-01-02',
-                  }
-                }
-              ],
-              'author': {
-                'name': {
-                  r'$eq': 'Kai doe',
-                },
-              }
-            }
-          }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
-          {
-            'filters': {
-              'id': {
-                r'$in': [3, 6, 8],
+              null,
+              {
+                'date': {r'$eq': '2020-01-02'},
               },
-            }
-          }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=6&filters%5Bid%5D%5B%24in%5D%5B%5D=8'
-        }.forEach(
-          (map, query) {
-            test(
-              '$map -> $query',
-              () => expect(
-                mapToQuery(
-                  map,
-                  useBrackets: true,
-                ),
-                query,
-                reason: 'legacy brackets',
-              ),
-            );
-
-            test(
-              '$map -> $query',
-              () => expect(
-                mapToQuery(
-                  map,
-                  listFormat: ListFormat.brackets,
-                ),
-                query,
-              ),
-            );
-          },
-        );
-      },
-    );
-
-    group(
-      'mapToQuery maps with comma and nested lists',
-      () {
-        <Map<String, dynamic>, String>{
-          {
-            'filters': {
-              r'$or': [
-                {
-                  'date': {
-                    r'$eq': '2020-01-01',
-                  }
-                },
-                {
-                  'date': {
-                    r'$eq': '2020-01-02',
-                  }
-                }
-              ],
-              'author': {
-                'name': {
-                  r'$eq': 'Kai doe',
-                },
-              }
-            }
-          }: 'filters%5B%24or%5D=%7Bdate%3A%20%7B%24eq%3A%202020-01-01%7D%7D%2C%7Bdate%3A%20%7B%24eq%3A%202020-01-02%7D%7D&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
-          {
-            'filters': {
-              'id': {
-                r'$in': [3, 6, 8],
-              },
-            }
-          }: 'filters%5Bid%5D%5B%24in%5D=3%2C6%2C8'
-        }.forEach(
-          (map, query) => test(
-            '$map -> $query',
-            () => expect(
-              mapToQuery(
-                map,
-                listFormat: ListFormat.comma,
-                includeNullQueryVars: true,
-              ),
-              query,
-            ),
-          ),
-        );
-      },
-    );
-    <Map<String, dynamic>, String>{
-      {
-        'filters': {
-          r'$or': [
-            {
-              'date': {
-                r'$eq': '2020-01-01',
-              }
+            ],
+            'author': {
+              'name': {r'$eq': 'Kai doe'},
             },
-            {
-              'date': {
-                r'$eq': '2020-01-02',
-              }
-            }
-          ],
-          'author': {
-            'name': {
-              r'$eq': 'Kai doe',
-            },
-          }
-        }
-      }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
-      {
-        'filters': {
-          'id': {
-            r'$in': [3, 6, 8],
           },
-        }
-      }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=6&filters%5Bid%5D%5B%24in%5D%5B%5D=8'
-    }.forEach(
-      (map, query) {
+        }: r'filters%2E$or%2Edate.$eq=2020-01-01&filters%2E$or%2Edate.$eq=2020-01-02&filters%2Eauthor%2Ename.$eq=Kai%20doe',
+        {
+          'filters': {
+            'id': {
+              r'$in': [3, 6, 8],
+            },
+          },
+        }: r'filters%2Eid%2E$in=3&filters%2Eid%2E$in=6&filters%2Eid%2E$in=8',
+      }.forEach((map, query) {
+        test(
+          '$map -> $query',
+          () => expect(mapToQuery(map), query, reason: 'legacy default'),
+        );
+
+        test(
+          '$map -> $query',
+          () => expect(mapToQuery(map, listFormat: ListFormat.repeat), query),
+        );
+      });
+    });
+
+    group('mapToQuery maps with brackets and nested lists', () {
+      <Map<String, dynamic>, String>{
+        {
+          'filters': {
+            r'$or': [
+              {
+                'date': {r'$eq': '2020-01-01'},
+              },
+              {
+                'date': {r'$eq': '2020-01-02'},
+              },
+            ],
+            'author': {
+              'name': {r'$eq': 'Kai doe'},
+            },
+          },
+        }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
+        {
+          'filters': {
+            'id': {
+              r'$in': [3, 6, 8],
+            },
+          },
+        }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=6&filters%5Bid%5D%5B%24in%5D%5B%5D=8',
+      }.forEach((map, query) {
         test(
           '$map -> $query',
           () => expect(
@@ -1566,13 +1301,87 @@ void main() {
 
         test(
           '$map -> $query',
+          () => expect(mapToQuery(map, listFormat: ListFormat.brackets), query),
+        );
+      });
+    });
+
+    group('mapToQuery maps with comma and nested lists', () {
+      <Map<String, dynamic>, String>{
+        {
+          'filters': {
+            r'$or': [
+              {
+                'date': {r'$eq': '2020-01-01'},
+              },
+              {
+                'date': {r'$eq': '2020-01-02'},
+              },
+            ],
+            'author': {
+              'name': {r'$eq': 'Kai doe'},
+            },
+          },
+        }: 'filters%5B%24or%5D=%7Bdate%3A%20%7B%24eq%3A%202020-01-01%7D%7D%2C%7Bdate%3A%20%7B%24eq%3A%202020-01-02%7D%7D&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
+        {
+          'filters': {
+            'id': {
+              r'$in': [3, 6, 8],
+            },
+          },
+        }: 'filters%5Bid%5D%5B%24in%5D=3%2C6%2C8',
+      }.forEach(
+        (map, query) => test(
+          '$map -> $query',
           () => expect(
-            mapToQuery(map, listFormat: ListFormat.brackets),
+            mapToQuery(
+              map,
+              listFormat: ListFormat.comma,
+              includeNullQueryVars: true,
+            ),
             query,
           ),
-        );
-      },
-    );
+        ),
+      );
+    });
+    <Map<String, dynamic>, String>{
+      {
+        'filters': {
+          r'$or': [
+            {
+              'date': {r'$eq': '2020-01-01'},
+            },
+            {
+              'date': {r'$eq': '2020-01-02'},
+            },
+          ],
+          'author': {
+            'name': {r'$eq': 'Kai doe'},
+          },
+        },
+      }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
+      {
+        'filters': {
+          'id': {
+            r'$in': [3, 6, 8],
+          },
+        },
+      }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=6&filters%5Bid%5D%5B%24in%5D%5B%5D=8',
+    }.forEach((map, query) {
+      test(
+        '$map -> $query',
+        () => expect(
+          mapToQuery(map, useBrackets: true),
+          query,
+          reason: 'legacy brackets',
+        ),
+      );
+
+      test(
+        '$map -> $query',
+        () => expect(mapToQuery(map, listFormat: ListFormat.brackets), query),
+      );
+    });
   });
 
   group(
@@ -1583,58 +1392,47 @@ void main() {
           'filters': {
             r'$or': [
               {
-                'date': {
-                  r'$eq': '2020-01-01',
-                }
+                'date': {r'$eq': '2020-01-01'},
               },
               null,
               {
-                'date': {
-                  r'$eq': '2020-01-02',
-                }
-              }
+                'date': {r'$eq': '2020-01-02'},
+              },
             ],
             'author': {
-              'name': {
-                r'$eq': 'Kai doe',
-              },
-            }
-          }
+              'name': {r'$eq': 'Kai doe'},
+            },
+          },
         }: r'filters%2E$or%2Edate.$eq=2020-01-01&filters%2E$or=&filters%2E$or%2Edate.$eq=2020-01-02&filters%2Eauthor%2Ename.$eq=Kai%20doe',
         {
           'filters': {
             'id': {
               r'$in': [3, null, 8],
             },
-          }
-        }: r'filters%2Eid%2E$in=3&filters%2Eid%2E$in=&filters%2Eid%2E$in=8'
-      }.forEach(
-        (map, query) {
-          test(
-            '$map -> $query',
-            () => expect(
-              mapToQuery(
-                map,
-                includeNullQueryVars: true,
-              ),
-              query,
-              reason: 'legacy default',
-            ),
-          );
+          },
+        }: r'filters%2Eid%2E$in=3&filters%2Eid%2E$in=&filters%2Eid%2E$in=8',
+      }.forEach((map, query) {
+        test(
+          '$map -> $query',
+          () => expect(
+            mapToQuery(map, includeNullQueryVars: true),
+            query,
+            reason: 'legacy default',
+          ),
+        );
 
-          test(
-            '$map -> $query',
-            () => expect(
-              mapToQuery(
-                map,
-                listFormat: ListFormat.repeat,
-                includeNullQueryVars: true,
-              ),
-              query,
+        test(
+          '$map -> $query',
+          () => expect(
+            mapToQuery(
+              map,
+              listFormat: ListFormat.repeat,
+              includeNullQueryVars: true,
             ),
-          );
-        },
-      );
+            query,
+          ),
+        );
+      });
     },
   );
 
@@ -1646,59 +1444,47 @@ void main() {
           'filters': {
             r'$or': [
               {
-                'date': {
-                  r'$eq': '2020-01-01',
-                }
+                'date': {r'$eq': '2020-01-01'},
               },
               null,
               {
-                'date': {
-                  r'$eq': '2020-01-02',
-                }
-              }
+                'date': {r'$eq': '2020-01-02'},
+              },
             ],
             'author': {
-              'name': {
-                r'$eq': 'Kai doe',
-              },
-            }
-          }
+              'name': {r'$eq': 'Kai doe'},
+            },
+          },
         }: 'filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B%5D=&filters%5B%24or%5D%5B%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
         {
           'filters': {
             'id': {
               r'$in': [3, null, 8],
             },
-          }
-        }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=&filters%5Bid%5D%5B%24in%5D%5B%5D=8'
-      }.forEach(
-        (map, query) {
-          test(
-            '$map -> $query',
-            () => expect(
-              mapToQuery(
-                map,
-                useBrackets: true,
-                includeNullQueryVars: true,
-              ),
-              query,
-              reason: 'legacy brackets',
-            ),
-          );
+          },
+        }: 'filters%5Bid%5D%5B%24in%5D%5B%5D=3&filters%5Bid%5D%5B%24in%5D%5B%5D=&filters%5Bid%5D%5B%24in%5D%5B%5D=8',
+      }.forEach((map, query) {
+        test(
+          '$map -> $query',
+          () => expect(
+            mapToQuery(map, useBrackets: true, includeNullQueryVars: true),
+            query,
+            reason: 'legacy brackets',
+          ),
+        );
 
-          test(
-            '$map -> $query',
-            () => expect(
-              mapToQuery(
-                map,
-                listFormat: ListFormat.brackets,
-                includeNullQueryVars: true,
-              ),
-              query,
+        test(
+          '$map -> $query',
+          () => expect(
+            mapToQuery(
+              map,
+              listFormat: ListFormat.brackets,
+              includeNullQueryVars: true,
             ),
-          );
-        },
-      );
+            query,
+          ),
+        );
+      });
     },
   );
 
@@ -1710,31 +1496,25 @@ void main() {
           'filters': {
             r'$or': [
               {
-                'date': {
-                  r'$eq': '2020-01-01',
-                }
+                'date': {r'$eq': '2020-01-01'},
               },
               null,
               {
-                'date': {
-                  r'$eq': '2020-01-02',
-                }
-              }
+                'date': {r'$eq': '2020-01-02'},
+              },
             ],
             'author': {
-              'name': {
-                r'$eq': 'Kai doe',
-              },
-            }
-          }
+              'name': {r'$eq': 'Kai doe'},
+            },
+          },
         }: 'filters%5B%24or%5D%5B0%5D%5Bdate%5D%5B%24eq%5D=2020-01-01&filters%5B%24or%5D%5B1%5D=&filters%5B%24or%5D%5B2%5D%5Bdate%5D%5B%24eq%5D=2020-01-02&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
         {
           'filters': {
             'id': {
               r'$in': [3, null, 8],
             },
-          }
-        }: 'filters%5Bid%5D%5B%24in%5D%5B0%5D=3&filters%5Bid%5D%5B%24in%5D%5B1%5D=&filters%5Bid%5D%5B%24in%5D%5B2%5D=8'
+          },
+        }: 'filters%5Bid%5D%5B%24in%5D%5B0%5D=3&filters%5Bid%5D%5B%24in%5D%5B1%5D=&filters%5Bid%5D%5B%24in%5D%5B2%5D=8',
       }.forEach(
         (map, query) => test(
           '$map -> $query',
@@ -1759,31 +1539,25 @@ void main() {
           'filters': {
             r'$or': [
               {
-                'date': {
-                  r'$eq': '2020-01-01',
-                }
+                'date': {r'$eq': '2020-01-01'},
               },
               null,
               {
-                'date': {
-                  r'$eq': '2020-01-02',
-                }
-              }
+                'date': {r'$eq': '2020-01-02'},
+              },
             ],
             'author': {
-              'name': {
-                r'$eq': 'Kai doe',
-              },
-            }
-          }
+              'name': {r'$eq': 'Kai doe'},
+            },
+          },
         }: 'filters%5B%24or%5D=%7Bdate%3A%20%7B%24eq%3A%202020-01-01%7D%7D%2C%2C%7Bdate%3A%20%7B%24eq%3A%202020-01-02%7D%7D&filters%5Bauthor%5D%5Bname%5D%5B%24eq%5D=Kai%20doe',
         {
           'filters': {
             'id': {
               r'$in': [3, null, 8],
             },
-          }
-        }: 'filters%5Bid%5D%5B%24in%5D=3%2C%2C8'
+          },
+        }: 'filters%5Bid%5D%5B%24in%5D=3%2C%2C8',
       }.forEach(
         (map, query) => test(
           '$map -> $query',
@@ -1800,26 +1574,16 @@ void main() {
 
       test('mapToQuery maps with enums', () {
         final map = {
-          'filters': {
-            'name': 'foo',
-            'example': ExampleEnum.bar,
-          }
+          'filters': {'name': 'foo', 'example': ExampleEnum.bar},
         };
 
-        expect(
-          mapToQuery(map),
-          equals('filters.name=foo&filters.example=bar'),
-        );
+        expect(mapToQuery(map), equals('filters.name=foo&filters.example=bar'));
       });
     },
   );
 
-  Request createRequest(Map<String, String> headers) => Request(
-        'POST',
-        Uri.parse('foo'),
-        Uri.parse('bar'),
-        headers: headers,
-      );
+  Request createRequest(Map<String, String> headers) =>
+      Request('POST', Uri.parse('foo'), Uri.parse('bar'), headers: headers);
 
   group('applyHeader tests', () {
     test('request apply single header', () {
@@ -1900,8 +1664,9 @@ void main() {
     test('request apply headers doesn\'t overrides existing', () {
       final testRequest = createRequest({'foo': 'bar'});
 
-      final result =
-          applyHeaders(testRequest, {'foo': 'whut'}, override: false);
+      final result = applyHeaders(testRequest, {
+        'foo': 'whut',
+      }, override: false);
 
       expect(result.headers['foo'], 'bar');
     });
@@ -1911,69 +1676,52 @@ void main() {
       () {
         final testRequest = createRequest({'Foo': 'bar'});
 
-        final result =
-            applyHeaders(testRequest, {'foo': 'whut'}, override: false);
+        final result = applyHeaders(testRequest, {
+          'foo': 'whut',
+        }, override: false);
 
         expect(result.headers['Foo'], 'bar');
       },
     );
 
-    test(
-      'request apply headers multiple headers with override false',
-      () {
-        final testRequest = createRequest(
-          {
-            'Foo': 'bar',
-            'tomato': 'apple',
-            'phone': 'tablet',
-          },
-        );
+    test('request apply headers multiple headers with override false', () {
+      final testRequest = createRequest({
+        'Foo': 'bar',
+        'tomato': 'apple',
+        'phone': 'tablet',
+      });
 
-        final result = applyHeaders(
-          testRequest,
-          {
-            'foo': 'whut',
-            'phone': 'computer',
-            'chair': 'table',
-          },
-          override: false,
-        );
+      final result = applyHeaders(testRequest, {
+        'foo': 'whut',
+        'phone': 'computer',
+        'chair': 'table',
+      }, override: false);
 
-        expect(result.headers['Foo'], 'bar');
-        expect(result.headers['tomato'], 'apple');
-        expect(result.headers['chair'], 'table');
-        expect(result.headers['phone'], 'tablet');
-        expect(result.headers.length, 4);
-      },
-    );
+      expect(result.headers['Foo'], 'bar');
+      expect(result.headers['tomato'], 'apple');
+      expect(result.headers['chair'], 'table');
+      expect(result.headers['phone'], 'tablet');
+      expect(result.headers.length, 4);
+    });
 
-    test(
-      'request apply headers multiple headers with override true',
-      () {
-        final testRequest = createRequest(
-          {
-            'Foo': 'bar',
-            'tomato': 'apple',
-            'phone': 'tablet',
-          },
-        );
+    test('request apply headers multiple headers with override true', () {
+      final testRequest = createRequest({
+        'Foo': 'bar',
+        'tomato': 'apple',
+        'phone': 'tablet',
+      });
 
-        final result = applyHeaders(
-          testRequest,
-          {
-            'foo': 'whut',
-            'phone': 'computer',
-            'chair': 'table',
-          },
-          override: true,
-        );
+      final result = applyHeaders(testRequest, {
+        'foo': 'whut',
+        'phone': 'computer',
+        'chair': 'table',
+      }, override: true);
 
-        expect(result.headers['Foo'], 'whut');
-        expect(result.headers['tomato'], 'apple');
-        expect(result.headers['chair'], 'table');
-        expect(result.headers['phone'], 'computer');
-        expect(result.headers.length, 4);
-      },
-    );
+      expect(result.headers['Foo'], 'whut');
+      expect(result.headers['tomato'], 'apple');
+      expect(result.headers['chair'], 'table');
+      expect(result.headers['phone'], 'computer');
+      expect(result.headers.length, 4);
+    });
   });
 }

@@ -108,17 +108,17 @@ base class ChopperClient {
     this.converter,
     this.errorConverter,
     Iterable<ChopperService>? services,
-  })  : assert(
-          baseUrl == null || !baseUrl.hasQuery,
-          'baseUrl should not contain query parameters. '
-          'Use a request interceptor to add default query parameters',
-        ),
-        baseUrl = baseUrl ?? Uri(),
-        httpClient = client ?? http.Client(),
-        _clientIsInternal = client == null {
+  }) : assert(
+         baseUrl == null || !baseUrl.hasQuery,
+         'baseUrl should not contain query parameters. '
+         'Use a request interceptor to add default query parameters',
+       ),
+       baseUrl = baseUrl ?? Uri(),
+       httpClient = client ?? http.Client(),
+       _clientIsInternal = client == null {
     _services = <Type, ChopperService>{
       for (final ChopperService service in services?.toSet() ?? [])
-        service.definitionType: service..client = this
+        service.definitionType: service..client = this,
     };
   }
 
@@ -189,17 +189,16 @@ base class ChopperClient {
     Uri? baseUrl,
     Map<String, dynamic> parameters = const {},
     dynamic body,
-  }) =>
-      send<BodyType, InnerType>(
-        Request(
-          HttpMethod.Get,
-          url,
-          baseUrl ?? this.baseUrl,
-          body: body,
-          headers: headers,
-          parameters: parameters,
-        ),
-      );
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Get,
+      url,
+      baseUrl ?? this.baseUrl,
+      body: body,
+      headers: headers,
+      parameters: parameters,
+    ),
+  );
 
   /// Makes a HTTP POST request using the [send] function
   Future<Response<BodyType>> post<BodyType, InnerType>(
@@ -210,19 +209,18 @@ base class ChopperClient {
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
     Uri? baseUrl,
-  }) =>
-      send<BodyType, InnerType>(
-        Request(
-          HttpMethod.Post,
-          url,
-          baseUrl ?? this.baseUrl,
-          body: body,
-          parts: parts,
-          headers: headers,
-          parameters: parameters,
-          multipart: multipart,
-        ),
-      );
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Post,
+      url,
+      baseUrl ?? this.baseUrl,
+      body: body,
+      parts: parts,
+      headers: headers,
+      parameters: parameters,
+      multipart: multipart,
+    ),
+  );
 
   /// Makes a HTTP PUT request using the [send] function.
   Future<Response<BodyType>> put<BodyType, InnerType>(
@@ -233,19 +231,18 @@ base class ChopperClient {
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
     Uri? baseUrl,
-  }) =>
-      send<BodyType, InnerType>(
-        Request(
-          HttpMethod.Put,
-          url,
-          baseUrl ?? this.baseUrl,
-          body: body,
-          parts: parts,
-          headers: headers,
-          parameters: parameters,
-          multipart: multipart,
-        ),
-      );
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Put,
+      url,
+      baseUrl ?? this.baseUrl,
+      body: body,
+      parts: parts,
+      headers: headers,
+      parameters: parameters,
+      multipart: multipart,
+    ),
+  );
 
   /// Makes a HTTP PATCH request using the [send] function.
   Future<Response<BodyType>> patch<BodyType, InnerType>(
@@ -256,19 +253,18 @@ base class ChopperClient {
     Map<String, dynamic> parameters = const {},
     bool multipart = false,
     Uri? baseUrl,
-  }) =>
-      send<BodyType, InnerType>(
-        Request(
-          HttpMethod.Patch,
-          url,
-          baseUrl ?? this.baseUrl,
-          body: body,
-          parts: parts,
-          headers: headers,
-          parameters: parameters,
-          multipart: multipart,
-        ),
-      );
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Patch,
+      url,
+      baseUrl ?? this.baseUrl,
+      body: body,
+      parts: parts,
+      headers: headers,
+      parameters: parameters,
+      multipart: multipart,
+    ),
+  );
 
   /// Makes a HTTP DELETE request using the [send] function.
   Future<Response<BodyType>> delete<BodyType, InnerType>(
@@ -276,16 +272,15 @@ base class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     Uri? baseUrl,
-  }) =>
-      send<BodyType, InnerType>(
-        Request(
-          HttpMethod.Delete,
-          url,
-          baseUrl ?? this.baseUrl,
-          headers: headers,
-          parameters: parameters,
-        ),
-      );
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Delete,
+      url,
+      baseUrl ?? this.baseUrl,
+      headers: headers,
+      parameters: parameters,
+    ),
+  );
 
   /// Makes a HTTP HEAD request using the [send] function.
   Future<Response<BodyType>> head<BodyType, InnerType>(
@@ -293,16 +288,15 @@ base class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     Uri? baseUrl,
-  }) =>
-      send<BodyType, InnerType>(
-        Request(
-          HttpMethod.Head,
-          url,
-          baseUrl ?? this.baseUrl,
-          headers: headers,
-          parameters: parameters,
-        ),
-      );
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Head,
+      url,
+      baseUrl ?? this.baseUrl,
+      headers: headers,
+      parameters: parameters,
+    ),
+  );
 
   /// Makes a HTTP OPTIONS request using the [send] function.
   Future<Response<BodyType>> options<BodyType, InnerType>(
@@ -310,16 +304,15 @@ base class ChopperClient {
     Map<String, String> headers = const {},
     Map<String, dynamic> parameters = const {},
     Uri? baseUrl,
-  }) =>
-      send<BodyType, InnerType>(
-        Request(
-          HttpMethod.Options,
-          url,
-          baseUrl ?? this.baseUrl,
-          headers: headers,
-          parameters: parameters,
-        ),
-      );
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Options,
+      url,
+      baseUrl ?? this.baseUrl,
+      headers: headers,
+      parameters: parameters,
+    ),
+  );
 
   /// Disposes this [ChopperClient] to clean up memory.
   ///
