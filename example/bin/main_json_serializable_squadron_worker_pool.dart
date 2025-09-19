@@ -39,7 +39,7 @@ class JsonSerializableWorkerPoolConverter extends JsonConverter {
   List<T> _decodeList<T>(Iterable values) =>
       values.where((v) => v != null).map<T>((v) => _decode<T>(v)).toList();
 
-  dynamic _decode<T>(entity) {
+  dynamic _decode<T>(dynamic entity) {
     if (entity is Iterable) return _decodeList<T>(entity as List);
 
     if (entity is Map) return _decodeMap<T>(entity as Map<String, dynamic>);
@@ -96,18 +96,7 @@ final client = MockClient((http.Request req) async {
   return http.Response('{"id":"1","name":"Foo"}', 200);
 });
 
-/// inspired by https://github.com/d-markey/squadron_sample/blob/main/lib/main.dart
-void initSquadron(String id) {
-  Squadron.setId(id);
-  Squadron.setLogger(ConsoleSquadronLogger());
-  Squadron.logLevel = SquadronLogLevel.all;
-  Squadron.debugMode = true;
-}
-
 Future<void> main() async {
-  /// initialize Squadron before using it
-  initSquadron('worker_pool_example');
-
   final jsonDecodeServiceWorkerPool = JsonDecodeServiceWorkerPool(
     // Set whatever you want here
     concurrencySettings: ConcurrencySettings.oneCpuThread,
@@ -117,9 +106,7 @@ Future<void> main() async {
   await jsonDecodeServiceWorkerPool.start();
 
   final converter = JsonSerializableWorkerPoolConverter(
-    {
-      Resource: Resource.fromJsonFactory,
-    },
+    {Resource: Resource.fromJsonFactory},
     // make sure to provide the WorkerPool to the JsonConverter
     jsonDecodeServiceWorkerPool,
   );
