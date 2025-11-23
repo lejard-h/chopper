@@ -31,12 +31,11 @@ class RequestConverterInterceptor implements InternalInterceptor {
   Future<Request> _handleRequestConverter(
     Request request,
     ConvertRequest? requestConverter,
-  ) async =>
-      request.body != null || request.parts.isNotEmpty
-          ? requestConverter != null
-              ? await requestConverter(request)
-              : await _encodeRequest(request)
-          : request;
+  ) async => request.body != null || request.parts.isNotEmpty
+      ? requestConverter != null
+            ? await requestConverter(request)
+            : await _encodeRequest(request)
+      : request;
 
   /// Encodes the [request] using [_converter] if not null.
   Future<Request> _encodeRequest(Request request) async =>

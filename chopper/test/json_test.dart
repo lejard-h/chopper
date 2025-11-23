@@ -20,10 +20,9 @@ void main() {
             HttpTestService.create(),
           ],
           client: httpClient,
-          converter:
-              json
-                  ? const JsonConverter() as Converter
-                  : const FormUrlEncodedConverter(),
+          converter: json
+              ? const JsonConverter() as Converter
+              : const FormUrlEncodedConverter(),
         );
 
     test('default json', () async {

@@ -2,7 +2,7 @@
 
 import 'dart:math' show max;
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:chopper/chopper.dart' show DateFormat, ListFormat, AbortTrigger;
 import 'package:chopper_generator/src/extensions.dart';
 import 'package:code_builder/code_builder.dart';
@@ -69,37 +69,31 @@ final class Utils {
   };
 
   /// All positional required params must support nullability
-  static Parameter buildRequiredPositionalParam(
-    FormalParameterElement p,
-  ) => Parameter(
-    (ParameterBuilder pb) =>
-        pb
-          ..name = switch (p.name3) {
+  static Parameter buildRequiredPositionalParam(FormalParameterElement p) =>
+      Parameter(
+        (ParameterBuilder pb) => pb
+          ..name = switch (p.name) {
             final String name? => name,
-            null =>
-              throw InvalidGenerationSourceError(
-                'Encountered a required positional parameter without a name.',
-                element: p.baseElement,
-              ),
+            null => throw InvalidGenerationSourceError(
+              'Encountered a required positional parameter without a name.',
+              element: p.baseElement,
+            ),
           }
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
           ),
-  );
+      );
 
   /// All optional positional params must support nullability
-  static Parameter buildOptionalPositionalParam(
-    FormalParameterElement p,
-  ) => Parameter(
-    (ParameterBuilder b) =>
-        b
-          ..name = switch (p.name3) {
+  static Parameter buildOptionalPositionalParam(FormalParameterElement p) =>
+      Parameter(
+        (ParameterBuilder b) => b
+          ..name = switch (p.name) {
             final String name? => name,
-            null =>
-              throw InvalidGenerationSourceError(
-                'Encountered an optional positional parameter without a name.',
-                element: p.baseElement,
-              ),
+            null => throw InvalidGenerationSourceError(
+              'Encountered an optional positional parameter without a name.',
+              element: p.baseElement,
+            ),
           }
           ..type = Reference(
             p.type.getDisplayString(withNullability: p.type.isNullable),
@@ -108,29 +102,27 @@ final class Utils {
             final String code? => Code(code),
             null => null,
           },
-  );
+      );
 
   /// Named params can be optional or required, they also need to support nullability
   static Parameter buildNamedParam(FormalParameterElement p) => Parameter(
-    (ParameterBuilder pb) =>
-        pb
-          ..named = true
-          ..name = switch (p.name3) {
-            final String name? => name,
-            null =>
-              throw InvalidGenerationSourceError(
-                'Encountered a named parameter without a name.',
-                element: p.baseElement,
-              ),
-          }
-          ..required = p.isRequiredNamed
-          ..type = Reference(
-            p.type.getDisplayString(withNullability: p.type.isNullable),
-          )
-          ..defaultTo = switch (p.defaultValueCode) {
-            final String code? => Code(code),
-            null => null,
-          },
+    (ParameterBuilder pb) => pb
+      ..named = true
+      ..name = switch (p.name) {
+        final String name? => name,
+        null => throw InvalidGenerationSourceError(
+          'Encountered a named parameter without a name.',
+          element: p.baseElement,
+        ),
+      }
+      ..required = p.isRequiredNamed
+      ..type = Reference(
+        p.type.getDisplayString(withNullability: p.type.isNullable),
+      )
+      ..defaultTo = switch (p.defaultValueCode) {
+        final String code? => Code(code),
+        null => null,
+      },
   );
 
   static final TypeChecker _abortTriggerChecker = const TypeChecker.typeNamed(
@@ -142,7 +134,7 @@ final class Utils {
   /// `null` if none exists. Enforces that **at most one** such parameter is
   /// present and validates its type via [_assertValidAbortTriggerType]. The
   /// accepted shapes are `Future<void>` and `Future<void>?`.
-  static FormalParameterElement? findAbortTriggerParam(ExecutableElement2 m) {
+  static FormalParameterElement? findAbortTriggerParam(ExecutableElement m) {
     FormalParameterElement? found;
 
     for (final FormalParameterElement p in m.formalParameters) {

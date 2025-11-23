@@ -17,18 +17,18 @@ Builder chopperGeneratorFactory(BuilderOptions options) {
     const [ChopperGenerator()],
     buildExtension,
     header: options.config['header'],
-    formatOutput:
-        PartBuilder(const [ChopperGenerator()], buildExtension).formatOutput,
-    options:
-        !options.config.containsKey('build_extensions')
-            ? options.overrideWith(
-              BuilderOptions({
-                'build_extensions': {
-                  '.dart': [buildExtension],
-                },
-              }),
-            )
-            : options,
+    formatOutput: PartBuilder(const [
+      ChopperGenerator(),
+    ], buildExtension).formatOutput,
+    options: !options.config.containsKey('build_extensions')
+        ? options.overrideWith(
+            BuilderOptions({
+              'build_extensions': {
+                '.dart': [buildExtension],
+              },
+            }),
+          )
+        : options,
   );
 }
 

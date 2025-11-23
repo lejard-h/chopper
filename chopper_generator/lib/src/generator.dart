@@ -3,7 +3,7 @@
 import 'dart:async' show FutureOr;
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:built_collection/built_collection.dart';
@@ -34,11 +34,11 @@ final class ChopperGenerator
 
   @override
   FutureOr<String> generateForAnnotatedElement(
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) {
-    if (element is! ClassElement2) {
+    if (element is! ClassElement) {
       throw InvalidGenerationSourceError(
         'Generator cannot target `${element.displayName}`.',
         todo:
@@ -58,20 +58,19 @@ final class ChopperGenerator
   /// Builds the `definitionType` override used by Chopper to infer the
   /// original abstract service type at runtime.
   static Field _buildDefinitionTypeMethod(String superType) => Field(
-    (FieldBuilder method) =>
-        method
-          ..annotations.add(refer('override'))
-          ..type = refer('Type')
-          ..name = 'definitionType'
-          ..modifier = FieldModifier.final$
-          ..assignment = Code(superType),
+    (FieldBuilder method) => method
+      ..annotations.add(refer('override'))
+      ..type = refer('Type')
+      ..name = 'definitionType'
+      ..modifier = FieldModifier.final$
+      ..assignment = Code(superType),
   );
 
   /// Emits the concrete implementation class for a given `@ChopperApi` service.
   /// Returns the formatted Dart source as a string.
   static String _buildChopperApiImplementationClass(
     ConstantReader annotation,
-    ClassElement2 element,
+    ClassElement element,
   ) {
     // Ensure the annotated class derives from `ChopperService`.
     if (!element.allSupertypes.any(_extendsChopperService)) {
@@ -82,12 +81,11 @@ final class ChopperGenerator
       );
     }
 
-    final String friendlyName = switch (element.name3) {
+    final String friendlyName = switch (element.name) {
       final String name? => name,
-      null =>
-        throw InvalidGenerationSourceError(
-          'Generator cannot target a class without a name.',
-        ),
+      null => throw InvalidGenerationSourceError(
+        'Generator cannot target a class without a name.',
+      ),
     };
     final String name = '_\$$friendlyName';
 
@@ -95,12 +93,12 @@ final class ChopperGenerator
       Vars.baseUrl.toString(),
     );
 
-    TopLevelVariableElement2? baseUrlVariableElement;
+    TopLevelVariableElement? baseUrlVariableElement;
 
-    final VariableElement2? possibleBaseUrl =
-        baseUrlReader?.objectValue.variable2;
+    final VariableElement? possibleBaseUrl =
+        baseUrlReader?.objectValue.variable;
 
-    if (possibleBaseUrl is TopLevelVariableElement2 &&
+    if (possibleBaseUrl is TopLevelVariableElement &&
         possibleBaseUrl.type.isDartCoreString &&
         possibleBaseUrl.isConst) {
       baseUrlVariableElement = possibleBaseUrl;
@@ -109,16 +107,15 @@ final class ChopperGenerator
     final String baseUrl = baseUrlReader?.stringValue ?? '';
 
     final Class classBuilder = Class(
-      (ClassBuilder b) =>
-          b
-            ..modifier = ClassModifier.final$
-            ..name = name
-            ..extend = refer(friendlyName)
-            ..fields.add(_buildDefinitionTypeMethod(friendlyName))
-            ..constructors.add(_generateConstructor())
-            ..methods.addAll(
-              _parseMethods(element, baseUrl, baseUrlVariableElement),
-            ),
+      (ClassBuilder b) => b
+        ..modifier = ClassModifier.final$
+        ..name = name
+        ..extend = refer(friendlyName)
+        ..fields.add(_buildDefinitionTypeMethod(friendlyName))
+        ..constructors.add(_generateConstructor())
+        ..methods.addAll(
+          _parseMethods(element, baseUrl, baseUrlVariableElement),
+        ),
     );
 
     const String ignore =
@@ -132,36 +129,33 @@ final class ChopperGenerator
   /// Generates a constructor that optionally accepts a [chopper.ChopperClient] and
   /// assigns it to `this.client` if provided.
   static Constructor _generateConstructor() => Constructor(
-    (ConstructorBuilder b) =>
-        b
-          ..optionalParameters.add(
-            Parameter(
-              (ParameterBuilder p) =>
-                  p
-                    ..name = Vars.client.toString()
-                    ..type = TypeReference(
-                      (TypeReferenceBuilder t) =>
-                          t
-                            ..symbol = '${chopper.ChopperClient}'
-                            ..isNullable = true,
-                    ),
+    (ConstructorBuilder b) => b
+      ..optionalParameters.add(
+        Parameter(
+          (ParameterBuilder p) => p
+            ..name = Vars.client.toString()
+            ..type = TypeReference(
+              (TypeReferenceBuilder t) => t
+                ..symbol = '${chopper.ChopperClient}'
+                ..isNullable = true,
             ),
-          )
-          ..body = Code(
-            [
-              'if (${Vars.client} == null) return;',
-              'this.${Vars.client} = ${Vars.client};',
-            ].join('\n'),
-          ),
+        ),
+      )
+      ..body = Code(
+        [
+          'if (${Vars.client} == null) return;',
+          'this.${Vars.client} = ${Vars.client};',
+        ].join('\n'),
+      ),
   );
 
   /// Filters abstract methods that look like Chopper endpoints and maps them
   /// to their generated implementations.
   static Iterable<Method> _parseMethods(
-    ClassElement2 element,
+    ClassElement element,
     String baseUrl,
-    TopLevelVariableElement2? baseUrlVariableElement,
-  ) => element.methods2
+    TopLevelVariableElement? baseUrlVariableElement,
+  ) => element.methods
       .where(
         (method) =>
             _getMethodAnnotation(method) != null &&
@@ -177,18 +171,17 @@ final class ChopperGenerator
   /// * Optional body/parts, multipart, and factory converters
   /// * Return type plumbing (`Future<Response<T>>` vs `Future<T>`).
   static Method _generateMethod(
-    MethodElement2 m,
+    MethodElement m,
     String baseUrl,
-    TopLevelVariableElement2? baseUrlVariableElement,
+    TopLevelVariableElement? baseUrlVariableElement,
   ) {
     // Extract and validate the HTTP method annotation (@Get/@Post/@Put/@Patch/@Delete/...).
     final ConstantReader method = switch (_getMethodAnnotation(m)) {
       final ConstantReader reader? => reader,
-      null =>
-        throw InvalidGenerationSourceError(
-          'Missing HTTP method annotation on "${m.displayName}".',
-          element: m.baseElement,
-        ),
+      null => throw InvalidGenerationSourceError(
+        'Missing HTTP method annotation on "${m.displayName}".',
+        element: m.baseElement,
+      ),
     };
     // Per-method configuration flags
     final bool multipart = _hasAnnotation(m, chopper.Multipart);
@@ -255,15 +248,13 @@ final class ChopperGenerator
       responseType?.getDisplayString(withNullability: false) ?? 'dynamic',
     );
     // Set the return type
-    final Reference returnType =
-        isResponseObject
-            ? refer(m.returnType.getDisplayString(withNullability: false))
-            : TypeReference(
-              (TypeReferenceBuilder b) =>
-                  b
-                    ..symbol = 'Future'
-                    ..types.add(responseTypeReference),
-            );
+    final Reference returnType = isResponseObject
+        ? refer(m.returnType.getDisplayString(withNullability: false))
+        : TypeReference(
+            (TypeReferenceBuilder b) => b
+              ..symbol = 'Future'
+              ..types.add(responseTypeReference),
+          );
 
     return Method((MethodBuilder methodBuilder) {
       methodBuilder
@@ -273,17 +264,14 @@ final class ChopperGenerator
         ..returns = returnType
         // And null Typed parameters
         ..types.addAll(
-          m.typeParameters2.map(
-            (TypeParameterElement2 t) => TypeReference((
-              TypeReferenceBuilder b,
-            ) {
-              b.symbol = switch (t.name3) {
+          m.typeParameters.map(
+            (TypeParameterElement t) => TypeReference((TypeReferenceBuilder b) {
+              b.symbol = switch (t.name) {
                 final String name? => name,
-                null =>
-                  throw InvalidGenerationSourceError(
-                    'Type parameter without a name on method "${m.displayName}".',
-                    element: m.baseElement,
-                  ),
+                null => throw InvalidGenerationSourceError(
+                  'Type parameter without a name on method "${m.displayName}".',
+                  element: m.baseElement,
+                ),
               };
 
               if (t.bound case final DartType bound?) {
@@ -334,21 +322,21 @@ final class ChopperGenerator
 
       /// Build an iterable of all parameters that are nullable so we can handle
       /// `QueryMap`/`FieldMap` nullability without using `!`.
-      final Iterable<String> optionalNullableParameters = [
-            ...m.formalParameters.where((p) => p.isOptionalPositional),
-            ...m.formalParameters.where((p) => p.isNamed),
-          ]
-          .where((FormalParameterElement el) => el.type.isNullable)
-          .map(
-            (FormalParameterElement el) => switch (el.name3) {
-              final String name? => name,
-              null =>
-                throw InvalidGenerationSourceError(
-                  'Encountered a parameter without a name.',
-                  element: el.baseElement,
-                ),
-            },
-          );
+      final Iterable<String> optionalNullableParameters =
+          [
+                ...m.formalParameters.where((p) => p.isOptionalPositional),
+                ...m.formalParameters.where((p) => p.isNamed),
+              ]
+              .where((FormalParameterElement el) => el.type.isNullable)
+              .map(
+                (FormalParameterElement el) => switch (el.name) {
+                  final String name? => name,
+                  null => throw InvalidGenerationSourceError(
+                    'Encountered a parameter without a name.',
+                    element: el.baseElement,
+                  ),
+                },
+              );
 
       final bool hasQueryMap = queryMap.isNotEmpty;
       if (hasQueryMap) {
@@ -372,8 +360,8 @@ final class ChopperGenerator
                   /// Check if the parameter is nullable
                   optionalNullableParameters.contains(queryMap.keys.first)
                       ? refer(
-                        queryMap.keys.first,
-                      ).ifNullThen(literalConstMap(const {}))
+                          queryMap.keys.first,
+                        ).ifNullThen(literalConstMap(const {}))
                       : refer(queryMap.keys.first),
                 )
                 .statement,
@@ -394,21 +382,20 @@ final class ChopperGenerator
 
       if (hasBody) {
         if (body.isNotEmpty) {
-          final DartType bodyType =
-              m.formalParameters
-                  .firstWhere(
-                    (FormalParameterElement p) => _typeChecker(
-                      chopper.Body,
-                      inPackage: 'chopper',
-                    ).hasAnnotationOf(p),
-                  )
-                  .type;
+          final DartType bodyType = m.formalParameters
+              .firstWhere(
+                (FormalParameterElement p) => _typeChecker(
+                  chopper.Body,
+                  inPackage: 'chopper',
+                ).hasAnnotationOf(p),
+              )
+              .type;
           final Expression map =
               (formUrlEncoded &&
-                      _isMap(bodyType) &&
-                      !_isMapStringString(bodyType))
-                  ? _generateMapToStringExpression(refer(body.keys.first))
-                  : refer(body.keys.first);
+                  _isMap(bodyType) &&
+                  !_isMapStringString(bodyType))
+              ? _generateMapToStringExpression(refer(body.keys.first))
+              : refer(body.keys.first);
           blocks.add(declareFinal(Vars.body.toString()).assign(map).statement);
         } else {
           blocks.add(
@@ -421,19 +408,18 @@ final class ChopperGenerator
 
       final bool hasFieldMap = fieldMap.isNotEmpty;
       if (hasFieldMap) {
-        final DartType fieldMapType =
-            m.formalParameters
-                .firstWhere(
-                  (FormalParameterElement p) => _typeChecker(
-                    chopper.FieldMap,
-                    inPackage: 'chopper',
-                  ).hasAnnotationOf(p),
-                )
-                .type;
+        final DartType fieldMapType = m.formalParameters
+            .firstWhere(
+              (FormalParameterElement p) => _typeChecker(
+                chopper.FieldMap,
+                inPackage: 'chopper',
+              ).hasAnnotationOf(p),
+            )
+            .type;
         final Expression map =
             (formUrlEncoded && !_isMapStringString(fieldMapType))
-                ? _generateMapToStringExpression(refer(fieldMap.keys.first))
-                : refer(fieldMap.keys.first);
+            ? _generateMapToStringExpression(refer(fieldMap.keys.first))
+            : refer(fieldMap.keys.first);
         if (hasBody) {
           blocks.add(
             refer(
@@ -536,20 +522,18 @@ final class ChopperGenerator
           declareFinal(
                 Vars.abortTrigger.toString(),
                 type: TypeReference(
-                  (TypeReferenceBuilder t) =>
-                      t
-                        ..symbol = 'ChopperCompleter'
-                        ..url = 'package:chopper/chopper.dart'
-                        ..types.add(refer('void')),
+                  (TypeReferenceBuilder t) => t
+                    ..symbol = 'ChopperCompleter'
+                    ..url = 'package:chopper/chopper.dart'
+                    ..types.add(refer('void')),
                 ),
               )
               .assign(
                 TypeReference(
-                  (TypeReferenceBuilder t) =>
-                      t
-                        ..symbol = 'ChopperCompleter'
-                        ..url = 'package:chopper/chopper.dart'
-                        ..types.add(refer('void')),
+                  (TypeReferenceBuilder t) => t
+                    ..symbol = 'ChopperCompleter'
+                    ..url = 'package:chopper/chopper.dart'
+                    ..types.add(refer('void')),
                 ).newInstance(const []),
               )
               .statement,
@@ -565,10 +549,9 @@ final class ChopperGenerator
           declareFinal(
                 Vars.timeout.toString(),
                 type: TypeReference(
-                  (TypeReferenceBuilder t) =>
-                      t
-                        ..symbol = 'ChopperTimer'
-                        ..url = 'package:chopper/chopper.dart',
+                  (TypeReferenceBuilder t) => t
+                    ..symbol = 'ChopperTimer'
+                    ..url = 'package:chopper/chopper.dart',
                 ),
               )
               .assign(
@@ -578,11 +561,10 @@ final class ChopperGenerator
                 ).newInstance([
                   durationExpr,
                   Method(
-                    (MethodBuilder b) =>
-                        b
-                          ..body = Code(
-                            'if (!${Vars.abortTrigger}.isCompleted) ${Vars.abortTrigger}.complete();',
-                          ),
+                    (MethodBuilder b) => b
+                      ..body = Code(
+                        'if (!${Vars.abortTrigger}.isCompleted) ${Vars.abortTrigger}.complete();',
+                      ),
                   ).closure,
                 ]),
               )
@@ -623,8 +605,8 @@ final class ChopperGenerator
 
       final ConstantReader? requestFactory = factoryConverter?.peek('request');
       if (requestFactory != null) {
-        if (requestFactory.objectValue.toFunctionValue2()
-            case final ExecutableElement2 func?) {
+        if (requestFactory.objectValue.toFunctionValue()
+            case final ExecutableElement func?) {
           namedArguments['requestConverter'] = refer(_factoryForFunction(func));
         }
       }
@@ -633,8 +615,8 @@ final class ChopperGenerator
         'response',
       );
       if (responseFactory != null) {
-        if (responseFactory.objectValue.toFunctionValue2()
-            case final ExecutableElement2 func?) {
+        if (responseFactory.objectValue.toFunctionValue()
+            case final ExecutableElement func?) {
           namedArguments['responseConverter'] = refer(
             _factoryForFunction(func),
           );
@@ -697,67 +679,57 @@ final class ChopperGenerator
                 [
                   // onError
                   Method(
-                    (MethodBuilder b) =>
-                        b
-                          ..requiredParameters.add(
-                            Parameter((ParameterBuilder p) => p..name = '_'),
-                          )
-                          ..lambda = true
-                          ..body = Block.of([
-                            TypeReference(
-                              (TypeReferenceBuilder t) =>
-                                  t
-                                    ..symbol = 'Future'
-                                    ..url = 'dart:async'
-                                    ..types.add(
-                                      TypeReference(
-                                        (TypeReferenceBuilder t2) =>
-                                            t2
-                                              ..symbol = 'Response'
-                                              ..url =
-                                                  'package:chopper/chopper.dart'
-                                              ..types.add(
-                                                responseTypeReference,
-                                              ),
-                                      ),
-                                    ),
-                            ).property('error').call([
-                              refer('ChopperTimeoutException').newInstance([
-                                literal(getTimeoutExceptionMessage(timeout)),
-                              ]),
-                            ]).code,
+                    (MethodBuilder b) => b
+                      ..requiredParameters.add(
+                        Parameter((ParameterBuilder p) => p..name = '_'),
+                      )
+                      ..lambda = true
+                      ..body = Block.of([
+                        TypeReference(
+                          (TypeReferenceBuilder t) => t
+                            ..symbol = 'Future'
+                            ..url = 'dart:async'
+                            ..types.add(
+                              TypeReference(
+                                (TypeReferenceBuilder t2) => t2
+                                  ..symbol = 'Response'
+                                  ..url = 'package:chopper/chopper.dart'
+                                  ..types.add(responseTypeReference),
+                              ),
+                            ),
+                        ).property('error').call([
+                          refer('ChopperTimeoutException').newInstance([
+                            literal(getTimeoutExceptionMessage(timeout)),
                           ]),
+                        ]).code,
+                      ]),
                   ).closure,
                 ],
                 {
-                  'test':
-                      Method(
-                        (MethodBuilder b) =>
-                            b
-                              ..requiredParameters.add(
-                                Parameter(
-                                  (ParameterBuilder p) =>
-                                      p
-                                        ..name = 'err'
-                                        ..type = refer('Object'),
-                                ),
-                              )
-                              ..lambda = true
-                              ..body =
-                                  refer('err')
-                                      .isA(
-                                        refer(
-                                          'ChopperRequestAbortedException',
-                                          'package:chopper/chopper.dart',
-                                        ),
-                                      )
-                                      .and(
-                                        refer(
-                                          Vars.abortTrigger.toString(),
-                                        ).property('isCompleted'),
-                                      )
-                                      .code,
-                      ).closure,
+                  'test': Method(
+                    (MethodBuilder b) => b
+                      ..requiredParameters.add(
+                        Parameter(
+                          (ParameterBuilder p) => p
+                            ..name = 'err'
+                            ..type = refer('Object'),
+                        ),
+                      )
+                      ..lambda = true
+                      ..body = refer('err')
+                          .isA(
+                            refer(
+                              'ChopperRequestAbortedException',
+                              'package:chopper/chopper.dart',
+                            ),
+                          )
+                          .and(
+                            refer(
+                              Vars.abortTrigger.toString(),
+                            ).property('isCompleted'),
+                          )
+                          .code,
+                  ).closure,
                 },
               )
               .property('whenComplete')
@@ -771,27 +743,23 @@ final class ChopperGenerator
       } else {
         if (timeout != null) {
           // Build a chain: send().then((resp) => resp.bodyOrThrow)
-          final Expression mapToBody =
-              Method(
-                (MethodBuilder b) =>
-                    b
-                      ..requiredParameters.add(
-                        Parameter(
-                          (ParameterBuilder p) =>
-                              p
-                                ..name = 'resp'
-                                ..type = TypeReference(
-                                  (TypeReferenceBuilder t) =>
-                                      t
-                                        ..symbol = 'Response'
-                                        ..url = 'package:chopper/chopper.dart'
-                                        ..types.add(responseTypeReference),
-                                ),
-                        ),
-                      )
-                      ..lambda = true
-                      ..body = refer('resp').property('bodyOrThrow').code,
-              ).closure;
+          final Expression mapToBody = Method(
+            (MethodBuilder b) => b
+              ..requiredParameters.add(
+                Parameter(
+                  (ParameterBuilder p) => p
+                    ..name = 'resp'
+                    ..type = TypeReference(
+                      (TypeReferenceBuilder t) => t
+                        ..symbol = 'Response'
+                        ..url = 'package:chopper/chopper.dart'
+                        ..types.add(responseTypeReference),
+                    ),
+                ),
+              )
+              ..lambda = true
+              ..body = refer('resp').property('bodyOrThrow').code,
+          ).closure;
 
           final Expression chained = returnStatement
               .property('then')
@@ -801,59 +769,53 @@ final class ChopperGenerator
               .call(
                 [
                   Method(
-                    (MethodBuilder b) =>
-                        b
-                          ..requiredParameters.add(
-                            Parameter((ParameterBuilder p) => p..name = '_'),
-                          )
-                          ..lambda = true
-                          ..body = Block.of([
-                            TypeReference(
-                              (TypeReferenceBuilder t) =>
-                                  t
-                                    ..symbol = 'Future'
-                                    ..url = 'dart:async'
-                                    ..types.add(responseTypeReference),
-                            ).property('error').call([
-                              refer(
-                                'ChopperTimeoutException',
-                                'package:chopper/chopper.dart',
-                              ).newInstance([
-                                literal(getTimeoutExceptionMessage(timeout)),
-                              ]),
-                            ]).code,
+                    (MethodBuilder b) => b
+                      ..requiredParameters.add(
+                        Parameter((ParameterBuilder p) => p..name = '_'),
+                      )
+                      ..lambda = true
+                      ..body = Block.of([
+                        TypeReference(
+                          (TypeReferenceBuilder t) => t
+                            ..symbol = 'Future'
+                            ..url = 'dart:async'
+                            ..types.add(responseTypeReference),
+                        ).property('error').call([
+                          refer(
+                            'ChopperTimeoutException',
+                            'package:chopper/chopper.dart',
+                          ).newInstance([
+                            literal(getTimeoutExceptionMessage(timeout)),
                           ]),
+                        ]).code,
+                      ]),
                   ).closure,
                 ],
                 {
-                  'test':
-                      Method(
-                        (MethodBuilder b) =>
-                            b
-                              ..requiredParameters.add(
-                                Parameter(
-                                  (ParameterBuilder p) =>
-                                      p
-                                        ..name = 'err'
-                                        ..type = refer('Object'),
-                                ),
-                              )
-                              ..lambda = true
-                              ..body =
-                                  refer('err')
-                                      .isA(
-                                        refer(
-                                          'ChopperRequestAbortedException',
-                                          'package:chopper/chopper.dart',
-                                        ),
-                                      )
-                                      .and(
-                                        refer(
-                                          Vars.abortTrigger.toString(),
-                                        ).property('isCompleted'),
-                                      )
-                                      .code,
-                      ).closure,
+                  'test': Method(
+                    (MethodBuilder b) => b
+                      ..requiredParameters.add(
+                        Parameter(
+                          (ParameterBuilder p) => p
+                            ..name = 'err'
+                            ..type = refer('Object'),
+                        ),
+                      )
+                      ..lambda = true
+                      ..body = refer('err')
+                          .isA(
+                            refer(
+                              'ChopperRequestAbortedException',
+                              'package:chopper/chopper.dart',
+                            ),
+                          )
+                          .and(
+                            refer(
+                              Vars.abortTrigger.toString(),
+                            ).property('isCompleted'),
+                          )
+                          .code,
+                  ).closure,
                 },
               )
               .property('whenComplete')
@@ -866,11 +828,10 @@ final class ChopperGenerator
             declareFinal(
               Vars.response.toString(),
               type: TypeReference(
-                (TypeReferenceBuilder b) =>
-                    b
-                      ..symbol = 'Response'
-                      ..url = 'package:chopper/chopper.dart'
-                      ..types.add(responseTypeReference),
+                (TypeReferenceBuilder b) => b
+                  ..symbol = 'Response'
+                  ..url = 'package:chopper/chopper.dart'
+                  ..types.add(responseTypeReference),
               ),
             ).assign(returnStatement.awaited).statement,
           );
@@ -892,46 +853,42 @@ final class ChopperGenerator
   static Expression _generateMapToStringExpression(Reference map) {
     return map.property('map<String, String>').call([
       Method(
-        (MethodBuilder b) =>
-            b
-              ..requiredParameters.add(
-                Parameter((ParameterBuilder b) => b..name = 'key'),
-              )
-              ..requiredParameters.add(
-                Parameter((ParameterBuilder b) => b..name = 'value'),
-              )
-              ..returns = refer('MapEntry', 'dart.core')
-              ..body =
-                  refer('MapEntry', 'dart.core')
-                      .newInstance([
-                        refer('key').property('toString').call([]),
-                        refer('value').property('toString').call([]),
-                      ])
-                      .returned
-                      .statement,
+        (MethodBuilder b) => b
+          ..requiredParameters.add(
+            Parameter((ParameterBuilder b) => b..name = 'key'),
+          )
+          ..requiredParameters.add(
+            Parameter((ParameterBuilder b) => b..name = 'value'),
+          )
+          ..returns = refer('MapEntry', 'dart.core')
+          ..body = refer('MapEntry', 'dart.core')
+              .newInstance([
+                refer('key').property('toString').call([]),
+                refer('value').property('toString').call([]),
+              ])
+              .returned
+              .statement,
       ).closure,
     ]);
   }
 
   /// Formats a reference to a top-level or static factory function, including
   /// its enclosing class name if present.
-  static String _factoryForFunction(FunctionTypedElement2 function) {
-    final String fnName = switch (function.name3) {
+  static String _factoryForFunction(FunctionTypedElement function) {
+    final String fnName = switch (function.name) {
       final String name? => name,
-      null =>
-        throw InvalidGenerationSourceError(
-          'Unable to resolve factory function name.',
-        ),
+      null => throw InvalidGenerationSourceError(
+        'Unable to resolve factory function name.',
+      ),
     };
 
-    if (function.enclosingElement2 is ClassElement2) {
-      final ClassElement2 cls = function.enclosingElement2 as ClassElement2;
-      final String clsName = switch (cls.name3) {
+    if (function.enclosingElement is ClassElement) {
+      final ClassElement cls = function.enclosingElement as ClassElement;
+      final String clsName = switch (cls.name) {
         final String n? => n,
-        null =>
-          throw InvalidGenerationSourceError(
-            'Unable to resolve enclosing class name for factory function.',
-          ),
+        null => throw InvalidGenerationSourceError(
+          'Unable to resolve enclosing class name for factory function.',
+        ),
       };
       return '$clsName.$fnName';
     }
@@ -942,7 +899,7 @@ final class ChopperGenerator
   /// Returns a single-parameter annotation map for the specified type.
   /// If multiple parameters have the same annotation, throws.
   static Map<String, ConstantReader> _getAnnotation(
-    MethodElement2 method,
+    MethodElement method,
     Type type,
   ) {
     DartObject? annotation;
@@ -967,7 +924,7 @@ final class ChopperGenerator
 
   /// Returns a map of parameters to their annotation metadata for the given type.
   static Map<FormalParameterElement, ConstantReader> _getAnnotations(
-    MethodElement2 m,
+    MethodElement m,
     Type type,
   ) => {
     for (final FormalParameterElement p in m.formalParameters)
@@ -985,7 +942,7 @@ final class ChopperGenerator
   }) => TypeChecker.typeNamed(type, inPackage: inPackage, inSdk: inSdk);
 
   /// Scans supported HTTP method annotations (@Get/@Post/...) and returns the first match.
-  static ConstantReader? _getMethodAnnotation(MethodElement2 method) {
+  static ConstantReader? _getMethodAnnotation(MethodElement method) {
     for (final Type type in _methodsAnnotations) {
       final DartObject? annotation = _typeChecker(
         type,
@@ -999,7 +956,7 @@ final class ChopperGenerator
   }
 
   /// Returns the `@FactoryConverter` annotation if present on the method.
-  static ConstantReader? _getFactoryConverterAnnotation(MethodElement2 method) {
+  static ConstantReader? _getFactoryConverterAnnotation(MethodElement method) {
     final DartObject? annotation = _typeChecker(
       chopper.FactoryConverter,
       inPackage: 'chopper',
@@ -1009,7 +966,7 @@ final class ChopperGenerator
   }
 
   /// Checks whether the given method has an annotation of the given type.
-  static bool _hasAnnotation(MethodElement2 method, Type type) =>
+  static bool _hasAnnotation(MethodElement method, Type type) =>
       _typeChecker(type).firstAnnotationOf(method, throwOnUnresolved: false) !=
       null;
 
@@ -1028,8 +985,8 @@ final class ChopperGenerator
   /// Returns the first type argument if `type` is a generic interface; otherwise null.
   static DartType? _genericOf(DartType? type) =>
       type is InterfaceType && type.typeArguments.isNotEmpty
-          ? type.typeArguments.first
-          : null;
+      ? type.typeArguments.first
+      : null;
 
   /// True if the type is (or is assignable to) [Map].
   static bool _isMap(DartType type) =>
@@ -1051,15 +1008,15 @@ final class ChopperGenerator
   static bool _isString(DartType type) =>
       type.isDartCoreString ||
       (type is InterfaceType &&
-          type.element3.name3 == 'String' &&
-          type.element3.library2.uri.toString() == 'dart:core');
+          type.element.name == 'String' &&
+          type.element.library.uri.toString() == 'dart:core');
 
   /// True if the outer generic of `type` is [chopper.Response].
   static bool _isResponse(DartType type) => switch (_genericOf(type)) {
     InterfaceType(
-      element3: InterfaceElement2(
-        name3: 'Response',
-        library2: final LibraryElement2 lib,
+      element: InterfaceElement(
+        name: 'Response',
+        library: final LibraryElement lib,
       ),
     ) =>
       lib.uri.toString().startsWith('package:chopper/'),
@@ -1102,7 +1059,7 @@ final class ChopperGenerator
     ConstantReader method,
     Map<FormalParameterElement, ConstantReader> paths,
     String baseUrl,
-    TopLevelVariableElement2? baseUrlVariableElement,
+    TopLevelVariableElement? baseUrlVariableElement,
   ) {
     String path = Utils.getMethodPath(method);
     paths.forEach((p, ConstantReader r) {
@@ -1205,12 +1162,10 @@ final class ChopperGenerator
     {
       for (final MapEntry<FormalParameterElement, ConstantReader> query
           in queries.entries)
-        query.value.peek('name')?.stringValue ?? query.key.displayName:
-            enableToString
-                ? refer(
-                  query.key.displayName,
-                ).property('toString').call(const [])
-                : refer(query.key.displayName),
+        query.value.peek('name')?.stringValue ??
+            query.key.displayName: enableToString
+            ? refer(query.key.displayName).property('toString').call(const [])
+            : refer(query.key.displayName),
     },
     refer('String'),
     refer(enableToString ? 'String' : 'dynamic'),
@@ -1252,7 +1207,7 @@ final class ChopperGenerator
   /// `@Header()`s with the static `headers:` map on the HTTP annotation.
   /// Returns `null` if no headers are present.
   static Code? _generateHeaders(
-    MethodElement2 methodElement,
+    MethodElement methodElement,
     ConstantReader method,
     bool formUrlEncoded,
   ) {
@@ -1305,8 +1260,8 @@ final class ChopperGenerator
     return code == '{\n}\n'
         ? null
         : declareFinal(
-          Vars.headers.toString(),
-          type: refer('Map<String, String>'),
-        ).assign(CodeExpression(Code(code))).statement;
+            Vars.headers.toString(),
+            type: refer('Map<String, String>'),
+          ).assign(CodeExpression(Code(code))).statement;
   }
 }
