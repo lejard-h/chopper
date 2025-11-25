@@ -95,23 +95,17 @@ class MockChain<BodyType> implements Chain {
 
 class MockAuthenticator implements Authenticator {
   MockAuthenticator(this.onAuthenticate) {
-    onAuthenticationFailed = (
-      Request request,
-      Response response, [
-      Request? originalRequest,
-    ]) {
-      onAuthenticationFailedCalled++;
-      return;
-    };
+    onAuthenticationFailed =
+        (Request request, Response response, [Request? originalRequest]) {
+          onAuthenticationFailedCalled++;
+          return;
+        };
 
-    onAuthenticationSuccessful = (
-      Request request,
-      Response response, [
-      Request? originalRequest,
-    ]) {
-      onAuthenticationSuccessfulCalled++;
-      return;
-    };
+    onAuthenticationSuccessful =
+        (Request request, Response response, [Request? originalRequest]) {
+          onAuthenticationSuccessfulCalled++;
+          return;
+        };
   }
 
   final Request? Function() onAuthenticate;

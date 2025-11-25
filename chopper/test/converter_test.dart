@@ -499,10 +499,11 @@ void main() {
         );
         final chopperResponse = Response(httpResponse, null);
 
-        final converted = await jsonConverter.decodeJson<
-          Map<String, Map<String, dynamic>>,
-          Map<String, dynamic>
-        >(chopperResponse);
+        final converted = await jsonConverter
+            .decodeJson<
+              Map<String, Map<String, dynamic>>,
+              Map<String, dynamic>
+            >(chopperResponse);
         expect(converted.body, isA<Map<String, Map<String, dynamic>>>());
         expect(converted.body['item1']!['value'], 100);
       },

@@ -35,12 +35,12 @@ void main() {
 
     test('serializers produce expected format', () {
       // Calculate expected values directly from testDateTime
-      final expectedSeconds =
-          (testDateTime.millisecondsSinceEpoch ~/ 1000).toString();
-      final expectedMilliseconds =
-          testDateTime.millisecondsSinceEpoch.toString();
-      final expectedMicroseconds =
-          testDateTime.microsecondsSinceEpoch.toString();
+      final expectedSeconds = (testDateTime.millisecondsSinceEpoch ~/ 1000)
+          .toString();
+      final expectedMilliseconds = testDateTime.millisecondsSinceEpoch
+          .toString();
+      final expectedMicroseconds = testDateTime.microsecondsSinceEpoch
+          .toString();
 
       // Test seconds serializer
       final secondsResult = DateFormat.seconds(testDateTime);

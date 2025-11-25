@@ -68,19 +68,17 @@ void main() {
 
     setUp(() {
       payload = PayloadFixture.factory.makeSingle();
-      response =
-          ResponseFixture.factory<Payload>()
-              .redefine(ResponseFixture.factory<Payload>().body(payload))
-              .makeSingle();
+      response = ResponseFixture.factory<Payload>()
+          .redefine(ResponseFixture.factory<Payload>().body(payload))
+          .makeSingle();
     });
 
     test('should return true when comparing two identical objects', () {
-      final http.Response base =
-          http_fixture.ResponseFixture.factory
-              .redefine(
-                http_fixture.ResponseFixture.factory.body(jsonEncode(payload)),
-              )
-              .makeSingle();
+      final http.Response base = http_fixture.ResponseFixture.factory
+          .redefine(
+            http_fixture.ResponseFixture.factory.body(jsonEncode(payload)),
+          )
+          .makeSingle();
 
       expect(
         Response<Payload>(base, payload),

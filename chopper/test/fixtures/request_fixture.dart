@@ -24,18 +24,16 @@ final class RequestFixtureFactory extends FixtureFactory<Request> {
         method,
         Uri.parse('/${faker.lorem.word()}'),
         Uri.https(faker.internet.domainName()),
-        headers:
-            faker.randomGenerator.boolean()
-                ? {'x-${faker.lorem.word()}': faker.lorem.word()}
-                : {},
-        parameters:
-            faker.randomGenerator.boolean()
-                ? {faker.lorem.word(): faker.lorem.word()}
-                : null,
+        headers: faker.randomGenerator.boolean()
+            ? {'x-${faker.lorem.word()}': faker.lorem.word()}
+            : {},
+        parameters: faker.randomGenerator.boolean()
+            ? {faker.lorem.word(): faker.lorem.word()}
+            : null,
         body:
             faker.randomGenerator.boolean() && ['POST', 'PUT'].contains(method)
-                ? jsonEncode({faker.lorem.word(): faker.lorem.sentences(10)})
-                : null,
+            ? jsonEncode({faker.lorem.word(): faker.lorem.sentences(10)})
+            : null,
       ),
     );
   }

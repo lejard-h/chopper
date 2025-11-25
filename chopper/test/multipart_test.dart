@@ -217,39 +217,39 @@ void main() {
     });
 
     test('PartValue', () async {
-      final req =
-          await Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            parts: [
-              const PartValue<String>('foo', 'bar'),
-              const PartValue<int>('int', 42),
-            ],
-          ).toMultipartRequest();
+      final req = await Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        parts: [
+          const PartValue<String>('foo', 'bar'),
+          const PartValue<int>('int', 42),
+        ],
+      ).toMultipartRequest();
 
       expect(req.fields['foo'], equals('bar'));
       expect(req.fields['int'], equals('42'));
     });
 
     test('PartFile', () async {
-      final req =
-          await Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            parts: [
-              const PartValueFile<String>('foo', 'test/multipart_test.dart'),
-              const PartValueFile<List<int>>('int', [1, 2]),
-            ],
-          ).toMultipartRequest();
+      final req = await Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        parts: [
+          const PartValueFile<String>('foo', 'test/multipart_test.dart'),
+          const PartValueFile<List<int>>('int', [1, 2]),
+        ],
+      ).toMultipartRequest();
 
       expect(
         req.files.firstWhere((f) => f.field == 'foo').filename,
         equals('multipart_test.dart'),
       );
-      final bytes =
-          await req.files.firstWhere((f) => f.field == 'int').finalize().first;
+      final bytes = await req.files
+          .firstWhere((f) => f.field == 'int')
+          .finalize()
+          .first;
       expect(bytes, equals([1, 2]));
     }, testOn: 'vm');
 
@@ -271,18 +271,17 @@ void main() {
     });
 
     test('Multipart request non nullable', () async {
-      final req =
-          await Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            parts: [
-              const PartValue<int>('int', 42),
-              const PartValueFile<List<int>>('list int', [1, 2]),
-              const PartValue('null value', null),
-              const PartValueFile('null file', null),
-            ],
-          ).toMultipartRequest();
+      final req = await Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        parts: [
+          const PartValue<int>('int', 42),
+          const PartValueFile<List<int>>('list int', [1, 2]),
+          const PartValue('null value', null),
+          const PartValueFile('null file', null),
+        ],
+      ).toMultipartRequest();
 
       expect(req.fields.length, equals(1));
       expect(req.fields['int'], equals('42'));
@@ -292,28 +291,27 @@ void main() {
     });
 
     test('PartValue with MultipartFile directly', () async {
-      final req =
-          await Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            parts: [
-              PartValue<http.MultipartFile>(
-                '',
-                http.MultipartFile.fromBytes('first', [
-                  1,
-                  2,
-                ], filename: 'list int 1'),
-              ),
-              PartValueFile<http.MultipartFile>(
-                '',
-                http.MultipartFile.fromBytes('second', [
-                  2,
-                  1,
-                ], filename: 'list int 2'),
-              ),
-            ],
-          ).toMultipartRequest();
+      final req = await Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        parts: [
+          PartValue<http.MultipartFile>(
+            '',
+            http.MultipartFile.fromBytes('first', [
+              1,
+              2,
+            ], filename: 'list int 1'),
+          ),
+          PartValueFile<http.MultipartFile>(
+            '',
+            http.MultipartFile.fromBytes('second', [
+              2,
+              1,
+            ], filename: 'list int 2'),
+          ),
+        ],
+      ).toMultipartRequest();
 
       final first = req.files[0];
       final second = req.files[1];
@@ -330,13 +328,12 @@ void main() {
 
     test('Throw exception', () async {
       expect(
-        () async =>
-            await Request(
-              HttpMethod.Post,
-              Uri.parse('https://foo/'),
-              Uri.parse(''),
-              parts: [const PartValueFile('', 123)],
-            ).toMultipartRequest(),
+        () async => await Request(
+          HttpMethod.Post,
+          Uri.parse('https://foo/'),
+          Uri.parse(''),
+          parts: [const PartValueFile('', 123)],
+        ).toMultipartRequest(),
         throwsA(isA<ArgumentError>()),
       );
     });
@@ -352,18 +349,17 @@ void main() {
         '''r237tw78re ei[04o2 ]de[qwlr;,mgrrt9ie0owp[ld;s,a.vfe[plre'q/sd;poeßšđčćž''',
       ];
 
-      final req =
-          await Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            parts: [
-              const PartValue<List<int>>('ints', ints),
-              const PartValue<List<double>>('doubles', doubles),
-              const PartValue<List<num>>('nums', nums),
-              const PartValue<List<String>>('strings', strings),
-            ],
-          ).toMultipartRequest();
+      final req = await Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        parts: [
+          const PartValue<List<int>>('ints', ints),
+          const PartValue<List<double>>('doubles', doubles),
+          const PartValue<List<num>>('nums', nums),
+          const PartValue<List<String>>('strings', strings),
+        ],
+      ).toMultipartRequest();
 
       expect(
         req.fields.length,
