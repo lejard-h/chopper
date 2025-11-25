@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.3.0
+
+- Update dependencies ([#690](https://github.com/lejard-h/chopper/pull/690))
+- Require Dart SDK 3.9.0 ([#690](https://github.com/lejard-h/chopper/pull/690))
+
 ## 3.2.0
 
 - Require Dart SDK 3.7.0 ([#683](https://github.com/lejard-h/chopper/pull/683))
