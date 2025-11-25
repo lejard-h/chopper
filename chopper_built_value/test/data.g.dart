@@ -244,8 +244,9 @@ class _$ErrorModel extends ErrorModel {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper(r'ErrorModel')
-      ..add('message', message)).toString();
+    return (newBuiltValueToStringHelper(
+      r'ErrorModel',
+    )..add('message', message)).toString();
   }
 }
 

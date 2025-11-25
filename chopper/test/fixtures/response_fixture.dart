@@ -13,8 +13,8 @@ extension ResponseFixture on Response {
 final class ResponseFixtureFactory<T> extends FixtureFactory<Response<T>> {
   @override
   FixtureDefinition<Response<T>> definition() {
-    final http.Response base =
-        http_fixture.ResponseFixture.factory.makeSingle();
+    final http.Response base = http_fixture.ResponseFixture.factory
+        .makeSingle();
 
     return define((Faker faker, [int index = 0]) => Response<T>(base, null));
   }

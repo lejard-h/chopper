@@ -879,10 +879,9 @@ final class _$HttpTestService extends HttpTestService {
           (_) => Future<Response<String>>.error(
             ChopperTimeoutException('Request timed out after 42 seconds'),
           ),
-          test:
-              (Object err) =>
-                  err is ChopperRequestAbortedException &&
-                  $abortTrigger.isCompleted,
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }
@@ -909,10 +908,9 @@ final class _$HttpTestService extends HttpTestService {
           (_) => Future<Response<String>>.error(
             ChopperTimeoutException('Request timed out'),
           ),
-          test:
-              (Object err) =>
-                  err is ChopperRequestAbortedException &&
-                  $abortTrigger.isCompleted,
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }
@@ -939,10 +937,9 @@ final class _$HttpTestService extends HttpTestService {
           (_) => Future<Response<String>>.error(
             ChopperTimeoutException('Request timed out'),
           ),
-          test:
-              (Object err) =>
-                  err is ChopperRequestAbortedException &&
-                  $abortTrigger.isCompleted,
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }
@@ -978,10 +975,9 @@ final class _$HttpTestService extends HttpTestService {
           (_) => Future<Response<String>>.error(
             ChopperTimeoutException('Request timed out after 30 seconds'),
           ),
-          test:
-              (Object err) =>
-                  err is ChopperRequestAbortedException &&
-                  $abortTrigger.isCompleted,
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }
