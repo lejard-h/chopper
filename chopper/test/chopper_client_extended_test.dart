@@ -215,11 +215,9 @@ void main() {
       final emittedRequest = await futureEmittedRequest.timeout(
         const Duration(seconds: 2),
         // Short timeout, event should be immediate after send's internal add
-        onTimeout:
-            () =>
-                throw TimeoutException(
-                  'onRequest.first timed out after send completed',
-                ),
+        onTimeout: () => throw TimeoutException(
+          'onRequest.first timed out after send completed',
+        ),
       );
       expect(emittedRequest.url.toString(), endsWith('/test'));
     });
@@ -248,11 +246,9 @@ void main() {
       final emittedResponse = await futureEmittedResponse.timeout(
         const Duration(seconds: 2),
         // Short timeout, event should be immediate after send completes
-        onTimeout:
-            () =>
-                throw TimeoutException(
-                  'onResponse.first timed out after send completed',
-                ),
+        onTimeout: () => throw TimeoutException(
+          'onResponse.first timed out after send completed',
+        ),
       );
 
       expect(emittedResponse.base.statusCode, 200);

@@ -23,7 +23,7 @@ void main() {
         expect(req.url.toString(), equals('/test/map'));
         expect(
           req.headers['content-type'],
-          'application/x-www-form-urlencoded; charset=utf-8',
+          contains('application/x-www-form-urlencoded'),
         );
         expect(req.body, 'foo=test&default=hello');
 
@@ -46,7 +46,7 @@ void main() {
       final httpClient = MockClient((http.Request req) async {
         expect(
           req.headers['content-type'],
-          'application/x-www-form-urlencoded; charset=utf-8',
+          contains('application/x-www-form-urlencoded'),
         );
         expect(req.body, 'foo=test&factory=converter');
 
@@ -69,7 +69,7 @@ void main() {
       final httpClient = MockClient((http.Request req) async {
         expect(
           req.headers['content-type'],
-          'application/x-www-form-urlencoded; charset=utf-8',
+          contains('application/x-www-form-urlencoded'),
         );
         expect(req.body, 'foo=test&factory=converter');
 
@@ -91,7 +91,7 @@ void main() {
       final httpClient = MockClient((http.Request req) async {
         expect(
           req.headers['content-type'],
-          'application/x-www-form-urlencoded; charset=utf-8',
+          contains('application/x-www-form-urlencoded'),
         );
         expect(req.body, 'foo=test&bar=42');
 

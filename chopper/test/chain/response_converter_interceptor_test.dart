@@ -56,8 +56,8 @@ void main() {
           interceptors: [
             ResponseConverterInterceptor(
               converter: converter,
-              responseConverter:
-                  (response) => response.copyWith(body: 'response converted'),
+              responseConverter: (response) =>
+                  response.copyWith(body: 'response converted'),
             ),
             ResponseInterceptor(),
           ],
@@ -120,8 +120,8 @@ void main() {
           interceptors: [
             ResponseConverterInterceptor(
               converter: converter,
-              responseConverter:
-                  (response) => response.copyWith(body: 'response converted'),
+              responseConverter: (response) =>
+                  response.copyWith(body: 'response converted'),
             ),
             ResponseInterceptor(
               response: Response<String>(

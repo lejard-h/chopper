@@ -725,26 +725,24 @@ void main() {
     });
 
     test('BodyBytes', () {
-      final request =
-          Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            body: [1, 2, 3],
-          ).toHttpRequest();
+      final request = Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        body: [1, 2, 3],
+      ).toHttpRequest();
 
       expect(request.bodyBytes, equals([1, 2, 3]));
     });
 
     test('BodyBytes does not have charset header', () {
-      final request =
-          Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            headers: {'authorization': 'Bearer fooBarBaz', 'x-foo': 'bar'},
-            body: kTransparentImage,
-          ).toHttpRequest();
+      final request = Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        headers: {'authorization': 'Bearer fooBarBaz', 'x-foo': 'bar'},
+        body: kTransparentImage,
+      ).toHttpRequest();
 
       expect(request.headers['authorization'], equals('Bearer fooBarBaz'));
       expect(request.headers['x-foo'], equals('bar'));
@@ -754,13 +752,12 @@ void main() {
     });
 
     test('BodyFields', () {
-      final request =
-          Request(
-            HttpMethod.Post,
-            Uri.parse('https://foo/'),
-            Uri.parse(''),
-            body: {'foo': 'bar'},
-          ).toHttpRequest();
+      final request = Request(
+        HttpMethod.Post,
+        Uri.parse('https://foo/'),
+        Uri.parse(''),
+        body: {'foo': 'bar'},
+      ).toHttpRequest();
 
       expect(request.bodyFields, equals({'foo': 'bar'}));
     });
@@ -1968,69 +1965,68 @@ void main() {
       httpClient.close();
     });
 
-    for (final ({DateTime dt, String expected, DateFormat fmt}) testCase in <
-      ({DateTime dt, DateFormat fmt, String expected})
-    >[
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.seconds,
-        expected:
-            '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch ~/ 1000}',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.unix,
-        expected:
-            '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch ~/ 1000}',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.milliseconds,
-        expected:
-            '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch}',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.microseconds,
-        expected:
-            '${DateTime.utc(2023, 1, 1, 12, 34, 56).microsecondsSinceEpoch}',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.utcIso8601,
-        expected: '2023-01-01T12%3A34%3A56.000Z',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.localIso8601,
-        expected: '2023-01-01T12%3A34%3A56.000',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.iso8601,
-        expected: '2023-01-01T12%3A34%3A56.000Z',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.rfc2822,
-        expected: 'Sun%2C%2001%20Jan%202023%2012%3A34%3A56%20GMT',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1),
-        fmt: DateFormat.date,
-        expected: '2023-01-01',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1),
-        fmt: DateFormat.time,
-        expected: '00%3A00%3A00',
-      ),
-      (
-        dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
-        fmt: DateFormat.string,
-        expected: '2023-01-01%2012%3A34%3A56.000Z',
-      ),
-    ]) {
+    for (final ({DateTime dt, String expected, DateFormat fmt}) testCase
+        in <({DateTime dt, DateFormat fmt, String expected})>[
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.seconds,
+            expected:
+                '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch ~/ 1000}',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.unix,
+            expected:
+                '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch ~/ 1000}',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.milliseconds,
+            expected:
+                '${DateTime.utc(2023, 1, 1, 12, 34, 56).millisecondsSinceEpoch}',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.microseconds,
+            expected:
+                '${DateTime.utc(2023, 1, 1, 12, 34, 56).microsecondsSinceEpoch}',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.utcIso8601,
+            expected: '2023-01-01T12%3A34%3A56.000Z',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.localIso8601,
+            expected: '2023-01-01T12%3A34%3A56.000',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.iso8601,
+            expected: '2023-01-01T12%3A34%3A56.000Z',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.rfc2822,
+            expected: 'Sun%2C%2001%20Jan%202023%2012%3A34%3A56%20GMT',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1),
+            fmt: DateFormat.date,
+            expected: '2023-01-01',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1),
+            fmt: DateFormat.time,
+            expected: '00%3A00%3A00',
+          ),
+          (
+            dt: DateTime.utc(2023, 1, 1, 12, 34, 56),
+            fmt: DateFormat.string,
+            expected: '2023-01-01%2012%3A34%3A56.000Z',
+          ),
+        ]) {
       test(
         'DateTime is encoded in URL query parameters using DateFormat.${testCase.fmt.name}',
         () async {
@@ -2054,15 +2050,15 @@ void main() {
               testCase.dt,
             ),
             DateFormat.unix => await service.getDateTimeFormatUnix(testCase.dt),
-            DateFormat.milliseconds => await service
-                .getDateTimeFormatMilliseconds(testCase.dt),
-            DateFormat.microseconds => await service
-                .getDateTimeFormatMicroseconds(testCase.dt),
+            DateFormat.milliseconds =>
+              await service.getDateTimeFormatMilliseconds(testCase.dt),
+            DateFormat.microseconds =>
+              await service.getDateTimeFormatMicroseconds(testCase.dt),
             DateFormat.utcIso8601 => await service.getDateTimeFormatUtcIso8601(
               testCase.dt,
             ),
-            DateFormat.localIso8601 => await service
-                .getDateTimeFormatLocalIso8601(testCase.dt),
+            DateFormat.localIso8601 =>
+              await service.getDateTimeFormatLocalIso8601(testCase.dt),
             DateFormat.iso8601 => await service.getDateTimeFormatIso8601(
               testCase.dt,
             ),

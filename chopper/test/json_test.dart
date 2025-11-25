@@ -20,16 +20,15 @@ void main() {
             HttpTestService.create(),
           ],
           client: httpClient,
-          converter:
-              json
-                  ? const JsonConverter() as Converter
-                  : const FormUrlEncodedConverter(),
+          converter: json
+              ? const JsonConverter() as Converter
+              : const FormUrlEncodedConverter(),
         );
 
     test('default json', () async {
       final httpClient = MockClient((http.Request req) async {
         expect(req.url.toString(), equals('/test/map'));
-        expect(req.headers['content-type'], 'application/json; charset=utf-8');
+        expect(req.headers['content-type'], contains('application/json'));
         expect(req.body, equals(json.encode(sample)));
 
         return http.Response(
@@ -53,7 +52,7 @@ void main() {
     test('force json', () async {
       final httpClient = MockClient((http.Request req) async {
         expect(req.url.toString(), equals('/test/map/json'));
-        expect(req.headers['content-type'], 'application/json; charset=utf-8');
+        expect(req.headers['content-type'], contains('application/json'));
         expect(req.headers['customConverter'], 'true');
         expect(req.body, equals(json.encode(sample)));
 

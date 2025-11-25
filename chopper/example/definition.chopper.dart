@@ -117,10 +117,9 @@ final class _$MyService extends MyService {
           (_) => Future<Response<dynamic>>.error(
             ChopperTimeoutException('Request timed out after 30 seconds'),
           ),
-          test:
-              (Object err) =>
-                  err is ChopperRequestAbortedException &&
-                  $abortTrigger.isCompleted,
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
         )
         .whenComplete($timeout.cancel);
   }

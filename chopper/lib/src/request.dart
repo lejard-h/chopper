@@ -117,19 +117,17 @@ base class Request extends http.BaseRequest
   }) {
     // If the request's url is already a fully qualified URL, we can use it
     // as-is and ignore the baseUrl.
-    final Uri uri =
-        url.isScheme('HTTP') || url.isScheme('HTTPS')
-            ? url
-            : _mergeUri(baseUrl, url);
+    final Uri uri = url.isScheme('HTTP') || url.isScheme('HTTPS')
+        ? url
+        : _mergeUri(baseUrl, url);
 
     // Check if parameter also has all the queryParameters from the url (not the merged uri)
     final bool parametersContainsUriQuery = parameters.keys.every(
       (element) => url.queryParametersAll.keys.contains(element),
     );
-    final Map<String, dynamic> allParameters =
-        parametersContainsUriQuery
-            ? parameters
-            : {...url.queryParametersAll, ...parameters};
+    final Map<String, dynamic> allParameters = parametersContainsUriQuery
+        ? parameters
+        : {...url.queryParametersAll, ...parameters};
 
     final String query = mapToQuery(
       allParameters,
@@ -145,10 +143,9 @@ base class Request extends http.BaseRequest
 
   /// Merges Uri into another Uri preserving queries and paths
   static Uri _mergeUri(Uri baseUri, Uri addToUri) {
-    final path =
-        baseUri.hasEmptyPath
-            ? addToUri.path
-            : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
+    final path = baseUri.hasEmptyPath
+        ? addToUri.path
+        : '${baseUri.path.rightStrip('/')}/${addToUri.path.leftStrip('/')}';
 
     return baseUri.replace(
       path: path,
