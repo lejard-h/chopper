@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.5.0
+
+- Allow `analyzer: ">=8.0.0 <10.0.0"` ([#690](https://github.com/lejard-h/chopper/pull/690))
+- Update dependencies ([#690](https://github.com/lejard-h/chopper/pull/690))
+- Require Dart SDK 3.9.0 ([#690](https://github.com/lejard-h/chopper/pull/690))
+
 ## 8.4.0
 
 - Add `@AbortTrigger` annotation and support for abortable requests ([#679](https://github.com/lejard-h/chopper/pull/679))
