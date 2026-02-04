@@ -1142,7 +1142,7 @@ final class ChopperGenerator
       },
       if (useQueries) 'parameters': refer(Vars.parameters.toString()),
       if (useHeaders) 'headers': refer(Vars.headers.toString()),
-      if (tagRefer != null) 'tag': tagRefer,
+      'tag': ?tagRefer,
       if (listFormat != null)
         'listFormat': refer('ListFormat').type.property(listFormat.name),
       if (useBrackets != null) 'useBrackets': literalBool(useBrackets),
@@ -1150,7 +1150,7 @@ final class ChopperGenerator
         'dateFormat': refer('DateFormat').type.property(dateFormat.name),
       if (includeNullQueryVars != null)
         'includeNullQueryVars': literalBool(includeNullQueryVars),
-      if (abortTriggerExpr != null) 'abortTrigger': abortTriggerExpr,
+      'abortTrigger': ?abortTriggerExpr,
     },
   );
 
