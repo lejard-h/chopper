@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.6.0
+
+- Allow `analyzer: ">=8.0.0 <11.0.0"` ([#699](https://github.com/lejard-h/chopper/pull/699))
+
 ## 8.5.0
 
 - Allow `analyzer: ">=8.0.0 <10.0.0"` ([#690](https://github.com/lejard-h/chopper/pull/690))
