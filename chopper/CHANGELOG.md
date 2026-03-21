@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.5.1
+
+- Update dependencies ([#703](https://github.com/lejard-h/chopper/pull/703))
+
 ## 8.5.0
 
 - Update dependencies ([#690](https://github.com/lejard-h/chopper/pull/690))
