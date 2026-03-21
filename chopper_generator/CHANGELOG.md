@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.6.1
+
+- Update dependencies ([#703](https://github.com/lejard-h/chopper/pull/703))
+
 ## 8.6.0
 
 - Allow `analyzer: ">=8.0.0 <11.0.0"` ([#699](https://github.com/lejard-h/chopper/pull/699))
