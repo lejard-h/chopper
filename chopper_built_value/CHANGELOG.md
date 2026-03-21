@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.1
+
+- Update dependencies ([#703](https://github.com/lejard-h/chopper/pull/703))
+
 ## 3.3.0
 
 - Update dependencies ([#690](https://github.com/lejard-h/chopper/pull/690))

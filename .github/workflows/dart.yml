@@ -1,4 +1,4 @@
-# Created with package:mono_repo v6.6.1
+# Created with package:mono_repo v6.6.3
 name: Dart CI
 on:
   push:
@@ -38,7 +38,7 @@ jobs:
         name: Checkout repository
         uses: actions/checkout@v6
       - name: mono_repo self validate
-        run: dart pub global activate mono_repo 6.6.1
+        run: dart pub global activate mono_repo 6.6.3
       - name: mono_repo self validate
         run: dart pub global run mono_repo generate --validate
   job_002:
@@ -139,6 +139,7 @@ jobs:
           files: chopper/coverage/lcov.info
           fail_ci_if_error: true
           name: coverage_00
+          token: "${{ secrets.CODECOV_TOKEN }}"
       - id: chopper_built_value_pub_upgrade
         name: chopper_built_value; dart pub upgrade
         run: dart pub upgrade
@@ -154,6 +155,7 @@ jobs:
           files: chopper_built_value/coverage/lcov.info
           fail_ci_if_error: true
           name: coverage_01
+          token: "${{ secrets.CODECOV_TOKEN }}"
       - id: chopper_generator_pub_upgrade
         name: chopper_generator; dart pub upgrade
         run: dart pub upgrade
@@ -169,6 +171,7 @@ jobs:
           files: chopper_generator/coverage/lcov.info
           fail_ci_if_error: true
           name: coverage_02
+          token: "${{ secrets.CODECOV_TOKEN }}"
     needs:
       - job_001
       - job_002
