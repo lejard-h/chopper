@@ -9,7 +9,8 @@ defaults:
     shell: bash
 env:
   PUB_ENVIRONMENT: bot.github
-permissions: read-all
+permissions:
+  contents: read
 
 jobs:
   get_base_version:
@@ -108,7 +109,7 @@ jobs:
       - name: Github release
         id: github_release
         if: ${{ env.IS_VERSION_GREATER == 1 }}
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           name: ${{ format('{0}-v{1}', matrix.package, env.THIS_VERSION) }}
           tag_name: ${{ format('{0}-v{1}', matrix.package, env.THIS_VERSION) }}
