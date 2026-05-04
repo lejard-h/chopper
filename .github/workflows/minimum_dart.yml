@@ -1,0 +1,103 @@
+name: Minimum Dart CI
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  PUB_ENVIRONMENT: bot.github
+
+permissions:
+  contents: read
+
+jobs:
+  minimum_dart:
+    name: "Minimum Dart (${{ matrix.package }}, ${{ matrix.platform }})"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: chopper
+            platform: vm
+          - package: chopper
+            platform: chrome
+          - package: chopper_built_value
+            platform: vm
+          - package: chopper_built_value
+            platform: chrome
+          - package: chopper_generator
+            platform: vm
+    steps:
+      - id: checkout
+        name: Checkout repository
+        uses: actions/checkout@v6
+      - id: read_min_dart
+        name: Read minimum Dart SDK from pubspec.yaml
+        run: |
+          set -euo pipefail
+
+          min_dart="$(yq -r '.environment.sdk | capture("(?<min>[0-9]+\.[0-9]+\.[0-9]+)").min' "${{ matrix.package }}/pubspec.yaml")"
+          if [[ -z "${min_dart}" ]]; then
+            echo 'failed to read minimum Dart SDK from ${{ matrix.package }}/pubspec.yaml' >&2
+            exit 1
+          fi
+          echo "min_dart=${min_dart}" >> "$GITHUB_OUTPUT"
+      - name: Cache Pub hosted dependencies
+        uses: actions/cache@v5
+        with:
+          path: "~/.pub-cache/hosted"
+          key: "os:ubuntu-latest;pub-cache-hosted;sdk:${{ steps.read_min_dart.outputs.min_dart }};packages:${{ matrix.package }};commands:analyze-test-${{ matrix.platform }}"
+          restore-keys: |
+            os:ubuntu-latest;pub-cache-hosted;sdk:${{ steps.read_min_dart.outputs.min_dart }};packages:${{ matrix.package }}
+            os:ubuntu-latest;pub-cache-hosted;sdk:${{ steps.read_min_dart.outputs.min_dart }}
+            os:ubuntu-latest;pub-cache-hosted
+            os:ubuntu-latest
+      - name: Setup Dart SDK
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: ${{ steps.read_min_dart.outputs.min_dart }}
+      - id: install
+        name: Install dependencies
+        working-directory: ${{ matrix.package }}
+        run: dart pub upgrade
+      - name: Analyze package
+        if: ${{ matrix.platform == 'vm' }}
+        working-directory: ${{ matrix.package }}
+        run: dart analyze .
+      - name: Run package tests in Chrome
+        if: ${{ matrix.platform == 'chrome' }}
+        working-directory: ${{ matrix.package }}
+        run: dart test -p chrome
+      - name: Run package tests on the VM
+        if: ${{ matrix.platform == 'vm' }}
+        working-directory: ${{ matrix.package }}
+        run: dart test
+  minimum_dart_required:
+    name: "Minimum Dart Required"
+    if: ${{ always() }}
+    needs:
+      - minimum_dart
+    runs-on: ubuntu-latest
+    env:
+      MINIMUM_DART_RESULT: ${{ needs.minimum_dart.result }}
+    steps:
+      - name: Verify required job result
+        run: |
+          set -euo pipefail
+
+          echo "minimum_dart: ${MINIMUM_DART_RESULT}"
+          if [[ "${MINIMUM_DART_RESULT}" != "success" ]]; then
+            echo "::error::minimum_dart finished with result '${MINIMUM_DART_RESULT}'"
+            exit 1
+          fi
