@@ -10,7 +10,7 @@ environment:
 dependencies:
   built_value: ^8.12.1
   built_collection: ^5.1.1
-  chopper: ^8.5.0
+  chopper: ^8.5.0  # TODO(@techouse): make sure to bump to the very latest version before release
   http: ^1.6.0
 
 dev_dependencies:
