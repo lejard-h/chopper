@@ -36,6 +36,56 @@ abstract interface class Converter {
   );
 }
 
+/// An interface for converting request parameters before the request is sent.
+///
+/// Implement this when values used by annotations like `@Query` need to be
+/// converted to their HTTP representation before query strings are encoded.
+@immutable
+abstract interface class ParameterConverter {
+  /// Converts [parameter] for the location described by [context].
+  Object? convertParameter(
+    Object? parameter,
+    ParameterConversionContext context,
+  );
+}
+
+/// Information about a parameter being converted.
+@immutable
+final class ParameterConversionContext {
+  /// Creates context for a parameter conversion.
+  const ParameterConversionContext({
+    required this.name,
+    required this.location,
+  });
+
+  /// Parameter name or path within a structured parameter value.
+  final String name;
+
+  /// Location where the parameter will be used in the request.
+  final ParameterLocation location;
+}
+
+/// Locations where request parameters can appear.
+///
+/// Currently only [query] is converted by Chopper. The remaining values are
+/// reserved for future parameter conversion support.
+enum ParameterLocation {
+  /// Query parameters passed with `@Query` or `@QueryMap`.
+  query,
+
+  /// Path parameters passed with `@Path`.
+  path,
+
+  /// Header parameters passed with `@Header`.
+  header,
+
+  /// Form fields passed with `@Field` or `@FieldMap`.
+  field,
+
+  /// Multipart parts passed with `@Part` or related annotations.
+  part,
+}
+
 /// An interface for implementing error response converters.
 ///
 /// An `ErrorConverter` is called only on error responses
