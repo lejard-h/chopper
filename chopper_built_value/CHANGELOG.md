@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.2-dev
+
+- Convert serializer-backed query parameters with `BuiltValueConverter`.
+
 ## 3.3.1
 
 - Update dependencies ([#703](https://github.com/lejard-h/chopper/pull/703))

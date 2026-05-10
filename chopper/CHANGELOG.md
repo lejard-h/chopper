@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.5.3-dev
+
+- Add `ParameterConverter` for converting query parameters before requests are sent.
+
 ## 8.5.2
 
 - Update dependencies ([#708](https://github.com/lejard-h/chopper/pull/708))

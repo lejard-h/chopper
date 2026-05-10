@@ -64,6 +64,24 @@ final converter = BuiltValueConverter(jsonSerializers);
 final client = ChopperClient(converter: converter);
 ```
 
+`BuiltValueConverter` also converts query parameters when used as the Chopper
+client's `converter`. This lets built_value enum classes use their wire names
+in URLs.
+
+```dart
+class VisitType extends EnumClass {
+  @BuiltValueEnumConst(wireName: 'face_to_face')
+  static const VisitType faceToFace = _$faceToFace;
+
+  static Serializer<VisitType> get serializer => _$visitTypeSerializer;
+}
+
+@Get(path: '/visits')
+Future<Response> visits(@Query('type') VisitType type);
+```
+
+Calling `visits(VisitType.faceToFace)` sends `type=face_to_face`.
+
 #### Error converter
 
 `BuiltValueConverter` is also an error converter. It will try to decode error response bodies using the `wireName` inside JSON `{"$":"ErrorModel"}`, if available.
@@ -75,6 +93,5 @@ final jsonSerializers = ...
 
 final converter = BuiltValueConverter(jsonSerializers, errorType: ErrorModel);
 ```
-
 
 
