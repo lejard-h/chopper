@@ -40,9 +40,19 @@ abstract interface class Converter {
 ///
 /// Implement this when values used by annotations like `@Query` need to be
 /// converted to their HTTP representation before query strings are encoded.
+///
+/// `convertParameter` is invoked **only for leaf values** during query
+/// parameter conversion. When a parameter value is a `Map` or an `Iterable`,
+/// Chopper recurses into it and calls `convertParameter` on each contained
+/// leaf, never on the container itself. As a result, implementers do not need
+/// to handle nested containers themselves — they only need to return the HTTP
+/// representation of an individual scalar value.
 @immutable
 abstract interface class ParameterConverter {
-  /// Converts [parameter] for the location described by [context].
+  /// Converts the leaf [parameter] for the location described by [context].
+  ///
+  /// This is never called with a `Map` or `Iterable` value; Chopper walks
+  /// those structures and invokes this method once per leaf.
   Object? convertParameter(
     Object? parameter,
     ParameterConversionContext context,
