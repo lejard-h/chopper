@@ -1,6 +1,7 @@
 part of 'request_converter_interceptor.dart';
 
 /// Stack frame used for iterative query parameter traversal.
+@immutable
 sealed class _ParameterConversionFrame {
   const _ParameterConversionFrame();
 
@@ -14,6 +15,7 @@ sealed class _ParameterConversionFrame {
       _ExitParameterConversionFrame;
 }
 
+@immutable
 final class _EnterParameterConversionFrame extends _ParameterConversionFrame {
   const _EnterParameterConversionFrame({
     required this.value,
@@ -26,6 +28,7 @@ final class _EnterParameterConversionFrame extends _ParameterConversionFrame {
   final void Function(Object? value) assign;
 }
 
+@immutable
 final class _ExitParameterConversionFrame extends _ParameterConversionFrame {
   const _ExitParameterConversionFrame(this.value);
 

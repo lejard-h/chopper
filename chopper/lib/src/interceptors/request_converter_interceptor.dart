@@ -10,6 +10,7 @@ import 'package:chopper/src/response.dart';
 import 'package:meta/meta.dart';
 
 part 'request_converter_interceptor_frames.dart';
+part 'request_converter_interceptor_conversion_result.dart';
 
 /// {@template RequestConverterInterceptor}
 /// Internal interceptor that converts query parameters with
@@ -67,22 +68,48 @@ class RequestConverterInterceptor implements InternalInterceptor {
   Request _convertQueryParameters(Request request) {
     final ParameterConverter? converter = _parameterConverter;
 
-    return converter == null || request.parameters.isEmpty
-        ? request
-        : request.copyWith(
-            parameters: convertQueryParameterMap(request.parameters, converter),
-          );
+    if (converter == null || request.parameters.isEmpty) {
+      return request;
+    }
+
+    final _ConversionResult result = _convertQueryParameterMap(
+      request.parameters,
+      converter,
+    );
+
+    // Avoid allocating a new Request when no leaf value actually changed.
+    return result.changed
+        ? request.copyWith(parameters: result.parameters)
+        : request;
   }
 }
 
 /// Converts query parameters before they are serialized to a query string.
+///
+/// Recurses into nested `Map` and `Iterable` values and calls
+/// [ParameterConverter.convertParameter] on each leaf, preserving the original
+/// nesting structure so that chopper's existing query encoder
+/// (`mapToQuery`, `ListFormat`, etc.) keeps working unchanged.
+///
+/// Nested maps are rebuilt as `Map<String, dynamic>`; non-`String` map keys
+/// are stringified via `toString()`, matching how chopper's query encoder
+/// already serializes them.
 @visibleForTesting
 Map<String, dynamic> convertQueryParameterMap(
+  Map<String, dynamic> parameters,
+  ParameterConverter converter,
+) => _convertQueryParameterMap(parameters, converter).parameters;
+
+/// Internal worker that also reports whether any leaf value was actually
+/// changed by [converter]. Used by [RequestConverterInterceptor] to avoid
+/// allocating a new [Request] when no leaf was modified.
+_ConversionResult _convertQueryParameterMap(
   Map<String, dynamic> parameters,
   ParameterConverter converter,
 ) {
   final Map<String, dynamic> converted = {};
   final HashSet<Object> activePath = HashSet<Object>.identity();
+  bool changed = false;
   final List<_ParameterConversionFrame> stack = [
     for (final MapEntry<String, dynamic> entry
         in parameters.entries.toList(growable: false).reversed)
@@ -109,10 +136,13 @@ Map<String, dynamic> convertQueryParameterMap(
 
     if (value is Map) {
       if (!activePath.add(value)) {
-        throw _cyclicQueryParameterValue(enterFrame.name);
+        throw _cyclicQueryParameterValue(
+          enterFrame.name,
+          ParameterLocation.query,
+        );
       }
 
-      final Map<dynamic, dynamic> childMap = {};
+      final Map<String, dynamic> childMap = {};
       enterFrame.assign(childMap);
       stack.add(_ParameterConversionFrame.exit(value));
 
@@ -121,12 +151,13 @@ Map<String, dynamic> convertQueryParameterMap(
       );
       for (int i = entries.length - 1; i >= 0; i--) {
         final MapEntry<dynamic, dynamic> entry = entries[i];
+        final String childKey = entry.key.toString();
         stack.add(
           _ParameterConversionFrame.enter(
             value: entry.value,
-            name: '${enterFrame.name}.${entry.key}',
+            name: '${enterFrame.name}.$childKey',
             assign: (value) {
-              childMap[entry.key] = value;
+              childMap[childKey] = value;
             },
           ),
         );
@@ -136,7 +167,10 @@ Map<String, dynamic> convertQueryParameterMap(
 
     if (value is Iterable) {
       if (!activePath.add(value)) {
-        throw _cyclicQueryParameterValue(enterFrame.name);
+        throw _cyclicQueryParameterValue(
+          enterFrame.name,
+          ParameterLocation.query,
+        );
       }
 
       final List<dynamic> values = value.toList(growable: false);
@@ -158,20 +192,25 @@ Map<String, dynamic> convertQueryParameterMap(
       continue;
     }
 
-    enterFrame.assign(
-      converter.convertParameter(
-        value,
-        ParameterConversionContext(
-          name: enterFrame.name,
-          location: ParameterLocation.query,
-        ),
+    final Object? convertedValue = converter.convertParameter(
+      value,
+      ParameterConversionContext(
+        name: enterFrame.name,
+        location: ParameterLocation.query,
       ),
     );
+    if (!identical(convertedValue, value)) {
+      changed = true;
+    }
+    enterFrame.assign(convertedValue);
   }
 
-  return converted;
+  return _ConversionResult(converted, changed);
 }
 
-/// Creates an [ArgumentError] for a cyclic query parameter value with the given [name].
-ArgumentError _cyclicQueryParameterValue(String name) =>
-    ArgumentError('Cyclic query parameter value at "$name".');
+/// Creates an [ArgumentError] for a cyclic query parameter value at [name]
+/// in the parameter [location].
+ArgumentError _cyclicQueryParameterValue(
+  String name,
+  ParameterLocation location,
+) => ArgumentError('Cyclic ${location.name} parameter value at "$name".');
