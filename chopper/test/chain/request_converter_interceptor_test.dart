@@ -208,6 +208,46 @@ void main() {
   });
 
   test(
+    'request is not reallocated when parameterConverter returns identical values',
+    () async {
+      final testRequest = Request(
+        'GET',
+        Uri.parse('/foo'),
+        Uri.parse('https://example.com'),
+        parameters: const {'value': 'plain'},
+      );
+      final parameterConverter = _IdentityParameterConverter();
+      interceptorChain = InterceptorChain(
+        interceptors: [
+          RequestConverterInterceptor(null, null, parameterConverter),
+          RequestInterceptor(
+            onRequest: (request) {
+              // The interceptor must observe the same Request instance because
+              // no leaf value actually changed.
+              expect(identical(request, testRequest), isTrue);
+            },
+          ),
+        ],
+        request: testRequest,
+      );
+
+      await interceptorChain.proceed(testRequest);
+
+      expect(parameterConverter.called, 1);
+    },
+  );
+
+  test('non-String nested map keys are stringified', () {
+    final converted = convertQueryParameterMap({
+      'filters': {1: const _ParameterValue('a'), 2: const _ParameterValue('b')},
+    }, _TestParameterConverter());
+
+    expect(converted, {
+      'filters': {'1': 'converted-a', '2': 'converted-b'},
+    });
+  });
+
+  test(
     'request body is not null and parts is empty, requestConverter is not provided, request is converted by converter',
     () async {
       final testRequest = Request(
@@ -349,6 +389,22 @@ class _TestParameterConverter implements ParameterConverter {
     called++;
     if (parameter is _ParameterValue) return 'converted-${parameter.value}';
 
+    return parameter;
+  }
+}
+
+// ignore: must_be_immutable
+class _IdentityParameterConverter implements ParameterConverter {
+  int called = 0;
+
+  @override
+  Object? convertParameter(
+    Object? parameter,
+    ParameterConversionContext context,
+  ) {
+    called++;
+    // Return the same reference — the interceptor must short-circuit and
+    // reuse the original Request.
     return parameter;
   }
 }
