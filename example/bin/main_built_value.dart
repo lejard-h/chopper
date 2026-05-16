@@ -48,10 +48,9 @@ Future<void> main() async {
   print('response 3: ${response3.body}');
 
   try {
-    final builder =
-        ResourceBuilder()
-          ..id = '3'
-          ..name = 'Super Name';
+    final builder = ResourceBuilder()
+      ..id = '3'
+      ..name = 'Super Name';
     await myService.newResource(builder.build());
   } on Response catch (error) {
     print(error.body);
