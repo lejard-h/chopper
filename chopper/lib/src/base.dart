@@ -27,6 +27,10 @@ base class ChopperClient {
   /// the request and response interceptors are called respectively.
   final Converter? converter;
 
+  /// The [ParameterConverter] that handles query parameter transformation
+  /// before request interceptors are called.
+  final ParameterConverter? parameterConverter;
+
   /// The [Authenticator] that can provide reactive authentication for a
   /// request.
   final Authenticator? authenticator;
@@ -83,13 +87,16 @@ base class ChopperClient {
   /// );
   /// ```
   ///
-  /// [Converter]s can be added to the client with the [converter]
-  /// parameter.
+  /// [Converter]s can be added to the client with the [converter] parameter.
   /// [Converter]s are used to convert the body of requests and responses to and
   /// from the HTTP format.
   ///
+  /// Query parameters can be converted with the [parameterConverter] parameter.
+  /// If omitted, [converter] is used when it implements [ParameterConverter].
+  ///
   /// A different converter can be used to handle error responses
-  /// (when [Response.isSuccessful] == false)) with tche [errorConverter] parameter.
+  /// (when [Response.isSuccessful] == false) with the [errorConverter]
+  /// parameter.
   ///
   /// See [Converter], [JsonConverter]
   ///
@@ -106,9 +113,15 @@ base class ChopperClient {
     this.interceptors = const [],
     this.authenticator,
     this.converter,
+    ParameterConverter? parameterConverter,
     this.errorConverter,
     Iterable<ChopperService>? services,
-  }) : assert(
+  }) : parameterConverter =
+           parameterConverter ??
+           (converter is ParameterConverter
+               ? converter as ParameterConverter
+               : null),
+       assert(
          baseUrl == null || !baseUrl.hasQuery,
          'baseUrl should not contain query parameters. '
          'Use a request interceptor to add default query parameters',

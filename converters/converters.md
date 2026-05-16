@@ -51,6 +51,21 @@ class MyConverter implements Converter {
 
 If `BodyType` is a `List` or a `BuiltList`, `InnerType` is the type of the generic parameter \(e.g., `convertResponse<List<CustomObject>, CustomObject>(response)`).
 
+## Parameter conversion
+
+Use `ParameterConverter` when query parameters need to be converted before the
+request URL is sent. This is useful for custom scalar types, such as generated
+enum classes with wire names.
+
+```dart
+final chopper = ChopperClient(
+  parameterConverter: MyParameterConverter(),
+);
+```
+
+If `parameterConverter` is not provided, Chopper will use `converter` when it
+also implements `ParameterConverter`.
+
 ## Using different converters for specific endpoints
 
 If you want to apply specific converters only to a single endpoint, you can do so by using the `@FactoryConverter` annotation:

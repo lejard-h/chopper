@@ -3,6 +3,7 @@ import 'package:built_value/standard_json_plugin.dart';
 import 'package:chopper/chopper.dart';
 import 'package:chopper_built_value/chopper_built_value.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:test/test.dart';
 
 import 'data.dart';
@@ -31,6 +32,79 @@ void main() {
       );
       request = converter.convertRequest(request);
       expect(request.body, '{"\$":"DataModel","id":42,"name":"foo"}');
+    });
+
+    test('convert query parameter with primitive serializer', () {
+      final parameter = converter.convertParameter(
+        VisitType.faceToFace,
+        const ParameterConversionContext(
+          name: 'visitType',
+          location: ParameterLocation.query,
+        ),
+      );
+
+      expect(parameter, 'face_to_face');
+    });
+
+    test('convert query parameter keeps built-in scalar values unchanged', () {
+      final dateTime = DateTime.utc(2026, 5, 10, 12, 30);
+      final uri = Uri.parse('https://foo/path');
+      final values = <Object?>[
+        null,
+        'faceToFace',
+        42,
+        4.2,
+        true,
+        dateTime,
+        const Duration(seconds: 42),
+        uri,
+        _DartVisitType.faceToFace,
+      ];
+
+      for (final value in values) {
+        final converted = converter.convertParameter(
+          value,
+          const ParameterConversionContext(
+            name: 'value',
+            location: ParameterLocation.query,
+          ),
+        );
+
+        expect(converted, same(value));
+      }
+    });
+
+    test('converts EnumClass query parameter in request URL', () async {
+      final httpClient = MockClient((request) async {
+        expect(request.url.queryParameters['visity_type'], 'face_to_face');
+
+        return http.Response('TestResponse', 200);
+      });
+      final client = ChopperClient(
+        baseUrl: Uri.parse('https://foo'),
+        client: httpClient,
+        converter: converter,
+      );
+
+      await client.get<String, String>(
+        Uri.parse('/api/v1/available_turn_schedules/42'),
+        parameters: {'visity_type': VisitType.faceToFace},
+      );
+
+      httpClient.close();
+    });
+
+    test('convert query parameter falls back when serializer is missing', () {
+      final parameter = Object();
+      final converted = converter.convertParameter(
+        parameter,
+        const ParameterConversionContext(
+          name: 'unknown',
+          location: ParameterLocation.query,
+        ),
+      );
+
+      expect(identical(converted, parameter), isTrue);
     });
 
     test('convert response with wireName', () async {
@@ -119,3 +193,5 @@ void main() {
     );
   });
 }
+
+enum _DartVisitType { faceToFace }
