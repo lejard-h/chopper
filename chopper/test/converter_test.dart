@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert' as dart_convert;
 
 import 'package:chopper/src/base.dart';
@@ -212,6 +213,24 @@ void main() {
                 contains('Map<String, String>'),
               )
               .having((e) => e.message, 'message', contains('List')),
+        ),
+      );
+    });
+
+    test('decode Map reports bad key type', () async {
+      final converter = _NonStringKeyJsonConverter();
+      final res = Response(http.Response('', 200), '');
+
+      await expectLater(
+        converter.decodeJson<Map<String, String>, String>(res),
+        throwsA(
+          isA<FormatException>()
+              .having(
+                (e) => e.message,
+                'message',
+                contains('response body key'),
+              )
+              .having((e) => e.message, 'message', contains('String')),
         ),
       );
     });
@@ -750,4 +769,9 @@ class _ConvertedError<T> {
   final T data;
 
   _ConvertedError(this.data);
+}
+
+class _NonStringKeyJsonConverter extends JsonConverter {
+  @override
+  FutureOr<dynamic> tryDecodeJson(String data) => {1: 'one'};
 }
