@@ -353,6 +353,13 @@ Extracted from the [full example here](example/lib/json_decode_service.dart).
 Using [json_serializable](https://pub.dev/packages/json_serializable) we'll create a [JsonConverter](https://github.com/lejard-h/chopper/blob/master/chopper/lib/src/interceptor.dart#L228)
 which works with or without a [WorkerPool](https://github.com/d-markey/squadron#features).
 
+When `JsonConverter` decodes directly into typed JSON collections, such as
+`Response<List<double>>` or `Response<Map<String, double>>`, Chopper can report
+the list index or map key that failed conversion. Model fields are decoded by
+your serializer factory, so enable `checked: true` for `json_serializable` to
+get `CheckedFromJsonException` errors with field context from generated
+`fromJson` methods.
+
 ```dart
 import 'dart:async' show FutureOr;
 import 'dart:convert' show jsonDecode;
