@@ -177,8 +177,8 @@ class JsonConverter implements Converter, ErrorConverter {
       );
     }
 
-    final result = <ItemType>[];
-    var index = 0;
+    final List<ItemType> result = [];
+    int index = 0;
     for (final item in body) {
       if (item is! ItemType) {
         throw FormatException(
@@ -202,7 +202,7 @@ class JsonConverter implements Converter, ErrorConverter {
       );
     }
 
-    final result = <String, ItemType>{};
+    final Map<String, ItemType> result = {};
     for (final entry in body.entries) {
       final key = entry.key;
       if (key is! String) {
