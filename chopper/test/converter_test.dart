@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert' as dart_convert;
 
 import 'package:chopper/src/base.dart';
@@ -96,6 +97,8 @@ void main() {
           .convertResponse<List<String>, String>(res);
 
       expect(converted.body, equals(['foo', 'bar']));
+      converted.body!.add('baz');
+      expect(converted.body, equals(['foo', 'bar', 'baz']));
     });
 
     test('decode List int', () async {
@@ -107,6 +110,62 @@ void main() {
       expect(converted.body, equals([1, 2]));
     });
 
+    test('decode Iterable String', () async {
+      final res = Response(
+        http.Response('["foo","bar"]', 200),
+        '["foo","bar"]',
+      );
+      final converted = await jsonConverter
+          .convertResponse<Iterable<String>, String>(res);
+
+      expect(converted.body, isA<List<String>>());
+      expect(converted.body, equals(['foo', 'bar']));
+    });
+
+    test('decode List reports bad item index', () async {
+      final res = Response(http.Response('["one"]', 200), '["one"]');
+
+      await expectLater(
+        jsonConverter.convertResponse<List<double>, double>(res),
+        throwsA(
+          isA<FormatException>()
+              .having((e) => e.message, 'message', contains('response body[0]'))
+              .having((e) => e.message, 'message', contains('double'))
+              .having((e) => e.message, 'message', contains('String')),
+        ),
+      );
+    });
+
+    test('decode List reports VM int/double mismatch', testOn: 'vm', () async {
+      final res = Response(http.Response('[1]', 200), '[1]');
+
+      await expectLater(
+        jsonConverter.convertResponse<List<double>, double>(res),
+        throwsA(
+          isA<FormatException>()
+              .having((e) => e.message, 'message', contains('response body[0]'))
+              .having((e) => e.message, 'message', contains('double'))
+              .having((e) => e.message, 'message', contains('int')),
+        ),
+      );
+    });
+
+    test('decode List reports wrong top-level shape', () async {
+      final res = Response(
+        http.Response('{"foo":"bar"}', 200),
+        '{"foo":"bar"}',
+      );
+
+      await expectLater(
+        jsonConverter.convertResponse<List<String>, String>(res),
+        throwsA(
+          isA<FormatException>()
+              .having((e) => e.message, 'message', contains('Iterable<String>'))
+              .having((e) => e.message, 'message', contains('Map')),
+        ),
+      );
+    });
+
     test('decode Map', () async {
       final res = Response(
         http.Response('{"foo":"bar"}', 200),
@@ -116,6 +175,64 @@ void main() {
           .convertResponse<Map<String, String>, String>(res);
 
       expect(converted.body, equals({'foo': 'bar'}));
+      converted.body!['baz'] = 'qux';
+      expect(converted.body, equals({'foo': 'bar', 'baz': 'qux'}));
+    });
+
+    test('decode Map reports bad field key', () async {
+      final res = Response(
+        http.Response('{"xxxx":"one"}', 200),
+        '{"xxxx":"one"}',
+      );
+
+      await expectLater(
+        jsonConverter.convertResponse<Map<String, double>, double>(res),
+        throwsA(
+          isA<FormatException>()
+              .having(
+                (e) => e.message,
+                'message',
+                contains('response body["xxxx"]'),
+              )
+              .having((e) => e.message, 'message', contains('double'))
+              .having((e) => e.message, 'message', contains('String')),
+        ),
+      );
+    });
+
+    test('decode Map reports wrong top-level shape', () async {
+      final res = Response(http.Response('["foo"]', 200), '["foo"]');
+
+      await expectLater(
+        jsonConverter.convertResponse<Map<String, String>, String>(res),
+        throwsA(
+          isA<FormatException>()
+              .having(
+                (e) => e.message,
+                'message',
+                contains('Map<String, String>'),
+              )
+              .having((e) => e.message, 'message', contains('List')),
+        ),
+      );
+    });
+
+    test('decode Map reports bad key type', () async {
+      final converter = _NonStringKeyJsonConverter();
+      final res = Response(http.Response('', 200), '');
+
+      await expectLater(
+        converter.decodeJson<Map<String, String>, String>(res),
+        throwsA(
+          isA<FormatException>()
+              .having(
+                (e) => e.message,
+                'message',
+                contains('response body key'),
+              )
+              .having((e) => e.message, 'message', contains('String')),
+        ),
+      );
     });
 
     test('decodeJson with bodyBytes and application/json content type', () async {
@@ -652,4 +769,9 @@ class _ConvertedError<T> {
   final T data;
 
   _ConvertedError(this.data);
+}
+
+class _NonStringKeyJsonConverter extends JsonConverter {
+  @override
+  FutureOr<dynamic> tryDecodeJson(String data) => {1: 'one'};
 }

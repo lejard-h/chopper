@@ -1,12 +1,13 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 part of 'json_decode_service.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 7.1.6 (Squadron 7.1.2+1)
+// Generator: WorkerGenerator 9.2.0 (Squadron 7.4.3)
 // **************************************************************************
 
+// dart format width=80
 /// Command ids used in operations map
 const int _$jsonDecodeId = 1;
 
@@ -35,6 +36,22 @@ mixin _$JsonDecodeService$Invoker on Invoker implements JsonDecodeService {
 /// Facade for JsonDecodeService, implements other details of the service unrelated to
 /// invoking the remote service.
 mixin _$JsonDecodeService$Facade implements JsonDecodeService {}
+
+/// WorkerClient for JsonDecodeService
+final class $JsonDecodeService$Client extends WorkerClient
+    with _$JsonDecodeService$Invoker, _$JsonDecodeService$Facade
+    implements JsonDecodeService {
+  $JsonDecodeService$Client(PlatformChannel channelInfo)
+    : super(Channel.deserialize(channelInfo)!);
+}
+
+/// Local worker extension for JsonDecodeService
+extension $JsonDecodeServiceLocalWorkerExt on JsonDecodeService {
+  // Get a fresh local worker instance.
+  LocalWorker<JsonDecodeService> getLocalWorker([
+    ExceptionManager? exceptionManager,
+  ]) => LocalWorker.create(this, _$getOperations(), exceptionManager);
+}
 
 /// WorkerService class for JsonDecodeService
 class _$JsonDecodeService$WorkerService extends JsonDecodeService
@@ -147,10 +164,6 @@ base class JsonDecodeServiceWorker
 
   @override
   bool get isStopped => _$worker.isStopped;
-
-  @override
-  // ignore: deprecated_member_use
-  WorkerStat get stats => _$worker.stats;
 
   @override
   WorkerStat getStats() => _$worker.getStats();
@@ -336,7 +349,7 @@ base class JsonDecodeServiceWorkerPool
   void cancel(Task task, [String? message]) => _$pool.cancel(task, message);
 
   @override
-  FutureOr<void> start() => _$pool.start();
+  Future<void> start() => _$pool.start();
 
   @override
   int stop([bool Function(JsonDecodeServiceWorker worker)? predicate]) =>

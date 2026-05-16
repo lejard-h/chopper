@@ -3,6 +3,7 @@
 ## 8.5.3-dev
 
 - Add `ParameterConverter` for converting query parameters before requests are sent.
+- Improve `JsonConverter` errors for typed JSON collection responses.
 
 ## 8.5.2
 

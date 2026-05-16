@@ -17,6 +17,6 @@ targets:
           # `JsonSerializableGenerator`.
           use_wrappers: false
           any_map: false
-          checked: false
+          checked: true
           explicit_to_json: true
           generate_to_json_function: true
