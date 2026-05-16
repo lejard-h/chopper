@@ -122,6 +122,20 @@ void main() {
     });
 
     test('decode List reports bad item index', () async {
+      final res = Response(http.Response('["one"]', 200), '["one"]');
+
+      await expectLater(
+        jsonConverter.convertResponse<List<double>, double>(res),
+        throwsA(
+          isA<FormatException>()
+              .having((e) => e.message, 'message', contains('response body[0]'))
+              .having((e) => e.message, 'message', contains('double'))
+              .having((e) => e.message, 'message', contains('String')),
+        ),
+      );
+    });
+
+    test('decode List reports VM int/double mismatch', testOn: 'vm', () async {
       final res = Response(http.Response('[1]', 200), '[1]');
 
       await expectLater(
@@ -165,7 +179,10 @@ void main() {
     });
 
     test('decode Map reports bad field key', () async {
-      final res = Response(http.Response('{"xxxx":1}', 200), '{"xxxx":1}');
+      final res = Response(
+        http.Response('{"xxxx":"one"}', 200),
+        '{"xxxx":"one"}',
+      );
 
       await expectLater(
         jsonConverter.convertResponse<Map<String, double>, double>(res),
@@ -177,7 +194,7 @@ void main() {
                 contains('response body["xxxx"]'),
               )
               .having((e) => e.message, 'message', contains('double'))
-              .having((e) => e.message, 'message', contains('int')),
+              .having((e) => e.message, 'message', contains('String')),
         ),
       );
     });
