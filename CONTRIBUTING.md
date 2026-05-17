@@ -11,13 +11,15 @@ related to the project.
 
 ## Dart version support
 
-Currently, the package supports Dart versions 3.0 and above. Once a new Dart version is released, we will aim to support
-it as soon as possible. If you encounter any issues with a new Dart version, please create an issue in the repository.
+Currently, the packages require Dart SDK 3.9.0 or newer, as declared in each package's `pubspec.yaml`. Once a new Dart
+version is released, we will aim to support it as soon as possible. If you encounter any issues with a new Dart version,
+please create an issue in the repository.
 
 ## Flutter support
 
-This package is designed to work with Flutter 3.10 and above. We prioritize and are dedicated to maintaining
-compatibility with these versions for a smooth user experience.
+For Flutter projects, use Flutter 3.35.0 or newer, which includes Dart SDK
+3.9.0 or newer. We prioritize maintaining compatibility with supported Dart and
+Flutter versions for a smooth user experience.
 
 ## Testing
 
@@ -79,8 +81,8 @@ more substantial modifications should follow a format similar to the example bel
 
 ```bash
 git commit -m "A brief summary of the commit
-> 
-> A paragraph describing what changed and its impact."
+
+A paragraph describing what changed and its impact."
 ```
 
 ## Coding standards
