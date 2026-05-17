@@ -80,8 +80,14 @@ base class Response<BodyType> with EquatableMixin {
   }
 
   /// Returns the response body if [Response] [isSuccessful] and [body] is not null.
-  /// Otherwise it throws an [HttpException] with the response status code and error object.
+  ///
+  /// Otherwise it throws a [ChopperHttpException] with the response status code and error object.
   /// If the error object is an [Exception], it will be thrown instead.
+  ///
+  /// Note: this also throws when the response is successful but [body] is `null`
+  /// (e.g. for no-content endpoints such as HTTP 204, or when the converter
+  /// produces a `null` body). For such endpoints prefer accessing [body]
+  /// directly instead of using [bodyOrThrow].
   BodyType get bodyOrThrow {
     if (isSuccessful && body != null) {
       return body!;
