@@ -2,24 +2,42 @@
 
 ## How does Chopper work?
 
-Due to limitations to Dart on Flutter and the Web browser, Chopper doesn't use reflection but code generation with the help of the [build](https://pub.dev/packages/build) and [source\_gen](https://pub.dev/packages/source_gen) packages from the Dart Team.
+Due to limitations in Dart on Flutter and the Web browser, Chopper doesn't use reflection. Instead, it uses code
+generation with the help of the [build](https://pub.dev/packages/build) and [source_gen](https://pub.dev/packages/source_gen) packages from the Dart Team.
 
 ## Installation
 
-Add the `chopper` and the `chopper_generator` packages to your project dependencies.
+Add `chopper` as a dependency and `chopper_generator` plus `build_runner` as development dependencies.
+
+For a Dart package, run:
+
+```bash
+dart pub add chopper
+dart pub add --dev build_runner chopper_generator
+```
+
+For a Flutter app, run:
+
+```bash
+flutter pub add chopper
+flutter pub add --dev build_runner chopper_generator
+```
+
+Or add them manually to your `pubspec.yaml`, using the latest versions from
+pub.dev:
 
 ```yaml
 # pubspec.yaml
 
 dependencies:
-  chopper: ^3.0.7
+  chopper: ^<latest version>
 
 dev_dependencies:
-  build_runner: ^1.12.1
-  chopper_generator: ^3.0.7
+  build_runner: ^<latest version>
+  chopper_generator: ^<latest version>
 ```
 
-Run `pub get` to start using Chopper in your project.
+Run `dart pub get` or `flutter pub get` to start using Chopper in your project.
 
 ## Define your API
 
@@ -38,14 +56,15 @@ part "YOUR_FILE.chopper.dart";
 
 @ChopperApi(baseUrl: "/todos")
 abstract class TodosListService extends ChopperService {
-
-  // A helper method that helps instantiating the service. You can omit this method and use the generated class directly instead.
-  static TodosListService create([ChopperClient? client]) => 
-      _$TodosListService(client);
+  // A helper method that helps instantiate the service. You can omit this
+  // method and use the generated class directly instead.
+  static TodosListService create([ChopperClient? client]) =>
+    _$TodosListService(client);
 }
 ```
 
-The `@ChopperApi` annotation takes one optional parameter - the `baseUrl` - that will prefix all the request's URLs defined in the class.
+The `@ChopperApi` annotation takes one optional parameter - the `baseUrl` - that
+will prefix all the request URLs defined in the class.
 
 > There's an exception from this behavior described in the [Requests](requests.md) section of the documentation.
 
@@ -53,9 +72,9 @@ The `@ChopperApi` annotation takes one optional parameter - the `baseUrl` - that
 
 Use one of the following annotations on abstract methods of a service class to define requests:
 
-* `@GET` 
+* `@GET`
 
-* `@POST` 
+* `@POST`
 
 * `@PUT`
 
@@ -65,11 +84,19 @@ Use one of the following annotations on abstract methods of a service class to d
 
 * `@HEAD`
 
-Request methods must return with values of the type `Future<Response>`, `Future<Response<SomeType>>` or `Future<SomeType>`.
-The `Response` class is a wrapper around the HTTP response that contains the response body, the status code and the error (if any) of the request.
-This class can be omitted if only the response body is needed. When omitting the `Response` class, the request will throw an exception if the response status code is not in the range of `< 200` to ` > 300`.
+* `@OPTIONS`
 
-To define a `GET` request to the endpoint `/todos` in the service class above, add one of the following method declarations to the class:
+Request methods must return values of the type `Future<Response>`, `Future<Response<SomeType>>` or `Future<SomeType>`.
+The `Response` class is a wrapper around the HTTP response that contains the response body, status code and error, if any.
+
+This class can be omitted if only a non-null response body is needed. When omitting the `Response` class, Chopper
+returns `response.bodyOrThrow`, so an unsuccessful response (`statusCode < 200 || statusCode >= 300`) throws the
+response error when it is an `Exception`, otherwise a `ChopperHttpException`. A successful response whose converted
+body is `null` also throws a `ChopperHttpException`; use `Future<Response<T>>` and read `response.body` directly for
+endpoints where a successful `null` body is expected, such as HTTP 204/no-content responses.
+
+To define a `GET` request to the endpoint `/todos` in the service class above, add one of the following method
+declarations to the class:
 
 ```dart
 @GET()
@@ -90,11 +117,13 @@ or
 Future<List<Todo>> getTodos();
 ```
 
-URL manipulation with dynamic path, and query parameters is also supported. To learn more about URL manipulation with Chopper, have a look at the [Requests](requests.md) section of the documentation. 
+URL manipulation with dynamic path and query parameters is also supported. To learn more, see the [Requests](requests.md)
+section of the documentation.
 
 ## Defining a ChopperClient
 
-After defining one or more `ChopperService`s, you need to bind instances of them to a `ChopperClient`. The `ChopperClient` provides the base URL for every service and it is also responsible for applying [interceptors](interceptors.md) and [converters](converters/converters.md) on the requests it handles.
+After defining one or more `ChopperService`s, bind instances of them to a `ChopperClient`. The `ChopperClient` provides
+the base URL for every service and is responsible for applying [interceptors](interceptors.md) and [converters](converters/converters.md) on the requests it handles.
 
 ```dart
 import "dart:async";
@@ -104,12 +133,12 @@ import 'YOUR_FILE.dart';
 
 void main() async {
   final chopper = ChopperClient(
-      baseUrl: "http://my-server:8000",
-      services: [
-        // Create and pass an instance of the generated service to the client
-        TodosListService.create()
-      ],
-    );
+    baseUrl: Uri.parse('http://my-server:8000'),
+    services: [
+      // Create and pass an instance of the generated service to the client
+      TodosListService.create()
+    ],
+  );
 
   /// Get a reference to the client-bound service instance...
   final todosService = chopper.getService<TodosListService>();
@@ -118,7 +147,7 @@ void main() async {
 
   /// Making a request is as easy as calling a function of the service.
   final response = await todosService.getTodos();
-  
+
   if (response.isSuccessful) {
     // Successful request
     final body = response.body;
@@ -130,4 +159,4 @@ void main() async {
 }
 ```
 
-Handling I/O and other exceptions should be done by surrounding requests with `try-catch` blocks.
+Handle I/O and other exceptions by surrounding requests with `try-catch` blocks.

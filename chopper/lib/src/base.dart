@@ -65,7 +65,7 @@ base class ChopperClient {
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///   baseUrl: Uri.parse('localhost:8000'),
+  ///   baseUrl: Uri.parse('http://localhost:8000'),
   ///   services: [
   ///     // Add a generated service
   ///     TodosListService.create()
@@ -139,7 +139,7 @@ base class ChopperClient {
   ///
   /// ```dart
   /// final chopper = ChopperClient(
-  ///   baseUrl: Uri.parse('localhost:8000'),
+  ///   baseUrl: Uri.parse('http://localhost:8000'),
   ///   services: [
   ///     // Add a generated service
   ///     TodosListService.create()
@@ -371,7 +371,7 @@ base mixin MockChopperClientMixin implements ChopperClient {}
 ///abstract class TodosListService extends ChopperService {
 ///
 /// // A helper method that helps instantiating your service
-/// static TodosListService create([ChopperClient client]) =>
+/// static TodosListService create([ChopperClient? client]) =>
 ///     _$TodosListService(client);
 ///}
 ///```

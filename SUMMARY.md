@@ -5,10 +5,10 @@
 * [Requests](requests.md)
 * [Interceptors](interceptors.md)
 * [FAQ](faq.md)
+* [CI Setup](docs/ci/ci_setup.md)
 * [API Reference](https://pub.dev/documentation/chopper/latest/)
 
 ## Converters
 
 * [Converters](converters/converters.md)
 * [Built Value Converter](converters/built-value-converter.md)
-
