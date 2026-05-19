@@ -2,28 +2,31 @@
 
 ## Available Request annotations
 
-| Annotation                                 | HTTP verb | Description                                            |
-|--------------------------------------------|-----------|--------------------------------------------------------|
-| `@GET()`, `@get`                           | `GET`     | Defines a `GET` request.                               |
-| `@POST()`, `@post`                         | `POST`    | Defines a `POST` request.                              |
-| `@PUT()`, `@put`                           | `PUT`     | Defines a `PUT` request.                               |
-| `@PATCH()`, `@patch`                       | `PATCH`   | Defines a `PATCH` request.                             |
-| `@DELETE()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                            |
-| `@HEAD()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                              |
-| `@Body()`, `@body`                         | -         | Defines the request's body.                            |
-| `@FormUrlEncoded`, `@formUrlEncoded`       | -         | Defines a `application/x-www-form-urlencoded` request. |
-| `@Multipart()`, `@multipart`               | -         | Defines a `multipart/form-data` request.               |         
-| `@Query()`, `@query`                       | -         | Defines a query parameter.                             |             
-| `@QueryMap()`, `@queryMap`                 | -         | Defines a query parameter map.                         |          
-| `@FactoryConverter()`, `@factoryConverter` | -         | Defines a request/response converter factory.          |  
-| `@Field()`, `@field`                       | -         | Defines a form field.                                  |             
-| `@FieldMap()`, `@fieldMap`                 | -         | Defines a form field map.                              |          
-| `@Part()`, `@part`                         | -         | Defines a multipart part.                              |              
-| `@PartMap()`, `@partMap`                   | -         | Defines a multipart part map.                          |           
-| `@PartFile()`, `@partFile`                 | -         | Defines a multipart file part.                         |          
-| `@PartFileMap()`, `@partFileMap`           | -         | Defines a multipart file part map.                     |
-| `@Tag`, `@tag`                             | -         | Defines a tag parameter.                               |              
-
+| Annotation                                 | HTTP verb | Description                                             |
+|--------------------------------------------|-----------|---------------------------------------------------------|
+| `@GET()`, `@get`                           | `GET`     | Defines a `GET` request.                                |
+| `@POST()`, `@post`                         | `POST`    | Defines a `POST` request.                               |
+| `@PUT()`, `@put`                           | `PUT`     | Defines a `PUT` request.                                |
+| `@PATCH()`, `@patch`                       | `PATCH`   | Defines a `PATCH` request.                              |
+| `@DELETE()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                             |
+| `@HEAD()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                               |
+| `@OPTIONS()`, `@options`                   | `OPTIONS` | Defines an `OPTIONS` request.                           |
+| `@Path()`, `@path`                         | -         | Defines a dynamic path parameter.                       |
+| `@Body()`, `@body`                         | -         | Defines the request's body.                             |
+| `@Header()`, `@header`                     | -         | Defines a dynamic request header.                       |
+| `@FormUrlEncoded()`, `@formUrlEncoded`     | -         | Defines an `application/x-www-form-urlencoded` request. |
+| `@Multipart()`, `@multipart`               | -         | Defines a `multipart/form-data` request.                |
+| `@Query()`, `@query`                       | -         | Defines a query parameter.                              |
+| `@QueryMap()`, `@queryMap`                 | -         | Defines a query parameter map.                          |
+| `@FactoryConverter()`, `@factoryConverter` | -         | Defines a request/response converter factory.           |
+| `@Field()`, `@field`                       | -         | Defines a form field.                                   |
+| `@FieldMap()`, `@fieldMap`                 | -         | Defines a form field map.                               |
+| `@Part()`, `@part`                         | -         | Defines a multipart part.                               |
+| `@PartMap()`, `@partMap`                   | -         | Defines a multipart part map.                           |
+| `@PartFile()`, `@partFile`                 | -         | Defines a multipart file part.                          |
+| `@PartFileMap()`, `@partFileMap`           | -         | Defines a multipart file part map.                      |
+| `@Tag()`, `@tag`                           | -         | Defines a tag parameter.                                |
+| `@AbortTrigger()`, `@abortTrigger`         | -         | Defines a request cancellation trigger.                 |
 
 ## Path resolution
 
@@ -37,20 +40,20 @@ Here are a few examples of the described behavior:
 
 | Variable   | URI                         |
 |------------|-----------------------------|
-| base URL   | https://example.com/        |  
+| base URL   | https://example.com/        |
 | Path       | profile                     |
 | **Result** | https://example.com/profile |
 
 | Variable         | URI                               |
 |------------------|-----------------------------------|
-| base URL         | https://example.com/              |  
+| base URL         | https://example.com/              |
 | Service base URL | profile                           |
 | Path             | /image                            |
 | **Result**       | https://example.com/profile/image |
 
 | Variable         | URI                               |
 |------------------|-----------------------------------|
-| base URL         | https://example.com/              |  
+| base URL         | https://example.com/              |
 | Service base URL | profile                           |
 | Path             | image                             |
 | **Result**       | https://example.com/profile/image |
@@ -63,7 +66,7 @@ is ignored.
 
 | Variable         | URI                         |
 |------------------|-----------------------------|
-| base URL         | https://example.com/        |  
+| base URL         | https://example.com/        |
 | Service base URL | https://api.github.com/     |
 | Path             | user                        |
 | **Result**       | https://api.github.com/user |
@@ -73,13 +76,13 @@ request.
 
 | Variable   | URI                         |
 |------------|-----------------------------|
-| base URL   | https://example.com/        |  
+| base URL   | https://example.com/        |
 | Path       | https://api.github.com/user |
 | **Result** | https://api.github.com/user |
 
 | Variable         | URI                         |
 |------------------|-----------------------------|
-| base URL         | https://example.com/        |  
+| base URL         | https://example.com/        |
 | Service base URL | profile                     |
 | Path             | https://api.github.com/user |
 | **Result**       | https://api.github.com/user |
@@ -132,6 +135,38 @@ If you prefer to pass a `Map` of query parameters, you can do so with the `@Quer
 Future<Response> search(@QueryMap() Map<String, dynamic> query);
 ```
 
+Chopper encodes nested query maps and iterables with `qs_dart`. Repeated query
+parameters are the default list format:
+
+```dart
+@GET(path: "/search")
+Future<Response> search(@Query("tag") List<String> tags);
+
+await service.search(["dart", "http"]);
+// /search?tag=dart&tag=http
+```
+
+Use the HTTP method annotation's `listFormat`, `dateFormat` and
+`includeNullQueryVars` options when an endpoint needs different query encoding:
+
+```dart
+@GET(
+  path: "/events",
+  listFormat: ListFormat.brackets,
+  dateFormat: DateFormat.date,
+  includeNullQueryVars: true,
+)
+Future<Response> events({
+  @Query("days") List<int?> days = const [1, null, 3],
+  @Query("from") required DateTime from,
+});
+```
+
+If a query value needs custom serialization before the URL is encoded, configure
+a `ParameterConverter` on the `ChopperClient`, or use a client converter that
+also implements `ParameterConverter`. Parameter conversion currently applies to
+query values only; query keys are left unchanged.
+
 ## Request body
 
 Use the `@Body` annotation on a request method parameter to specify data that will be sent as the request's body.
@@ -142,7 +177,7 @@ Future<Response> postData(@Body() String data);
 ```
 
 {% hint style="warning" %}
-Chopper does not automatically convert `Object`s to `Map`then `JSON`.
+Chopper does not automatically convert `Object`s to `Map` and then `JSON`.
 
 You have to pass a [Converter](converters/converters.md) instance to a `ChopperClient` for JSON conversion to happen.
 See [built\_value\_converter](converters/built-value-converter.md#built-value) for an example Converter implementation.
@@ -158,43 +193,42 @@ annotations have.
 Future<Response> fetch();
 ```
 
-The `@HEADer` annotation can be used on method parameters to set headers dynamically for each request call.
+The `@Header` annotation can be used on method parameters to set headers dynamically for each request call.
 
 ```dart
 @GET(path: "/")
-Future<Response> fetch(@HEADer("foo") String bar);
+Future<Response> fetch(@Header("foo") String bar);
 ```
 
 > Setting request headers dynamically is also supported by [Interceptors](interceptors.md)
 > and [Converters](converters/converters.md).
 >
 > As Chopper invokes Interceptors and Converter(s) *after* creating a Request, Interceptors and Converters *can*
-> override headers set with the `headers` parameter or `@HEADer` annotations.
+> override headers set with the `headers` parameter or `@Header` annotations.
 
 ## Sending `application/x-www-form-urlencoded` data
 
-If no Converter (neither on a `ChopperClient` nor with the `@FactoryConverter` annotation) or formUrlEncoded (`@FormUrlEncoded` annotation) is specified for a request
-and the request body is of type `Map<String, String>`, the body will be sent as form URL encoded data.
+If no converter is specified for a request (neither on the `ChopperClient` nor
+with `@FactoryConverter`) and the request body is a `Map<String, String>`, the
+body will be sent as form URL encoded data.
 
 > This is the default behavior of the http package.
 
 ### FormUrlEncoded annotation
 
-We recommend annotation `@formUrlEncoded` on method that will add the correct `content-type` and convert a `Map`
-into `Map<String, String>` for requests.
+Use `@FormUrlEncoded()` or `@formUrlEncoded` on a method to add the correct
+`content-type` and convert a `Map` into `Map<String, String>` for requests.
 
 ```dart
-@POST(
-  path: "form",
-)
-@formUrlEncoded
+@POST(path: "form")
+@FormUrlEncoded()
 Future<Response> postForm(@Body() Map<String, String> fields);
 ```
 
 ### FormUrlEncodedConverter
 
-you can also use `FormUrlEncodedConverter` that also will add the correct `content-type` and convert a `Map`
-into `Map<String, String>` for requests.
+You can also use `FormUrlEncodedConverter` to add the correct `content-type` and convert a `Map` into
+`Map<String, String>` for requests.
 
 ```dart
 
@@ -204,17 +238,15 @@ final chopper = ChopperClient(
 ```
 
 
-To do only a single type of request with form encoding in a service, use the provided `FormUrlEncodedConverter`'
-s `requestFactory` method with the `@FactoryConverter` annotation.
+To do only a single type of request with form encoding in a service, use the provided
+`FormUrlEncodedConverter.requestFactory` method with the `@FactoryConverter` annotation.
 
 ```dart
 @POST(
   path: "form",
   headers: {contentTypeKey: formEncodedHeaders},
 )
-@FactoryConverter(
-  request: FormUrlEncodedConverter.requestFactory,
-)
+@FactoryConverter(request: FormUrlEncodedConverter.requestFactory)
 Future<Response> postForm(@Body() Map<String, String> fields);
 ```
 
@@ -225,44 +257,56 @@ the parameter's name is used as the field's name.
 
 ```dart
 @POST(path: "form")
-@formUrlEncoded
+@FormUrlEncoded()
 Future<Response> post(@Field() String foo, @Field("b") int bar);
 ```
 
-## Sending files with `@multipart`
+## Sending files with `@Multipart`
 
 ### Sending a file in bytes as `List<int>` using `@PartFile`
 
 ```dart
 @POST(path: 'file')
-@multipart
-Future<Response> postFile(@PartFile('file') List<int> bytes,);
+@Multipart()
+Future<Response> postFile(@PartFile('file') List<int> bytes);
 ```
 
 ### Sending a file as `MultipartFile` using `@PartFile` with extra parameters via `@Part`
 
 ```dart
 @POST(path: 'file')
-@multipart
-Future<Response> postMultipartFile(@PartFile() MultipartFile file, {
-  @Part() String? id,
-});
+@Multipart()
+Future<Response> postMultipartFile(
+  @PartFile() MultipartFile file,
+  {
+    @Part() String? id,
+  },
+);
 ```
 
 ### Sending multiple files as `List<MultipartFile>` using `@PartFile`
 
 ```dart
 @POST(path: 'files')
-@multipart
+@Multipart()
 Future<Response> postListFiles(@PartFile() List<MultipartFile> files);
 ```
 
-## Defining Responses
+## Defining responses
 
-ChopperService methods need to return a `Future`. Its possible to define return types of `Future<Response>` or `Future<Response<T>>` where `T` is the type of the response body. 
-When `Response` is not needed for a request its also possible to define a return type of `Future<T>` where `T` is the type of the response body.
+ChopperService methods need to return a `Future`. It is possible to define
+return types of `Future<Response>` or `Future<Response<T>>` where `T` is the
+type of the response body. When `Response` is not needed for a request, it is
+also possible to define a return type of `Future<T>` where `T` is the type of
+the response body.
 
-Chopper will generate a client which will return the specified return type. When the method doesn't directly returns `Response` and the HTTP call fails a exception is thrown.
+Chopper will generate a client which returns the specified return type. When
+the method does not directly return `Response`, Chopper returns
+`response.bodyOrThrow`; unsuccessful responses throw the response error when it
+is an `Exception`, otherwise a `ChopperHttpException`. A successful response
+whose converted body is `null` also throws a `ChopperHttpException`; use
+`Future<Response<T>>` and read `response.body` directly for endpoints where a
+successful `null` body is expected, such as HTTP 204/no-content responses.
 
 ```dart
 // Returns a Response<dynamic>
@@ -278,33 +322,38 @@ Future<Response<MyClass>> fetch();
 Future<MyClass> fetch();
 ```
 
-> Note: Chopper doesn't convert response bodies by itself to dart object. You need to use a [Converter](converters/converters.md) for that.
+> Note: Chopper doesn't convert response bodies by itself to Dart objects. You need to use a [Converter](converters/converters.md) for that.
 
 ## Add tag
-`@Tag` parameter annotation for setting tag on the underlying Chopper `Request` object. These can be read
-in `Converter`s or `Interceptor`s for tracing, analytics, varying behavior, and more.
 
+Use the `@Tag()` parameter annotation to set `request.tag` on the underlying Chopper `Request`. Tags can be read in
+`Converter`s or `Interceptor`s for tracing, analytics, varying behavior, and more.
 
-if want to filter null value or empty String for some url. we can make an `IncludeBodyNullOrEmptyTag` Object as Tag.
+For example, a converter can use a tag to decide whether null or empty body values should be included for one request.
+
 ```dart
 class IncludeBodyNullOrEmptyTag {
-  bool includeNull = false;
-  bool includeEmpty = false;
+  const IncludeBodyNullOrEmptyTag({
+    this.includeNull = false,
+    this.includeEmpty = false,
+  });
 
-  IncludeBodyNullOrEmptyTag(this.includeNull, this.includeEmpty);
+  final bool includeNull;
+  final bool includeEmpty;
 }
 
-@get(path: '/include')
-Future<Response> includeBodyNullOrEmptyTag(
-    {@Tag()
-    IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag()});
+@GET(path: '/include')
+Future<Response> includeBodyNullOrEmptyTag({
+  @Tag() IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag(),
+});
 ```
 
-get tag via `request.tag` in `Converter` or `Interceptor`:
+Read the tag via `request.tag` in a `Converter` or `Interceptor`:
 
 ```dart
 class TagConverter extends JsonConverter {
-  FutureOr<Request> convertRequest(Request request) {
+  @override
+  Request convertRequest(Request request) {
     final tag = request.tag;
     if (tag is IncludeBodyNullOrEmptyTag) {
       if (request.body is Map) {
@@ -318,6 +367,7 @@ class TagConverter extends JsonConverter {
         request = request.copyWith(body: bodyCopy);
       }
     }
+    return super.convertRequest(request);
   }
 }
 ```

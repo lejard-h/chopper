@@ -6,7 +6,8 @@ import 'package:chopper/chopper.dart';
 
 /// A custom [Converter] and [ErrorConverter] that handles conversion for classes
 /// having a serializer implementation made with the built_value package.
-class BuiltValueConverter implements Converter, ErrorConverter {
+class BuiltValueConverter
+    implements Converter, ErrorConverter, ParameterConverter {
   final Serializers serializers;
   static const JsonConverter jsonConverter = JsonConverter();
   final Type? errorType;
@@ -54,6 +55,31 @@ class BuiltValueConverter implements Converter, ErrorConverter {
   Request convertRequest(Request request) => jsonConverter.convertRequest(
     request.copyWith(body: serializers.serialize(request.body)),
   );
+
+  @override
+  Object? convertParameter(
+    Object? parameter,
+    ParameterConversionContext context,
+  ) {
+    if (parameter == null ||
+        parameter is String ||
+        parameter is num ||
+        parameter is bool ||
+        parameter is DateTime ||
+        parameter is Duration ||
+        parameter is Uri ||
+        parameter is Enum) {
+      return parameter;
+    }
+
+    final Serializer<dynamic>? serializer = serializers.serializerForType(
+      parameter.runtimeType,
+    );
+
+    return serializer == null
+        ? parameter
+        : serializers.serializeWith(serializer, parameter);
+  }
 
   @override
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(

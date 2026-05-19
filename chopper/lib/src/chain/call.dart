@@ -35,7 +35,11 @@ class Call {
     ConvertResponse<BodyType>? responseConverter,
   ) async {
     final interceptors = <Interceptor>[
-      RequestConverterInterceptor(client.converter, requestConverter),
+      RequestConverterInterceptor(
+        client.converter,
+        requestConverter,
+        client.parameterConverter,
+      ),
       ...client.interceptors,
       RequestStreamInterceptor(requestCallback),
       if (client.authenticator != null)

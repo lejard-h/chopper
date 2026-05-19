@@ -16,3 +16,4 @@ chopper_generator/doc/
 .vscode/
 pubspec.temp.yaml
 .DS_Store
+.history

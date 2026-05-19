@@ -17,7 +17,7 @@ dependencies:
   chopper_built_value: ^<latest version>
 ```
 
-The latest version is [![pub package](https://img.shields.io/pub/v/chopper_built_value.svg)](https://pub.dartlang.org/packages/chopper_built_value).
+The latest version is [![pub package](https://img.shields.io/pub/v/chopper_built_value.svg)](https://pub.dev/packages/chopper_built_value).
 
 ## Getting started
 
@@ -52,7 +52,7 @@ See [built\_value documentation](https://pub.dev/packages/built_value) for more 
 
 Build a `BuiltValueConverter` by providing the `built_value` serializer collection.
 
-To use the created converter, pass it to `ChopperClient`'s `converter` constructor parameter. 
+To use the created converter, pass it to `ChopperClient`'s `converter` constructor parameter.
 
 ```dart
 final builder = serializers.toBuilder();
@@ -63,6 +63,24 @@ final converter = BuiltValueConverter(jsonSerializers);
 
 final client = ChopperClient(converter: converter);
 ```
+
+`BuiltValueConverter` also converts query parameters when passed as the Chopper
+client's `converter` or `parameterConverter`. This lets built_value enum classes
+use their wire names in URLs.
+
+```dart
+class VisitType extends EnumClass {
+  @BuiltValueEnumConst(wireName: 'face_to_face')
+  static const VisitType faceToFace = _$faceToFace;
+
+  static Serializer<VisitType> get serializer => _$visitTypeSerializer;
+}
+
+@GET(path: '/visits')
+Future<Response> visits(@Query('type') VisitType type);
+```
+
+Calling `visits(VisitType.faceToFace)` sends `type=face_to_face`.
 
 #### Error converter
 
@@ -75,6 +93,3 @@ final jsonSerializers = ...
 
 final converter = BuiltValueConverter(jsonSerializers, errorType: ErrorModel);
 ```
-
-
-

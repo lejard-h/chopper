@@ -13,7 +13,7 @@ import 'package:meta/meta_meta.dart';
 /// ```dart
 /// @ChopperApi(baseUrl: '/todos')
 /// abstract class TodosListService extends ChopperService {
-///   static TodosListService create([ChopperClient client]) =>
+///   static TodosListService create([ChopperClient? client]) =>
 ///       _$TodosListService(client);
 /// }
 /// ```
@@ -580,7 +580,7 @@ typedef ConvertResponse<T> = FutureOr<Response<T>> Function(Response response);
 /// ```dart
 /// @ChopperApi(baseUrl: '/todos')
 /// abstract class TodosListService extends ChopperService {
-///   static TodosListService create([ChopperClient client]) =>
+///   static TodosListService create([ChopperClient? client]) =>
 ///       _$TodosListService(client);
 ///
 ///   static FutureOr<Request> customRequestConverter(Request request) {
@@ -793,7 +793,7 @@ final class Tag {
 /// completion **aborts** the underlying HTTP request using `package:http`'s
 /// abortable support. When the future completes, the request is cancelled and
 /// a [http.RequestAbortedException] is thrown. See the http docs:
-/// https://pub.dev/documentation/http/1.5.0/http/Abortable/abortTrigger.html
+/// https://pub.dev/documentation/http/latest/http/Abortable/abortTrigger.html
 ///
 /// **Type**: `Future<void>` or `Future<void>?`
 ///
@@ -814,18 +814,25 @@ final class Tag {
 /// });
 ///
 /// final abort = Completer<void>();
+///
+/// // Keep a handle to the pending request future.
+/// final pending = api.download(
+///   id: '42',
+///   abortTrigger: abort.future,
+/// );
+///
+/// // Later (e.g. on user action), complete the trigger to abort the
+/// // in-flight request. This must happen before the HTTP request completes;
+/// // it can happen while another part of the app is already awaiting
+/// // `pending`.
+/// someUserActionStream.first.then((_) => abort.complete());
+///
 /// try {
-///   final res = await api.download(
-///     id: '42',
-///     abortTrigger: abort.future,
-///   );
+///   final res = await pending;
 ///   // consume res
 /// } on http.RequestAbortedException {
 ///   // user-initiated cancel
 /// }
-///
-/// // later (e.g. on user action):
-/// abort.complete();
 /// ```
 ///
 /// **Notes**
