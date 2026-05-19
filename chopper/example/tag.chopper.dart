@@ -20,7 +20,7 @@ final class _$TagService extends TagService {
 
   @override
   Future<Response<dynamic>> requestWithTag({BizTag tag = const BizTag()}) {
-    final Uri $url = Uri.parse('/tag');
+    final Uri $url = Uri.parse('/tag/bizRequest');
     final Request $request = Request('GET', $url, client.baseUrl, tag: tag);
     return client.send<dynamic, dynamic>($request);
   }
@@ -29,7 +29,7 @@ final class _$TagService extends TagService {
   Future<Response<dynamic>> includeBodyNullOrEmptyTag({
     IncludeBodyNullOrEmptyTag tag = const IncludeBodyNullOrEmptyTag(),
   }) {
-    final Uri $url = Uri.parse('/tag');
+    final Uri $url = Uri.parse('/tag/include');
     final Request $request = Request('GET', $url, client.baseUrl, tag: tag);
     return client.send<dynamic, dynamic>($request);
   }
