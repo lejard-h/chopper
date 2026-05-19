@@ -45,6 +45,11 @@ Use `StandardJsonPlugin` for normal JSON APIs unless the user's built_value setu
 Built value models still need normal built_value declarations, generated parts, and serializers.
 
 ```dart
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
+
+part 'todo.g.dart';
+
 abstract class Todo implements Built<Todo, TodoBuilder> {
   int get id;
   String get title;
@@ -75,14 +80,32 @@ Future<Response<BuiltList<Todo>>> listTodos();
 
 `BuiltValueConverter` also implements `ParameterConverter`. When passed as the client's `converter` or `parameterConverter`, built_value enum classes are serialized with their configured wire names.
 
+In the built_value model file:
+
 ```dart
+import 'package:built_collection/built_collection.dart';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
+
+part 'visit_type.g.dart';
+
 class VisitType extends EnumClass {
+  const VisitType._(super.name);
+
   @BuiltValueEnumConst(wireName: 'face_to_face')
   static const VisitType faceToFace = _$faceToFace;
 
+  static const VisitType phone = _$phone;
+
+  static BuiltSet<VisitType> get values => _$visitTypeValues;
+  static VisitType valueOf(String name) => _$visitTypeValueOf(name);
   static Serializer<VisitType> get serializer => _$visitTypeSerializer;
 }
+```
 
+In the Chopper service:
+
+```dart
 @GET(path: '/visits')
 Future<Response> visits(@Query('type') VisitType type);
 ```
