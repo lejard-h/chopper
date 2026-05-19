@@ -35,7 +35,7 @@ final chopper = ChopperClient(
 final users = chopper.getService<UsersService>();
 ```
 
-Use `Uri.parse(...)` for the client base URL. Mention custom `http.Client`only when the user needs transport customization, testing, certificates, timeouts at the socket layer, browser/native behavior, or platform clients.
+Use `Uri.parse(...)` for the client base URL. Mention custom `http.Client` only when the user needs transport customization, testing, certificates, timeouts at the socket layer, browser/native behavior, or platform clients.
 
 ## Request Annotations
 
