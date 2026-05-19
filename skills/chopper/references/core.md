@@ -84,8 +84,7 @@ When users want model instances, recommend one of:
 - A custom `Converter` that maps decoded JSON into models.
 - Endpoint-specific `@FactoryConverter` functions.
 - `chopper_built_value` for built_value models.
-- Manual mapping from `Response<Map<String, dynamic>>` or
-  `Response<List<dynamic>>` in application code for small cases.
+- Manual mapping from `Response<Map<String, dynamic>>` or `Response<List<dynamic>>` in application code for small cases.
 
 `@FactoryConverter` replaces the client-level converter for that endpoint direction when the request or response factory is non-null. If it needs JSON decoding first, call `JsonConverter` inside the factory.
 
@@ -137,6 +136,27 @@ Future<Response<String>> searchResources(
   @Query('starts_at') required DateTime startsAt,
   @AbortTrigger() Future<void>? abortTrigger,
 });
+```
+
+Keep the pending request future, pass the abort trigger, and complete it from the cancellation event.
+
+```dart
+final abort = Completer<void>();
+final pendingSearch = service.searchResources(
+  {
+    'labels': ['slow'],
+  },
+  startsAt: DateTime(2026, 5, 19),
+  abortTrigger: abort.future,
+);
+
+abort.complete();
+
+try {
+  await pendingSearch;
+} on ChopperRequestAbortedException {
+  // Handle cancellation.
+}
 ```
 
 For form URL encoded fields, prefer the explicit annotation plus fields when
