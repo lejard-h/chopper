@@ -25,6 +25,13 @@ flutter pub add --dev build_runner built_value_generator chopper_generator
 Build the converter from the generated `Serializers` collection and pass it to `ChopperClient`.
 
 ```dart
+import 'package:built_value/standard_json_plugin.dart';
+import 'package:chopper_built_value/chopper_built_value.dart';
+```
+
+Use the package `BuiltValueConverter`; do not copy an inline custom converter into user projects.
+
+```dart
 final jsonSerializers =
     (serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
 
@@ -103,14 +110,31 @@ class VisitType extends EnumClass {
 }
 ```
 
+Register all built_value models and enum classes that the converter must serialize or deserialize.
+
+```dart
+import 'package:built_value/serializer.dart';
+
+import 'error_model.dart';
+import 'todo.dart';
+import 'visit_type.dart';
+
+part 'serializers.g.dart';
+
+@SerializersFor([Todo, ErrorModel, VisitType])
+final Serializers serializers = _$serializers;
+```
+
 In the Chopper service:
 
 ```dart
-@GET(path: '/visits')
-Future<Response> visits(@Query('type') VisitType type);
+@GET(path: '/available')
+Future<Response<Todo>> getAvailableTodo(
+  @Query('visit_type') VisitType visitType,
+);
 ```
 
-Calling `visits(VisitType.faceToFace)` sends `type=face_to_face`.
+Calling `getAvailableTodo(VisitType.faceToFace)` sends `visit_type=face_to_face`.
 
 Parameter conversion applies to query values only, not keys. Nested maps/lists keep their shape and Chopper converts each leaf value.
 

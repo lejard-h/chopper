@@ -122,6 +122,35 @@ Pass it with `ChopperClient(parameterConverter: ApiParameterConverter())`. If no
 
 Parameter conversion currently applies to query parameter values only, not keys. Nested map/list query values keep their shape; Chopper converts each leaf value before encoding.
 
+## Request Feature Patterns
+
+Use `@QueryMap()` for structured query filters. Configure list and date encoding on the request annotation when the API expects a specific wire format. Use `@AbortTrigger()` for caller-driven cancellation.
+
+```dart
+@GET(
+  path: '/search',
+  listFormat: ListFormat.brackets,
+  dateFormat: DateFormat.date,
+)
+Future<Response<String>> searchResources(
+  @QueryMap() Map<String, dynamic> filters, {
+  @Query('starts_at') required DateTime startsAt,
+  @AbortTrigger() Future<void>? abortTrigger,
+});
+```
+
+For form URL encoded fields, prefer the explicit annotation plus fields when
+the endpoint is naturally field-based.
+
+```dart
+@POST(path: '/form')
+@FormUrlEncoded()
+Future<Response<String>> submitForm(
+  @Field('resource_id') String resourceId,
+  @Field() String action,
+);
+```
+
 ## Forms And Multipart
 
 For form URL encoded bodies, either use `FormUrlEncodedConverter` as the client converter or apply its request factory on the endpoint.
@@ -144,3 +173,36 @@ Future<Response> upload(@PartFile('file') List<int> bytes);
 
 Use interceptors for cross-cutting request/response behavior such as auth headers, logging, analytics, or base URL rewriting.
 Do not use interceptors as model converters; use `Converter`, `ErrorConverter`, or endpoint factories for body transformation.
+
+## Tags
+
+Use `@Tag()` for request metadata that should not be encoded into the HTTP request by the generated service. Interceptors and converters can read `request.tag`; interceptors should proceed with a copied request, not mutate headers in place.
+
+```dart
+class BizTag {
+  const BizTag({this.appId = 0});
+
+  final int appId;
+}
+
+class TagInterceptor implements Interceptor {
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) {
+    final request = chain.request;
+    final tag = request.tag;
+
+    if (tag is BizTag) {
+      return chain.proceed(
+        applyHeader(request, 'x-app-id', tag.appId.toString()),
+      );
+    }
+
+    return chain.proceed(request);
+  }
+}
+```
+
+```dart
+@GET(path: '/bizRequest')
+Future<Response> requestWithTag({@Tag() BizTag tag = const BizTag()});
+```
