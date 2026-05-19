@@ -6,9 +6,28 @@ part of 'built_value_resource.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+const VisitType _$faceToFace = const VisitType._('faceToFace');
+const VisitType _$phone = const VisitType._('phone');
+
+VisitType _$visitTypeValueOf(String name) {
+  switch (name) {
+    case 'faceToFace':
+      return _$faceToFace;
+    case 'phone':
+      return _$phone;
+    default:
+      throw ArgumentError(name);
+  }
+}
+
+final BuiltSet<VisitType> _$visitTypeValues = BuiltSet<VisitType>(
+  const <VisitType>[_$faceToFace, _$phone],
+);
+
 Serializer<Resource> _$resourceSerializer = _$ResourceSerializer();
 Serializer<ResourceError> _$resourceErrorSerializer =
     _$ResourceErrorSerializer();
+Serializer<VisitType> _$visitTypeSerializer = _$VisitTypeSerializer();
 
 class _$ResourceSerializer implements StructuredSerializer<Resource> {
   @override
@@ -129,6 +148,36 @@ class _$ResourceErrorSerializer implements StructuredSerializer<ResourceError> {
 
     return result.build();
   }
+}
+
+class _$VisitTypeSerializer implements PrimitiveSerializer<VisitType> {
+  static const Map<String, Object> _toWire = const <String, Object>{
+    'faceToFace': 'face_to_face',
+  };
+  static const Map<Object, String> _fromWire = const <Object, String>{
+    'face_to_face': 'faceToFace',
+  };
+
+  @override
+  final Iterable<Type> types = const <Type>[VisitType];
+  @override
+  final String wireName = 'VisitType';
+
+  @override
+  Object serialize(
+    Serializers serializers,
+    VisitType object, {
+    FullType specifiedType = FullType.unspecified,
+  }) => _toWire[object.name] ?? object.name;
+
+  @override
+  VisitType deserialize(
+    Serializers serializers,
+    Object serialized, {
+    FullType specifiedType = FullType.unspecified,
+  }) => VisitType.valueOf(
+    _fromWire[serialized] ?? (serialized is String ? serialized : ''),
+  );
 }
 
 class _$Resource extends Resource {

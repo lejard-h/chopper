@@ -27,11 +27,11 @@ check_style:
 
 code_gen:
 	@# Help: Run the build system for Dart code generation and modular compilation.
-	dart run build_runner build --delete-conflicting-outputs
+	dart run build_runner build
 
 code_gen_watcher:
 	@# Help: Run the build system for Dart code generation and modular compilation as a watcher.
-	dart run build_runner watch --delete-conflicting-outputs
+	dart run build_runner watch
 
 format:
 	@# Help: Format one or more Dart files.

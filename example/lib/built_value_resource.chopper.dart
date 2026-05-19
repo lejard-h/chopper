@@ -46,6 +46,21 @@ final class _$MyService extends MyService {
   }
 
   @override
+  Future<Response<Resource>> getAvailableResource(VisitType visitType) {
+    final Uri $url = Uri.parse('/resources/available');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'visit_type': visitType,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<Resource, Resource>($request);
+  }
+
+  @override
   Future<Response<Resource>> newResource(Resource resource, {String? name}) {
     final Uri $url = Uri.parse('/resources');
     final Map<String, String> $headers = {if (name != null) 'name': name};
