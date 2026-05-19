@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 part of 'built_value_resource.dart';
 
@@ -41,6 +41,21 @@ final class _$MyService extends MyService {
       $url,
       client.baseUrl,
       headers: $headers,
+    );
+    return client.send<Resource, Resource>($request);
+  }
+
+  @override
+  Future<Response<Resource>> getAvailableResource(VisitType visitType) {
+    final Uri $url = Uri.parse('/resources/available');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'visit_type': visitType,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
     );
     return client.send<Resource, Resource>($request);
   }

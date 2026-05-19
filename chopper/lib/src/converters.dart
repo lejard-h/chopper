@@ -36,6 +36,66 @@ abstract interface class Converter {
   );
 }
 
+/// An interface for converting request parameters before the request is sent.
+///
+/// Implement this when values used by annotations like `@Query` need to be
+/// converted to their HTTP representation before query strings are encoded.
+///
+/// `convertParameter` is invoked **only for leaf values** during query
+/// parameter conversion. When a parameter value is a `Map` or an `Iterable`,
+/// Chopper recurses into it and calls `convertParameter` on each contained
+/// leaf, never on the container itself. As a result, implementers do not need
+/// to handle nested containers themselves — they only need to return the HTTP
+/// representation of an individual scalar value.
+@immutable
+abstract interface class ParameterConverter {
+  /// Converts the leaf [parameter] for the location described by [context].
+  ///
+  /// This is never called with a `Map` or `Iterable` value; Chopper walks
+  /// those structures and invokes this method once per leaf.
+  Object? convertParameter(
+    Object? parameter,
+    ParameterConversionContext context,
+  );
+}
+
+/// Information about a parameter being converted.
+@immutable
+final class ParameterConversionContext {
+  /// Creates context for a parameter conversion.
+  const ParameterConversionContext({
+    required this.name,
+    required this.location,
+  });
+
+  /// Parameter name or path within a structured parameter value.
+  final String name;
+
+  /// Location where the parameter will be used in the request.
+  final ParameterLocation location;
+}
+
+/// Locations where request parameters can appear.
+///
+/// Currently only [query] is converted by Chopper. The remaining values are
+/// reserved for future parameter conversion support.
+enum ParameterLocation {
+  /// Query parameters passed with `@Query` or `@QueryMap`.
+  query,
+
+  /// Path parameters passed with `@Path`.
+  path,
+
+  /// Header parameters passed with `@Header`.
+  header,
+
+  /// Form fields passed with `@Field` or `@FieldMap`.
+  field,
+
+  /// Multipart parts passed with `@Part` or related annotations.
+  part,
+}
+
 /// An interface for implementing error response converters.
 ///
 /// An `ErrorConverter` is called only on error responses
@@ -101,13 +161,78 @@ class JsonConverter implements Converter, ErrorConverter {
 
     body = await tryDecodeJson(body);
     if (isTypeOf<BodyType, Iterable<InnerType>>()) {
-      body = body.cast<InnerType>();
+      body = _decodeList<InnerType>(body);
     } else if (isTypeOf<BodyType, Map<String, InnerType>>()) {
-      body = body.cast<String, InnerType>();
+      body = _decodeMap<InnerType>(body);
     }
 
     return response.copyWith<BodyType>(body: body);
   }
+
+  static List<ItemType> _decodeList<ItemType>(Object? body) {
+    if (body is! Iterable) {
+      throw FormatException(
+        'JsonConverter expected response body to be Iterable<$ItemType>, '
+        'but got ${_typeName(body)}.',
+      );
+    }
+
+    final List<ItemType> result = [];
+    int index = 0;
+    for (final item in body) {
+      if (item is! ItemType) {
+        throw FormatException(
+          'JsonConverter expected response body[$index] to be $ItemType, '
+          'but got ${_typeName(item)}.',
+        );
+      }
+
+      result.add(item);
+      index++;
+    }
+
+    return result;
+  }
+
+  static Map<String, ItemType> _decodeMap<ItemType>(Object? body) {
+    if (body is! Map) {
+      throw FormatException(
+        'JsonConverter expected response body to be Map<String, $ItemType>, '
+        'but got ${_typeName(body)}.',
+      );
+    }
+
+    final Map<String, ItemType> result = {};
+    for (final entry in body.entries) {
+      final key = entry.key;
+      if (key is! String) {
+        throw FormatException(
+          'JsonConverter expected response body key to be String, '
+          'but got ${_typeName(key)}.',
+        );
+      }
+
+      final value = entry.value;
+      if (value is! ItemType) {
+        throw FormatException(
+          'JsonConverter expected response body[${json.encode(key)}] '
+          'to be $ItemType, but got ${_typeName(value)}.',
+        );
+      }
+
+      result[key] = value;
+    }
+
+    return result;
+  }
+
+  static String _typeName(Object? value) => switch (value) {
+    null => 'Null',
+    Map() => 'Map',
+    List() => 'List',
+    Iterable() => 'Iterable',
+    _ => value.runtimeType.toString(),
+  };
 
   @override
   FutureOr<Response<BodyType>> convertResponse<BodyType, InnerType>(

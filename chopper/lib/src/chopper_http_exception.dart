@@ -1,7 +1,13 @@
 import 'package:chopper/src/response.dart';
 
 /// {@template ChopperHttpException}
-/// An exception thrown when a [Response] is unsuccessful < 200 or > 300.
+/// An exception thrown when a [Response] cannot satisfy
+/// [Response.bodyOrThrow] and [Response.error] is not an [Exception].
+///
+/// This can happen for unsuccessful responses (`statusCode < 200 ||
+/// statusCode >= 300`) with no error or a non-[Exception] error, and for
+/// successful responses whose [Response.body] is `null`. If [Response.error]
+/// is an [Exception], [Response.bodyOrThrow] throws that error instead.
 /// {@endtemplate}
 class ChopperHttpException implements Exception {
   /// {@macro ChopperHttpException}

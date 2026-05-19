@@ -11,7 +11,7 @@ targets:
           # For usage information, reference the corresponding field in
           # `JsonSerializableGenerator`.
           any_map: false
-          checked: false
+          checked: true
           explicit_to_json: true
           create_to_json: true
       squadron_builder:worker_builder:

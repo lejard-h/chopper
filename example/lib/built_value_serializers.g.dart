@@ -9,7 +9,8 @@ part of 'built_value_serializers.dart';
 Serializers _$serializers =
     (Serializers().toBuilder()
           ..add(Resource.serializer)
-          ..add(ResourceError.serializer))
+          ..add(ResourceError.serializer)
+          ..add(VisitType.serializer))
         .build();
 
 // ignore_for_file: deprecated_member_use_from_same_package,type=lint

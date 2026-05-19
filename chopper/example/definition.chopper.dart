@@ -52,8 +52,17 @@ final class _$MyService extends MyService {
   @override
   Future<Response<dynamic>> postResourceUrlEncoded(String toto, String b) {
     final Uri $url = Uri.parse('/resources/');
-    final $body = <String, dynamic>{'a': toto, 'b': b};
-    final Request $request = Request('POST', $url, client.baseUrl, body: $body);
+    final Map<String, String> $headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+    };
+    final $body = <String, String>{'a': toto.toString(), 'b': b.toString()};
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
     return client.send<dynamic, dynamic>($request);
   }
 
@@ -83,7 +92,7 @@ final class _$MyService extends MyService {
   Future<Response<dynamic>> postFile(List<int> bytes) {
     final Uri $url = Uri.parse('/resources/file');
     final List<PartValue> $parts = <PartValue>[
-      PartValue<List<int>>('file', bytes),
+      PartValueFile<List<int>>('file', bytes),
     ];
     final Request $request = Request(
       'POST',
