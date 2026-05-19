@@ -36,6 +36,21 @@ abstract class ResourceError
   ResourceError._();
 }
 
+class VisitType extends EnumClass {
+  const VisitType._(super.name);
+
+  @BuiltValueEnumConst(wireName: 'face_to_face')
+  static const VisitType faceToFace = _$faceToFace;
+
+  static const VisitType phone = _$phone;
+
+  static BuiltSet<VisitType> get values => _$visitTypeValues;
+
+  static VisitType valueOf(String name) => _$visitTypeValueOf(name);
+
+  static Serializer<VisitType> get serializer => _$visitTypeSerializer;
+}
+
 @ChopperApi(baseUrl: '/resources')
 abstract class MyService extends ChopperService {
   static MyService create([ChopperClient? client]) => _$MyService(client);
@@ -48,6 +63,11 @@ abstract class MyService extends ChopperService {
 
   @GET(path: '/', headers: {'foo': 'bar'})
   Future<Response<Resource>> getTypedResource();
+
+  @GET(path: '/available')
+  Future<Response<Resource>> getAvailableResource(
+    @Query('visit_type') VisitType visitType,
+  );
 
   @POST()
   Future<Response<Resource>> newResource(

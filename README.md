@@ -25,6 +25,7 @@ Please refer to the installation guide at [pub.dev](https://pub.dev/packages/cho
 
 * [json serializable Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_json_serializable.dart)
 * [built value Converter](https://github.com/lejard-h/chopper/blob/master/example/bin/main_built_value.dart)
+* [request features](https://github.com/lejard-h/chopper/blob/master/example/bin/main_request_features.dart)
 
 ## [Issue Tracker](https://github.com/lejard-h/chopper/issues)
 

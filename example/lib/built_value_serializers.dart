@@ -6,6 +6,6 @@ import 'built_value_resource.dart';
 
 part 'built_value_serializers.g.dart';
 
-/// Collection of generated serializers for the built_value chat example.
-@SerializersFor([Resource, ResourceError])
+/// Collection of generated serializers for the built_value Chopper example.
+@SerializersFor([Resource, ResourceError, VisitType])
 final Serializers serializers = _$serializers;

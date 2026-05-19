@@ -6,34 +6,35 @@ part 'definition.chopper.dart';
 
 @ChopperApi(baseUrl: '/resources')
 abstract class MyService extends ChopperService {
-  static MyService create(ChopperClient client) => _$MyService(client);
+  static MyService create([ChopperClient? client]) => _$MyService(client);
 
-  @Get(path: '/{id}')
+  @GET(path: '/{id}')
   Future<Response> getResource(@Path() String id);
 
-  @Get(path: '/', headers: {'foo': 'bar'})
+  @GET(path: '/', headers: {'foo': 'bar'})
   Future<Response<Map>> getMapResource(@Query() String id);
 
-  @Get(path: '/resources')
+  @GET(path: '/resources')
   Future<Response<List<Map>>> getListResources();
 
-  @Post(path: '/')
+  @POST(path: '/')
+  @FormUrlEncoded()
   Future<Response> postResourceUrlEncoded(
     @Field('a') String toto,
     @Field() String b,
   );
 
-  @Post(path: '/multi')
-  @multipart
+  @POST(path: '/multi')
+  @Multipart()
   Future<Response> postResources(
     @Part('1') Map a,
     @Part('2') Map b,
     @Part('3') String c,
   );
 
-  @Post(path: '/file')
-  @multipart
-  Future<Response> postFile(@Part('file') List<int> bytes);
+  @POST(path: '/file')
+  @Multipart()
+  Future<Response> postFile(@PartFile('file') List<int> bytes);
 
   @GET(path: '/assets/10GB.bin', timeout: Duration(seconds: 30))
   Future<Response> getMassiveFile();

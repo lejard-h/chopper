@@ -1,6 +1,7 @@
 name: chopper_example
 description: Example usage of the Chopper package
-version: 0.0.7
+version: 0.0.8
+publish_to: none
 documentation: https://hadrien-lejard.gitbook.io/chopper/
 #author: Hadrien Lejard <hadrien.lejard@gmail.com>
 
@@ -8,7 +9,8 @@ environment:
   sdk: ^3.9.0
 
 dependencies:
-  chopper: ^8.5.2
+  chopper:
+  chopper_built_value:
   json_annotation: ^4.12.0
   built_value: ^8.11.0
   analyzer: ">=8.0.0 <14.0.0"
@@ -28,7 +30,9 @@ dev_dependencies:
   squadron_builder: ^9.2.0
 
 dependency_overrides:
- chopper:
-   path: ../chopper
- chopper_generator:
-   path: ../chopper_generator
+  chopper:
+    path: ../chopper
+  chopper_built_value:
+    path: ../chopper_built_value
+  chopper_generator:
+    path: ../chopper_generator
