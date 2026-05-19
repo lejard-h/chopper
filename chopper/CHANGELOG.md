@@ -1,9 +1,12 @@
 # Changelog
 
-## 8.5.3-dev
+## 8.6.0
 
-- Add `ParameterConverter` for converting query parameters before requests are sent.
-- Improve `JsonConverter` errors for typed JSON collection responses.
+- Add `ParameterConverter` for converting query parameters before requests are sent ([#712](https://github.com/lejard-h/chopper/pull/712))
+- Improve `JsonConverter` errors for typed JSON collection responses ([#713](https://github.com/lejard-h/chopper/pull/713))
+- Update documentation and code comments ([#714](https://github.com/lejard-h/chopper/pull/714))
+- Add user-facing agentic skill ([#715](https://github.com/lejard-h/chopper/pull/715))
+- Enhance examples ([#716](https://github.com/lejard-h/chopper/pull/716))
 
 ## 8.5.2
 
