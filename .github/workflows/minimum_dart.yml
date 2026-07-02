@@ -41,7 +41,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - id: read_min_dart
         name: Read minimum Dart SDK from pubspec.yaml
         run: |
