@@ -110,7 +110,7 @@ final class QueryMap {
 }
 
 /// {@template Body}
-/// Declares the Body of [POST], [PUT], and [PATCH] requests
+/// Declares the Body of [QUERY], [POST], [PUT], and [PATCH] requests
 ///
 /// ```dart
 /// @POST()
@@ -158,7 +158,8 @@ final class Header {
 /// Must be used inside a [ChopperApi] definition.
 ///
 /// Recommended:
-/// [GET], [POST], [PUT], [DELETE], [PATCH], or [HEAD] should be used instead.
+/// [GET], [QUERY], [POST], [PUT], [DELETE], [PATCH], [HEAD], or [OPTIONS]
+/// should be used instead.
 ///
 /// ```dart
 /// @GET(headers: const {'foo': 'bar' })
@@ -302,6 +303,36 @@ final class Get extends GET {
     super.includeNullQueryVars,
     super.timeout,
   });
+}
+
+/// {@template QUERY}
+/// Defines a method as an HTTP QUERY request.
+///
+/// QUERY is distinct from GET with a body. It asks the target resource to
+/// process the enclosed content in a safe and idempotent manner, as defined by
+/// [RFC 10008](https://www.rfc-editor.org/rfc/rfc10008.html).
+///
+/// Use the [Body] annotation to provide the query content. The request must
+/// have a `Content-Type` header consistent with that content. Redirect, retry,
+/// cache, and CORS behavior is determined by the configured HTTP client.
+/// {@endtemplate}
+@immutable
+@Target({TargetKind.method})
+final class QUERY extends Method {
+  /// {@macro QUERY}
+  const QUERY({
+    super.optionalBody,
+    super.path,
+    super.headers,
+    super.listFormat,
+    super.useBrackets,
+    super.dateFormat,
+    super.includeNullQueryVars,
+    super.timeout,
+  })
+    // coverage:ignore-start
+    : super(HttpMethod.Query);
+  // coverage:ignore-end
 }
 
 /// {@template POST}
