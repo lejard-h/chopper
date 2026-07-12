@@ -3,7 +3,7 @@ import 'dart:async' show Stream;
 import 'package:chopper/src/date_format.dart';
 import 'package:chopper/src/extensions.dart';
 import 'package:chopper/src/utils.dart';
-import 'package:equatable/equatable.dart' show EquatableMixin;
+import 'package:equatable/equatable.dart' show Equatable;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 import 'package:qs_dart/qs_dart.dart' show ListFormat;
@@ -12,8 +12,7 @@ import 'package:qs_dart/qs_dart.dart' show ListFormat;
 /// This class represents an HTTP request that can be made with Chopper.
 /// {@endtemplate}
 // ignore: must_be_immutable
-base class Request extends http.BaseRequest
-    with http.Abortable, EquatableMixin {
+base class Request extends http.BaseRequest with http.Abortable, Equatable {
   final Uri uri;
   final Uri baseUri;
   final dynamic body;
@@ -298,7 +297,7 @@ base mixin MockRequestMixin implements Request {}
 
 /// Represents a part in a multipart request.
 @immutable
-final class PartValue<T> with EquatableMixin {
+final class PartValue<T> with Equatable {
   final T value;
   final String name;
 
