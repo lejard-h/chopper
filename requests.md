@@ -11,7 +11,7 @@
 | `@DELETE()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                             |
 | `@HEAD()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                               |
 | `@OPTIONS()`, `@options`                   | `OPTIONS` | Defines an `OPTIONS` request.                           |
-| `@QUERY()`                                 | `QUERY`   | Defines a `QUERY` request with content.                 |
+| `@QUERY()`, `@httpQuery`                   | `QUERY`   | Defines a `QUERY` request with content.                 |
 | `@Path()`, `@path`                         | -         | Defines a dynamic path parameter.                       |
 | `@Body()`, `@body`                         | -         | Defines the request's body.                             |
 | `@Header()`, `@header`                     | -         | Defines a dynamic request header.                       |
@@ -46,6 +46,10 @@ abstract class ResourceService extends ChopperService {
   );
 }
 ```
+
+For a request without method options, use `@httpQuery` as a shorthand for
+`@QUERY()`. The existing `@query` annotation continues to define a URL query
+parameter.
 
 The request must include a `Content-Type` consistent with its content. Chopper
 delegates redirects, retries, caching, and CORS behavior to the configured
