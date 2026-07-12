@@ -71,6 +71,9 @@ Future<Response<List<dynamic>>> search(
 );
 ```
 
+Use `@httpQuery` as the parameterless shorthand for `@QUERY()`. The `@query`
+annotation is reserved for URL query parameters.
+
 QUERY request content must have a consistent `Content-Type`. Set it in the
 method headers or use a request converter that supplies it. Chopper delegates
 redirects, retries, caching, and CORS behavior to the configured `http.Client`:
