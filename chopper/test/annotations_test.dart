@@ -35,6 +35,9 @@ abstract class ShorthandAnnotationService extends ChopperService {
   @get
   Future<Response<dynamic>> testGetShorthand();
 
+  @httpQuery
+  Future<Response<dynamic>> testHttpQueryShorthand(@body dynamic body);
+
   @post
   Future<Response<dynamic>> testPostShorthand(@body dynamic body);
 
@@ -113,6 +116,7 @@ void main() {
 
     test('Shorthand method annotations can be instantiated', () {
       expect(get, isA<GET>());
+      expect(httpQuery, isA<QUERY>());
       expect(post, isA<POST>());
       expect(put, isA<PUT>());
       expect(patch, isA<PATCH>());

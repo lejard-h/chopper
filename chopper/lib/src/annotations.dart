@@ -906,6 +906,9 @@ const header = Header();
 /// {@macro GET}
 const get = GET();
 
+/// {@macro QUERY}
+const httpQuery = QUERY();
+
 /// {@macro POST}
 const post = POST();
 
