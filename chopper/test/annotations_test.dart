@@ -200,6 +200,41 @@ void main() {
       expect(annotation.timeout, null);
     });
 
+    test('QUERY with default arguments', () {
+      const annotation = QUERY();
+      expect(annotation.method, HttpMethod.Query);
+      expect(annotation.path, '');
+      expect(annotation.optionalBody, false);
+      expect(annotation.headers, const {});
+      expect(annotation.listFormat, null);
+      expect(annotation.useBrackets, null);
+      expect(annotation.dateFormat, null);
+      expect(annotation.includeNullQueryVars, null);
+      expect(annotation.timeout, null);
+    });
+
+    test('QUERY with all arguments', () {
+      const annotation = QUERY(
+        path: '/search',
+        optionalBody: true,
+        headers: {'content-type': 'application/json'},
+        listFormat: ListFormat.indices,
+        useBrackets: false,
+        dateFormat: DateFormat.date,
+        includeNullQueryVars: true,
+        timeout: Duration(seconds: 10),
+      );
+      expect(annotation.method, HttpMethod.Query);
+      expect(annotation.path, '/search');
+      expect(annotation.optionalBody, true);
+      expect(annotation.headers, const {'content-type': 'application/json'});
+      expect(annotation.listFormat, ListFormat.indices);
+      expect(annotation.useBrackets, false);
+      expect(annotation.dateFormat, DateFormat.date);
+      expect(annotation.includeNullQueryVars, true);
+      expect(annotation.timeout, const Duration(seconds: 10));
+    });
+
     test('Path with name', () {
       const p = Path('id');
       expect(p.name, 'id');

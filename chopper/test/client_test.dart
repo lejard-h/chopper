@@ -41,6 +41,32 @@ void main() {
 
       httpClient.close();
     });
+
+    test('QUERY', () async {
+      final httpClient = MockClient((request) async {
+        expect(request.url.toString(), equals('$baseUrl/test/query?scope=all'));
+        expect(request.method, equals('QUERY'));
+        expect(request.headers['foo'], equals('bar'));
+        expect(request.headers['content-type'], equals('application/json'));
+        expect(request.body, json.encode({'content': 'body'}));
+
+        return http.Response('query response', 200);
+      });
+
+      final chopper = buildClient(httpClient);
+      final response = await chopper.query(
+        Uri(path: '/test/query'),
+        headers: {'content-type': 'application/json'},
+        parameters: {'scope': 'all'},
+        body: {'content': 'body'},
+      );
+
+      expect(response.body, equals('query response'));
+      expect(response.statusCode, equals(200));
+
+      httpClient.close();
+    });
+
     test('POST', () async {
       final httpClient = MockClient((request) async {
         expect(request.url.toString(), equals('$baseUrl/test/post?key=val'));
