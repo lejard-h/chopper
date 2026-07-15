@@ -11,6 +11,7 @@
 | `@DELETE()`, `@delete`                     | `DELETE`  | Defines a `DELETE` request.                             |
 | `@HEAD()`, `@head`                         | `HEAD`    | Defines a `HEAD` request.                               |
 | `@OPTIONS()`, `@options`                   | `OPTIONS` | Defines an `OPTIONS` request.                           |
+| `@QUERY()`, `@httpQuery`                   | `QUERY`   | Defines a `QUERY` request with content.                 |
 | `@Path()`, `@path`                         | -         | Defines a dynamic path parameter.                       |
 | `@Body()`, `@body`                         | -         | Defines the request's body.                             |
 | `@Header()`, `@header`                     | -         | Defines a dynamic request header.                       |
@@ -27,6 +28,38 @@
 | `@PartFileMap()`, `@partFileMap`           | -         | Defines a multipart file part map.                      |
 | `@Tag()`, `@tag`                           | -         | Defines a tag parameter.                                |
 | `@AbortTrigger()`, `@abortTrigger`         | -         | Defines a request cancellation trigger.                 |
+
+## HTTP QUERY requests
+
+Chopper supports the HTTP `QUERY` method defined by
+[RFC 10008](https://www.rfc-editor.org/rfc/rfc10008.html). `QUERY` is a safe,
+idempotent method with request content; it is not a `GET` request with a body.
+
+Use `@QUERY` with `@Body()` in a generated service:
+
+```dart
+@ChopperApi(baseUrl: '/resources')
+abstract class ResourceService extends ChopperService {
+  @QUERY(path: '/search', headers: {contentTypeKey: jsonHeaders})
+  Future<Response<Map<String, dynamic>>> searchResources(
+    @Body() Map<String, dynamic> query,
+  );
+}
+```
+
+For a request without method options, use `@httpQuery` as a shorthand for
+`@QUERY()`. The existing `@query` annotation continues to define a URL query
+parameter.
+
+The request must include a `Content-Type` consistent with its content. Chopper
+delegates redirects, retries, caching, and CORS behavior to the configured
+`http.Client`. Cross-origin browser requests require a CORS preflight that
+permits `QUERY`, and Dart's default native client does not automatically follow
+`QUERY` redirects.
+
+See the
+[runnable package example](https://github.com/lejard-h/chopper/blob/master/chopper/example/main.dart)
+for a complete request.
 
 ## Path resolution
 

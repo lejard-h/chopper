@@ -17,6 +17,11 @@ abstract class MyService extends ChopperService {
   @GET(path: '/resources')
   Future<Response<List<Map>>> getListResources();
 
+  @QUERY(path: '/search', headers: {contentTypeKey: jsonHeaders})
+  Future<Response<Map<String, dynamic>>> searchResources(
+    @Body() Map<String, dynamic> query,
+  );
+
   @POST(path: '/')
   @FormUrlEncoded()
   Future<Response> postResourceUrlEncoded(

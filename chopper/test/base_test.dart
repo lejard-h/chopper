@@ -257,6 +257,38 @@ void main() {
       httpClient.close();
     });
 
+    test('QUERY generated service', () async {
+      final httpClient = MockClient((request) async {
+        expect(
+          request.url.toString(),
+          equals('$baseUrl/test/query_body?scope=articles'),
+        );
+        expect(request.method, equals('QUERY'));
+        expect(request.headers['content-type'], equals(jsonHeaders));
+        expect(request.body, equals('{"term":"chopper"}'));
+
+        return http.Response('query response', 200);
+      });
+
+      final chopper = ChopperClient(
+        baseUrl: baseUrl,
+        services: [HttpTestService.create()],
+        client: httpClient,
+        converter: const JsonConverter(),
+      );
+      final service = chopper.getService<HttpTestService>();
+
+      final response = await service.queryTest({
+        'term': 'chopper',
+      }, scope: 'articles');
+
+      expect(response.body, equals('query response'));
+      expect(response.statusCode, equals(200));
+
+      chopper.dispose();
+      httpClient.close();
+    });
+
     test('POST', () async {
       final httpClient = MockClient((request) async {
         expect(request.url.toString(), equals('$baseUrl/test/post'));

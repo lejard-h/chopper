@@ -50,6 +50,23 @@ final class _$MyService extends MyService {
   }
 
   @override
+  Future<Response<Map<String, dynamic>>> searchResources(
+    Map<String, dynamic> query,
+  ) {
+    final Uri $url = Uri.parse('/resources/search');
+    final Map<String, String> $headers = {'content-type': 'application/json'};
+    final $body = query;
+    final Request $request = Request(
+      'QUERY',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+    );
+    return client.send<Map<String, dynamic>, Map<String, dynamic>>($request);
+  }
+
+  @override
   Future<Response<dynamic>> postResourceUrlEncoded(String toto, String b) {
     final Uri $url = Uri.parse('/resources/');
     final Map<String, String> $headers = {
