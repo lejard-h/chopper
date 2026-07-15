@@ -181,6 +181,78 @@ final class _$HttpTestService extends HttpTestService {
   }
 
   @override
+  Future<Response<dynamic>> queryTest(
+    Map<String, dynamic> body, {
+    String? scope,
+  }) {
+    final Uri $url = Uri.parse('/test/query_body');
+    final Map<String, dynamic> $params = <String, dynamic>{'scope': scope};
+    final Map<String, String> $headers = {'content-type': 'application/json'};
+    final $body = body;
+    final Request $request = Request(
+      'QUERY',
+      $url,
+      client.baseUrl,
+      body: $body,
+      parameters: $params,
+      headers: $headers,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<String>> queryWithTimeout(String body) {
+    final Uri $url = Uri.parse('/test/query_timeout');
+    final Map<String, String> $headers = {'content-type': 'application/json'};
+    final $body = body;
+    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperTimer $timeout = ChopperTimer(
+      const Duration(microseconds: 30000000),
+      () {
+        if (!$abortTrigger.isCompleted) $abortTrigger.complete();
+      },
+    );
+    final Request $request = Request(
+      'QUERY',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+      abortTrigger: $abortTrigger.future,
+    );
+    return client
+        .send<String, String>($request)
+        .catchError(
+          (_) => Future<Response<String>>.error(
+            ChopperTimeoutException('Request timed out after 30 seconds'),
+          ),
+          test: (Object err) =>
+              err is ChopperRequestAbortedException &&
+              $abortTrigger.isCompleted,
+        )
+        .whenComplete($timeout.cancel);
+  }
+
+  @override
+  Future<Response<String>> queryWithAbortTrigger(
+    String body, {
+    Future<void>? abortTrigger,
+  }) {
+    final Uri $url = Uri.parse('/test/query_abort');
+    final Map<String, String> $headers = {'content-type': 'application/json'};
+    final $body = body;
+    final Request $request = Request(
+      'QUERY',
+      $url,
+      client.baseUrl,
+      body: $body,
+      headers: $headers,
+      abortTrigger: abortTrigger,
+    );
+    return client.send<String, String>($request);
+  }
+
+  @override
   Future<Response<dynamic>> postTest(String data) {
     final Uri $url = Uri.parse('/test/post');
     final $body = data;

@@ -71,6 +71,25 @@ abstract class HttpTestService extends ChopperService {
   @GET(path: 'get_body')
   Future<Response> getBody(@Body() dynamic body);
 
+  @QUERY(path: 'query_body', headers: {contentTypeKey: jsonHeaders})
+  Future<Response> queryTest(
+    @Body() Map<String, dynamic> body, {
+    @Query('scope') String? scope,
+  });
+
+  @QUERY(
+    path: 'query_timeout',
+    headers: {contentTypeKey: jsonHeaders},
+    timeout: Duration(seconds: 30),
+  )
+  Future<Response<String>> queryWithTimeout(@Body() String body);
+
+  @QUERY(path: 'query_abort', headers: {contentTypeKey: jsonHeaders})
+  Future<Response<String>> queryWithAbortTrigger(
+    @Body() String body, {
+    @AbortTrigger() Future<void>? abortTrigger,
+  });
+
   @POST(path: 'post')
   Future<Response> postTest(@Body() String data);
 

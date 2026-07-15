@@ -9,6 +9,7 @@ const String jsonApiHeaders = 'application/vnd.api+json';
 
 abstract final class HttpMethod {
   static const String Get = 'GET';
+  static const String Query = 'QUERY';
   static const String Post = 'POST';
   static const String Put = 'PUT';
   static const String Delete = 'DELETE';

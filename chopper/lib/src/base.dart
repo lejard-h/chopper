@@ -213,6 +213,29 @@ base class ChopperClient {
     ),
   );
 
+  /// Makes an HTTP QUERY request using the [send] function.
+  ///
+  /// QUERY is a safe, idempotent method whose request content describes the
+  /// query to process. The request must have a `Content-Type` header consistent
+  /// with its content. Redirect, retry, cache, and CORS behavior is determined
+  /// by the configured [http.Client].
+  Future<Response<BodyType>> query<BodyType, InnerType>(
+    Uri url, {
+    Map<String, String> headers = const {},
+    Uri? baseUrl,
+    Map<String, dynamic> parameters = const {},
+    dynamic body,
+  }) => send<BodyType, InnerType>(
+    Request(
+      HttpMethod.Query,
+      url,
+      baseUrl ?? this.baseUrl,
+      body: body,
+      headers: headers,
+      parameters: parameters,
+    ),
+  );
+
   /// Makes a HTTP POST request using the [send] function
   Future<Response<BodyType>> post<BodyType, InnerType>(
     Uri url, {
