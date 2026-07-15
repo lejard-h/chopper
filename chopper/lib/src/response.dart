@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:chopper/src/chopper_http_exception.dart';
-import 'package:equatable/equatable.dart' show EquatableMixin;
+import 'package:equatable/equatable.dart' show Equatable;
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -19,7 +19,7 @@ import 'package:meta/meta.dart';
 /// ```
 /// {@endtemplate}
 @immutable
-base class Response<BodyType> with EquatableMixin {
+base class Response<BodyType> with Equatable {
   /// The [http.BaseResponse] from `package:http` that this [Response] wraps.
   final http.BaseResponse base;
 

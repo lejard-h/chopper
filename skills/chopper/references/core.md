@@ -41,7 +41,7 @@ Use `Uri.parse(...)` for the client base URL. Mention custom `http.Client` only 
 
 Prefer uppercase annotations in examples:
 
-- HTTP methods: `@GET`, `@POST`, `@PUT`, `@PATCH`, `@DELETE`, `@HEAD`, `@OPTIONS`.
+- HTTP methods: `@GET`, `@QUERY`, `@POST`, `@PUT`, `@PATCH`, `@DELETE`, `@HEAD`, `@OPTIONS`.
 - URL values: `@Path`, `@Query`, `@QueryMap`.
 - Headers: `@Header`, method-level `headers: {...}`.
 - Bodies: `@Body`, `@Field`, `@FieldMap`, `@Part`, `@PartFile`, `@PartMap`, `@PartFileMap`.
@@ -57,6 +57,32 @@ Future<Response<List<dynamic>>> search({
   @Query('page') int page = 1,
 });
 ```
+
+### HTTP QUERY
+
+Use `@QUERY` for the safe, idempotent HTTP QUERY method defined by
+[RFC 10008](https://www.rfc-editor.org/rfc/rfc10008.html). QUERY is a distinct
+HTTP method, not a GET request with a body.
+
+```dart
+@QUERY(path: '/search', headers: {'content-type': 'application/json'})
+Future<Response<List<dynamic>>> search(
+  @Body() Map<String, dynamic> query,
+);
+```
+
+Use `@httpQuery` as the parameterless shorthand for `@QUERY()`. The `@query`
+annotation is reserved for URL query parameters.
+
+QUERY request content must have a consistent `Content-Type`. Set it in the
+method headers or use a request converter that supplies it. Chopper delegates
+redirects, retries, caching, and CORS behavior to the configured `http.Client`:
+
+- Cross-origin browser requests require a CORS preflight that permits `QUERY`.
+- Dart's default native `HttpClient` only automatically follows redirects for
+  GET and HEAD, plus POST-to-GET redirects for status 303. It does not
+  automatically follow QUERY redirects; use a suitable custom `http.Client` or
+  handle the 3xx response when strict RFC redirect behavior is required.
 
 ## Responses
 

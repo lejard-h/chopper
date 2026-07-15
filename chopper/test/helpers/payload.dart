@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-final class Payload with EquatableMixin {
+final class Payload with Equatable {
   const Payload({this.statusCode = 200, this.message = 'OK'});
 
   final int statusCode;
