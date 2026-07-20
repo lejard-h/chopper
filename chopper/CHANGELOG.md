@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.7.0
+
+- add HTTP QUERY (RFC 10008) support ([#722](https://github.com/lejard-h/chopper/pull/722))
+
 ## 8.6.0
 
 - Add `ParameterConverter` for converting query parameters before requests are sent ([#712](https://github.com/lejard-h/chopper/pull/712))
