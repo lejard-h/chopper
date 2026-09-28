@@ -53,46 +53,42 @@ void main() {
       expect(recordedRequests.first, equals(request));
     });
 
-    test(
-      'handles requests with stream body (passes through)',
-      () async {
-        final streamController = StreamController<String>();
-        final completer = Completer<void>();
+    test('handles requests with stream body (passes through)', () async {
+      final streamController = StreamController<String>();
+      final completer = Completer<void>();
 
-        // Create a request with a stream body
-        final request = Request(
-          'POST',
-          Uri.parse('/resource'),
-          Uri.parse('https://api.example.com'),
-          body: streamController.stream,
-        );
+      // Create a request with a stream body
+      final request = Request(
+        'POST',
+        Uri.parse('/resource'),
+        Uri.parse('https://api.example.com'),
+        body: streamController.stream,
+      );
 
-        final chain = CustomFakeChain(request);
+      final chain = CustomFakeChain(request);
 
-        // Add data to the stream and close it immediately to avoid hanging
-        streamController.add('test data');
-        streamController.close();
+      // Add data to the stream and close it immediately to avoid hanging
+      streamController.add('test data');
+      streamController.close();
 
-        // Properly handle the FutureOr return type
-        final result = interceptor.intercept(chain);
-        if (result is Future) {
-          await result;
-        }
-        completer.complete();
+      // Properly handle the FutureOr return type
+      final result = interceptor.intercept(chain);
+      if (result is Future) {
+        await result;
+      }
+      completer.complete();
 
-        // Wait for the interceptor to complete
-        await completer.future;
+      // Wait for the interceptor to complete
+      await completer.future;
 
-        // Verify the callback was called with the request
-        expect(recordedRequests, hasLength(1));
-        expect(recordedRequests.first, equals(request));
+      // Verify the callback was called with the request
+      expect(recordedRequests, hasLength(1));
+      expect(recordedRequests.first, equals(request));
 
-        // The stream should be the same instance, but we can't directly compare streams
-        // Instead verify it's a Stream instance
-        expect(chain.processedRequest?.body, isA<Stream<String>>());
-      },
-      timeout: const Timeout(Duration(seconds: 5)),
-    );
+      // The stream should be the same instance, but we can't directly compare streams
+      // Instead verify it's a Stream instance
+      expect(chain.processedRequest?.body, isA<Stream<String>>());
+    }, timeout: const Timeout(Duration(seconds: 5)));
   });
 }
 
