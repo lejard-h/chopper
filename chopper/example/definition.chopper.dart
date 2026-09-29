@@ -124,7 +124,7 @@ final class _$MyService extends MyService {
   @override
   Future<Response<dynamic>> getMassiveFile() {
     final Uri $url = Uri.parse('/resources/assets/10GB.bin');
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 30000000),
       () {

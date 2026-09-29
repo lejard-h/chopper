@@ -205,7 +205,7 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/query_timeout');
     final Map<String, String> $headers = {'content-type': 'application/json'};
     final $body = body;
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 30000000),
       () {
@@ -1024,7 +1024,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getTimeoutTest() {
     final Uri $url = Uri.parse('/test/get_timeout');
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 42000000),
       () {
@@ -1053,7 +1053,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getTimeoutTestZero() {
     final Uri $url = Uri.parse('/test/get_timeout_zero');
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 0),
       () {
@@ -1082,7 +1082,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<Response<String>> getTimeoutTestNeg() {
     final Uri $url = Uri.parse('/test/get_timeout_neg');
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 0),
       () {
@@ -1118,7 +1118,7 @@ final class _$HttpTestService extends HttpTestService {
     final Map<String, String> $headers = {
       if (testHeader != null) 'x-test': testHeader,
     };
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 30000000),
       () {

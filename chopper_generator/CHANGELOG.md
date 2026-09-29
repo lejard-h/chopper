@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fix method timeout generation with newer Dart SDKs ([#729](https://github.com/lejard-h/chopper/pull/729))
+
 ## 8.7.0
 
 - add HTTP QUERY (RFC 10008) support ([#722](https://github.com/lejard-h/chopper/pull/722))
