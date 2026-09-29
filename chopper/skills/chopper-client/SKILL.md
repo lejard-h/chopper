@@ -1,5 +1,5 @@
 ---
-name: chopper
+name: chopper-client
 description: Use this skill whenever a user wants to install, configure, write, generate, debug, or choose options for Chopper HTTP clients in Dart or Flutter, including @ChopperApi services, ChopperClient setup, build_runner/chopper_generator, converters, interceptors, response handling, query parameters, or chopper_built_value integration.
 ---
 
