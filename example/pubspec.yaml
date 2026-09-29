@@ -13,7 +13,7 @@ dependencies:
   chopper_built_value:
   json_annotation: ^4.12.0
   built_value: ^8.11.0
-  analyzer: ">=8.0.0 <14.0.0"
+  analyzer: ">=8.0.0 <15.0.0"
   http: ^1.6.0
   built_collection: ^5.1.1
   cancelation_token: ^1.1.0
