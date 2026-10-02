@@ -17,6 +17,18 @@ import 'test_service_variable.dart';
 final baseUrl = Uri.parse('http://localhost:8000');
 const String testEnv = 'https://localhost:4000';
 
+class _InspectingHttpClient extends http.BaseClient {
+  _InspectingHttpClient(this.inspect);
+
+  final void Function(http.BaseRequest request) inspect;
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) async {
+    inspect(request);
+    return http.StreamedResponse(Stream.value(utf8.encode('ok')), 200);
+  }
+}
+
 void main() {
   ChopperClient buildClient([
     http.Client? httpClient,
@@ -1173,6 +1185,22 @@ void main() {
     final service = chopper.getService<HttpTestServiceBaseUrl>();
 
     await service.getAllWithTrailingSlash();
+  });
+
+  test('configured timeout supplies an HTTP abort trigger', () async {
+    final httpClient = _InspectingHttpClient((request) {
+      final abortableRequest = request as http.AbortableRequest;
+      expect(abortableRequest.abortTrigger, isNotNull);
+    });
+
+    final chopper = buildClient(httpClient);
+    final service = chopper.getService<HttpTestService>();
+
+    try {
+      await service.getTimeoutTest();
+    } finally {
+      chopper.dispose();
+    }
   });
 
   test('timeout', () async {

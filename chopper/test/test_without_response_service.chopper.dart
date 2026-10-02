@@ -28,7 +28,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -36,7 +38,9 @@ final class _$HttpTestService extends HttpTestService {
   Future<dynamic> headTest() async {
     final Uri $url = Uri.parse('/test/head');
     final Request $request = Request('HEAD', $url, client.baseUrl);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -44,7 +48,9 @@ final class _$HttpTestService extends HttpTestService {
   Future<dynamic> optionsTest() async {
     final Uri $url = Uri.parse('/test/options');
     final Request $request = Request('OPTIONS', $url, client.baseUrl);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -52,9 +58,8 @@ final class _$HttpTestService extends HttpTestService {
   Future<Stream<List<int>>> getStreamTest() async {
     final Uri $url = Uri.parse('/test/get');
     final Request $request = Request('GET', $url, client.baseUrl);
-    final Response $response = await client.send<Stream<List<int>>, int>(
-      $request,
-    );
+    final Response<Stream<List<int>>> $response = await client
+        .send<Stream<List<int>>, int>($request);
     return $response.bodyOrThrow;
   }
 
@@ -62,7 +67,9 @@ final class _$HttpTestService extends HttpTestService {
   Future<dynamic> getAll() async {
     final Uri $url = Uri.parse('/test');
     final Request $request = Request('GET', $url, client.baseUrl);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -70,7 +77,9 @@ final class _$HttpTestService extends HttpTestService {
   Future<dynamic> getAllWithTrailingSlash() async {
     final Uri $url = Uri.parse('/test/');
     final Request $request = Request('GET', $url, client.baseUrl);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -92,7 +101,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -106,7 +117,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -124,7 +137,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -146,7 +161,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -168,7 +185,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -182,7 +201,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -191,7 +212,9 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/get_body');
     final $body = body;
     final Request $request = Request('GET', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -200,7 +223,9 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/post');
     final $body = data;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -209,7 +234,9 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/post');
     final $body = byteStream;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -218,7 +245,9 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/put/${test}');
     final $body = data;
     final Request $request = Request('PUT', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -232,7 +261,7 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    final Response $response = await client.send<void, void>($request);
+    final Response<void> $response = await client.send<void, void>($request);
     return $response.bodyOrThrow;
   }
 
@@ -246,7 +275,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       body: $body,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -255,7 +286,9 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/map');
     final $body = map;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -264,7 +297,7 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/form/body');
     final $body = fields;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>(
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
       $request,
       requestConverter: convertForm,
     );
@@ -285,7 +318,9 @@ final class _$HttpTestService extends HttpTestService {
       body: $body,
       headers: $headers,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -294,7 +329,7 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/form/body/fields');
     final $body = <String, dynamic>{'foo': foo, 'bar': bar};
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>(
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
       $request,
       requestConverter: convertForm,
     );
@@ -306,7 +341,7 @@ final class _$HttpTestService extends HttpTestService {
     final Uri $url = Uri.parse('/test/map/json');
     final $body = map;
     final Request $request = Request('POST', $url, client.baseUrl, body: $body);
-    final Response $response = await client.send<dynamic, dynamic>(
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
       $request,
       requestConverter: customConvertRequest,
       responseConverter: customConvertResponse,
@@ -331,7 +366,9 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -348,7 +385,9 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -365,7 +404,9 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -383,7 +424,9 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -400,7 +443,9 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -425,7 +470,9 @@ final class _$HttpTestService extends HttpTestService {
       parts: $parts,
       multipart: true,
     );
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -433,7 +480,9 @@ final class _$HttpTestService extends HttpTestService {
   Future<dynamic> fullUrl() async {
     final Uri $url = Uri.parse('https://test.com');
     final Request $request = Request('GET', $url, client.baseUrl);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -441,9 +490,8 @@ final class _$HttpTestService extends HttpTestService {
   Future<List<String>> listString() async {
     final Uri $url = Uri.parse('/test/list/string');
     final Request $request = Request('GET', $url, client.baseUrl);
-    final Response $response = await client.send<List<String>, String>(
-      $request,
-    );
+    final Response<List<String>> $response = await client
+        .send<List<String>, String>($request);
     return $response.bodyOrThrow;
   }
 
@@ -451,7 +499,9 @@ final class _$HttpTestService extends HttpTestService {
   Future<dynamic> noBody() async {
     final Uri $url = Uri.parse('/test/no-body');
     final Request $request = Request('POST', $url, client.baseUrl);
-    final Response $response = await client.send<dynamic, dynamic>($request);
+    final Response<dynamic> $response = await client.send<dynamic, dynamic>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -474,7 +524,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -488,7 +540,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -505,7 +559,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       useBrackets: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -520,7 +576,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -535,7 +593,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -550,7 +610,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -565,7 +627,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -579,7 +643,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       parameters: $params,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -596,7 +662,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       includeNullQueryVars: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -613,7 +681,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       useBrackets: true,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -630,7 +700,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.brackets,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -647,7 +719,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.indices,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -664,7 +738,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.repeat,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -681,7 +757,9 @@ final class _$HttpTestService extends HttpTestService {
       parameters: $params,
       listFormat: ListFormat.comma,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
@@ -707,14 +785,16 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       headers: $headers,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 
   @override
   Future<String> getTimeoutTest() async {
     final Uri $url = Uri.parse('/test/get_timeout');
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 42000000),
       () {
@@ -744,7 +824,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<String> getTimeoutTestZero() async {
     final Uri $url = Uri.parse('/test/get_timeout_zero');
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 0),
       () {
@@ -774,7 +854,7 @@ final class _$HttpTestService extends HttpTestService {
   @override
   Future<String> getTimeoutTestNeg() async {
     final Uri $url = Uri.parse('/test/get_timeout_neg');
-    final ChopperCompleter $abortTrigger = ChopperCompleter<void>();
+    final ChopperCompleter<void> $abortTrigger = ChopperCompleter<void>();
     final ChopperTimer $timeout = ChopperTimer(
       const Duration(microseconds: 0),
       () {
@@ -810,7 +890,9 @@ final class _$HttpTestService extends HttpTestService {
       client.baseUrl,
       abortTrigger: abortTrigger,
     );
-    final Response $response = await client.send<String, String>($request);
+    final Response<String> $response = await client.send<String, String>(
+      $request,
+    );
     return $response.bodyOrThrow;
   }
 }

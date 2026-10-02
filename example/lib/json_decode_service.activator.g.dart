@@ -2,7 +2,7 @@
 // dart format width=80
 
 // **************************************************************************
-// Generator: WorkerGenerator 9.2.0 (Squadron 7.4.3)
+// Generator: WorkerGenerator 9.3.2 (Squadron 7.4.4)
 // **************************************************************************
 
 import 'json_decode_service.vm.g.dart';

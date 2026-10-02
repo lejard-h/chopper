@@ -115,7 +115,10 @@ void main() {
 
         expect(
           logs,
-          containsAll(['', '<-- 200 POST base/ (0ms, 16-byte body)']),
+          containsAll([
+            '',
+            matches(RegExp(r'^<-- 200 POST base/ \(\d+ms, 16-byte body\)$')),
+          ]),
         );
       });
 
@@ -130,7 +133,7 @@ void main() {
           logs,
           containsAll([
             '',
-            '<-- 200 POST base/ (0ms)',
+            matches(RegExp(r'^<-- 200 POST base/ \(\d+ms\)$')),
             'foo: bar',
             'content-length: 16',
             '<-- END HTTP',
@@ -149,7 +152,7 @@ void main() {
           logs,
           containsAll([
             '',
-            '<-- 200 POST base/ (0ms)',
+            matches(RegExp(r'^<-- 200 POST base/ \(\d+ms\)$')),
             'foo: bar',
             'content-length: 16',
             '',
@@ -242,7 +245,7 @@ void main() {
           logs,
           containsAll([
             '',
-            '<-- 200 POST base/ (0ms)',
+            matches(RegExp(r'^<-- 200 POST base/ \(\d+ms\)$')),
             'foo: bar',
             'content-length: 42',
             '<-- END HTTP',
@@ -260,7 +263,7 @@ void main() {
           logs,
           containsAll([
             '',
-            '<-- 200 POST base/ (0ms)',
+            matches(RegExp(r'^<-- 200 POST base/ \(\d+ms\)$')),
             'foo: bar',
             'content-length: 42',
             '',
@@ -531,7 +534,10 @@ void main() {
 
           expect(
             logs,
-            containsAll(['', '<-- 400 POST base/ (0ms, 16-byte body)']),
+            containsAll([
+              '',
+              matches(RegExp(r'^<-- 400 POST base/ \(\d+ms, 16-byte body\)$')),
+            ]),
           );
         });
 
@@ -551,7 +557,7 @@ void main() {
             logs,
             containsAll([
               '',
-              '<-- 400 POST base/ (0ms)',
+              matches(RegExp(r'^<-- 400 POST base/ \(\d+ms\)$')),
               'foo: bar',
               'content-length: 16',
               '<-- END HTTP',
@@ -575,7 +581,7 @@ void main() {
             logs,
             containsAll([
               '',
-              '<-- 400 POST base/ (0ms)',
+              matches(RegExp(r'^<-- 400 POST base/ \(\d+ms\)$')),
               'foo: bar',
               'content-length: 16',
               '',
@@ -657,7 +663,7 @@ void main() {
             logs,
             containsAll([
               '',
-              '<-- 400 POST base/ (0ms)',
+              matches(RegExp(r'^<-- 400 POST base/ \(\d+ms\)$')),
               'foo: bar',
               'content-length: 42',
               '<-- END HTTP',
@@ -680,7 +686,7 @@ void main() {
             logs,
             containsAll([
               '',
-              '<-- 400 POST base/ (0ms)',
+              matches(RegExp(r'^<-- 400 POST base/ \(\d+ms\)$')),
               'foo: bar',
               'content-length: 42',
               '',
@@ -738,7 +744,7 @@ void main() {
         logs,
         containsAll([
           '',
-          '<-- 404 POST base/ (0ms)',
+          matches(RegExp(r'^<-- 404 POST base/ \(\d+ms\)$')),
           'foo: bar',
           'content-length: 14',
           '',
@@ -794,7 +800,12 @@ void main() {
     // Verify the log includes the custom reason phrase
     expect(
       logs,
-      containsAll(['', '<-- 200 Custom Reason POST base/ (0ms, 9-byte body)']),
+      containsAll([
+        '',
+        matches(
+          RegExp(r'^<-- 200 Custom Reason POST base/ \(\d+ms, 9-byte body\)$'),
+        ),
+      ]),
     );
   });
 }

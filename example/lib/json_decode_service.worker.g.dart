@@ -4,7 +4,7 @@
 part of 'json_decode_service.dart';
 
 // **************************************************************************
-// Generator: WorkerGenerator 9.2.0 (Squadron 7.4.3)
+// Generator: WorkerGenerator 9.3.2 (Squadron 7.4.4)
 // **************************************************************************
 
 // dart format width=80
@@ -70,6 +70,7 @@ WorkerService $JsonDecodeServiceInitializer(WorkerRequest $req) =>
 base class _$JsonDecodeServiceWorker extends Worker
     with _$JsonDecodeService$Invoker, _$JsonDecodeService$Facade
     implements JsonDecodeService {
+  // ignore: use_super_parameters
   _$JsonDecodeServiceWorker({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -79,6 +80,7 @@ base class _$JsonDecodeServiceWorker extends Worker
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   _$JsonDecodeServiceWorker.vm({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -222,6 +224,7 @@ base class _$JsonDecodeServiceWorkerPool
     extends WorkerPool<JsonDecodeServiceWorker>
     with _$JsonDecodeService$Facade
     implements JsonDecodeService {
+  // ignore: use_super_parameters
   _$JsonDecodeServiceWorkerPool({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
@@ -235,6 +238,7 @@ base class _$JsonDecodeServiceWorkerPool
          exceptionManager: exceptionManager,
        );
 
+  // ignore: use_super_parameters
   _$JsonDecodeServiceWorkerPool.vm({
     PlatformThreadHook? threadHook,
     ExceptionManager? exceptionManager,
