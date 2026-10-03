@@ -1,4 +1,4 @@
-# Created with package:mono_repo v6.6.3
+# Created with package:mono_repo v6.7.2
 name: Dart CI
 on:
   push:
@@ -37,8 +37,10 @@ jobs:
       - id: checkout
         name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: mono_repo self validate
-        run: dart pub global activate mono_repo 6.6.3
+        run: dart pub global activate mono_repo 6.7.2
       - name: mono_repo self validate
         run: dart pub global run mono_repo generate --validate
   job_002:
@@ -62,6 +64,8 @@ jobs:
       - id: checkout
         name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
         run: dart pub upgrade
@@ -124,6 +128,8 @@ jobs:
       - id: checkout
         name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
         run: dart pub upgrade
@@ -196,6 +202,8 @@ jobs:
       - id: checkout
         name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - id: chopper_pub_upgrade
         name: chopper; dart pub upgrade
         run: dart pub upgrade

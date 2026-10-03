@@ -57,16 +57,20 @@ final class Utils {
   static bool? getIncludeNullQueryVars(ConstantReader method) =>
       method.peek('includeNullQueryVars')?.boolValue;
 
-  /// Returns the per-method timeout if specified on the annotation, clamped to
-  /// a non-negative duration.
-  static Duration? getTimeout(ConstantReader method) => switch (method
-      .peek('timeout')
-      ?.objectValue
-      .getField('_duration')
-      ?.toIntValue()) {
-    final int us? => Duration(microseconds: max(us, 0)),
-    _ => null,
-  };
+  /// Returns the method timeout, clamped to a non-negative duration.
+  ///
+  /// Older analyzer versions expose Duration through its private backing field.
+  static Duration? getTimeout(ConstantReader method) {
+    final duration = method.peek('timeout')?.objectValue;
+    final int? microseconds =
+        duration?.getField('inMicroseconds')?.toIntValue() ??
+        duration?.getField('_duration')?.toIntValue();
+
+    return switch (microseconds) {
+      final int us? => Duration(microseconds: max(us, 0)),
+      _ => null,
+    };
+  }
 
   /// All positional required params must support nullability
   static Parameter buildRequiredPositionalParam(FormalParameterElement p) =>
