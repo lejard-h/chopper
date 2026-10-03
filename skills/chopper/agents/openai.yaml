@@ -1,0 +1,4 @@
+interface:
+  display_name: "Chopper"
+  short_description: "Build Dart and Flutter Chopper clients"
+  default_prompt: "Use $chopper to create a Chopper API client for my Dart or Flutter app."
