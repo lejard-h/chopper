@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 8.7.1
 
 - Fix method timeout generation with newer Dart SDKs ([#729](https://github.com/lejard-h/chopper/pull/729))
+- Upgrade qs_dart to ^1.9.0 and broaden the equatable range to >=2.1.0 <4.0.0 ([#730](https://github.com/lejard-h/chopper/pull/730))
 
 ## 8.7.0
 
