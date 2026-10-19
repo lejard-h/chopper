@@ -9,7 +9,7 @@ environment:
 
 dependencies:
   analyzer: ">=8.0.0 <15.0.0"
-  build: ^4.0.3
+  build: ">=4.0.3 <6.0.0"
   built_collection: ^5.1.1
   chopper: ^8.7.0
   code_builder: ^4.11.0
