@@ -48,7 +48,12 @@ class InterceptorChain<BodyType> implements Chain<BodyType> {
     if (index + 1 < interceptors.length &&
         interceptor is! InternalInterceptor) {
       if (response == null) {
-        throw ChopperException('Response is null', request: request);
+        throw ChopperException(
+          request: request,
+          type: ChopperExceptionType.unknown,
+          error:
+              'Interceptor [${interceptor.runtimeType}] did not return a response',
+        );
       }
 
       assert(
